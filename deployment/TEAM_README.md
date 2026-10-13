@@ -8,6 +8,8 @@
 
 需要Docker Desktop（Linux containers）或Docker Engine+Compose，以及Python3.10+（仅生成本机配置）。首次构建需联网下载镜像、Maven和Python依赖。
 
+**Windows队友：**安装并启动Docker Desktop，使用Linux containers模式；另安装Git与Python3.10+。在PowerShell执行下方命令即可。Java21、Maven、Python Agent依赖和MySQL都在容器中安装，无需在Windows上分别搭建这四套运行环境。Docker Desktop安装过程中若提示启用WSL2或虚拟化，按其安装向导完成并重启。
+
 ```sh
 git clone https://github.com/GreysonXie/safebank-agent.git
 cd safebank-agent
@@ -23,6 +25,8 @@ macOS/Linux可能使用`python3`。打开 **http://127.0.0.1:8134/**，首次等
 ## 使用自己的 DeepSeek Key
 
 编辑生成的`.env`（不要提交或发送给他人）：
+
+Windows可在项目目录运行`notepad .env`，修改以下配置后保存；修改的是`.env`，不是`.env.example`。不要把文件另存为`.env.txt`。
 
 ```dotenv
 SAFEBANK_MODEL_MODE=deepseek
@@ -71,4 +75,4 @@ MySQL集成与Java Oracle测试需额外独立配置，见团队部署文档。�
 
 有部分账单、代扣真实模型完整查询链路和最新95项本地相关测试证据；最终提示与规范化尚未重新完成真实模型全场景验收，工具注入风险R03仍开放。真实银行/MFA未接入。
 
-团队Docker入口本次新增；本开发机器未安装Docker，**没有宣称容器实际启动已验收**。请首次部署时记录镜像构建、服务健康和页面结果。仅用于个人电脑演示，不直接暴露公网。
+团队Docker入口已在GitHub Actions的Linux环境通过镜像构建、MySQL初始化、双服务健康检查及mock账单对话验证；自动测试结果见仓库Actions。各队友仍需记录自己电脑上的首次部署结果。仅用于个人电脑演示，不直接暴露公网。

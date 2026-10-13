@@ -27,7 +27,7 @@ class DebugRequestBudgetTest {
     }
     @Test void corruptLedgerFailsClosed() throws Exception {var p=temp.resolve("bad.json");Files.writeString(p,"{invalid");assertThrows(BankException.class,()->new DebugRequestBudget(p,20).reserve());}
     @Test void twoIndependentProcessesCannotSpendMoreThanTwentyReservations() throws Exception {
-        var p=temp.resolve("shared.json");String javaExecutable=Path.of(System.getProperty("java.home"),"bin","java.exe").toString();String cp=System.getProperty("surefire.test.class.path",System.getProperty("java.class.path"));
+        var p=temp.resolve("shared.json");var javaBin=Path.of(System.getProperty("java.home"),"bin");String javaExecutable=javaBin.resolve(Files.isRegularFile(javaBin.resolve("java.exe"))?"java.exe":"java").toString();String cp=System.getProperty("surefire.test.class.path",System.getProperty("java.class.path"));
         var one=new ProcessBuilder(javaExecutable,"-cp",cp,Worker.class.getName(),p.toString()).redirectErrorStream(true).start();var two=new ProcessBuilder(javaExecutable,"-cp",cp,Worker.class.getName(),p.toString()).redirectErrorStream(true).start();
         assertTrue(one.waitFor(20,java.util.concurrent.TimeUnit.SECONDS));assertTrue(two.waitFor(20,java.util.concurrent.TimeUnit.SECONDS));assertEquals(0,one.exitValue(),new String(one.getInputStream().readAllBytes()));assertEquals(0,two.exitValue(),new String(two.getInputStream().readAllBytes()));assertEquals(0,new DebugRequestBudget(p,20).remaining());
     }
