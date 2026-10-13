@@ -1,0 +1,37 @@
+name: Team checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  source-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: mvn -B test
+        env:
+          SPRING_PROFILES_ACTIVE: test
+          BANK_MODEL_API_KEY: ""
+      - run: pip install -r agent-service/requirements.lock.txt
+      - run: python -m unittest tests.test_captured_protocol tests.test_live_contract_recovery tests.test_answer_contract tests.test_preview_planning tests.test_credential_output tests.test_transfer_safety -v
+        working-directory: agent-service
+  docker-demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 deployment/configure.py
+      - run: docker compose up --build -d --wait --wait-timeout 300
+      - run: python3 deployment/smoke.py
+      - if: failure()
+        run: docker compose logs --tail=100 app mysql
+      - if: always()
+        run: docker compose down

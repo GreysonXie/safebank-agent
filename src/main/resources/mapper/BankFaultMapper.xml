@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.BankFaultMapper">
+    <resultMap id="row" type="cn.safebank.entity.BankFaultEntity">
+        <result column="action_id" property="actionId"/>
+        <result column="user_id" property="userId"/>
+        <result column="submit_mode" property="submitMode"/>
+        <result column="lookup_mode" property="lookupMode"/>
+    </resultMap>
+
+    <select id="selectOwned" resultMap="row">SELECT action_id,user_id,submit_mode,lookup_mode FROM bank_faults WHERE action_id=#{actionId} AND user_id=#{userId}</select>
+    <insert id="write" databaseId="h2">MERGE INTO bank_faults(action_id,user_id,submit_mode,lookup_mode) KEY(action_id) VALUES(#{actionId},#{userId},#{submitMode},#{lookupMode})</insert>
+    <insert id="write" databaseId="mysql">
+      INSERT INTO bank_faults(action_id,user_id,submit_mode,lookup_mode)
+      SELECT #{actionId},#{userId},#{submitMode},#{lookupMode}
+      FROM actions WHERE id=#{actionId} AND user_id=#{userId}
+        AND NOT EXISTS(SELECT 1 FROM bank_faults WHERE action_id=#{actionId} AND NOT(user_id &lt;=&gt; #{userId}))
+      ON DUPLICATE KEY UPDATE submit_mode=#{submitMode},lookup_mode=#{lookupMode}
+    </insert>
+</mapper>

@@ -1,0 +1,15 @@
+.git
+.superpowers
+.worktrees
+.tools
+.m2
+target
+data
+.env
+.env.*
+!.env.example
+**/__pycache__
+**/*.pyc
+**/*.log
+docs/evidence
+*.zip

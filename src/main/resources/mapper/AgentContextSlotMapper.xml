@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.AgentContextSlotMapper">
+    <resultMap id="row" type="cn.safebank.entity.AgentContextSlotEntity">
+        <result column="conversation_id" property="conversationId"/>
+        <result column="user_id" property="userId"/>
+        <result column="slot_name" property="slotName"/>
+        <result column="value_json" property="valueJson"/>
+        <result column="provenance" property="provenance"/>
+        <result column="context_version" property="contextVersion"/>
+        <result column="source_turn_id" property="sourceTurnId"/>
+        <result column="evidence_id" property="evidenceId"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+    <sql id="columns">conversation_id,user_id,slot_name,value_json,provenance,context_version,source_turn_id,evidence_id,updated_at</sql>
+    <select id="selectByConversation" resultMap="row">SELECT <include refid="columns"/> FROM agent_context_slots WHERE user_id=#{userId} AND conversation_id=#{conversationId}</select>
+    <update id="updateOwned">UPDATE agent_context_slots SET value_json=#{valueJson},provenance=#{provenance},context_version=#{contextVersion},source_turn_id=#{sourceTurnId},evidence_id=#{evidenceId},updated_at=#{updatedAt} WHERE conversation_id=#{conversationId} AND user_id=#{userId} AND slot_name=#{slotName}</update>
+    <delete id="deleteOwned">DELETE FROM agent_context_slots WHERE user_id=#{userId} AND conversation_id=#{conversationId}</delete>
+    <insert id="insert">INSERT INTO agent_context_slots(<include refid="columns"/>) VALUES(#{conversationId},#{userId},#{slotName},#{valueJson},#{provenance},#{contextVersion},#{sourceTurnId},#{evidenceId},#{updatedAt})</insert>
+</mapper>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.ContextSchemaMapper">
+  <select id="tableCount" resultType="int">SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='PUBLIC' AND TABLE_NAME=UPPER(#{name})</select>
+  <select id="ownerConstraintCount" resultType="int">SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA='PUBLIC' AND CONSTRAINT_NAME IN ('FK_AGENT_TURN_CONVERSATION','FK_AGENT_EVIDENCE_CONVERSATION','FK_AGENT_EVIDENCE_TURN','FK_AGENT_SLOT_CONVERSATION','FK_AGENT_SLOT_TURN','FK_AGENT_SLOT_EVIDENCE')</select>
+</mapper>

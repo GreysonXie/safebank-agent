@@ -1,0 +1,369 @@
+{
+  "question": "季度安全服务显示180元，这是每个月扣180元吗？我不用这项服务了，银行侧撤销以后商户合同会同时结束、后续就一定不收费吗？请只围绕这项说明。",
+  "facts": {
+    "calendar.days_per_week": {
+      "display": "7",
+      "kind": "NUMBER",
+      "number": 7,
+      "source": "日历或单位定义，非银行金额"
+    },
+    "calendar.months_per_quarter": {
+      "display": "3",
+      "kind": "NUMBER",
+      "number": 3,
+      "source": "日历或单位定义，非银行金额"
+    },
+    "calendar.months_per_year": {
+      "display": "12",
+      "kind": "NUMBER",
+      "number": 12,
+      "source": "日历或单位定义，非银行金额"
+    },
+    "calendar.percent_whole": {
+      "display": "100",
+      "kind": "NUMBER",
+      "number": 100,
+      "source": "日历或单位定义，非银行金额"
+    },
+    "calendar.quarters_per_year": {
+      "display": "4",
+      "kind": "NUMBER",
+      "number": 4,
+      "source": "日历或单位定义，非银行金额"
+    },
+    "mandates_latest.0.amount_minor": {
+      "display": "12.00元",
+      "kind": "MONEY",
+      "number": 1200,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.0.billing_interval": {
+      "display": "UNKNOWN",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.0.contract_status": {
+      "display": "UNKNOWN",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.0.id": {
+      "display": "cloud-unknown",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.0.merchant": {
+      "display": "〔云空间（合成）〕",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.0.renewal_date": {
+      "display": "2026-10-16",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.0.state_label": {
+      "display": "银行侧授权有效",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.0.status": {
+      "display": "ACTIVE",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.0.user_id": {
+      "display": "u1",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.1.amount_minor": {
+      "display": "15.00元",
+      "kind": "MONEY",
+      "number": 1500,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.1.billing_interval": {
+      "display": "MONTHLY",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.1.budget_monthly_equivalent_minor": {
+      "display": "15.00元",
+      "kind": "MONEY",
+      "number": 1500.0,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.1.contract_status": {
+      "display": "UNKNOWN",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.1.id": {
+      "display": "music",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.1.merchant": {
+      "display": "〔音乐服务（合成）〕",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.1.renewal_date": {
+      "display": "2026-10-20",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.1.state_label": {
+      "display": "银行侧授权有效",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.1.status": {
+      "display": "ACTIVE",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.1.user_id": {
+      "display": "u1",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.2.amount_minor": {
+      "display": "180.00元",
+      "kind": "MONEY",
+      "number": 18000,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.2.billing_interval": {
+      "display": "QUARTERLY",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.2.budget_monthly_equivalent_minor": {
+      "display": "60.00元",
+      "kind": "MONEY",
+      "number": 6000.0,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.2.contract_status": {
+      "display": "UNKNOWN",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.2.id": {
+      "display": "quarterly",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.2.merchant": {
+      "display": "〔季度安全服务（合成）〕",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.2.renewal_date": {
+      "display": "2026-10-15",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.2.state_label": {
+      "display": "银行侧授权有效",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.2.status": {
+      "display": "ACTIVE",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.2.user_id": {
+      "display": "u1",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.3.amount_minor": {
+      "display": "9.00元",
+      "kind": "MONEY",
+      "number": 900,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.3.billing_interval": {
+      "display": "MONTHLY",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.3.budget_monthly_equivalent_minor": {
+      "display": "9.00元",
+      "kind": "MONEY",
+      "number": 900.0,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.3.contract_status": {
+      "display": "UNKNOWN",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.3.id": {
+      "display": "revoked",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.3.merchant": {
+      "display": "〔已撤销服务（合成）〕",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.3.renewal_date": {
+      "display": "2026-10-22",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.3.state_label": {
+      "display": "银行侧授权已撤销",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.3.status": {
+      "display": "REVOKED",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.3.user_id": {
+      "display": "u1",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.4.amount_minor": {
+      "display": "68.00元",
+      "kind": "MONEY",
+      "number": 6800,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.4.billing_interval": {
+      "display": "MONTHLY",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.4.budget_monthly_equivalent_minor": {
+      "display": "68.00元",
+      "kind": "MONEY",
+      "number": 6800.0,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.4.contract_status": {
+      "display": "UNKNOWN",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.4.id": {
+      "display": "video",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.4.merchant": {
+      "display": "〔视频服务（合成）〕",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.4.renewal_date": {
+      "display": "2026-10-20",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.4.state_label": {
+      "display": "银行侧授权有效",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.4.status": {
+      "display": "ACTIVE",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.4.user_id": {
+      "display": "u1",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.count": {
+      "display": "5",
+      "kind": "NUMBER",
+      "number": 5,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.observation.expiresAt": {
+      "display": "2026-10-11T04:18:53.098366Z",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_latest.observation.queriedAt": {
+      "display": "2026-10-11T04:13:53.098366Z",
+      "kind": "TEXT",
+      "number": null,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_summary.active_count": {
+      "display": "4",
+      "kind": "NUMBER",
+      "number": 4,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    },
+    "mandates_summary.known_monthly_total_minor": {
+      "display": "83.00元",
+      "kind": "MONEY",
+      "number": 8300,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}；仅查询时有效且明确MONTHLY的授权；UNKNOWN和QUARTERLY不计"
+    },
+    "mandates_summary.revoked_count": {
+      "display": "1",
+      "kind": "NUMBER",
+      "number": 1,
+      "source": "list_mandates；历史快照：{expiresAt=2026-10-11T04:18:53.098366Z, queriedAt=2026-10-11T04:13:53.098366Z}"
+    }
+  },
+  "realDeliveredAnswer": {
+    "answer": "不是每月扣180元。〔季度安全服务（合成）〕的收费周期为按季度（QUARTERLY），每期金额{{mandates_latest.2.amount_minor}}，折算的月均预算约{{mandates_latest.2.budget_monthly_equivalent_minor}}，下次续费日为{{mandates_latest.2.renewal_date}}，银行侧状态为{{mandates_latest.2.state_label}}。季度是收费周期事实，不能等同于每月扣款；该服务的月均预算金额仅用于预算参考，并不是每期实际扣款金额。\n\n银行侧撤销只改变本行的代扣授权状态，不等于商户合同同时终止，也不等于后续一定不再收费：商户可能仍按合同约定另行收款。当前已撤销授权{{mandates_latest.3.merchant}}的状态为{{mandates_latest.3.state_label}}，这是授权层面的状态，不代表本轮执行、合同终止或以后不会收费；银行也没有该服务的使用记录。如需停止续费，请到代扣业务页确认撤销与合同处理，并直接向商户核实合同终止和停止扣款安排。",
+    "kind": "analysis"
+  }
+}

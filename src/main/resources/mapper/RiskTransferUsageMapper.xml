@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.RiskTransferUsageMapper">
+    <resultMap id="row" type="cn.safebank.entity.RiskTransferUsageEntity">
+        <id column="action_id" property="actionId"/>
+        <result column="user_id" property="userId"/>
+        <result column="authorization_id" property="authorizationId"/>
+        <result column="provenance" property="provenance"/>
+        <result column="business_date" property="businessDate"/>
+        <result column="amount_minor" property="amountMinor"/>
+        <result column="state" property="state"/>
+        <result column="reserved_until" property="reservedUntil"/>
+        <result column="submitted_at" property="submittedAt"/>
+        <result column="resolved_at" property="resolvedAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+    <sql id="columns">action_id,user_id,authorization_id,provenance,business_date,amount_minor,state,reserved_until,submitted_at,resolved_at,updated_at</sql>
+    <select id="selectOwned" resultMap="row">SELECT <include refid="columns"/> FROM risk_transfer_usage WHERE action_id=#{id} AND user_id=#{userId}</select>
+    <select id="selectOwnedForUpdate" resultMap="row">SELECT <include refid="columns"/> FROM risk_transfer_usage WHERE action_id=#{id} AND user_id=#{userId} FOR UPDATE</select>
+    <select id="selectByUser" resultMap="row">SELECT <include refid="columns"/> FROM risk_transfer_usage WHERE user_id=#{userId} ORDER BY action_id</select>
+    <insert id="insert">INSERT INTO risk_transfer_usage(action_id,user_id,authorization_id,provenance,business_date,amount_minor,state,reserved_until,submitted_at,resolved_at,updated_at) VALUES(#{actionId},#{userId},#{authorizationId},#{provenance},#{businessDate},#{amountMinor},#{state},#{reservedUntil},#{submittedAt},#{resolvedAt},#{updatedAt})</insert>
+    <update id="update">UPDATE risk_transfer_usage SET authorization_id=#{authorizationId},provenance=#{provenance},business_date=#{businessDate},amount_minor=#{amountMinor},state=#{state},reserved_until=#{reservedUntil},submitted_at=#{submittedAt},resolved_at=#{resolvedAt},updated_at=#{updatedAt} WHERE action_id=#{actionId} AND user_id=#{userId}</update>
+</mapper>

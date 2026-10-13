@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.AccountMapper">
+    <resultMap id="account" type="cn.safebank.entity.AccountEntity">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="label" property="label"/>
+        <result column="balance_minor" property="balanceMinor"/>
+    </resultMap>
+    <select id="selectByUser" resultMap="account">
+        SELECT id,user_id,label,balance_minor FROM accounts WHERE user_id=#{userId} ORDER BY id
+    </select>
+    <select id="selectOwned" resultMap="account">
+        SELECT id,user_id,label,balance_minor FROM accounts WHERE id=#{accountId} AND user_id=#{userId}
+    </select>
+    <select id="selectById" resultMap="account">SELECT id,user_id,label,balance_minor FROM accounts WHERE id=#{accountId}</select>
+
+    <select id="lockById" resultMap="account">SELECT id,user_id,label,balance_minor FROM accounts WHERE id=#{accountId} FOR UPDATE</select>
+    <update id="debit">UPDATE accounts SET balance_minor=balance_minor-#{amountMinor} WHERE id=#{accountId} AND balance_minor&gt;=#{amountMinor}</update>
+    <update id="credit">UPDATE accounts SET balance_minor=balance_minor+#{amountMinor} WHERE id=#{accountId}</update>
+</mapper>

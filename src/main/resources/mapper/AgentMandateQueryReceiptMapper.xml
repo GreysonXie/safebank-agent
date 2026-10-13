@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.AgentMandateQueryReceiptMapper">
+ <resultMap id="receipt" type="cn.safebank.entity.AgentMandateQueryReceiptEntity"> <result property="snapshotJson" column="snapshot_json"/>
+ <result property="invalidated" column="invalidated"/>
+ <result property="conversationId" column="conversation_id"/>
+ <result property="actionId" column="action_id"/>
+ <result property="snapshotHash" column="snapshot_hash"/>
+ <result property="expiresAt" column="expires_at"/>
+ <result property="userId" column="user_id"/>
+ <result property="boundVersion" column="bound_version"/>
+ <result property="queriedAt" column="queried_at"/>
+</resultMap>
+ <insert id="insert">INSERT INTO agent_mandate_query_receipts(action_id,user_id,conversation_id,bound_version,invalidated) VALUES(#{actionId},#{userId},#{conversationId},#{boundVersion},FALSE)</insert>
+ <update id="capture">UPDATE agent_mandate_query_receipts SET queried_at=#{queriedAt},expires_at=#{expiresAt},snapshot_json=#{snapshotJson},snapshot_hash=#{snapshotHash} WHERE action_id=#{actionId} AND user_id=#{userId} AND invalidated=FALSE AND queried_at IS NULL</update>
+ <!-- Current reads lock only receipt rows. Callers already hold the conversation lock; bank actions lock action then receipt. -->
+ <select id="latest" resultMap="receipt">SELECT r.action_id,r.user_id,r.conversation_id,r.bound_version,r.invalidated,r.queried_at,r.expires_at,r.snapshot_json,r.snapshot_hash FROM agent_mandate_query_receipts r WHERE r.user_id=#{userId} AND r.conversation_id=#{conversationId} AND r.invalidated=FALSE AND r.queried_at IS NOT NULL AND r.expires_at&gt;#{now} ORDER BY r.queried_at DESC,r.action_id DESC LIMIT 1 FOR UPDATE</select>
+ <update id="invalidateConversation">UPDATE agent_mandate_query_receipts SET invalidated=TRUE WHERE user_id=#{userId} AND conversation_id=#{conversationId} AND invalidated=FALSE</update>
+ <update id="invalidateUser">UPDATE agent_mandate_query_receipts SET invalidated=TRUE WHERE user_id=#{userId} AND invalidated=FALSE</update>
+<select id="findValid" resultMap="receipt">SELECT r.action_id,r.user_id,r.conversation_id,r.bound_version,r.invalidated,r.queried_at,r.expires_at,r.snapshot_json,r.snapshot_hash FROM agent_mandate_query_receipts r WHERE r.action_id=#{actionId} AND r.user_id=#{userId} AND r.conversation_id=#{conversationId} AND r.invalidated=FALSE AND r.queried_at IS NOT NULL AND r.expires_at&gt;#{now} FOR UPDATE</select>
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.WorkflowMapper">
+    <resultMap id="row" type="cn.safebank.entity.WorkflowEntity">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="version" property="version"/>
+        <result column="state" property="state"/>
+        <result column="request_json" property="requestJson"/>
+        <result column="analysis_json" property="analysisJson"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <sql id="columns">id,user_id,version,state,request_json,analysis_json,created_at,updated_at</sql>
+    <select id="selectOwned" resultMap="row">SELECT <include refid="columns"/> FROM workflows WHERE id=#{id} AND user_id=#{userId}</select>
+    <select id="selectOwnedForUpdate" resultMap="row">SELECT <include refid="columns"/> FROM workflows WHERE id=#{id} AND user_id=#{userId} FOR UPDATE</select>
+    <select id="selectByUser" resultMap="row">SELECT <include refid="columns"/> FROM workflows WHERE user_id=#{userId} ORDER BY created_at DESC</select>
+    <insert id="insert">INSERT INTO workflows(<include refid="columns"/>) VALUES(#{id},#{userId},#{version},#{state},#{requestJson},#{analysisJson},#{createdAt},#{updatedAt})</insert>
+    <update id="updateState">UPDATE workflows SET state=#{state},updated_at=#{updatedAt} WHERE id=#{id} AND user_id=#{userId}</update>
+    <update id="revise">UPDATE workflows SET version=version+1,request_json=#{request},analysis_json=#{analysis},state='PLANNING' WHERE id=#{id} AND user_id=#{userId} AND version=#{version}</update>
+</mapper>

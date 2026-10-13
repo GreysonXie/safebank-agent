@@ -1,0 +1,16 @@
+.tools/
+.m2/
+target/
+data/
+.env
+*.log
+.idea/
+*.iml
+.superpowers/
+.worktrees/
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+.venv/
+*.zip

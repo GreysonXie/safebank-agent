@@ -1,0 +1,1262 @@
+{
+  "columns": [
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "COLUMN_NAME": "operation_key",
+      "COLUMN_TYPE": "char(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "COLUMN_NAME": "origin_run_id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "COLUMN_NAME": "binding_id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "COLUMN_NAME": "origin_java_turn_id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "COLUMN_NAME": "node_name",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "COLUMN_NAME": "logical_sequence",
+      "COLUMN_TYPE": "bigint",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "COLUMN_NAME": "purpose",
+      "COLUMN_TYPE": "varchar(24)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "COLUMN_NAME": "input_hash",
+      "COLUMN_TYPE": "char(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "COLUMN_NAME": "state",
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "COLUMN_NAME": "reservation_id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "COLUMN_NAME": "result_json",
+      "COLUMN_TYPE": "longtext",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "COLUMN_NAME": "result_hash",
+      "COLUMN_TYPE": "char(64)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "COLUMN_NAME": "lease_revision",
+      "COLUMN_TYPE": "bigint",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_TYPE": "datetime(6)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_TYPE": "datetime(6)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "COLUMN_NAME": "id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "COLUMN_NAME": "run_id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "COLUMN_NAME": "reservation_id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "COLUMN_NAME": "purpose",
+      "COLUMN_TYPE": "varchar(24)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "COLUMN_NAME": "state",
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "COLUMN_NAME": "provider_response_id",
+      "COLUMN_TYPE": "varchar(160)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "COLUMN_NAME": "actual_model",
+      "COLUMN_TYPE": "varchar(120)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "COLUMN_NAME": "prompt_tokens",
+      "COLUMN_TYPE": "bigint",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "COLUMN_NAME": "completion_tokens",
+      "COLUMN_TYPE": "bigint",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "COLUMN_NAME": "cache_hit_tokens",
+      "COLUMN_TYPE": "bigint",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "COLUMN_NAME": "cache_miss_tokens",
+      "COLUMN_TYPE": "bigint",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "COLUMN_NAME": "reserved_at",
+      "COLUMN_TYPE": "datetime(6)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "COLUMN_NAME": "finished_at",
+      "COLUMN_TYPE": "datetime(6)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "COLUMN_NAME": "error_code",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_run_events",
+      "COLUMN_NAME": "id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_run_events",
+      "COLUMN_NAME": "run_id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_run_events",
+      "COLUMN_NAME": "sequence",
+      "COLUMN_TYPE": "bigint",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_run_events",
+      "COLUMN_NAME": "node_name",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_run_events",
+      "COLUMN_NAME": "event_code",
+      "COLUMN_TYPE": "varchar(40)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_run_events",
+      "COLUMN_NAME": "detail_json",
+      "COLUMN_TYPE": "text",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_run_events",
+      "COLUMN_NAME": "recorded_at",
+      "COLUMN_TYPE": "datetime(6)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "binding_id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "java_turn_id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "request_id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "request_hash",
+      "COLUMN_TYPE": "char(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "request_json",
+      "COLUMN_TYPE": "longtext",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "thread_id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "input_version",
+      "COLUMN_TYPE": "bigint",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "output_version",
+      "COLUMN_TYPE": "bigint",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "state",
+      "COLUMN_TYPE": "varchar(32)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "lease_owner",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "lease_revision",
+      "COLUMN_TYPE": "bigint",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0",
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "lease_until",
+      "COLUMN_TYPE": "datetime(6)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "result_json",
+      "COLUMN_TYPE": "longtext",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "result_hash",
+      "COLUMN_TYPE": "char(64)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "result_kind",
+      "COLUMN_TYPE": "varchar(24)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "error_code",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "interrupt_id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_TYPE": "datetime(6)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_TYPE": "datetime(6)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "COLUMN_NAME": "acknowledged_at",
+      "COLUMN_TYPE": "datetime(6)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_schema_migrations",
+      "COLUMN_NAME": "version",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_schema_migrations",
+      "COLUMN_NAME": "checksum",
+      "COLUMN_TYPE": "char(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_schema_migrations",
+      "COLUMN_NAME": "applied_at",
+      "COLUMN_TYPE": "datetime(6)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "COLUMN_NAME": "id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "COLUMN_NAME": "user_id",
+      "COLUMN_TYPE": "varchar(40)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "COLUMN_NAME": "thread_id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "COLUMN_NAME": "schema_version",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "1",
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "COLUMN_NAME": "last_output_version",
+      "COLUMN_TYPE": "bigint",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "COLUMN_NAME": "waiting_run_id",
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_TYPE": "datetime(6)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_TYPE": "datetime(6)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "checkpoint_blobs",
+      "COLUMN_NAME": "thread_id",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoint_blobs",
+      "COLUMN_NAME": "checkpoint_ns",
+      "COLUMN_TYPE": "varchar(2000)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "",
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoint_blobs",
+      "COLUMN_NAME": "channel",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoint_blobs",
+      "COLUMN_NAME": "version",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoint_blobs",
+      "COLUMN_NAME": "type",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoint_blobs",
+      "COLUMN_NAME": "blob",
+      "COLUMN_TYPE": "longblob",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "checkpoint_blobs",
+      "COLUMN_NAME": "checkpoint_ns_hash",
+      "COLUMN_TYPE": "binary(16)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "checkpoint_migrations",
+      "COLUMN_NAME": "v",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "COLUMN_NAME": "thread_id",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "COLUMN_NAME": "checkpoint_ns",
+      "COLUMN_TYPE": "varchar(2000)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "",
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "COLUMN_NAME": "checkpoint_id",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "COLUMN_NAME": "task_id",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "COLUMN_NAME": "idx",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "COLUMN_NAME": "channel",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "COLUMN_NAME": "type",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "COLUMN_NAME": "blob",
+      "COLUMN_TYPE": "longblob",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "COLUMN_NAME": "checkpoint_ns_hash",
+      "COLUMN_TYPE": "binary(16)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "COLUMN_NAME": "task_path",
+      "COLUMN_TYPE": "varchar(2000)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "",
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoints",
+      "COLUMN_NAME": "thread_id",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoints",
+      "COLUMN_NAME": "checkpoint_ns",
+      "COLUMN_TYPE": "varchar(2000)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "",
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoints",
+      "COLUMN_NAME": "checkpoint_id",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoints",
+      "COLUMN_NAME": "parent_checkpoint_id",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoints",
+      "COLUMN_NAME": "type",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": "utf8mb4_0900_bin"
+    },
+    {
+      "TABLE_NAME": "checkpoints",
+      "COLUMN_NAME": "checkpoint",
+      "COLUMN_TYPE": "json",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "checkpoints",
+      "COLUMN_NAME": "metadata",
+      "COLUMN_TYPE": "json",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "_utf8mb4\\'{}\\'",
+      "COLLATION_NAME": null
+    },
+    {
+      "TABLE_NAME": "checkpoints",
+      "COLUMN_NAME": "checkpoint_ns_hash",
+      "COLUMN_TYPE": "binary(16)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLLATION_NAME": null
+    }
+  ],
+  "indexes": [
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "INDEX_NAME": "fk_effect_binding",
+      "NON_UNIQUE": 1,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "binding_id"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "INDEX_NAME": "fk_effect_run",
+      "NON_UNIQUE": 1,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "origin_run_id"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "INDEX_NAME": "ix_effect_recovery",
+      "NON_UNIQUE": 1,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "state"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "INDEX_NAME": "ix_effect_recovery",
+      "NON_UNIQUE": 1,
+      "SEQ_IN_INDEX": 2,
+      "COLUMN_NAME": "updated_at"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "INDEX_NAME": "ix_effect_recovery",
+      "NON_UNIQUE": 1,
+      "SEQ_IN_INDEX": 3,
+      "COLUMN_NAME": "operation_key"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "operation_key"
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "INDEX_NAME": "fk_model_run",
+      "NON_UNIQUE": 1,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "run_id"
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "id"
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "INDEX_NAME": "reservation_id",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "reservation_id"
+    },
+    {
+      "TABLE_NAME": "agent_run_events",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "id"
+    },
+    {
+      "TABLE_NAME": "agent_run_events",
+      "INDEX_NAME": "uq_agent_event",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "run_id"
+    },
+    {
+      "TABLE_NAME": "agent_run_events",
+      "INDEX_NAME": "uq_agent_event",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 2,
+      "COLUMN_NAME": "sequence"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "INDEX_NAME": "ix_agent_run_lease",
+      "NON_UNIQUE": 1,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "state"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "INDEX_NAME": "ix_agent_run_lease",
+      "NON_UNIQUE": 1,
+      "SEQ_IN_INDEX": 2,
+      "COLUMN_NAME": "lease_until"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "INDEX_NAME": "ix_agent_run_lease",
+      "NON_UNIQUE": 1,
+      "SEQ_IN_INDEX": 3,
+      "COLUMN_NAME": "id"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "INDEX_NAME": "ix_agent_run_updated",
+      "NON_UNIQUE": 1,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "state"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "INDEX_NAME": "ix_agent_run_updated",
+      "NON_UNIQUE": 1,
+      "SEQ_IN_INDEX": 2,
+      "COLUMN_NAME": "updated_at"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "INDEX_NAME": "ix_agent_run_updated",
+      "NON_UNIQUE": 1,
+      "SEQ_IN_INDEX": 3,
+      "COLUMN_NAME": "id"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "INDEX_NAME": "java_turn_id",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "java_turn_id"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "id"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "INDEX_NAME": "uq_agent_run_request",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "binding_id"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "INDEX_NAME": "uq_agent_run_request",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 2,
+      "COLUMN_NAME": "request_id"
+    },
+    {
+      "TABLE_NAME": "agent_schema_migrations",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "version"
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "id"
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "INDEX_NAME": "thread_id",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "thread_id"
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "INDEX_NAME": "uq_agent_binding",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "user_id"
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "INDEX_NAME": "uq_agent_binding",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 2,
+      "COLUMN_NAME": "conversation_id"
+    },
+    {
+      "TABLE_NAME": "checkpoint_blobs",
+      "INDEX_NAME": "checkpoint_blobs_thread_id_idx",
+      "NON_UNIQUE": 1,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "thread_id"
+    },
+    {
+      "TABLE_NAME": "checkpoint_blobs",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "thread_id"
+    },
+    {
+      "TABLE_NAME": "checkpoint_blobs",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 2,
+      "COLUMN_NAME": "checkpoint_ns_hash"
+    },
+    {
+      "TABLE_NAME": "checkpoint_blobs",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 3,
+      "COLUMN_NAME": "channel"
+    },
+    {
+      "TABLE_NAME": "checkpoint_blobs",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 4,
+      "COLUMN_NAME": "version"
+    },
+    {
+      "TABLE_NAME": "checkpoint_migrations",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "v"
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "INDEX_NAME": "checkpoint_writes_thread_id_idx",
+      "NON_UNIQUE": 1,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "thread_id"
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "thread_id"
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 2,
+      "COLUMN_NAME": "checkpoint_ns_hash"
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 3,
+      "COLUMN_NAME": "checkpoint_id"
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 4,
+      "COLUMN_NAME": "task_id"
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 5,
+      "COLUMN_NAME": "idx"
+    },
+    {
+      "TABLE_NAME": "checkpoints",
+      "INDEX_NAME": "checkpoints_checkpoint_id_idx",
+      "NON_UNIQUE": 1,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "checkpoint_id"
+    },
+    {
+      "TABLE_NAME": "checkpoints",
+      "INDEX_NAME": "checkpoints_thread_id_idx",
+      "NON_UNIQUE": 1,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "thread_id"
+    },
+    {
+      "TABLE_NAME": "checkpoints",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 1,
+      "COLUMN_NAME": "thread_id"
+    },
+    {
+      "TABLE_NAME": "checkpoints",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 2,
+      "COLUMN_NAME": "checkpoint_ns_hash"
+    },
+    {
+      "TABLE_NAME": "checkpoints",
+      "INDEX_NAME": "PRIMARY",
+      "NON_UNIQUE": 0,
+      "SEQ_IN_INDEX": 3,
+      "COLUMN_NAME": "checkpoint_id"
+    }
+  ],
+  "constraints": [
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "CONSTRAINT_NAME": "ck_effect_result",
+      "CONSTRAINT_TYPE": "CHECK",
+      "CHECK_CLAUSE": "((`state` <> _utf8mb4\\'SUCCEEDED\\') or ((`result_json` is not null) and (`result_hash` is not null)))"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "CONSTRAINT_NAME": "ck_effect_sequence",
+      "CONSTRAINT_TYPE": "CHECK",
+      "CHECK_CLAUSE": "((`logical_sequence` >= 0) and (`lease_revision` > 0))"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "CONSTRAINT_NAME": "ck_effect_state",
+      "CONSTRAINT_TYPE": "CHECK",
+      "CHECK_CLAUSE": "(`state` in (_utf8mb4\\'PREPARED\\',_utf8mb4\\'SENDING\\',_utf8mb4\\'SUCCEEDED\\',_utf8mb4\\'FAILED\\',_utf8mb4\\'UNKNOWN\\'))"
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "CONSTRAINT_NAME": "fk_effect_binding",
+      "CONSTRAINT_TYPE": "FOREIGN KEY",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "CONSTRAINT_NAME": "fk_effect_run",
+      "CONSTRAINT_TYPE": "FOREIGN KEY",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "agent_effect_receipts",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "CONSTRAINT_TYPE": "PRIMARY KEY",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "CONSTRAINT_NAME": "ck_model_state",
+      "CONSTRAINT_TYPE": "CHECK",
+      "CHECK_CLAUSE": "(`state` in (_utf8mb4\\'RESERVED\\',_utf8mb4\\'SUCCEEDED\\',_utf8mb4\\'FAILED\\',_utf8mb4\\'UNKNOWN\\'))"
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "CONSTRAINT_NAME": "ck_model_usage",
+      "CONSTRAINT_TYPE": "CHECK",
+      "CHECK_CLAUSE": "(((`prompt_tokens` is null) or (`prompt_tokens` >= 0)) and ((`completion_tokens` is null) or (`completion_tokens` >= 0)) and ((`cache_hit_tokens` is null) or (`cache_hit_tokens` >= 0)) and ((`cache_miss_tokens` is null) or (`cache_miss_tokens` >= 0)))"
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "CONSTRAINT_NAME": "fk_model_run",
+      "CONSTRAINT_TYPE": "FOREIGN KEY",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "CONSTRAINT_TYPE": "PRIMARY KEY",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "agent_model_requests",
+      "CONSTRAINT_NAME": "reservation_id",
+      "CONSTRAINT_TYPE": "UNIQUE",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "agent_run_events",
+      "CONSTRAINT_NAME": "fk_event_run",
+      "CONSTRAINT_TYPE": "FOREIGN KEY",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "agent_run_events",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "CONSTRAINT_TYPE": "PRIMARY KEY",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "agent_run_events",
+      "CONSTRAINT_NAME": "uq_agent_event",
+      "CONSTRAINT_TYPE": "UNIQUE",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "CONSTRAINT_NAME": "ck_run_lease",
+      "CONSTRAINT_TYPE": "CHECK",
+      "CHECK_CLAUSE": "(`lease_revision` >= 0)"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "CONSTRAINT_NAME": "ck_run_result",
+      "CONSTRAINT_TYPE": "CHECK",
+      "CHECK_CLAUSE": "((`state` not in (_utf8mb4\\'RESULT_READY\\',_utf8mb4\\'NEEDS_CLARIFICATION\\',_utf8mb4\\'COMPLETED\\')) or ((`result_json` is not null) and (`result_hash` is not null)))"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "CONSTRAINT_NAME": "ck_run_state",
+      "CONSTRAINT_TYPE": "CHECK",
+      "CHECK_CLAUSE": "(`state` in (_utf8mb4\\'PROCESSING\\',_utf8mb4\\'RESULT_READY\\',_utf8mb4\\'NEEDS_CLARIFICATION\\',_utf8mb4\\'COMPLETED\\',_utf8mb4\\'FAILED\\',_utf8mb4\\'INTERRUPTED\\',_utf8mb4\\'RECONCILIATION_REQUIRED\\'))"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "CONSTRAINT_NAME": "ck_run_version",
+      "CONSTRAINT_TYPE": "CHECK",
+      "CHECK_CLAUSE": "((`input_version` > 0) and ((`output_version` is null) or (`output_version` = (`input_version` + 1))))"
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "CONSTRAINT_NAME": "fk_run_binding",
+      "CONSTRAINT_TYPE": "FOREIGN KEY",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "CONSTRAINT_NAME": "java_turn_id",
+      "CONSTRAINT_TYPE": "UNIQUE",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "CONSTRAINT_TYPE": "PRIMARY KEY",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "agent_runs",
+      "CONSTRAINT_NAME": "uq_agent_run_request",
+      "CONSTRAINT_TYPE": "UNIQUE",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "agent_schema_migrations",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "CONSTRAINT_TYPE": "PRIMARY KEY",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "CONSTRAINT_NAME": "ck_binding_version",
+      "CONSTRAINT_TYPE": "CHECK",
+      "CHECK_CLAUSE": "((`schema_version` = 1) and ((`last_output_version` is null) or (`last_output_version` > 0)))"
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "CONSTRAINT_TYPE": "PRIMARY KEY",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "CONSTRAINT_NAME": "thread_id",
+      "CONSTRAINT_TYPE": "UNIQUE",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "agent_thread_bindings",
+      "CONSTRAINT_NAME": "uq_agent_binding",
+      "CONSTRAINT_TYPE": "UNIQUE",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "checkpoint_blobs",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "CONSTRAINT_TYPE": "PRIMARY KEY",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "checkpoint_migrations",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "CONSTRAINT_TYPE": "PRIMARY KEY",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "checkpoint_writes",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "CONSTRAINT_TYPE": "PRIMARY KEY",
+      "CHECK_CLAUSE": null
+    },
+    {
+      "TABLE_NAME": "checkpoints",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "CONSTRAINT_TYPE": "PRIMARY KEY",
+      "CHECK_CLAUSE": null
+    }
+  ]
+}
