@@ -21,3 +21,12 @@ def requires_amendment_target(question,previous_plan,history,previous_question):
   fragments=bounded_clarification_context(history) or [previous_question]
   if any(re.search(r'转(?:账|给|[0-9])|给.+转',fragment) for fragment in fragments):return False
  return True
+
+def requires_revoke_preview(question):
+ """Bounded explicit preparation requests only; never permission to execute."""
+ text=unicodedata.normalize('NFKC',question)
+ for clause in re.split(r'[，,。；;！？!?\n]',text):
+  if re.search(r'能否|能不能|可以|是否|吗|么|是什么|什么意思|影响|风险',clause):continue
+  match=re.search(r'(?:只|先|请|帮我)*(?:生成|准备|创建)[^，,。；;！？!?\n]{0,40}撤销预览',clause)
+  if match and not re.search(r'不|没|未|别|勿|无需',clause[:match.start()]):return True
+ return False

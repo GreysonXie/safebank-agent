@@ -79,6 +79,9 @@ class MockModel:
     mode='mock'
     def complete(self,payload):
         context=json.loads(payload['messages'][-1]['content']);question=context['question']
+        if question=='只解释合同边界，不要重复金额':
+            value={'kind':'general','answer':'银行侧撤销只影响代扣授权，不等于商户合同终止或退款；退订和退款需按商户合同及实际处理结果核对。'} if 'facts' in context else {'kind':'general','tools':[]}
+            return {'content':value,'model':'offline-fixture','usage':None}
         if 'facts' not in context and defers_operation(question):
             return {'content':{'kind':'general','tools':[]},'model':'offline-fixture','usage':None}
         if 'facts' not in context and requires_amendment_target(question,context.get('previous_plan',{}),context.get('clarification_context',[]),context.get('previous_question','')):
@@ -126,7 +129,7 @@ class MockModel:
                 missing=[name for name in ('sourceQuery','recipientQuery','amountMinor') if name not in args]
                 labels={'sourceQuery':'付款账户','recipientQuery':'收款人','amountMinor':'金额'}
                 value={'kind':'clarification','tools':[],'question':'请说明'+'、'.join(labels[key] for key in missing)+'。'} if missing else {'kind':'analysis','tools':[{'tool':'transfer_preview','args':args}]}
-            elif re.search(r'(?:请|帮我|我要)?(?:撤销|取消|退订).*(?:音乐|视频)服务',question) and not consultation:
+            elif (re.search(r'(?:请|帮我|我要)?(?:撤销|取消|退订).*(?:音乐|视频)服务',question) or re.search(r'(?:音乐|视频)服务撤销预览',question)) and not consultation:
                 merchant='视频服务' if '视频' in question else '音乐服务'
                 value={'kind':'analysis','tools':[{'tool':'revoke_preview','args':{'merchantQuery':merchant}}]}
             elif '余额' in question or '账户' in question:value={'kind':'analysis','tools':[{'tool':'account_query','args':{}}]}

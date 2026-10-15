@@ -6,6 +6,22 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GroundedAnswerTest {
+    @Test void capturedPreparedPendingTransferCardIsNotExecutedTransfer(){
+        var preview=new GroundedAnswer(json,List.of(new BankReplyComposer.Evidence("agent_transfer_preview",Map.of("recipient_name","张三","recipient_note","同学","amount_minor",50000))));
+        String text="已生成一笔待核对的转账操作卡：收款人为{{preview_transfer.recipient_name}}，备注为{{preview_transfer.recipient_note}}，金额{{preview_transfer.amount_minor}}。该操作卡目前仅处于待核对状态，尚未执行。";
+        assertDoesNotThrow(()->preview.render(args(text)));
+        assertThrows(BankException.class,()->preview.render(args(text+"转账成功。")));
+        assertThrows(BankException.class,()->scope().render(args(text)));
+    }
+    @Test void capturedMerchantReferenceBetweenForAndPreparedDoesNotClaimExecution(){
+        var receipt=new BankReplyComposer.Evidence("agent_revoke_preview",Map.of("merchant","音乐服务（合成）","amount_minor",1500));
+        var preview=new GroundedAnswer(json,List.of(receipt));
+        String text="已为{{preview_revoke.merchant}}生成撤销预览，涉及约定单期金额{{preview_revoke.amount_minor}}。该操作卡目前是待核对状态，尚未执行。银行侧撤销不等于商户合同终止或退款。";
+        assertDoesNotThrow(()->preview.render(args(text)));
+        for(String invalid:List.of(text+"该授权已成功撤销。",text+"已经办理完成。"))
+            assertThrows(BankException.class,()->preview.render(args(invalid)));
+        assertThrows(BankException.class,()->scope().render(args(text)));
+    }
     @Test void capturedConditionalScamAdviceDoesNotClaimAnExecution(){
         for(String text:List.of("这可能是冒充客服的诈骗，请暂停转账，通过银行官方渠道核实。如已转账，尽快联系银行并报警。","疑似诈骗，请暂停转账。如已发生转账，请联系银行核实。"))
             assertDoesNotThrow(()->scope().render(json.valueToTree(Map.of("kind","general","answer",text))));

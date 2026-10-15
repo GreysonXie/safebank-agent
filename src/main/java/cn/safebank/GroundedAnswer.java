@@ -374,7 +374,7 @@ public final class GroundedAnswer {
                 ||evidence.stream().anyMatch(e->Set.of("agent_transfer_preview","agent_revoke_preview").contains(e.tool()))
                 &&Pattern.compile("(?:确认无误后|核对无误后|确认后)(?:再)?(?:从|在|通过)操作卡$").matcher(prefix).find());
             boolean accounting=claims.group().matches("已(?:经)?排除(?:了)?(?:本人账户|本人|账户)?内部转账")&&evidence.stream().anyMatch(e->e.tool().equals("get_statement"));
-            boolean previewPrepared=(claims.group().matches("已(?:经)?(?:为你|为您)?(?:按(?:你|您)(?:的要求|的指定|指定)|按新金额)?(?:生成|准备|更新|调整)(?:了)?(?:的)?(?:待核对的|待确认的|一笔)?(?:转账|撤销)")&&Pattern.compile("^(?:预览|(?:的)?(?:待核对|待确认)(?:的)?操作卡)").matcher(suffix).find()
+            boolean previewPrepared=(claims.group().matches("已(?:经)?(?:为你|为您|为)?(?:按(?:你|您)(?:的要求|的指定|指定)|按新金额)?(?:生成|准备|更新|调整)(?:了)?(?:的)?(?:一笔)?(?:待核对的|待确认的)?(?:转账|撤销)")&&Pattern.compile("^(?:预览|(?:的)?(?:(?:待核对|待确认)(?:的)?)?操作卡)").matcher(suffix).find()
                 ||claims.group().matches("已(?:经)?将(?:转账|撤销)")&&Pattern.compile("^预览(?:中|里|内)(?:的)?(?:收款人|金额|付款账户|服务)(?:更新|调整|修改|改)为").matcher(suffix).find())
                 &&evidence.stream().anyMatch(e->e.tool().equals(claims.group().endsWith("转账")?"agent_transfer_preview":"agent_revoke_preview"));
             boolean previewAmountAdjusted=claims.group().matches("已(?:经)?(?:按(?:你|您)(?:的要求|的指定|指定))?(?:把|将)转账")
@@ -383,11 +383,16 @@ public final class GroundedAnswer {
             boolean taskRegistered=claims.group().matches("计划(?:(?:目前|现在|只是|仅|仅仅|为你|为您))*已(?:经)?完成")
                 &&Pattern.compile("^登记(?:[，,。；;！？!?\\s]|$)").matcher(suffix).find()
                 &&evidence.stream().anyMatch(e->e.tool().equals("agent_savings_task"));
-            var zeroCountReference=Pattern.compile("^\\{\\{(savings_task(?:_status)?\\.progress\\.verified_revocations)}}笔(?=[，,。；;！？!?\\s]|$)").matcher(claimText.substring(claims.end()));
+            var zeroCountReference=Pattern.compile("^(?:(?:项目|数量)目前为)?\\{\\{(savings_task(?:_status)?\\.progress\\.verified_revocations)}}笔(?=[，,。；;！？!?\\s]|$)").matcher(claimText.substring(claims.end()));
             boolean zeroCount=false;
-            if(claims.group().equals("已核验撤销")&&zeroCountReference.find()) {
+            if((claims.group().equals("已核验撤销")||claims.group().equals("成功的撤销"))&&zeroCountReference.find()) {
                 var count=facts.get(zeroCountReference.group(1));
                 zeroCount=count!=null&&count.number()!=null&&count.number().compareTo(BigDecimal.ZERO)==0;
+            }
+            var zeroSavingReference=Pattern.compile("^对应的月度约定扣费为\\{\\{(savings_task(?:_status)?\\.verified_monthly_saving_minor)}}(?=[，,。；;！？!?\\s]|$)").matcher(claimText.substring(claims.end()));
+            if(!zeroCount&&claims.group().equals("已核验撤销")&&zeroSavingReference.find()) {
+                var saving=facts.get(zeroSavingReference.group(1));
+                zeroCount=saving!=null&&saving.number()!=null&&saving.number().compareTo(BigDecimal.ZERO)==0;
             }
             if(!zeroCount&&!taskRegistered&&!previewPrepared&&!previewAmountAdjusted&&!accounting&&!prerequisite&&!NEGATIVE_PREFIX.matcher(prefix).find()&&!NEGATIVE_WITHIN.matcher(claims.group()).find())
                 throw invalid("回答中的〔"+claims.group()+"〕像是在宣称执行成功，不能用分析签发操作结论。解释现有授权时请调用list_mandates刷新，并引用对应state_label；未执行时请明确否定");

@@ -6,6 +6,18 @@ import java.util.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 class SavingsTaskGatewayTest {
+ @Test void capturedVerifiedSuccessCountOfZeroIsNotAnExecutionClaim() {
+  var grounding=new GroundedAnswer(new ObjectMapper(),List.of(new BankReplyComposer.Evidence("agent_savings_task",Map.of("phase","任务已登记","progress",Map.of("verified_revocations",0)))));
+  String count="核验成功的撤销项目目前为{{savings_task.progress.verified_revocations}}笔，银行操作尚未执行。";
+  assertDoesNotThrow(()->grounding.render(new ObjectMapper().valueToTree(Map.of("kind","analysis","answer",count))));
+  assertThrows(BankException.class,()->grounding.render(new ObjectMapper().valueToTree(Map.of("kind","analysis","answer",count+"撤销成功。"))));
+ }
+ @Test void capturedZeroCountAndZeroMonthlySavingDescriptionAreStillNotSuccess() {
+  var grounding=new GroundedAnswer(json,List.of(new BankReplyComposer.Evidence("agent_savings_task",Map.of("progress",Map.of("verified_revocations",0),"verified_monthly_saving_minor",0))));
+  String text="核验成功的撤销数量目前为{{savings_task.progress.verified_revocations}}笔，已核验撤销对应的月度约定扣费为{{savings_task.verified_monthly_saving_minor}}，不代表账户实际入账。";
+  assertDoesNotThrow(()->grounding.render(json.valueToTree(Map.of("kind","analysis","answer",text))));
+  assertThrows(BankException.class,()->grounding.render(json.valueToTree(Map.of("kind","analysis","answer",text+"撤销成功。"))));
+ }
  @Test void zeroVerifiedCountIsNotExecutionSuccessButCannotHideSuccess() {
   var grounding=new GroundedAnswer(new ObjectMapper(),List.of(new BankReplyComposer.Evidence("agent_savings_task",Map.of("phase","任务已登记","progress",Map.of("verified_revocations",0)))));
   String count="已核验撤销{{savings_task.progress.verified_revocations}}笔，银行操作尚未执行。";

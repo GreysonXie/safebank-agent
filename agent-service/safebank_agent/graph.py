@@ -5,7 +5,7 @@ from typing import TypedDict
 from langgraph.graph import StateGraph, START, END
 from langgraph.types import interrupt
 from .contracts import ProtocolError, canonical, bank_hash
-from .conversation import bounded_clarification_context,defers_operation,requires_amendment_target
+from .conversation import bounded_clarification_context,defers_operation,requires_amendment_target,requires_revoke_preview
 from .prompts import PLAN, ANSWER
 from .answers import normalize,omit_rejected_sentence,GroundingRejection,protocol_metadata,clean_display_duplicates,invalid_reference_hints,normalize_description_references
 from .safety import suspected_transfer_inducement,blocks_transfer_context,adequate_transfer_warning,requests_chat_credentials,tool_text_has_instructions
@@ -210,6 +210,7 @@ def build(saver, context):
         if month is None and state.get('previous_plan',{}).get('kind')=='clarification':month=explicit_month(state.get('previous_question',''))
         input_value={'question':state['request']['text'],'previous_question':state.get('previous_question',''),'clarification_context':bounded_clarification_context(state.get('clarification_context',[])),'operation_deferred':deferred,'amendment_target_required':target_required,'previous_plan':state.get('previous_plan',{}),'previous_workflow_id':state.get('previous_workflow_id'),'requested_analysis_month':month,'read_requirements':required_reads,'safety_requirements':requirements,'validation_error':''}
         retries=0
+        input_value['preview_requirements']=['revoke_preview'] if not blocked and requires_revoke_preview(state['request']['text']) else []
         while True:
             payload={'messages':[{'role':'system','content':PLAN},{'role':'user','content':canonical(input_value)}], 'max_tokens':1200}
             value=context.model(state,'plan',retries,payload)['content']
@@ -217,9 +218,11 @@ def build(saver, context):
                 planned=planning(value)
                 if deferred and (planned['kind']!='general' or planned['tools']):raise ProtocolError('DEFERRED_OPERATION')
                 if target_required and not blocked and planned['kind']!='clarification':raise ProtocolError('AMENDMENT_TARGET_REQUIRED')
+                if input_value['preview_requirements'] and planned['kind']!='clarification' and not any(tool['tool']=='revoke_preview' for tool in planned['tools']):raise ProtocolError('REVOKE_PREVIEW_REQUIRED')
                 if input_value.get('missing_task_fields') and planned['kind']!='clarification':raise ProtocolError('TASK_PARAMETERS_REQUIRED')
                 if month and any(tool['tool']=='savings_task_prepare' and tool['args']['taskPlan'].get('analysisMonth')!=month for tool in planned['tools']):raise ProtocolError('SAVINGS_ANALYSIS_MONTH_REQUIRED')
                 if planned['kind']=='clarification' and requests_chat_credentials(planned['question']):raise ProtocolError('CHAT_CREDENTIAL_COLLECTION')
+                if planned['kind']=='clarification' and re.search(r'[0-9]|[零〇一二两三四五六七八九十百千万亿]+(?:元|块|角|万元|亿元|成|年|月|日|号)',unicodedata.normalize('NFKC',planned['question'])):raise ProtocolError('CLARIFICATION_NUMERIC_LITERAL')
                 if held and any(tool['tool'] in ('transfer_preview','savings_task_prepare') for tool in planned['tools']):raise ProtocolError('UNSAFE_TRANSFER_CONTEXT')
                 if blocked and (planned['kind']!='general' or planned['tools']):raise ProtocolError('UNSAFE_TRANSFER_CONTEXT')
                 if required_reads and not any(tool['tool'] in ('mandate_receipt','savings_task_prepare') for tool in planned['tools']):raise ProtocolError('CURRENT_MANDATE_QUERY_REQUIRED')
@@ -236,7 +239,7 @@ def build(saver, context):
                             if not isinstance(params,dict):continue
                             missing.update(field for field in fields if not isinstance(params.get(field),str) or not params[field].strip())
                         if missing:input_value['missing_task_fields']=sorted(missing)
-                if retries or state['request'].get('modelRequestLimit',5)<3 or str(error) not in ('INVALID_PLAN','INVALID_TASK_PLAN','INVALID_CLARIFICATION','INVALID_MONTH','INVALID_TOOL_SCOPE','CURRENT_MANDATE_QUERY_REQUIRED','UNSAFE_TRANSFER_CONTEXT','CHAT_CREDENTIAL_COLLECTION','SAVINGS_ANALYSIS_MONTH_REQUIRED','DEFERRED_OPERATION','AMENDMENT_TARGET_REQUIRED'):raise
+                if retries or state['request'].get('modelRequestLimit',5)<3 or str(error) not in ('INVALID_PLAN','INVALID_TASK_PLAN','INVALID_CLARIFICATION','INVALID_MONTH','INVALID_TOOL_SCOPE','CURRENT_MANDATE_QUERY_REQUIRED','UNSAFE_TRANSFER_CONTEXT','CHAT_CREDENTIAL_COLLECTION','SAVINGS_ANALYSIS_MONTH_REQUIRED','DEFERRED_OPERATION','AMENDMENT_TARGET_REQUIRED','CLARIFICATION_NUMERIC_LITERAL','REVOKE_PREVIEW_REQUIRED'):raise
                 retries=1;input_value['validation_error']=str(error)
         return {'plan':planned,'operation_deferred':deferred,'clarification_context':[] if deferred else bounded_clarification_context(state.get('clarification_context',[])),'transfer_safety_hold':held,'safety_blocked':blocked,'continuation_plan':{},'plan_repair':retries,'receipts':[],'answer':{},'repair':0,'credential_repair':False,'local_repairs':0,'validated':False,'validation_error':'','draft_error':'','reference_hints':[]}
     def tools(state):

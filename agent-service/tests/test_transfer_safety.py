@@ -12,7 +12,7 @@ class TransferSafetyTest(unittest.TestCase):
   for text in ('从日常账户给同学转500元，备注安全账户培训。','银行客服提醒不要向安全账户转账，请分析账单。','向同学转500元。','安全账户是什么意思？'):
    self.assertFalse(suspected_transfer_inducement(text),text)
  def test_hold_blocks_followup_but_allows_read_queries(self):
-  for text in ('继续转','改成600元','我确认了，现在执行','帮我生成转账预览'):
+  for text in ('继续转','改成600元','我确认了，现在执行','帮我生成转账预览','换成700','那就换成７００元'):
    self.assertTrue(blocks_transfer_context(text,True),text)
   for text in ('分析2026-09账单','查询转账记录','核对大额支出'):
    self.assertFalse(blocks_transfer_context(text,True),text)
@@ -27,6 +27,13 @@ class TransferSafetyTest(unittest.TestCase):
    self.assertFalse(adequate_transfer_warning(WARNING+suffix))
  def test_mixed_read_and_transfer_does_not_escape_hold(self):
   self.assertTrue(blocks_transfer_context('先查询转账记录，再从日常账户给同学转600元',True))
+ def test_amount_change_during_hold_does_not_hide_behind_read_request(self):
+  self.assertTrue(blocks_transfer_context('分析2026-09账单，然后换成700元',True))
+  self.assertFalse(blocks_transfer_context('查询历史记录里换成外币的那笔',True))
+ def test_hold_allows_statement_month_changes_but_not_a_combined_amount_edit(self):
+  self.assertFalse(blocks_transfer_context('把账单月份改为2026-08',True))
+  self.assertFalse(blocks_transfer_context('账单改成2026年8月',True))
+  self.assertTrue(blocks_transfer_context('账单月份改为2026-08，再换成700元',True))
  def test_captured_pause_this_transfer_and_negated_authorization_are_valid(self):
   self.assertTrue(adequate_transfer_warning('这很可能是冒充客服的诈骗，请先暂停这笔转账，通过银行官方渠道核实。我不会替您完成授权。'))
   self.assertTrue(adequate_transfer_warning('疑似骗局，请暂停这笔500元的转账操作，通过银行官方渠道核实，也不会代替您完成授权。'))

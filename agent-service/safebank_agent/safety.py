@@ -97,8 +97,10 @@ def blocks_transfer_context(question,held):
     if suspected_transfer_inducement(question):return True
     if not held:return False
     text=unicodedata.normalize('NFKC',question)
-    if re.search(r'账单|历史|记录',text) and not re.search(r'继续转|直接转|执行|生成预览|帮我转|转给|转入|转到|转\s*[0-9一二两三四五六七八九十百千万]',text):return False
-    return bool(re.search(r'转账|转帐|汇款|继续|改成|改为|执行|确认|预览|收款|金额|安全账户',text))
+    edits=re.finditer(r'(?:改成|改为|换成)\s*[0-9一二两三四五六七八九十百千万]+(?![0-9一二两三四五六七八九十百千万])',text)
+    amount_change=any(not re.match(r'\s*(?:-|年)\s*[0-9]',text[edit.end():]) for edit in edits)
+    if re.search(r'账单|历史|记录',text) and not amount_change and not re.search(r'继续转|直接转|执行|生成预览|帮我转|转给|转入|转到|转\s*[0-9一二两三四五六七八九十百千万]',text):return False
+    return amount_change or bool(re.search(r'转账|转帐|汇款|继续|改成|改为|执行|确认|预览|收款|金额|安全账户',text))
 
 def adequate_transfer_warning(text):
     def affirmative(pattern):

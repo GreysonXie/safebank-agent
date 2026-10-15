@@ -5,6 +5,15 @@ from safebank_agent.graph import planning
 from safebank_agent.contracts import ProtocolError
 
 class PreviewPlanningTest(unittest.TestCase):
+ def test_mock_explicit_named_revoke_preview_is_not_a_consultation(self):
+  value=MockModel().complete({'messages':[{'content':json.dumps({'question':'只生成音乐服务撤销预览，先不执行'})}]})['content']
+  self.assertEqual(value,{'kind':'analysis','tools':[{'tool':'revoke_preview','args':{'merchantQuery':'音乐服务'}}]})
+ def test_mock_contract_only_fixture_does_not_reopen_operation_or_emit_analysis_without_facts(self):
+  question='只解释合同边界，不要重复金额'
+  plan=MockModel().complete({'messages':[{'content':json.dumps({'question':question})}]})['content']
+  self.assertEqual(plan,{'kind':'general','tools':[]})
+  answer=MockModel().complete({'messages':[{'content':json.dumps({'question':question,'facts':{},'answer_contract':{'allowed_kinds':['general','clarification']}})}]})['content']
+  self.assertEqual(answer['kind'],'general');self.assertIn('退款',answer['answer']);self.assertNotIn('操作卡',answer['answer'])
  def test_preview_accepts_bounded_semantic_parameters(self):
   for tool,args in [('transfer_preview',{'sourceQuery':'日常账户','recipientQuery':'同学','amountMinor':50000}),('revoke_preview',{'merchantQuery':'视频服务'})]:
    value={'kind':'analysis','tools':[{'tool':tool,'args':args}]}

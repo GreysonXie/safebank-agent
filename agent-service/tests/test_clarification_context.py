@@ -8,6 +8,28 @@ class Context:
  def model(self,state,node,index,payload):self.payloads.append(json.loads(payload['messages'][-1]['content']));return {'content':next(self.answers)}
 
 class ClarificationContextTest(unittest.TestCase):
+ def test_explicit_revoke_preview_cannot_be_satisfied_by_only_reading_mandates(self):
+  context=Context({'kind':'analysis','tools':[{'tool':'mandate_receipt','args':{}}]},{'kind':'analysis','tools':[{'tool':'mandate_receipt','args':{}},{'tool':'revoke_preview','args':{'merchantQuery':'音乐服务'}}]})
+  result=build(None,context).nodes['plan'].invoke({'request':{'text':'只生成音乐服务撤销预览，先不执行','modelRequestLimit':3}})
+  self.assertEqual(result['plan']['tools'][-1]['tool'],'revoke_preview');self.assertEqual(result['plan_repair'],1)
+  self.assertEqual(context.payloads[1]['validation_error'],'REVOKE_PREVIEW_REQUIRED')
+ def test_revoke_preview_requirement_excludes_consultation_and_negative_requests(self):
+  from safebank_agent.conversation import requires_revoke_preview
+  for text in ('只生成音乐服务撤销预览，先不执行','请准备视频服务的撤销预览'):self.assertTrue(requires_revoke_preview(text))
+  for text in ('不要生成音乐服务撤销预览','别准备撤销预览','不要给我生成音乐服务撤销预览','我不想生成音乐服务撤销预览','我不打算生成音乐服务撤销预览','我不准备生成音乐服务撤销预览','无需帮我准备视频服务的撤销预览','可以生成音乐服务撤销预览吗？','生成撤销预览是什么意思？','先不办'):self.assertFalse(requires_revoke_preview(text),text)
+ def test_negative_preview_intent_does_not_force_repair_to_preparation(self):
+  for text in ('不要给我生成音乐服务撤销预览','我不想生成音乐服务撤销预览'):
+   context=Context({'kind':'general','tools':[]})
+   result=build(None,context).nodes['plan'].invoke({'request':{'text':text,'modelRequestLimit':2}})
+   self.assertEqual(result['plan'],{'kind':'general','tools':[]});self.assertEqual(result['plan_repair'],0)
+ def test_captured_numeric_clarification_is_repaired_before_bank_validation(self):
+  context=Context({'kind':'clarification','tools':[],'question':'好的，金额500元已记下，请说明付款账户。'},{'kind':'clarification','tools':[],'question':'请说明付款账户。'})
+  result=build(None,context).nodes['plan'].invoke({'request':{'text':'500元','modelRequestLimit':3}})
+  self.assertEqual(result['plan']['question'],'请说明付款账户。');self.assertEqual(result['plan_repair'],1)
+  self.assertEqual(context.payloads[1]['validation_error'],'CLARIFICATION_NUMERIC_LITERAL')
+ def test_numeric_clarification_with_no_repair_budget_cannot_reach_wait(self):
+  context=Context({'kind':'clarification','tools':[],'question':'金额５００元，使用哪个账户？'})
+  with self.assertRaisesRegex(ProtocolError,'CLARIFICATION_NUMERIC_LITERAL'):build(None,context).nodes['plan'].invoke({'request':{'text':'500元','modelRequestLimit':2}})
  def test_amount_amendment_after_statement_requires_target_without_tools(self):
   previous={'kind':'analysis','tools':[{'tool':'statement','args':{'month':'2026-09'}}]}
   for tool in ({'tool':'statement','args':{'month':'2026-09'}},{'tool':'transfer_preview','args':{'sourceQuery':'日常账户','recipientQuery':'同学','amountMinor':70000}}):

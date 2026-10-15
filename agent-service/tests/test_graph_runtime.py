@@ -368,6 +368,19 @@ class GraphRuntimeTest(RuntimeSchemaTest):
   run=self.runtime.accept(follow);self.runtime.execute(run['id']);saved=self.store.get(run['id'])
   self.assertEqual(saved['state'],'RESULT_READY',saved.get('error_code'));self.assertEqual(calls,['statement'])
 
+ def test_captured_numeric_parameter_clarification_repairs_and_preserves_wait(self):
+  self.request.update(text='给同学转钱')
+  self.model.responses=[{'kind':'clarification','tools':[],'question':'请说明金额和付款账户。'}]
+  first=self.runtime.accept(self.request);self.runtime.execute(first['id']);saved=self.store.get(first['id']);self.store.ack(first['id'],2,saved['result_hash'])
+  self.model.responses=[{'kind':'clarification','tools':[],'question':'金额500元已记下，请说明付款账户。'},{'kind':'clarification','tools':[],'question':'请说明付款账户。'}]
+  follow=dict(self.request,text='500元',expectedVersion=2,turnId=uuid.uuid4().hex,requestId=uuid.uuid4().hex,modelRequestLimit=3)
+  run=self.runtime.accept(follow);self.runtime.execute(run['id']);saved=self.store.get(run['id'])
+  self.assertEqual(saved['state'],'RESULT_READY',saved.get('error_code'));self.assertEqual(saved['result_kind'],'clarification')
+  self.assertEqual(json.loads(saved['result_json'])['answer']['answer'],'请说明付款账户。')
+  self.assertEqual(self.bank.calls,0);self.assertEqual(self.model.calls,3)
+  state=self.runtime.graph.get_state({'configurable':{'thread_id':saved['thread_id']}}).values
+  self.assertEqual(state['clarification_context'],['给同学转钱']);self.assertEqual(state['request']['text'],'500元')
+
 class Model:
  mode='mock'
  def __init__(self):self.responses=[];self.calls=0

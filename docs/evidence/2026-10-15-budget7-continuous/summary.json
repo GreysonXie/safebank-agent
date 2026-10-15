@@ -1,0 +1,50 @@
+{
+  "providerSends": 48,
+  "baselineUpperCny": "5.703256",
+  "cumulativeCapCny": "7.00",
+  "roundCapCny": "1.00",
+  "roundUsageUpperCny": "0.758072",
+  "cumulativeUsageAndOldReserveUpperCny": "6.461328",
+  "oldUnknownReservationsRetained": true,
+  "newUnsettledReservations": 0,
+  "pythonTests": 128,
+  "javaTests": 66,
+  "mysqlTargetedTests": 9,
+  "freeHttpTurns": 13,
+  "capturedReplyReplayPassed": 2,
+  "realMandateTurnsCompleted": 5,
+  "realTransferTurnsCompleted": 6,
+  "realSavingsWholeTurnAccepted": false,
+  "batches": [
+    {
+      "batch": "budget7-plan-probe",
+      "providerSends": 2,
+      "cumulativeUpperCny": "5.723824"
+    },
+    {
+      "batch": "budget7-conversations-paid",
+      "providerSends": 10,
+      "cumulativeUpperCny": "5.892088"
+    },
+    {
+      "batch": "budget7-conversations-paid-fixed",
+      "providerSends": 12,
+      "cumulativeUpperCny": "6.076348"
+    },
+    {
+      "batch": "budget7-conversations-paid-final",
+      "providerSends": 20,
+      "cumulativeUpperCny": "6.375088"
+    },
+    {
+      "batch": "budget7-conversations-paid-savings-final",
+      "providerSends": 3,
+      "cumulativeUpperCny": "6.439884"
+    },
+    {
+      "batch": "budget7-savings-final-answer",
+      "providerSends": 1,
+      "cumulativeUpperCny": "6.461328"
+    }
+  ]
+}
