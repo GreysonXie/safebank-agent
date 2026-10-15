@@ -339,6 +339,12 @@ class GraphRuntimeTest(RuntimeSchemaTest):
   run=self.runtime.accept(follow);self.runtime.execute(run['id']);self.assertEqual(self.store.get(run['id'])['state'],'RESULT_READY')
   self.assertEqual([c['tool'] for c in calls],['transfer_preview','statement'])
   self.assertEqual([p for p in self.model.payloads if 'facts' not in p][-1]['clarification_context'],[])
+  saved=self.store.get(run['id']);self.store.ack(run['id'],5,saved['result_hash'])
+  follow=dict(self.request,text='再改成700',expectedVersion=5,turnId=uuid.uuid4().hex,requestId=uuid.uuid4().hex,modelRequestLimit=2)
+  run=self.runtime.accept(follow);self.runtime.execute(run['id']);saved=self.store.get(run['id'])
+  self.assertEqual(saved['state'],'RESULT_READY',saved.get('error_code'));self.assertEqual(saved['result_kind'],'clarification')
+  self.assertEqual([c['tool'] for c in calls],['transfer_preview','statement'])
+  self.assertTrue([p for p in self.model.payloads if 'facts' not in p][-1]['amendment_target_required'])
 
  def test_deferral_exits_clarification_without_tool_and_keeps_plan_repair_bounded(self):
   self.model.responses=[{'kind':'clarification','tools':[],'question':'请说明付款账户。'}]

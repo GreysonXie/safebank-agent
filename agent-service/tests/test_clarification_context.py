@@ -8,6 +8,43 @@ class Context:
  def model(self,state,node,index,payload):self.payloads.append(json.loads(payload['messages'][-1]['content']));return {'content':next(self.answers)}
 
 class ClarificationContextTest(unittest.TestCase):
+ def test_amount_amendment_after_statement_requires_target_without_tools(self):
+  previous={'kind':'analysis','tools':[{'tool':'statement','args':{'month':'2026-09'}}]}
+  for tool in ({'tool':'statement','args':{'month':'2026-09'}},{'tool':'transfer_preview','args':{'sourceQuery':'日常账户','recipientQuery':'同学','amountMinor':70000}}):
+   with self.subTest(tool=tool['tool']):
+    context=Context({'kind':'analysis','tools':[tool]})
+    with self.assertRaisesRegex(ProtocolError,'AMENDMENT_TARGET_REQUIRED'):build(None,context).nodes['plan'].invoke({'request':{'text':'再改成700','modelRequestLimit':2},'previous_plan':previous})
+ def test_amount_amendment_target_has_one_bounded_repair(self):
+  context=Context({'kind':'general','tools':[]},{'kind':'clarification','tools':[],'question':'你希望修改哪项操作的金额？'})
+  result=build(None,context).nodes['plan'].invoke({'request':{'text':'改为700元','modelRequestLimit':3}})
+  self.assertTrue(context.payloads[0]['amendment_target_required']);self.assertEqual(result['plan']['kind'],'clarification')
+  self.assertEqual(result['plan_repair'],1);self.assertEqual(context.payloads[1]['validation_error'],'AMENDMENT_TARGET_REQUIRED')
+ def test_amount_amendment_scope_preserves_active_transfer_and_explicit_requests(self):
+  from safebank_agent.conversation import requires_amendment_target
+  statement={'kind':'analysis','tools':[{'tool':'statement','args':{'month':'2026-09'}}]}
+  transfer={'kind':'analysis','tools':[{'tool':'transfer_preview','args':{'sourceQuery':'日常账户','recipientQuery':'同学','amountMinor':50000}}]}
+  for text in ('再改成700','改为７００元。','换成700块'):
+   self.assertTrue(requires_amendment_target(text,statement,[],'分析2026-09账单'))
+   self.assertFalse(requires_amendment_target(text,transfer,[],'给同学转钱'))
+  for text in ('改成2026-08','把账单改成2026-08','从日常账户给同学转700元','改成700元，先解释风险','最大一笔是什么？'):
+   self.assertFalse(requires_amendment_target(text,statement,[],'分析2026-09账单'))
+  self.assertFalse(requires_amendment_target('改成700',{'kind':'clarification','tools':[]},['给同学转钱','500元'],'500元'))
+  self.assertTrue(requires_amendment_target('改成700',statement,['给同学转钱'],'分析2026-09账单'))
+ def test_finite_mock_asks_amendment_target_instead_of_inheriting_statement_month(self):
+  from safebank_agent.models import MockModel
+  value=MockModel().complete({'messages':[{'content':json.dumps({'question':'再改成700','previous_plan':{'kind':'analysis','tools':[{'tool':'statement','args':{'month':'2026-09'}}]}})}]})['content']
+  self.assertEqual(value['kind'],'clarification');self.assertEqual(value['tools'],[]);self.assertIn('修改',value['question'])
+ def test_active_transfer_amount_variants_update_the_new_amount(self):
+  from safebank_agent.models import MockModel
+  previous={'kind':'analysis','tools':[{'tool':'transfer_preview','args':{'sourceQuery':'日常账户','recipientQuery':'同学','amountMinor':50000}}]}
+  for text in ('再改成700','改为700元','换成700块','改为７００元'):
+   with self.subTest(text=text):
+    value=MockModel().complete({'messages':[{'content':json.dumps({'question':text,'previous_plan':previous})}]})['content']
+    self.assertEqual(value['tools'][0]['args']['amountMinor'],70000)
+ def test_fraud_hold_warning_takes_priority_over_missing_amendment_target(self):
+  context=Context({'kind':'general','tools':[]})
+  result=build(None,context).nodes['plan'].invoke({'request':{'text':'再改成700','modelRequestLimit':2},'transfer_safety_hold':True})
+  self.assertTrue(result['safety_blocked']);self.assertEqual(result['plan']['kind'],'general')
  def test_planner_receives_multiple_original_user_fragments(self):
   context=Context({'kind':'general','tools':[]});history=['给同学转钱','500元']
   build(None,context).nodes['plan'].invoke({'request':{'text':'日常账户'},'previous_question':'500元','clarification_context':history})

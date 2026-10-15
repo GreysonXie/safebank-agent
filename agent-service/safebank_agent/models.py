@@ -2,11 +2,12 @@
 import json
 import re
 import threading
+import unicodedata
 from time import monotonic
 from pathlib import Path
 import httpx
 from .contracts import ProtocolError,ModelRequestRejected,canonical
-from .conversation import bounded_clarification_context,defers_operation
+from .conversation import bounded_clarification_context,defers_operation,requires_amendment_target
 
 class DeepSeek:
     mode='deepseek'
@@ -80,6 +81,8 @@ class MockModel:
         context=json.loads(payload['messages'][-1]['content']);question=context['question']
         if 'facts' not in context and defers_operation(question):
             return {'content':{'kind':'general','tools':[]},'model':'offline-fixture','usage':None}
+        if 'facts' not in context and requires_amendment_target(question,context.get('previous_plan',{}),context.get('clarification_context',[]),context.get('previous_question','')):
+            return {'content':{'kind':'clarification','tools':[],'question':'你希望修改哪项操作的金额？请说明具体操作。'},'model':'offline-fixture','usage':None}
         if context.get('answer_contract',{}).get('operation_deferred'):
             return {'content':{'kind':'general','answer':'好的，先不办理。本轮没有新建操作预览；已有确认项如需取消，请在业务页单独核对。'},'model':'offline-fixture','usage':None}
         if 'facts' not in context:
@@ -90,13 +93,14 @@ class MockModel:
             identifier=context.get('previous_workflow_id')
             if question in ('查看储蓄任务进度','看看任务进度') and isinstance(identifier,str) and re.fullmatch(r'[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}',identifier):
                 return {'content':{'kind':'analysis','tools':[{'tool':'savings_task_status','args':{'workflowId':identifier}}]},'model':'offline-fixture','usage':None}
+            question=unicodedata.normalize('NFKC',question)
             request_question=question
             if context.get('previous_plan',{}).get('kind')=='clarification' and not any(x in question for x in ('分析','账单','余额','取消','撤销','退款','不要','不用')):
                 history=bounded_clarification_context(context.get('clarification_context',[]))
                 question='，'.join([*(history or [context.get('previous_question','')]),question])
             previous=context.get('previous_plan',{}).get('tools',[])
             prior=next((t for t in previous if t.get('tool')=='transfer_preview'),None)
-            transfer=bool(re.search(r'转(?:账|给|[0-9])|给.+转',question)) or bool(prior and any(x in question for x in ('改成','改为','改给','张三','同学','同事','付款账户','日常账户')))
+            transfer=bool(re.search(r'转(?:账|给|[0-9])|给.+转',question)) or bool(prior and any(x in question for x in ('改成','改为','换成','改给','张三','同学','同事','付款账户','日常账户')))
             months=re.findall(r'20\d{2}-(?:0[1-9]|1[0-2])',question)
             if not months:
                 previous=context.get('previous_plan',{}).get('tools',[])
@@ -110,7 +114,8 @@ class MockModel:
                 fragments=[*(bounded_clarification_context(context.get('clarification_context',[])) or [context.get('previous_question','')]),request_question] if clarifying else [request_question]
                 match=None
                 for fragment in reversed(fragments):
-                    matches=list(re.finditer(r'(?:转(?:账)?|改成)\s*([0-9]+)(?:\.([0-9]{1,2}))?\s*(?:元|块)?',fragment))
+                    fragment=unicodedata.normalize('NFKC',fragment)
+                    matches=list(re.finditer(r'(?:转(?:账)?|改成|改为|换成)\s*([0-9]+)(?:\.([0-9]{1,2}))?\s*(?:元|块)?',fragment))
                     match=matches[-1] if matches else re.fullmatch(r'\s*([0-9]+)(?:\.([0-9]{1,2}))?\s*(?:元|块)?[。.!！]?\s*',fragment) if clarifying else None
                     if match:break
                 if match:args['amountMinor']=int(match[1])*100+int((match[2] or '').ljust(2,'0') or '0')
