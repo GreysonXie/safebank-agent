@@ -32,7 +32,7 @@ class MySqlAgentPreviewTest {
   int ledger=db.queryForObject("SELECT COUNT(*) FROM ledger",Integer.class),auth=db.queryForObject("SELECT COUNT(*) FROM action_authorizations",Integer.class);
   var request=previewRequest("savings-original","savings_task_prepare",Map.of("taskPlan",plan));var first=caps.call(grant,request);var replay=caps.call(grant,request);
   assertEquals(first.data().path("id"),replay.data().path("id"));assertTrue(replay.replay());assertTrue(first.facts().containsKey("savings_task.phase"));
-  assertEquals("〔音乐服务（合成）〕",first.facts().get("savings_task.pending.merchant").display());assertEquals("2026-11-20",first.facts().get("savings_task.schedule.first_date").display());assertEquals("0",first.facts().get("savings_task.progress.verified_revocations").display());
+  assertEquals("〔音乐服务〕",first.facts().get("savings_task.pending.merchant").display());assertEquals("2026-11-20",first.facts().get("savings_task.schedule.first_date").display());assertEquals("0",first.facts().get("savings_task.progress.verified_revocations").display());
   assertEquals(auth,db.queryForObject("SELECT COUNT(*) FROM action_authorizations",Integer.class));assertEquals(ledger,db.queryForObject("SELECT COUNT(*) FROM ledger",Integer.class));
   UUID id=UUID.fromString(first.data().path("id").asText());var workflow=app.getBean(WorkflowService.class);var w=workflow.get("u1",id);
   for(int i=0;i<3;i++){var action=(ActionVO)w.pendingAction();assertEquals("AWAITING_AUTH",action.status().name());authorize(app.getBean(ActionService.class).status("u1",action.id()));app.getBean(ActionExecutionService.class).submit("u1",action.id());w=workflow.resume("u1",id,w.version());}
