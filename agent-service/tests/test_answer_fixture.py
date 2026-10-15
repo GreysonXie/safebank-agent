@@ -61,6 +61,38 @@ class CapturedAnswerTest(RuntimeSchemaTest):
    self.assertTrue(any(row['rowId']==prefix for row in payloads[3]['transaction_rows']))
   finally:runtime.close();bank.close()
 
+
+ def test_statement_five_turns_preserve_refund_boundary_and_summary_shape(self):
+  from safebank_agent.store import Store
+  from safebank_agent.runtime import Runtime
+  bank=JavaBank(Path(__file__).resolve().parent/'fixtures');model=Model();payloads=[]
+  original=model.complete
+  def capture(payload):payloads.append(json.loads(payload['messages'][-1]['content']));return original(payload)
+  model.complete=capture
+  plan={'kind':'analysis','tools':[{'tool':'statement','args':{'month':'2026-09'}}]}
+  rank='statement_2026_09.analysis.largest_expenses.0';refund='statement_2026_09.transactions.1'
+  answers=[
+   '账单支出为{{statement_2026_09.expense_minor}}，入账为{{statement_2026_09.income_minor}}；两者口径不同。',
+   '最大支出对应{{'+rank+'.merchant}}，支出{{'+rank+'.spending_minor}}，需核对用途凭证。',
+   '这笔对应{{'+rank+'.merchant}}，不能仅凭商户名称确定实际用途，需核对原订单和凭证。',
+   '当前记录中，{{'+refund+'.merchant}}入账{{'+refund+'.amount_minor}}，分类为{{'+refund+'.category}}。退款增加入账，不抵减支出{{statement_2026_09.expense_minor}}；账单未提供与原订单的关联。',
+   '- 大额核对：{{'+rank+'.merchant}}支出{{'+rank+'.spending_minor}}，金额不能证明异常，需核对凭证。\n- 口径区分：支出{{statement_2026_09.expense_minor}}不因退款直接抵减，订单关联仍需凭证。\n- 用途证据：账单记录不能证明服务使用频率或合同状态。']
+  for answer in answers:model.responses.extend([plan,{'kind':'analysis','answer':answer}])
+  questions=['分析2026-09账单','最大一笔支出是什么？','这笔能确定用途吗？','哪些退款能确认，能直接抵扣支出吗？','只说最值得关注的三点，不要逐笔复述']
+  store=Store(self.config);runtime=Runtime(store,self.config,bank,model);cid=uuid.uuid4().hex;rendered=[]
+  try:
+   for version,question in enumerate(questions,1):
+    run=runtime.accept(dict(userId='u1',conversationId=cid,turnId=uuid.uuid4().hex,requestId=uuid.uuid4().hex,expectedVersion=version,text=question,grant='fixture-only',modelRequestLimit=2));runtime.execute(run['id']);saved=store.get(run['id'])
+    self.assertEqual(saved['state'],'RESULT_READY',saved.get('error_code'));rendered.append(bank.rendered);store.ack(run['id'],version+1,saved['result_hash'])
+   self.assertEqual(model.calls,10);self.assertFalse(model.responses)
+   self.assertIn('租金',rendered[1]);self.assertNotIn('退款',rendered[1]);self.assertIn('不能仅凭商户名称',rendered[2])
+   self.assertIn('3,200.00',rendered[3]);self.assertIn('不抵减支出',rendered[3]);self.assertNotIn('设备维修',rendered[3])
+   self.assertEqual(len(rendered[4].splitlines()),3);self.assertNotIn('3,200.00',rendered[4])
+   self.assertTrue(any(row['rowId']==refund for row in payloads[7]['transaction_rows']))
+   self.assertEqual([p['previous_question'] for p in payloads[3::2]],questions[:-1])
+   self.assertIs(payloads[-1]['answer_contract']['transaction_catalog_complete'],False)
+  finally:runtime.close();bank.close()
+
 class JavaBank:
  def __init__(self,folder,fixture_name="20261011_answer_failure.json"):
   java=str(Path(os.environ['JAVA_HOME'])/'bin/java') if os.getenv('JAVA_HOME') else 'java'

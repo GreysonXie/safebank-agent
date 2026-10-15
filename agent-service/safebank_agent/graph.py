@@ -93,7 +93,9 @@ def named_mandate_rows(facts,question):
 def compact_facts(facts,question):
     """Question-focused catalog with a hard input cap, never a completeness claim."""
     requested_scope=scope_question(question)
+    refund_rows={key.rsplit('.',1)[0] for key,value in facts.items() if re.fullmatch(r'statement_\d{4}_\d{2}\.transactions\.\d+\.category',key) and value.get('display')=='退款'} if '退款' in requested_scope else set()
     def priority(key):
+        if key.rsplit('.',1)[0] in refund_rows:return 0
         if '.transactions.' in key:return 3 if any(x in requested_scope for x in ('逐笔','明细','退款','这笔','这条','该笔','商户','交易用途')) else 5
         if '.anomaly_candidates.' in key:return 0 if any(x in question for x in ('大额','核对','异常','维修')) else 2
         if 'comparison_' in key or '.analysis.' in key:return 1
@@ -102,7 +104,7 @@ def compact_facts(facts,question):
     def signature(key,fact):
         return (key.partition('.')[2],fact.get('display'),fact.get('kind'),str(fact.get('source','')).split('；')[0])
     stable_copies={signature(k,v) for k,v in facts.items() if not re.match(r'^e\d+\.',k)}
-    selected={}
+    groups={}
     for key in sorted(facts,key=lambda k:(priority(k),k)):
         if re.match(r'^mandates_latest\.\d+\.renewal_date$',key) and not any(word in requested_scope for word in ('续费','日期','什么时候','何时','哪天','下次','到期','时间')):continue
         if re.match(r'^e\d+\.',key) and signature(key,facts[key]) in stable_copies:continue
@@ -112,9 +114,14 @@ def compact_facts(facts,question):
             if key.startswith('mandates_summary.') or key=='mandates_latest.count':continue
         if priority(key)>=5:continue
         value={k:v for k,v in facts[key].items() if k in ('display','source','kind')}
-        candidate=dict(selected,**{key:value})
-        if len(canonical(candidate))>18000:continue
-        selected=candidate
+        # Bank transaction fields travel together. Quarantined fields have
+        # already been removed; never restore them to complete a row.
+        row=re.fullmatch(r'(.+\.(?:transactions|analysis\.largest_expenses)\.\d+)\.[^.]+',key)
+        groups.setdefault(row[1] if row else key,{})[key]=value
+    selected={}
+    for group in groups.values():
+        candidate={**selected,**group}
+        if len(canonical(candidate))<=18000:selected=candidate
     return selected
 
 def mandate_rows(facts):
@@ -265,6 +272,12 @@ def build(saver, context):
         if state.get('safety_blocked'):kinds=['general']
         if state.get('operation_deferred'):kinds=['general']
         contract={'required_fields':['kind','answer'],'allowed_kinds':kinds,'additional_fields':False,'prepared_preview':prepared_preview,'operation_deferred':state.get('operation_deferred',False),'suspected_transfer_inducement':state.get('safety_blocked',False)}
+        # This describes catalog transport, not a new bank amount/count fact.
+        transaction_fields={key for key in original if re.fullmatch(r'statement_\d{4}_\d{2}\.transactions\.\d+\.[^.]+',key)}
+        if transaction_fields:
+            contract['transaction_catalog_complete']=transaction_fields.issubset(facts)
+            if not contract['transaction_catalog_complete']:
+                notices.append({'code':'TRANSACTION_CATALOG_PARTIAL','message':'当前引用目录只提供部分交易字段，缺失不代表没有其他记录；不能据此列出全部退款、统计笔数或认定没有退款。按已提供记录回答，必要时说明范围限制。'})
         contract['analysis_requires_fact_reference']=True
         contract['fact_reference_example']='{{'+next(iter(facts))+'}}' if facts else None
         payload={'messages':[{'role':'system','content':ANSWER},{'role':'user','content':canonical({'question':state['request']['text'],'previous_question':state.get('previous_question',''),'plan_kind':state.get('plan',{}).get('kind'),'answer_contract':contract,'previous_answer':state.get('answer',{}) if state.get('repair',0) and not state.get('credential_repair') else None,'facts':facts,'tool_notices':notices,'transaction_rows':transaction_rows(facts),'mandate_rows':rows,'validation_error':state.get('validation_error',''),'reference_hints':state.get('reference_hints',[])})}], 'max_tokens':600 if state.get('safety_blocked') else 1100}

@@ -150,8 +150,9 @@ class MockModel:
             for key,fact in facts.items():
                 match=re.fullmatch(r'(mandates_latest\.\d+)\.([^.]*)',key)
                 if match:mandate_rows.setdefault(match[1],{})[match[2]]=fact
-            if context.get('tool_notices') and not mandate_rows:
-                notice=context['tool_notices'][0];answer=notice['message']
+            actionable_notices=[notice for notice in context.get('tool_notices',[]) if notice.get('code')!='TRANSACTION_CATALOG_PARTIAL']
+            if actionable_notices and not mandate_rows:
+                notice=actionable_notices[0];answer=notice['message']
             elif any(k in facts for k in ('savings_task.phase','savings_task_status.phase')):
                 prefix='savings_task_status' if 'savings_task_status.phase' in facts else 'savings_task'
                 answer='本次核验信息：{{'+prefix+'.phase}}。'
