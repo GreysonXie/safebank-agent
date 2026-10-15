@@ -2,6 +2,16 @@ import json,uuid
 from .test_store_effects import RuntimeSchemaTest
 
 class GraphRuntimeTest(RuntimeSchemaTest):
+ def test_model_request_rejection_reaches_runtime_without_becoming_unknown(self):
+  from safebank_agent.contracts import ModelRequestRejected
+  def reject(payload):raise ModelRequestRejected(401)
+  self.model.complete=reject
+  run=self.runtime.accept(self.request);self.runtime.execute(run['id']);saved=self.store.get(run['id'])
+  self.assertEqual(saved['state'],'RECONCILIATION_REQUIRED')
+  self.assertEqual(saved['error_code'],'MODEL_REQUEST_REJECTED_401')
+  self.assertEqual(self.bank.calls,0)
+  with self.store.transaction() as c:
+   c.execute("SELECT state FROM agent_effect_receipts WHERE origin_run_id=%s",(run['id'],));self.assertEqual(c.fetchone()['state'],'FAILED')
  def test_captured_real_consultation_reaches_result_ready_with_java_oracle(self):
   import os,subprocess,tempfile
   from pathlib import Path

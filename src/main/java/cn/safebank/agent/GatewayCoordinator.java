@@ -29,7 +29,14 @@ public class GatewayCoordinator {
     private Map<String,Object> finish(String turnId,com.fasterxml.jackson.databind.JsonNode reply){
         String state=reply.path("state").asText();
         if(state.equals("RECOVERY_REQUIRED")){client.recover(turnId,capabilities.issue(turnId));results.deferred(turnId,false);throw new BankException("CONTEXT_PROCESSING","正在恢复原轮次，请稍候");}
-        if(!state.equals("RESULT_READY")){if(state.equals("PROCESSING")){results.deferred(turnId,false);throw new BankException("CONTEXT_PROCESSING","原轮次仍在处理，未重复发送");}results.pause(turnId);throw new BankException("AGENT_REVIEW_REQUIRED","原轮次状态需要核对，已暂停自动处理");}
+        if(!state.equals("RESULT_READY")){if(state.equals("PROCESSING")){results.deferred(turnId,false);throw new BankException("CONTEXT_PROCESSING","原轮次仍在处理，未重复发送");}results.pause(turnId);throw new BankException("AGENT_REVIEW_REQUIRED",reviewMessage(reply.path("errorCode").asText()));}
         var ack=results.complete(client.result(reply,turnId));try{client.ack(ack);results.acknowledged(turnId,ack.resultHash(),ack.outputVersion());}catch(HttpAgentClient.AgentTransportException e){results.deferred(turnId,true);}return ack.response();
+    }
+    static String reviewMessage(String code){
+        if(code!=null&&code.matches("MODEL_REQUEST_REJECTED_(400|401|403|404|405|413|415|422)"))
+            return "模型服务明确拒绝请求，请检查模型名称、请求参数与账户配置；原轮次已保留，不会自动重发";
+        if("MODEL_EFFECT_UNKNOWN".equals(code))
+            return "模型响应结果尚未确定，原轮次已保留，请核对原请求，不要重复提交";
+        return "原轮次状态需要核对，已暂停自动处理";
     }
 }

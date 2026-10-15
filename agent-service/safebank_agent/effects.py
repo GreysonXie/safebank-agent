@@ -1,6 +1,6 @@
 """Durable network effect journal, independent of graph checkpoint writes."""
 import json
-from .contracts import ProtocolError, canonical, digest
+from .contracts import ProtocolError, ModelRequestRejected, canonical, digest
 
 
 class Effects:
@@ -52,13 +52,16 @@ class Effects:
             encoded = canonical(result)
             if len(encoded.encode('utf-8')) > 262144:
                 raise ProtocolError('EFFECT_RESULT_TOO_LARGE')
-        except Exception:
+        except Exception as error:
+            rejected = purpose == 'model' and isinstance(error, ModelRequestRejected)
             # A transport error cannot prove that the provider did not receive it.
             with self.store.transaction() as c:
                 self.store.guard(c, lease)
-                c.execute("UPDATE agent_effect_receipts SET state=%s,updated_at=UTC_TIMESTAMP(6) WHERE operation_key=%s", ('UNKNOWN' if purpose == 'model' else 'FAILED', key))
+                c.execute("UPDATE agent_effect_receipts SET state=%s,updated_at=UTC_TIMESTAMP(6) WHERE operation_key=%s", ('UNKNOWN' if purpose == 'model' and not rejected else 'FAILED', key))
                 if reservation:
-                    c.execute("UPDATE agent_model_requests SET state='UNKNOWN',error_code='MODEL_SEND_UNCERTAIN',finished_at=UTC_TIMESTAMP(6) WHERE reservation_id=%s", (reservation,))
+                    c.execute("UPDATE agent_model_requests SET state=%s,error_code=%s,finished_at=UTC_TIMESTAMP(6) WHERE reservation_id=%s", ('FAILED' if rejected else 'UNKNOWN', str(error) if rejected else 'MODEL_SEND_UNCERTAIN', reservation))
+            if rejected:
+                raise error from None
             raise ProtocolError('MODEL_EFFECT_UNKNOWN' if purpose == 'model' else 'EFFECT_FAILED') from None
         with self.store.transaction() as c:
             self.store.guard(c, lease)

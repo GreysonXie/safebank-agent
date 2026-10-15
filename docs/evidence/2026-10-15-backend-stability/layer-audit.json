@@ -1,0 +1,13 @@
+{
+  "controllerFiles": 15,
+  "serviceFiles": 44,
+  "mapperFiles": 30,
+  "controllerMapperImports": [],
+  "controllerTransactions": [],
+  "serviceSqlLiterals": [],
+  "productionJdbcImports": [
+    "src\\main\\java\\cn\\safebank\\config\\ContextSchemaInitializer.java",
+    "src\\main\\java\\cn\\safebank\\config\\RiskSchemaInitializer.java",
+    "src\\main\\java\\cn\\safebank\\config\\UtcOffsetDateTimeTypeHandler.java"
+  ]
+}

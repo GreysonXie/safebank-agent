@@ -5,7 +5,7 @@ import threading
 from time import monotonic
 from pathlib import Path
 import httpx
-from .contracts import ProtocolError,canonical
+from .contracts import ProtocolError,ModelRequestRejected,canonical
 
 class DeepSeek:
     mode='deepseek'
@@ -28,6 +28,8 @@ class DeepSeek:
             with self.client.stream('POST',self.url+'/chat/completions',json=body,headers={'Authorization':'Bearer '+self.key}) as response:
                 if response.status_code!=200:
                     self.last_failure='HTTP_'+str(response.status_code)
+                    if response.status_code in ModelRequestRejected.STATUSES:
+                        raise ModelRequestRejected(response.status_code)
                     raise ProtocolError('MODEL_HTTP_FAILED')
                 chunks=[];size=0
                 for chunk in response.iter_bytes():

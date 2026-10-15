@@ -22,6 +22,26 @@ class RuntimeSchemaTest(unittest.TestCase):
    self.assertEqual(s.fetchone()[0],5,'Five versioned runtime tables must exist')
 
 class StoreEffectsTest(RuntimeSchemaTest):
+ def test_confirmed_provider_rejection_is_failed_and_not_resent(self):
+  from safebank_agent.effects import Effects
+  from safebank_agent.contracts import ModelRequestRejected,ProtocolError,digest
+  run=self.store.accept(self.request);lease=self.store.claim(run['id'],'worker');payload={'question':'synthetic'}
+  def rejected(key):raise ModelRequestRejected(400)
+  def reserve(key,h):return 'synthetic-reservation'
+  with self.assertRaisesRegex(ProtocolError,'MODEL_REQUEST_REJECTED_400'):Effects(self.store).call(lease,'plan',0,'model',payload,rejected,reserve)
+  with self.store.transaction() as c:
+   c.execute('SELECT state FROM agent_effect_receipts WHERE operation_key=%s',(digest([run['id'],'plan',0,'model']),));self.assertEqual(c.fetchone()['state'],'FAILED')
+   c.execute('SELECT state,error_code FROM agent_model_requests WHERE run_id=%s',(run['id'],));self.assertEqual(c.fetchone(),{'state':'FAILED','error_code':'MODEL_REQUEST_REJECTED_400'})
+  with self.assertRaisesRegex(ProtocolError,'EFFECT_FAILED'):Effects(self.store).call(lease,'plan',0,'model',payload,lambda key:self.fail('rejected model resent'),reserve)
+ def test_transport_timeout_keeps_unknown_without_resend(self):
+  from safebank_agent.effects import Effects
+  from safebank_agent.contracts import ProtocolError,digest
+  run=self.store.accept(self.request);lease=self.store.claim(run['id'],'worker');payload={'question':'synthetic'}
+  def timeout(key):raise TimeoutError('private transport detail')
+  with self.assertRaisesRegex(ProtocolError,'MODEL_EFFECT_UNKNOWN'):Effects(self.store).call(lease,'plan',0,'model',payload,timeout)
+  with self.store.transaction() as c:
+   c.execute('SELECT state FROM agent_effect_receipts WHERE operation_key=%s',(digest([run['id'],'plan',0,'model']),));self.assertEqual(c.fetchone()['state'],'UNKNOWN')
+  with self.assertRaisesRegex(ProtocolError,'MODEL_EFFECT_UNKNOWN'):Effects(self.store).call(lease,'plan',0,'model',payload,lambda key:self.fail('unknown model resent'))
  def setUp(self):
   from safebank_agent.store import Store
   self.store=Store(self.config)

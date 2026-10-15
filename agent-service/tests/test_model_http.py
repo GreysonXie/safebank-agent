@@ -2,6 +2,16 @@ import unittest
 import httpx
 
 class ModelHTTPTest(unittest.TestCase):
+ def test_only_unambiguous_rejections_have_terminal_failure_type(self):
+  from safebank_agent.models import DeepSeek
+  from safebank_agent.contracts import ModelRequestRejected,ProtocolError
+  for status in (400,401,403,404,405,413,415,422,408,429,500,502,503):
+   with self.subTest(status=status):
+    client=httpx.Client(transport=httpx.MockTransport(lambda request:httpx.Response(status)))
+    try:
+     with self.assertRaises(ProtocolError) as error:DeepSeek('test-key','requested',client=client).complete({'messages':[],'max_tokens':100})
+     self.assertEqual(isinstance(error.exception,ModelRequestRejected),status in ModelRequestRejected.STATUSES)
+    finally:client.close()
  def test_keepalive_data_does_not_allow_unbounded_model_wait(self):
   from safebank_agent.models import DeepSeek
   from safebank_agent.contracts import ProtocolError
@@ -16,7 +26,7 @@ class ModelHTTPTest(unittest.TestCase):
   calls=[]
   def reply(request):calls.append(request);return httpx.Response(400,json={'error':{'message':'private provider text'}})
   model=DeepSeek('test-key','requested',client=httpx.Client(transport=httpx.MockTransport(reply)))
-  with self.assertRaisesRegex(ProtocolError,'MODEL_HTTP_FAILED'):model.complete({'messages':[],'max_tokens':100})
+  with self.assertRaisesRegex(ProtocolError,'MODEL_REQUEST_REJECTED_400'):model.complete({'messages':[],'max_tokens':100})
   self.assertEqual(model.last_failure,'HTTP_400');self.assertEqual(len(calls),1)
  def test_default_model_timeout_allows_slow_response_but_bounds_connection(self):
   from safebank_agent.models import DeepSeek

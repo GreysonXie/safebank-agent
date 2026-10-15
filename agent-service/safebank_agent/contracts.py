@@ -8,6 +8,16 @@ class ProtocolError(RuntimeError):
     pass
 
 
+class ModelRequestRejected(ProtocolError):
+    """Complete, unambiguous validation/auth rejection, not a transport failure."""
+    STATUSES = frozenset((400, 401, 403, 404, 405, 413, 415, 422))
+
+    def __init__(self, status):
+        if type(status) is not int or status not in self.STATUSES:
+            raise ValueError('Not an unambiguous model request rejection')
+        super().__init__('MODEL_REQUEST_REJECTED_' + str(status))
+
+
 def canonical(value):
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':'), allow_nan=False)
 
