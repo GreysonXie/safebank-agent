@@ -20,6 +20,7 @@ jobs:
         with:
           node-version: "22"
       - run: node --test src/test/js/*.test.cjs
+      - run: python -m unittest discover -s deployment -p test_team_tools.py -v
       - run: mvn -B test
         env:
           SPRING_PROFILES_ACTIVE: test
@@ -33,9 +34,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 deployment/configure.py
+      - run: python3 deployment/doctor.py
       - run: docker compose up --build -d --wait --wait-timeout 300
       - run: python3 deployment/smoke.py
       - if: failure()
         run: docker compose logs --tail=100 app mysql
       - if: always()
         run: docker compose down
+  windows-tools:
+    name: Windows tools (not a Docker deployment)
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - run: python -m unittest discover -s deployment -p test_team_tools.py -v
+        shell: powershell
+      - run: .\deployment\check-windows.ps1 -Help
+        shell: powershell

@@ -1,3 +1,37 @@
+# SafeBank 可信银行智能体 · 团队候选
+
+Java 21 / Spring Boot / MyBatis负责权限、金额和银行操作；官方Python LangGraph负责理解、规划与对话；双MySQL保存业务与Agent状态。现有三个场景为账单分析、代扣咨询/撤销预览、转账预览，储蓄任务复用逐项确认流程。用户、账户和银行均为合成演示。
+
+## Windows首次启动
+
+安装并启动Docker Desktop（Linux containers）与Python 3.10+。在项目根目录的PowerShell中执行；下载ZIP也可使用。
+
+```powershell
+git clone https://github.com/GreysonXie/safebank-agent.git
+cd safebank-agent
+python deployment/configure.py
+python deployment/doctor.py --report .team-local/preflight.json
+docker compose up --build -d --wait --wait-timeout 300
+python deployment/smoke.py --report .team-local/smoke.json
+```
+
+自检有FAIL时先按提示处理；已有`.env`不要重新生成。打开[本机网页](http://127.0.0.1:8134/)。Java、Maven、Agent依赖和MySQL在容器中安装；首次构建需联网。
+
+默认免费mock，仅适合有限流程验证。使用自己的Key、修改端口及完整说明见[团队部署入口](deployment/TEAM_README.md)。配置密钥不等于模型连接或业务验收成功。作者本机8136是独立候选，队友默认8134。
+
+## 当前验收与协作
+
+- [目标和24项验收矩阵：工程/真人分列](docs/2026-10-15-下一阶段验收矩阵.md)
+- [Windows自检交付与实际验证边界](docs/2026-10-15-Windows交付自检验收.md)
+- [试用分工](docs/团队部署与试用.md)与[结果记录模板](docs/验收结果记录模板.md)
+- [开发状态](docs/团队开发状态.md)、[架构](docs/competition/技术文档-系统架构.md)、[核心算法](docs/competition/技术文档-核心算法.md)、[安全设计](docs/competition/技术文档-安全设计.md)、[安全自评](docs/competition/安全自评报告.md)
+- [开发规范](CODING_STANDARDS.md)与[GitHub自动检查](https://github.com/GreysonXie/safebank-agent/actions)
+
+模型只能查询或生成待确认操作；聊天中的“确认”不执行银行操作。`.env`、运行数据及`.team-local`报告均不提交。`docker compose down`保留数据，后续`docker compose up -d`继续；保留数据库与身份卷。
+
+<details>
+<summary>历史开发记录（旧版本、旧端口与旧启动命令，不作为当前部署入口）</summary>
+
 # SafeBank 团队开发候选 · 2026-10-15
 
 当前Windows启动入口见[团队候选说明](团队候选说明.md)和[Docker团队部署](deployment/TEAM_README.md)。默认免费mock，Java/MyBatis＋Python LangGraph＋双MySQL；以下旧端口、内存库和调用次数属于历史版本。最新真实模型验收受官方API中断影响，不能按旧段落认定本版全部通过。
@@ -175,3 +209,6 @@ BankService控制授权和账务；ActionExecutionService记录应用观察并�
 实现状态及验收证据见 docs/开发进度.md；团队后续分工见 docs/团队任务.md。
 
 用量与评测：正常/chat响应新增modelUsage，记录生成/审核请求数及供应商usage；缺失用量为未知，不写成零。可选modelRequestLimit为1—12，省略保持最多12请求。评测支持--case及--max-model-requests；有预算时遇到失败即停。充值后的限定验证与历史费用无法回算的说明见docs/模型用量与评测预算.md。
+
+
+</details>

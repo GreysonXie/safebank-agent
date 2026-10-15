@@ -10,17 +10,41 @@
 
 **Windows队友：**安装并启动Docker Desktop，使用Linux containers模式；另安装Git与Python3.10+。在PowerShell执行下方命令即可。Java21、Maven、Python Agent依赖和MySQL都在容器中安装，无需在Windows上分别搭建这四套运行环境。Docker Desktop安装过程中若提示启用WSL2或虚拟化，按其安装向导完成并重启。
 
-```sh
+```powershell
 git clone https://github.com/GreysonXie/safebank-agent.git
 cd safebank-agent
 python deployment/configure.py
-docker compose up --build -d
+python deployment/doctor.py --report .team-local/preflight.json
+docker compose up --build -d --wait --wait-timeout 300
+python deployment/smoke.py --report .team-local/smoke.json
 docker compose ps
 ```
 
 macOS/Linux可能使用`python3`。打开 **http://127.0.0.1:8134/**，首次等待数据库初始化。日志：`docker compose logs --tail=80 app`。
 
 默认mock为免费有限规则模拟，适合页面/流程测试，不能评价模型智能。服务密码独立生成；首次导入合成数据，后续重启保留状态。
+
+## Windows自检与自定义端口
+
+`doctor.py`只检查Python、Docker/Compose/Linux daemon、Compose最终有效配置和端口；不创建、重建或删除容器，不连接模型。它检查包含环境变量覆盖后的Compose配置，但不打印配置、密钥或Docker原始错误。出现FAIL先按提示处理，成功也不代表三业务已经验收。
+
+PowerShell入口可替代上述doctor命令：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File deployment/check-windows.ps1 -Report .team-local/preflight.json
+```
+
+这里的执行策略只作用于这一次进程。应用已经启动后使用`python deployment/doctor.py --running`，跳过“端口必须空闲”检查。配置自己的`.env`后再启动，不覆盖已有文件。
+
+若8134被占用，修改`.env`的`SAFEBANK_WEB_PORT=8138`，重新运行自检、启动，并执行：
+
+```powershell
+python deployment/smoke.py --base-url http://127.0.0.1:8138 --report .team-local/smoke.json
+```
+
+冒烟只接受显式127.0.0.1 HTTP端口、拒绝重定向和付费模式，验证免费账单及同一原requestId重放，不授权或提交操作。每次冒烟创建独立合成对话。报告不含聊天正文、密钥、CSRF或内部grant；仍请只共享脱敏报告，不共享.env。
+
+停止并再次启动后可重做冒烟，保留数据卷。按[验收记录模板](../docs/验收结果记录模板.md)记录自己电脑的结果；本机工具检查、Linux Docker CI与另一台Windows首次部署是三种不同证据。
 
 ## 使用自己的 DeepSeek Key
 
@@ -45,19 +69,19 @@ SAFEBANK_MODEL_SMOKE_CAP=20
 2. 在代扣业务页确认查询本人授权，再问`季度安全服务180元是每月扣吗？` → `先不撤销，只解释合同边界，不要重复金额。`
 3. `从日常账户给备注同学的收款人转500元，先看预览` → `改成600元`；核对原卡失效、新卡金额，正常试用不提交转账。
 
-记录问题顺序、实际与期望回答、版本、模式和截图，不附密钥、token或本机数据库密码。见[团队部署与试用](docs/团队部署与试用.md)。
+记录问题顺序、实际与期望回答、版本、模式和截图，不附密钥、token或本机数据库密码。见[团队部署与试用](../docs/团队部署与试用.md)。
 
 ## 开发文档
 
-- [开发状态与文档导航](docs/团队开发状态.md)
-- [数据库历史设计](docs/database/2026-10-08-database-design.md)，最新结构以迁移SQL为准
-- [系统架构](docs/competition/技术文档-系统架构.md)
-- [核心算法](docs/competition/技术文档-核心算法.md)
-- [安全设计](docs/competition/技术文档-安全设计.md)
-- [安全自评及已知风险](docs/competition/安全自评报告.md)
-- [开发规范](CODING_STANDARDS.md)
+- [开发状态与文档导航](../docs/团队开发状态.md)
+- [数据库历史设计](../docs/database/2026-10-08-database-design.md)，最新结构以迁移SQL为准
+- [系统架构](../docs/competition/技术文档-系统架构.md)
+- [核心算法](../docs/competition/技术文档-核心算法.md)
+- [安全设计](../docs/competition/技术文档-安全设计.md)
+- [安全自评及已知风险](../docs/competition/安全自评报告.md)
+- [开发规范](../CODING_STANDARDS.md)
 
-docs保留阶段设计、计划、验收和比赛材料；旧端口、启动命令及版本状态为历史记录，以本README为准。原始会话、调试账本、截图及凭据不上传，见[证据说明](docs/evidence/README.md)。
+docs保留阶段设计、计划、验收和比赛材料；旧端口、启动命令及版本状态为历史记录，以本README为准。原始会话、调试账本、截图及凭据不上传，见[证据说明](../docs/evidence/README.md)。
 
 ## 停止与开发检查
 
@@ -72,6 +96,8 @@ python -m unittest tests.test_live_contract_recovery tests.test_answer_contract 
 MySQL集成与Java Oracle测试需额外独立配置，见团队部署文档。不要把真实数据库配置交给测试。
 
 ## 验证边界
+
+本次交付进度与检查范围见[Windows自检验收](../docs/2026-10-15-Windows交付自检验收.md)。旧批次计数仅对应当时范围，以分列[验收矩阵](../docs/2026-10-15-下一阶段验收矩阵.md)为准。
 
 有部分账单、代扣真实模型完整查询链路和最新95项本地相关测试证据；最终提示与规范化尚未重新完成真实模型全场景验收，工具注入风险R03仍开放。真实银行/MFA未接入。
 
