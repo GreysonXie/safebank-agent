@@ -94,7 +94,7 @@ class MockModel:
             if question==demo['question']:
                 return {'content':{'kind':'savings_task','taskPlan':demo['taskPlan']},'model':'offline-fixture','usage':None}
             identifier=context.get('previous_workflow_id')
-            if question in ('查看储蓄任务进度','看看任务进度') and isinstance(identifier,str) and re.fullmatch(r'[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}',identifier):
+            if question in ('查看储蓄任务进度','看看任务进度','这个计划包含哪些操作，为什么只显示一个待确认步骤？') and isinstance(identifier,str) and re.fullmatch(r'[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}',identifier):
                 return {'content':{'kind':'analysis','tools':[{'tool':'savings_task_status','args':{'workflowId':identifier}}]},'model':'offline-fixture','usage':None}
             question=unicodedata.normalize('NFKC',question)
             request_question=question
@@ -161,6 +161,13 @@ class MockModel:
                     answer+='当前需要核对{{'+prefix+'.pending.merchant}}'
                     answer+='的{{'+prefix+'.pending.kind_label}}。' if prefix+'.pending.kind_label' in facts else '。'
                 answer+='任务登记不代表银行操作执行成功；请在原任务卡查看回执，未执行的操作仍需逐项确认。'
+                if any(word in question for word in ('范围','包含','只显示','计划里')):
+                    answer='当前信息：{{'+prefix+'.phase}}。'
+                    for field,label in (('plan_scope.revocations_count','登记计划中的撤销项目数'),('plan_scope.scheduled_transfers_count','计划中的定时转存项目数'),('progress.created_steps_count','按步骤标识合并后的当前步骤数')):
+                        if prefix+'.'+field in facts:answer+=label+'为{{'+prefix+'.'+field+'}}。'
+                    if prefix+'.plan_scope.steps_scope' in facts:answer+='{{'+prefix+'.plan_scope.steps_scope}}。'
+                    if prefix+'.plan_scope.names_scope' in facts:answer+='{{'+prefix+'.plan_scope.names_scope}}。'
+                    answer+='计划范围和步骤记录不能替代银行执行回执，也不保证未来到账。'
             elif 'preview_transfer.amount_minor' in facts:
                 answer='待确认收款对象{{preview_transfer.recipient_label}}，金额{{preview_transfer.amount_minor}}。尚未执行转账，请核对操作卡并明确确认。'
             elif 'preview_revoke.merchant' in facts:

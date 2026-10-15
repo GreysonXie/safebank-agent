@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-15",
+  "mode": "free mock and scripted tests; not new provider generation",
+  "java": {
+    "passed": 70,
+    "skipped": 0
+  },
+  "python": {
+    "passed": 141
+  },
+  "mysql": {
+    "passed": 5,
+    "scope": "isolated synthetic databases; before final count wording clarification, then unit and HTTP rechecked"
+  },
+  "http": {
+    "turns": 2,
+    "tools": [
+      "savings_task_prepare",
+      "savings_task_status"
+    ],
+    "registeredRevocations": 2,
+    "registeredScheduledTransfers": 1,
+    "currentLogicalSteps": 1,
+    "newWorkflows": 1,
+    "newPendingActions": 1,
+    "authorizationLedgerBalancesUnchangedAfterQuerySetup": true,
+    "fundOperationsExecuted": 0
+  },
+  "candidate": {
+    "url": "http://127.0.0.1:8136/",
+    "mode": "LANGGRAPH_MOCK",
+    "status": 200,
+    "visualLayoutRetested": false
+  },
+  "providerSends": 0,
+  "additionalUpperCny": "0",
+  "cumulativeUpperCny": "6.461328",
+  "capCny": "7.00",
+  "unknownReservationsPreserved": true,
+  "limitations": [
+    "no complete planned service-name directory",
+    "new real-model semantic acceptance open",
+    "Windows teammate first Docker deployment open"
+  ],
+  "review": {
+    "critical": 0,
+    "important": 0,
+    "minorFixed": 1
+  }
+}
