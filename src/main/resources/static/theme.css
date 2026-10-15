@@ -117,3 +117,7 @@ pre { background: #f1f5f9; color: var(--text); }
 .action[data-status="CANCELLED"]>.status{background:#eef1f5;color:#475569}
 .action[data-status="UNKNOWN"]>.status,.action[data-status="PENDING"]>.status{background:#fff3d6;color:#785000}
 .action[data-status="VERIFIED_FAILED"]>.status{background:#ffe8e8;color:#9c3030}
+
+/* Use the horizontal logo in the supplied brand sheet without altering the image. */
+.sidebar .brand { display: block; }
+.brand-logo { display: block; width: 100%; max-width: 190px; height: auto; overflow: hidden; }
