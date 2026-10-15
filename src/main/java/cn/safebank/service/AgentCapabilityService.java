@@ -27,7 +27,9 @@ public class AgentCapabilityService {
     private final AgentMandateReceiptService mandateReceipts;private final SecureRandom random=new SecureRandom();
     public AgentCapabilityService(AgentGatewayMapper m,AgentConversationMapper c,GatewayTurnService t,AccountService a,StatementService s,ObjectMapper j,PlatformTransactionManager manager,AgentMandateReceiptService mandateReceipts){this.mandateReceipts=mandateReceipts;mapper=m;conversations=c;turns=t;accounts=a;statements=s;json=j;tx=new TransactionTemplate(manager);}
     public String issue(String turnId){return tx.execute(status->{
-        var t=turns.lock(turnId,true);var c=conversations.selectOwned(t.getUserId(),t.getConversationId());
+        var t=turns.lock(turnId,true);
+        if("PAUSED".equals(t.getState()))throw new BankException("AGENT_REVIEW_REQUIRED","原轮次已暂停，不能签发或续签工具权限");
+        var c=conversations.selectOwned(t.getUserId(),t.getConversationId());
         var expiry=Collections.min(List.of(turns.now().plusMinutes(5),c.getExpiresAt(),t.getSessionExpiresAt()));
         mapper.revoke(t.getUserId(),turnId);byte[] secret=new byte[32];random.nextBytes(secret);String token=HexFormat.of().formatHex(secret);
         var g=new AgentServiceGrantEntity();g.setId(UUID.randomUUID().toString());g.setTokenHash(hash(token));g.setUserId(t.getUserId());g.setConversationId(t.getConversationId());g.setTurnId(turnId);g.setRequestId(t.getRequestId());g.setScopeJson(encode(SCOPES.stream().sorted().toList()));g.setState("ACTIVE");g.setCallLimit(8);g.setCallsUsed(0);g.setCreatedAt(turns.now());g.setExpiresAt(expiry);require(mapper.insertGrant(g));return token;

@@ -15,7 +15,10 @@ public class GatewayCoordinator {
         String cid=r.conversationId();if(cid==null){synchronized(session){if(!user.equals(session.getAttribute("contextUser"))){session.removeAttribute("activeConversationId");session.setAttribute("contextUser",user);}cid=(String)session.getAttribute("activeConversationId");if(cid==null){cid=contexts.create(user);session.setAttribute("activeConversationId",cid);}}}
         var expiry=Instant.ofEpochMilli(session.getLastAccessedTime()).plusSeconds(session.getMaxInactiveInterval());
         var start=turns.begin(user,new ChatRequestDTO(r.text(),r.modelRequestLimit(),cid,r.requestId(),r.expectedContextVersion()),expiry);
-        if(start.replayResponse()!=null)return start.replayResponse();
+        if(start.replayResponse()!=null){
+            reviewSavedReceipt(turns.original(user,cid,r.requestId()));
+            return start.replayResponse();
+        }
         if(start.processing()){
             var g=turns.original(user,cid,r.requestId());
             try{return finish(g.getTurnId(),client.get(g.getTurnId()));}catch(HttpAgentClient.AgentTransportException e){results.deferred(g.getTurnId(),true);throw new BankException("AGENT_RECONCILING","正在核对原请求，未重新发送模型请求");}
@@ -28,9 +31,36 @@ public class GatewayCoordinator {
     }
     private Map<String,Object> finish(String turnId,com.fasterxml.jackson.databind.JsonNode reply){
         String state=reply.path("state").asText();
-        if(state.equals("RECOVERY_REQUIRED")){client.recover(turnId,capabilities.issue(turnId));results.deferred(turnId,false);throw new BankException("CONTEXT_PROCESSING","正在恢复原轮次，请稍候");}
+        if(state.equals("RECOVERY_REQUIRED")){
+            if("PAUSED".equals(turns.read(turnId).getState())){
+                results.pause(turnId);
+                throw new BankException("AGENT_REVIEW_REQUIRED","原轮次已暂停，尚无可核验的完整结果；继续保留原请求，不自动恢复或重发");
+            }
+            client.recover(turnId,capabilities.issue(turnId));results.deferred(turnId,false);throw new BankException("CONTEXT_PROCESSING","正在恢复原轮次，请稍候");
+        }
         if(!state.equals("RESULT_READY")){if(state.equals("PROCESSING")){results.deferred(turnId,false);throw new BankException("CONTEXT_PROCESSING","原轮次仍在处理，未重复发送");}results.pause(turnId);throw new BankException("AGENT_REVIEW_REQUIRED",reviewMessage(reply.path("errorCode").asText()));}
         var ack=results.complete(client.result(reply,turnId));try{client.ack(ack);results.acknowledged(turnId,ack.resultHash(),ack.outputVersion());}catch(HttpAgentClient.AgentTransportException e){results.deferred(turnId,true);}return ack.response();
+    }
+    /** Reconcile only the receipt of an already committed reply; never restart its run. */
+    private void reviewSavedReceipt(cn.safebank.entity.AgentGatewayTurnEntity original){
+        if(!java.util.Set.of("PAUSED","ACK_PENDING").contains(original.getState()))return;
+        String id=original.getTurnId();
+        try{
+            var ack=results.saved(id);
+            var reply=client.get(id);
+            String state=reply.path("state").asText();
+            if(state.equals("RESULT_READY")){
+                var remote=client.result(reply,id);
+                if(!results.resultHash(remote).equals(ack.resultHash())){results.pause(id);return;}
+                client.ack(ack);
+            }else if(!java.util.Set.of("COMPLETED","NEEDS_CLARIFICATION").contains(state)
+                    ||!reply.path("resultHash").asText().equals(ack.resultHash())
+                    ||!reply.path("outputVersion").isIntegralNumber()
+                    ||reply.path("outputVersion").asLong()!=ack.outputVersion()){
+                results.pause(id);return;
+            }
+            results.acknowledged(id,ack.resultHash(),ack.outputVersion());
+        }catch(HttpAgentClient.AgentTransportException|BankException error){results.pause(id);}
     }
     static String reviewMessage(String code){
         if(code!=null&&code.matches("MODEL_REQUEST_REJECTED_(400|401|403|404|405|413|415|422)"))

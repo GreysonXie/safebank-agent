@@ -16,11 +16,15 @@ public class GatewayReconciler {
     public void scan(){for(var g:mapper.due(turns.now()))reconcile(g.getTurnId());}
     public void reconcile(String id){
         try{var reply=client.get(id);String state=reply.path("state").asText();
-            if(state.equals("NO_RUN")){results.noRun(id);return;}
             var g=mapper.gateway(id);
+            if(g==null)return;
+            if(state.equals("NO_RUN")){if("PAUSED".equals(g.getState()))results.pause(id);else results.noRun(id);return;}
             if(state.equals("RESULT_READY")){var ack=results.complete(client.result(reply,id));client.ack(ack);results.acknowledged(id,ack.resultHash(),ack.outputVersion());}
             else if((state.equals("COMPLETED")||state.equals("NEEDS_CLARIFICATION"))&&g.getOutputVersion()!=null){var ack=results.saved(id);if(!reply.path("resultHash").asText().equals(ack.resultHash())||reply.path("outputVersion").asLong()!=ack.outputVersion())throw new BankException("CONFLICT","远端 ACK 不一致");results.acknowledged(id,ack.resultHash(),ack.outputVersion());}
-            else if(state.equals("RECOVERY_REQUIRED")){client.recover(id,capabilities.issue(id));results.deferred(id,false);}
+            else if(state.equals("RECOVERY_REQUIRED")){
+                if("PAUSED".equals(g.getState()))results.pause(id);
+                else{client.recover(id,capabilities.issue(id));results.deferred(id,false);}
+            }
             else if(state.equals("PROCESSING"))results.deferred(id,false);else results.pause(id);
         }catch(HttpAgentClient.AgentTransportException e){results.deferred(id,true);}catch(BankException e){if(e.code.equals("PERMISSION_DENIED"))results.interrupted(id);else results.pause(id);}
     }

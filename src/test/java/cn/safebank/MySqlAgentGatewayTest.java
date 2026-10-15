@@ -63,6 +63,52 @@ class MySqlAgentGatewayTest {
         var response=app.getBean(cn.safebank.agent.GatewayCoordinator.class).chat("u1",request,session);
         assertEquals(2L,((Number)response.get("contextVersion")).longValue());assertEquals(0,starts.get());assertEquals("ACKED",mapper.gateway(l.turnId()).getState());
     }
+    @Test void pausedOriginalRecoveryHintDoesNotStartOrRenewCapability(){
+        String cid=contexts.create("u1");var request=new ChatRequestDTO("原查询",null,cid,"paused-recovery",1L);
+        var l=turns.begin("u1",request,NOW.plusSeconds(300)).lease();
+        var token=capabilities.issue(l.turnId());app.getBean(GatewayResultService.class).pause(l.turnId());
+        runs.put(l.turnId(),json.createObjectNode().put("state","RECOVERY_REQUIRED"));
+        int grants=db.queryForObject("SELECT COUNT(*) FROM agent_service_grants WHERE turn_id=?",Integer.class,l.turnId());
+        int ledger=db.queryForObject("SELECT COUNT(*) FROM ledger",Integer.class);
+        var session=new org.springframework.mock.web.MockHttpSession();session.setMaxInactiveInterval(1800);
+        assertEquals("AGENT_REVIEW_REQUIRED",assertThrows(BankException.class,()->app.getBean(cn.safebank.agent.GatewayCoordinator.class).chat("u1",request,session)).code);
+        assertEquals("PAUSED",mapper.gateway(l.turnId()).getState());assertEquals(0,starts.get());
+        // The scheduler visits PAUSED too; it must obey the same no-recovery boundary.
+        reconciler().reconcile(l.turnId());
+        assertEquals("PAUSED",mapper.gateway(l.turnId()).getState());assertEquals(0,starts.get());
+        assertEquals(grants,db.queryForObject("SELECT COUNT(*) FROM agent_service_grants WHERE turn_id=?",Integer.class,l.turnId()));
+        assertEquals(ledger,db.queryForObject("SELECT COUNT(*) FROM ledger",Integer.class));
+        assertEquals(0,mapper.receipts(l.turnId()).size());assertEquals(1,contexts.snapshot("u1",cid).version());
+    }
+    @Test void originalSavedReplyRepairsAckAndUnblocksNextTurnWithoutNewStart(){
+        String cid=contexts.create("u1");var request=new ChatRequestDTO("原查询",null,cid,"paused-ack",1L);
+        var session=new org.springframework.mock.web.MockHttpSession();session.setMaxInactiveInterval(1800);fault="DROP_ACK";
+        var coordinator=app.getBean(cn.safebank.agent.GatewayCoordinator.class);
+        var first=coordinator.chat("u1",request,session);var g=turns.original("u1",cid,"paused-ack");
+        app.getBean(GatewayResultService.class).pause(g.getTurnId());fault="NONE";
+        var replay=coordinator.chat("u1",request,session);
+        assertEquals(first,replay);assertEquals("ACKED",mapper.gateway(g.getTurnId()).getState());
+        assertEquals(1,starts.get());assertEquals(2,contexts.snapshot("u1",cid).version());
+        assertNotNull(turns.begin("u1",new ChatRequestDTO("下一轮",null,cid,"after-ack",2L),NOW.plusSeconds(300)).lease());
+        assertEquals(0,mapper.receipts(g.getTurnId()).size());
+    }
+    @Test void missingRemoteRunDoesNotInterruptPausedOriginal(){
+        var l=lease();app.getBean(GatewayResultService.class).pause(l.turnId());
+        reconciler().reconcile(l.turnId());
+        assertEquals("PAUSED",mapper.gateway(l.turnId()).getState());
+        assertEquals("PROCESSING",db.queryForObject("SELECT state FROM agent_turn_receipts WHERE id=?",String.class,l.turnId()));
+        assertEquals(1,contexts.snapshot("u1",l.conversationId()).version());assertEquals(0,starts.get());
+    }
+    @Test void pausedOriginalCannotMintOrRenewCapability(){
+        var l=lease();String token=capabilities.issue(l.turnId());
+        app.getBean(GatewayResultService.class).pause(l.turnId());
+        int before=db.queryForObject("SELECT COUNT(*) FROM agent_service_grants WHERE turn_id=?",Integer.class,l.turnId());
+        assertEquals("AGENT_REVIEW_REQUIRED",assertThrows(BankException.class,()->capabilities.issue(l.turnId())).code);
+        assertEquals("AGENT_REVIEW_REQUIRED",assertThrows(BankException.class,()->capabilities.renew(l.turnId(),token)).code);
+        assertEquals(before,db.queryForObject("SELECT COUNT(*) FROM agent_service_grants WHERE turn_id=?",Integer.class,l.turnId()));
+        assertEquals("ACTIVE",mapper.grant(ContextEvidenceService.hash(token)).getState());
+        assertEquals(0,mapper.receipts(l.turnId()).size());assertEquals(0,starts.get());
+    }
     static AgentToolRequestDTO request(String key,String tool,String args)throws Exception{var a=json.readTree(args);return new AgentToolRequestDTO(ContextEvidenceService.hash(key),capabilities.inputHash(tool,a),tool,a);}
     @Test void externalRequestIdentityAndVersionRemainAuthoritative(){
         String c=contexts.create("u1");var r=new ChatRequestDTO("查询",null,c,"req1",1L);var one=turns.begin("u1",r,NOW.plusSeconds(300));
@@ -132,7 +178,7 @@ class MySqlAgentGatewayTest {
         var fact=receipt.facts().keySet().stream().filter(k->k.endsWith("expense_minor")).findFirst().orElseThrow();
         var ack=assertDoesNotThrow(()->service.complete(result(l,"本月支出为{{"+fact+"}}。","analysis",List.of(receipt.evidenceId()))));assertTrue(ack.response().get("text").toString().replace(",","").contains("5369.33"),ack.response().get("text").toString());assertEquals(1,((List<?>)ack.response().get("results")).size());assertEquals(536933,json.valueToTree(ack.response().get("data")).path("expense_minor").asLong());
     }
-    GatewayReconciler reconciler(){return new GatewayReconciler(mapper,turns,app.getBean(GatewayResultService.class),app.getBean(cn.safebank.agent.HttpAgentClient.class));}
+    GatewayReconciler reconciler(){var reconciler=new GatewayReconciler(mapper,turns,app.getBean(GatewayResultService.class),app.getBean(cn.safebank.agent.HttpAgentClient.class));org.springframework.test.util.ReflectionTestUtils.setField(reconciler,"capabilities",capabilities);return reconciler;}
     @Test void lostStartResponseReconcilesOriginalRunWithoutSecondPost(){
         String c=contexts.create("u1");var session=new org.springframework.mock.web.MockHttpSession();session.setAttribute("user","u1");fault="DROP_START";
         var e=assertThrows(BankException.class,()->app.getBean(cn.safebank.agent.GatewayCoordinator.class).chat("u1",new ChatRequestDTO("查询",null,c,"lost",1L),session));assertEquals("AGENT_RECONCILING",e.code);
