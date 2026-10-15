@@ -128,6 +128,14 @@ public final class GroundedAnswer {
                 for(var entry:data.path(field))if(entry.isObject()&&entry.path("amount_minor").asLong()<0)
                     ((ObjectNode)entry).put("spending_minor",-entry.path("amount_minor").asLong());
             }
+            // Rank the complete bank statement, not the threshold-based candidate list.
+            var largestExpenses=analysis.putArray("largest_expenses");long largestSpending=0;
+            for(var entry:data.path("transactions")){
+                if(entry.path("amount_minor").asLong()>=0||entry.path("category").asText().equals("内部转账"))continue;
+                long spending=entry.path("spending_minor").asLong();
+                if(spending>largestSpending){largestSpending=spending;largestExpenses.removeAll();}
+                if(spending==largestSpending)largestExpenses.add(entry.deepCopy());
+            }
             for(var entry:data.path("anomaly_candidates"))largeTotal+=entry.path("spending_minor").asLong();
             var stats=analysis.putObject("category_stats");var totals=new TreeMap<String,Long>();var counts=new TreeMap<String,Integer>();
             for(var entry:data.path("transactions"))if(entry.path("amount_minor").asLong()<0&&!entry.path("category").asText().equals("内部转账")){

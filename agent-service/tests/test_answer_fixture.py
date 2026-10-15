@@ -34,6 +34,33 @@ class CapturedAnswerTest(RuntimeSchemaTest):
     Path(os.environ['SAFEBANK_CAPTURED_TEST_RESULT']).write_text(json.dumps({'runState':saved['state'],'modelFixtureReplays':model.calls,'providerHTTPCalls':0,'javaValidations':bank.validations,'answer':bank.rendered,'actualJavaGrounding':True},ensure_ascii=False,indent=2),encoding='utf-8')
   finally:runtime.close();bank.close()
 
+ def test_statement_largest_followup_uses_current_java_facts_across_three_turns(self):
+  from safebank_agent.store import Store
+  from safebank_agent.runtime import Runtime
+  bank=JavaBank(Path(__file__).resolve().parent/'fixtures');model=Model();payloads=[]
+  original=model.complete
+  def capture(payload):payloads.append(json.loads(payload['messages'][-1]['content']));return original(payload)
+  model.complete=capture
+  plan={'kind':'analysis','tools':[{'tool':'statement','args':{'month':'2026-09'}}]}
+  prefix='statement_2026_09.analysis.largest_expenses.0'
+  model.responses=[plan,{'kind':'analysis','answer':'账单支出为{{statement_2026_09.expense_minor}}。'},
+   plan,{'kind':'analysis','answer':'最大支出对应{{'+prefix+'.merchant}}，支出{{'+prefix+'.spending_minor}}，需核对用途凭证。'},
+   plan,{'kind':'analysis','answer':'这笔对应{{'+prefix+'.merchant}}，不能仅凭商户名称确定实际用途，需核对原订单和凭证。'}]
+  store=Store(self.config);runtime=Runtime(store,self.config,bank,model);cid=uuid.uuid4().hex
+  questions=['分析2026-09账单','最大一笔是什么','这笔能确定用途吗'];rendered=[]
+  try:
+   for version,question in enumerate(questions,1):
+    request=dict(userId='u1',conversationId=cid,turnId=uuid.uuid4().hex,requestId=uuid.uuid4().hex,expectedVersion=version,text=question,grant='fixture-only',modelRequestLimit=2)
+    run=runtime.accept(request);runtime.execute(run['id']);saved=store.get(run['id'])
+    self.assertEqual(saved['state'],'RESULT_READY',saved.get('error_code'));rendered.append(bank.rendered)
+    store.ack(run['id'],version+1,saved['result_hash'])
+   self.assertEqual(model.calls,6);self.assertEqual(len(model.responses),0)
+   self.assertIn('2,500.00',rendered[1]);self.assertIn('租金',rendered[1]);self.assertNotIn('退款',rendered[1])
+   self.assertIn('不能仅凭商户名称确定实际用途',rendered[2]);self.assertIn('租金',rendered[2])
+   self.assertEqual(payloads[3]['previous_question'],questions[0]);self.assertEqual(payloads[5]['previous_question'],questions[1])
+   self.assertTrue(any(row['rowId']==prefix for row in payloads[3]['transaction_rows']))
+  finally:runtime.close();bank.close()
+
 class JavaBank:
  def __init__(self,folder,fixture_name="20261011_answer_failure.json"):
   java=str(Path(os.environ['JAVA_HOME'])/'bin/java') if os.getenv('JAVA_HOME') else 'java'

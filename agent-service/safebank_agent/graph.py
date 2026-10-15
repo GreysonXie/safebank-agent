@@ -34,7 +34,7 @@ def transaction_rows(facts):
     """Group existing references by bank transaction, without inventing facts."""
     rows={}
     for key in facts:
-        match=re.fullmatch(r'(.+\.transactions\.\d+)\.([^.]*)',key)
+        match=re.fullmatch(r'(.+\.(?:transactions|analysis\.largest_expenses)\.\d+)\.([^.]*)',key)
         if match:rows.setdefault(match[1],{})[match[2]]='{{'+key+'}}'
     selected=[]
     for row_id,fields in rows.items():
