@@ -1,0 +1,28 @@
+{
+  "providerCalls": 0,
+  "productionAnswerWasNotReplaced": true,
+  "results": [
+    {
+      "group": "REFUND",
+      "manuallyRewrittenCandidate": {
+        "kind": "analysis",
+        "answer": "缺少原订单关联字段，无法确认该退款对应哪笔购物。现有退款入账记录是{{statement_2026_09.transactions.1.merchant}}，金额{{statement_2026_09.transactions.1.amount_minor}}，日期{{statement_2026_09.transactions.1.booked_on}}。需要原订单号或原支付流水与退款通知才能继续核对，不能根据商户或金额相似就建立关联。"
+      },
+      "verdict": {
+        "text": "缺少原订单关联字段，无法确认该退款对应哪笔购物。现有退款入账记录是〔家电退款（合成）〕，金额3,200.00元，日期2026-09-02。需要原订单号或原支付流水与退款通知才能继续核对，不能根据商户或金额相似就建立关联。",
+        "ok": true
+      }
+    },
+    {
+      "group": "COMPARE",
+      "manuallyRewrittenCandidate": {
+        "kind": "analysis",
+        "answer": "2026-09账单支出合计{{statement_2026_09.expense_minor}}，2026-08账单支出合计{{statement_2026_08.expense_minor}}，两月整体差异{{comparison.statement_2026_09_vs_2026_08.expense_difference_minor}}，变化幅度{{comparison.statement_2026_09_vs_2026_08.expense_change_percent}}，方向为{{comparison.statement_2026_09_vs_2026_08.expense_direction}}。\n\n分类看，变化最明显的两项是：购物由2026-08的{{statement_2026_08.categories.购物}}降至2026-09的{{comparison.statement_2026_09_vs_2026_08.categories.购物.newer_minor}}，差额{{comparison.statement_2026_09_vs_2026_08.categories.购物.difference_minor}}；维修由{{comparison.statement_2026_09_vs_2026_08.categories.维修.older_minor}}增至{{comparison.statement_2026_09_vs_2026_08.categories.维修.newer_minor}}，差额{{comparison.statement_2026_09_vs_2026_08.categories.维修.difference_minor}}。\n\n需要说明的是，以上仅为账单分类合计，不能证明购物的性质或维修的合理性；若您关心某笔具体交易，实际用途和凭证请以对应账单明细核对。"
+      },
+      "verdict": {
+        "text": "2026-09账单支出合计5,369.33元，2026-08账单支出合计6,547.92元，两月整体差异-1,178.59元，变化幅度-18%，方向为减少。\n\n分类看，变化最明显的两项是：购物由2026-08的3,200.00元降至2026-09的0.00元，差额-3,200.00元；维修由0.00元增至2,000.00元，差额2,000.00元。\n\n需要说明的是，以上仅为账单分类合计，不能证明购物的性质或维修的合理性；若您关心某笔具体交易，实际用途和凭证请以对应账单明细核对。",
+        "ok": true
+      }
+    }
+  ]
+}

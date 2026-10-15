@@ -1,0 +1,14 @@
+{
+  "secondInvalidRewriteResult": "ANSWER_REPAIR_EXHAUSTED",
+  "rawDraftUnchanged": true,
+  "regressionTestsPassed": 31,
+  "providerHTTPCalls": 0,
+  "realJavaValidatorUsed": true,
+  "secondInvalidRewriteCalls": 3,
+  "capturedRefundAfter": "RESULT_READY",
+  "twoRequestLimitCalls": 2,
+  "replayedModelCalls": 3,
+  "capturedRefundBefore": "RECONCILIATION_REQUIRED / INVALID_ANSWER",
+  "twoRequestLimitResult": "ANSWER_REPAIR_BUDGET_EXHAUSTED",
+  "realDeepSeekRetestPerformed": false
+}

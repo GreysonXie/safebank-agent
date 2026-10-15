@@ -1,0 +1,104 @@
+{
+  "scope": "real model multi-turn queries/advice/clarification; no authorization or financial execution",
+  "cases": 1,
+  "repeats": 1,
+  "turns": 1,
+  "model_request_budget": 6,
+  "model_requests_reserved_or_reported": 6,
+  "passed": 0,
+  "abort_reason": "Bounded evaluation stopped on failure: Not a model-grounded response: SAFE_FALLBACK",
+  "actual_token_usage": null,
+  "records": [
+    {
+      "case": "concise_summary_repair_followup",
+      "repeat": 1,
+      "turn": 1,
+      "prompt": "简短分析2026-09账单，并与2026-08比较支出。",
+      "reply": "本轮模型回答未通过核验，以下为工具数据说明：\n2026-09 共 19 笔交易，收入 ¥11,700.00，支出 ¥5,369.33，净收支 ¥6,330.67。\n支出最多的类别是 居住：¥2,500.00，占总支出 46.6%。\n维修：¥2,000.00。\n日用品：¥363.50。\n餐饮：¥184.24。\n订阅：¥95.00。\n本人账户内部转账 ¥1,000.00，已从上述收入与支出中排除。\n有 2 笔大额支出候选，可核对交易明细；金额达到阈值不代表欺诈。\n\n2026-08 共 18 笔交易，收入 ¥8,500.00，支出 ¥6,547.92，净收支 ¥1,952.08。\n支出最多的类别是 购物：¥3,200.00，占总支出 48.9%。\n居住：¥2,500.00。\n日用品：¥373.57。\n餐饮：¥170.97。\n订阅：¥95.00。\n本人账户内部转账 ¥1,000.00，已从上述收入与支出中排除。\n有 2 笔大额支出候选，可核对交易明细；金额达到阈值不代表欺诈。",
+      "answer_source": "SAFE_FALLBACK",
+      "trace": [
+        "get_statement",
+        "get_statement",
+        "answer_customer / ANSWER_NOT_GROUNDED / 业务语义需修正：金额核算正确（5,369.33 vs 6,547.92，减少1,178.59元，约18%），退款计入入账表述正确。但候选断言“09月没有同类支出”属存在性推断：缺失只能说明本月无该类购物记录，不能断言历史/将来无同类支出。",
+        "answer_customer / ANSWER_NOT_GROUNDED / 语义审核缺少有效结论或问题列表",
+        "answer_customer / MODEL_REQUEST_BUDGET_EXCEEDED / 已到模型请求上限，未继续调用供应商",
+        "MODEL_REQUEST_BUDGET_EXCEEDED / 停止模型请求"
+      ],
+      "fact_references": [],
+      "passed": false,
+      "failure": "Not a model-grounded response: SAFE_FALLBACK",
+      "preview_cleanup_ok": true,
+      "balance_unchanged": true,
+      "model_usage": {
+        "request_count": 6,
+        "request_limit": 6,
+        "generation_requests": 4,
+        "review_requests": 2,
+        "usage_reported_requests": 6,
+        "usage_complete": true,
+        "prompt_tokens": 52658,
+        "completion_tokens": 2104,
+        "total_tokens": 54762,
+        "prompt_cache_hit_tokens": 22784,
+        "prompt_cache_miss_tokens": 29874,
+        "calls": [
+          {
+            "prompt_cache_miss_tokens": 3515,
+            "kind": "generation",
+            "total_tokens": 3595,
+            "completion_tokens": 80,
+            "success": true,
+            "prompt_tokens": 3515,
+            "prompt_cache_hit_tokens": 0
+          },
+          {
+            "prompt_cache_miss_tokens": 4820,
+            "kind": "generation",
+            "total_tokens": 8477,
+            "completion_tokens": 585,
+            "success": true,
+            "prompt_tokens": 7892,
+            "prompt_cache_hit_tokens": 3072
+          },
+          {
+            "prompt_cache_miss_tokens": 10708,
+            "kind": "review",
+            "total_tokens": 11918,
+            "completion_tokens": 186,
+            "success": true,
+            "prompt_tokens": 11732,
+            "prompt_cache_hit_tokens": 1024
+          },
+          {
+            "prompt_cache_miss_tokens": 254,
+            "kind": "generation",
+            "total_tokens": 9168,
+            "completion_tokens": 594,
+            "success": true,
+            "prompt_tokens": 8574,
+            "prompt_cache_hit_tokens": 8320
+          },
+          {
+            "prompt_cache_miss_tokens": 10337,
+            "kind": "review",
+            "total_tokens": 11832,
+            "completion_tokens": 87,
+            "success": true,
+            "prompt_tokens": 11745,
+            "prompt_cache_hit_tokens": 1408
+          },
+          {
+            "prompt_cache_miss_tokens": 240,
+            "kind": "generation",
+            "total_tokens": 9772,
+            "completion_tokens": 572,
+            "success": true,
+            "prompt_tokens": 9200,
+            "prompt_cache_hit_tokens": 8960
+          }
+        ]
+      },
+      "elapsed_ms": 12750
+    }
+  ]
+}

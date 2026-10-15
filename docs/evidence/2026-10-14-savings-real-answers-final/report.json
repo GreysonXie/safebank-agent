@@ -1,0 +1,118 @@
+{
+  "scope": "Real DeepSeek draft/validate nodes and production Java GroundedAnswer, synthetic task evidence; no bank tool calls or fund execution",
+  "maximumRequests": 2,
+  "cases": [
+    {
+      "id": "SCHEDULE_REGISTERED",
+      "question": "任务已经核验成功，是不是之后每个月的钱就已经到账了？商户合同也结束了吗？",
+      "source": "Synthetic terminal test evidence; future transfers not performed",
+      "attempts": [
+        {
+          "node": "draft",
+          "state": "RECEIVED",
+          "input": {
+            "answer_contract": {
+              "additional_fields": false,
+              "allowed_kinds": [
+                "analysis",
+                "general",
+                "clarification"
+              ],
+              "prepared_preview": false,
+              "required_fields": [
+                "kind",
+                "answer"
+              ],
+              "suspected_transfer_inducement": false
+            },
+            "facts": {
+              "calendar.days_per_week": {
+                "display": "7",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.months_per_quarter": {
+                "display": "3",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.months_per_year": {
+                "display": "12",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.percent_whole": {
+                "display": "100",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.quarters_per_year": {
+                "display": "4",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "savings_task_status.analysis_month": {
+                "display": "2026-09",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.phase": {
+                "display": "原任务的银行状态快照",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.state": {
+                "display": "VERIFIED_SUCCESS",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              }
+            },
+            "mandate_rows": [],
+            "plan_kind": "analysis",
+            "previous_answer": null,
+            "previous_question": "",
+            "question": "任务已经核验成功，是不是之后每个月的钱就已经到账了？商户合同也结束了吗？",
+            "reference_hints": [],
+            "tool_notices": [],
+            "transaction_rows": [],
+            "validation_error": ""
+          },
+          "provider": {
+            "content": {
+              "kind": "analysis",
+              "answer": "这里说的“核验成功”，是指原任务的银行状态快照显示登记已核验成功，它只说明任务本身的登记状态，并不代表之后每个月的钱已经到账，也不代表商户合同已经结束。未来各期是否实际入账，要看银行明细，目前没有可引用的到账记录作为依据。\n\n关于商户合同，银行侧的操作通常只作用于银行代扣授权的范围，不等于商户合同终止，也不等于以后不会再收费。如需确认合同是否结束，建议以商户侧的合同或账单为准；任务后续步骤可以顺着原任务卡继续核对。"
+            },
+            "id": "ca3336ba-e203-4722-b78c-265a456b446e",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 3536,
+              "completion_tokens": 133,
+              "total_tokens": 3669,
+              "prompt_tokens_details": {
+                "cached_tokens": 3328
+              },
+              "prompt_cache_hit_tokens": 3328,
+              "prompt_cache_miss_tokens": 208
+            },
+            "raw_content": "{\"kind\":\"analysis\",\"answer\":\"这里说的“核验成功”，是指原任务的银行状态快照显示登记已核验成功，它只说明任务本身的登记状态，并不代表之后每个月的钱已经到账，也不代表商户合同已经结束。未来各期是否实际入账，要看银行明细，目前没有可引用的到账记录作为依据。\\n\\n关于商户合同，银行侧的操作通常只作用于银行代扣授权的范围，不等于商户合同终止，也不等于以后不会再收费。如需确认合同是否结束，建议以商户侧的合同或账单为准；任务后续步骤可以顺着原任务卡继续核对。\"}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "javaVerdict": {
+        "text": "这里说的“核验成功”，是指原任务的银行状态快照显示登记已核验成功，它只说明任务本身的登记状态，并不代表之后每个月的钱已经到账，也不代表商户合同已经结束。未来各期是否实际入账，要看银行明细，目前没有可引用的到账记录作为依据。\n\n关于商户合同，银行侧的操作通常只作用于银行代扣授权的范围，不等于商户合同终止，也不等于以后不会再收费。如需确认合同是否结束，建议以商户侧的合同或账单为准；任务后续步骤可以顺着原任务卡继续核对。",
+        "ok": true
+      },
+      "accepted": true,
+      "answer": {
+        "kind": "analysis",
+        "answer": "这里说的“核验成功”，是指原任务的银行状态快照显示登记已核验成功，它只说明任务本身的登记状态，并不代表之后每个月的钱已经到账，也不代表商户合同已经结束。未来各期是否实际入账，要看银行明细，目前没有可引用的到账记录作为依据。\n\n关于商户合同，银行侧的操作通常只作用于银行代扣授权的范围，不等于商户合同终止，也不等于以后不会再收费。如需确认合同是否结束，建议以商户侧的合同或账单为准；任务后续步骤可以顺着原任务卡继续核对。"
+      },
+      "rendered": "这里说的“核验成功”，是指原任务的银行状态快照显示登记已核验成功，它只说明任务本身的登记状态，并不代表之后每个月的钱已经到账，也不代表商户合同已经结束。未来各期是否实际入账，要看银行明细，目前没有可引用的到账记录作为依据。\n\n关于商户合同，银行侧的操作通常只作用于银行代扣授权的范围，不等于商户合同终止，也不等于以后不会再收费。如需确认合同是否结束，建议以商户侧的合同或账单为准；任务后续步骤可以顺着原任务卡继续核对。"
+    }
+  ],
+  "modelSends": 1,
+  "cumulativeUpperCny": "5.151460",
+  "batchUpperCny": "0.01574",
+  "previousLedgerUnchanged": true
+}

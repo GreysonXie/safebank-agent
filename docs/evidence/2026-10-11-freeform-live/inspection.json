@@ -1,0 +1,195 @@
+{
+  "batches": 2,
+  "cases": 7,
+  "newModelReservations": 14,
+  "newProviderRequests": 13,
+  "newTokens": 37728,
+  "newUsageComplete": false,
+  "newUnfinishedReservations": 1,
+  "guardBlockedBeforeDispatch": 1,
+  "batchAuthorizedCny": ".30",
+  "historicalUnknownReservationsPreserved": 2,
+  "globalUpperCny": "2.069560",
+  "maxInFlightConservativeGuardCny": "3.906296",
+  "authorizedCny": 4,
+  "ratesUpperPerMillionCny": {
+    "input": 4,
+    "output": 12
+  },
+  "officialPricingSource": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+  "oldLedgersUnchanged": true,
+  "ledgerHistory": [
+    {
+      "file": "20261011-money4-context.json",
+      "calls": 19,
+      "sha256": "a443ea221d4af59f3996c0f4e69964fe3e8733b7155aeee0f25e97933c627b1f"
+    },
+    {
+      "file": "20261011-mandate-followup-context.json",
+      "calls": 11,
+      "sha256": "0a8106299ca6838175064909f09e97bc8691a916ac79a3d4a30dacd4b099a847"
+    },
+    {
+      "file": "20261011-volume-01-context.json",
+      "calls": 8,
+      "sha256": "61ee6e6f1b83b0ed17133197f53cb3cc057fa3f65483723fb127d353ea221f51"
+    },
+    {
+      "file": "20261011-volume-02-context.json",
+      "calls": 8,
+      "sha256": "731472f6ea817153b67af56a7112da5c982d82cabc510000b80a91ccf170454b"
+    },
+    {
+      "file": "20261011-volume-03-context.json",
+      "calls": 11,
+      "sha256": "02ec4041da6da1152bbdb2d5a6408007029c8bad4c792af2bbb7eeaccc4d0ad3"
+    },
+    {
+      "file": "20261011-volume-04-context.json",
+      "calls": 9,
+      "sha256": "89c4c3a45825742749d7e8699e498a70d19d9e9fff4149931553eee58563677b"
+    },
+    {
+      "file": "20261011-volume-05-context.json",
+      "calls": 8,
+      "sha256": "ddc553bb6bad62c9d34c94b9dd4f23e95b7479db2dd9aed8d1a9569b4eefda9a"
+    },
+    {
+      "file": "20261011-volume-06-context.json",
+      "calls": 9,
+      "sha256": "80867db3ad616a333d65ef3459c694845141d68bc94c8c2e53bf405eeb9c1553"
+    },
+    {
+      "file": "20261011-contract-fix-01-context.json",
+      "calls": 7,
+      "sha256": "aa64d9739a7089e5d81d699df2c3c7e401fede45337ddfd7b0f1612235d85340"
+    },
+    {
+      "file": "20261011-contract-fix-02-context.json",
+      "calls": 6,
+      "sha256": "97f60aa26a3a5bbd947d4a7ea82d20de43f2d9a9e0a545a3a8306f5996d0f5ed"
+    },
+    {
+      "file": "20261011-contract-fix-03-context.json",
+      "calls": 7,
+      "sha256": "b5a502eea850188b93ae91cbd4760190d4fac20059f49c1f046fa2b0ba8527c3"
+    },
+    {
+      "file": "20261011-contract-fix-04-context.json",
+      "calls": 3,
+      "sha256": "2282802599b91d2f53f8dd178d0dd5b96f8bc3d92f1987e3c632bf7a08805c36"
+    },
+    {
+      "file": "20261011-contract-fix-05-context.json",
+      "calls": 3,
+      "sha256": "42e76462d6211eab5f38e3b3790afeb603e7bbe9be40181a4ffdb968c26c74c3"
+    },
+    {
+      "file": "20261011-contract-fix-06-context.json",
+      "calls": 3,
+      "sha256": "276a82ec4537d7ca58e76045c07bb683d9cb6a9b4f35e653f264d1ba79b45f6a"
+    },
+    {
+      "file": "20261011-contract-fix-07-context.json",
+      "calls": 7,
+      "sha256": "f325f23ac4f174742b5de9c33bbff83b8e643fbab2f7e8a3bb48404e0fe8da8d"
+    },
+    {
+      "file": "20261011-contract-fix-08-context.json",
+      "calls": 5,
+      "sha256": "20e05cb365086885f0d4bb63b418486741bde6b8df021eec2d06c80722a954e8"
+    },
+    {
+      "file": "20261011-contract-fix-09-context.json",
+      "calls": 10,
+      "sha256": "f1740c4cf96d96c798215d121b5b6ea037c3d203ce76d4f7dd7e7ee76c23422d"
+    },
+    {
+      "file": "20261011-contract-fix-10-context.json",
+      "calls": 4,
+      "sha256": "baf905b1324e9df7f46d8c67614c8fc52173166dc52ee53c2fd3324767b46e0c"
+    }
+  ],
+  "http200": 6,
+  "httpFailures": 1,
+  "caseStateChecks": [
+    {
+      "batch": 9,
+      "case": 1,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 9,
+      "case": 2,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 9,
+      "case": 3,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 9,
+      "case": 4,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 9,
+      "case": 5,
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "agentError": "MODEL_EFFECT_UNKNOWN",
+      "javaState": "PAUSED"
+    },
+    {
+      "batch": 10,
+      "case": 1,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 10,
+      "case": 2,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    }
+  ],
+  "balanceBeforeCny": "7.47",
+  "balanceAfterCny": "7.45",
+  "displayedDeltaCny": "0.02",
+  "finalWebMode": "LANGGRAPH_MOCK",
+  "finalHealth": {
+    "framework": "LangGraph",
+    "modelMode": "mock",
+    "status": "UP"
+  },
+  "limitations": "6 HTTP deliveries do not prove semantic quality. Known usage upper excludes the one new UNKNOWN; local ledger upper includes it. First batch did not enforce 0.30 subcap; second batch verified rolling guard includes first known usage. Displayed balance is not exact billing.",
+  "newKnownUsageUpperCny": "0.163264",
+  "newUnknownReservedCny": "0.25",
+  "newConservativeLedgerUpperCny": "0.413264",
+  "firstBatchSubcapLoaded": false,
+  "secondBatchSubcapVerified": true,
+  "blockedBeforeDispatchReason": "Prior 1.656296 + attempted tenth reservation at 0.25 = 4.156296 exceeds global 4; guard reservations remained 9; original adapter was not entered."
+}

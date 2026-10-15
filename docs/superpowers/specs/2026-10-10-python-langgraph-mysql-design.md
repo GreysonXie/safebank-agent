@@ -124,9 +124,9 @@ Python 以 FastAPI 提供非流式首阶段契约，LangGraph 状态包括 schem
 
 ## 9. 已核查的外部依据
 
-- [MySQL 8.4 日期类型](http<LOCAL_PATH> 时间类型与 H2 TIMESTAMP WITH TIME ZONE 不同；数据语义需要明确转换。
-- [MySQL 检查点包](http<LOCAL_PATH>>=8.0.19，setup/autocommit 有明确要求；存在实现不是本项目兼容通过。
-- [LangGraph 中断](http<LOCAL_PATH>
+- [MySQL 8.4 日期类型](https://dev.mysql.com/doc/refman/8.4/en/datetime.html)：MySQL 时间类型与 H2 TIMESTAMP WITH TIME ZONE 不同；数据语义需要明确转换。
+- [MySQL 检查点包](https://pypi.org/project/langgraph-checkpoint-mysql/)：社区实现，已发布3.0.0；支持同步/异步driver，要求MySQL>=8.0.19，setup/autocommit 有明确要求；存在实现不是本项目兼容通过。
+- [LangGraph 中断](https://docs.langchain.com/oss/python/langgraph/interrupts)：节点恢复可能重跑，必须处理副作用与幂等。
 
 本文件是 v0.7 首阶段设计，后续撤销/转账/储蓄 DAG 需单独设计其授权与副作用恢复；目前没有新增生产功能或迁移任何运行数据。
 
@@ -148,7 +148,7 @@ Python `agent_effect_receipts`保存operationKey、原轮、purpose、输入哈�
 
 Java工具接口必须传operationKey与inputHash，并在bank库的agent_tool_call_receipts按turn/key保存查询快照。验证当前归属/新有效grant后查原receipt，命中不重复查询、不重复占quota；其观察时间仍是原快照，不冒充实时数据。需要刷新事实则新的逻辑调用、新key和配额。工具额度与模型额度分开计数。Java工具事务内锁turn，核验版本/grant和总配额、消费一次quota、保存结果，失败回滚；首阶段工具限本地DB查询，没有外部银行网络或LLM。Python回调结果未知时可以按相同key查询Java已提交receipt，不通过新key放大查询。
 
-验收口径是“已持久化结果重放不新增发送/计数；发送结果未知不自动重发”，不是外部供应商端exactly-once或永不重复计费。[LangGraph中断说明](http<LOCAL_PATH>
+验收口径是“已持久化结果重放不新增发送/计数；发送结果未知不自动重发”，不是外部供应商端exactly-once或永不重复计费。[LangGraph中断说明](https://docs.langchain.com/oss/python/langgraph/interrupts)解释恢复时节点前段重跑；checkpointer本身不能替代上述effect契约。
 
 ### 10.3 唯一版本权威与两步完成
 

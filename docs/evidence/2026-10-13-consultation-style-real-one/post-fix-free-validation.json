@@ -1,0 +1,36 @@
+{
+  "capturedRealAnswerFreeReplayJavaPassed": true,
+  "replayedAnswer": {
+    "kind": "analysis",
+    "answer": "不是每月180元。{{mandates_latest.2.merchant}}的收费约定是约定按季度收费，单期金额为{{mandates_latest.2.amount_minor}}，折算到每月约为{{mandates_latest.2.budget_monthly_equivalent_minor}}。也就是说，180元是每期（每季度）的金额，而不是每月扣收的金额。\n\n这里只说明收费周期与金额的约定，不代表已有实际扣款记录。实际交易请以对应账单核对。本轮不涉及撤销操作。"
+  },
+  "replayedJavaText": "不是每月180元。〔季度安全服务（合成）〕的收费约定是约定按季度收费，单期金额为180.00元，折算到每月约为60.00元。也就是说，180元是每期（每季度）的金额，而不是每月扣收的金额。\n\n这里只说明收费周期与金额的约定，不代表已有实际扣款记录。实际交易请以对应账单核对。本轮不涉及撤销操作。",
+  "newProviderCalls": 11,
+  "newUnknownRequests": 0,
+  "newFeeUpperCny": "0.179236",
+  "cumulativeIncludingReservesCny": "4.764808",
+  "capCny": "5",
+  "remainingCny": "0.235192",
+  "fundsUnchanged": true,
+  "authorizationsUnchangedSince38": true,
+  "oldBudgetHashesChecked": 51,
+  "latestNormalizationRealRegenerationVerified": false,
+  "scope": "New input filtering/prompt/style rules plus free Java replay of captured real answer. Final alias/meta normalization not yet verified by a new model generation or complete live gateway chain. Earlier real probe failures preserved.",
+  "sourceSha256": {
+    "agent-service\\safebank_agent\\answers.py": "19118d037401cef794b5ead83c4949aea6745124f25b960f6963c5c3a7f05ff0",
+    "agent-service\\safebank_agent\\bank_client.py": "502b50225f6a019aae46798d42e368929d9101a40271530239b378ef183ceac0",
+    "agent-service\\safebank_agent\\config.py": "9d378b9281f043cef949638d9c9cddec7dc4fef7653ddf776d30cd9d46ff1e6f",
+    "agent-service\\safebank_agent\\contracts.py": "8bfb5ff22d85a25c5cc74d58f758220760d403df66448207e8cf89421d01ce34",
+    "agent-service\\safebank_agent\\effects.py": "fcfbdd5acc4e81c8b5b0b07eed1cc2206821e25e3a8899cc8c6616ff5b477f0f",
+    "agent-service\\safebank_agent\\graph.py": "c1ed251ae0587a94a9d22cd35d22300da12e71a0308d39ca2a9452e23195d34b",
+    "agent-service\\safebank_agent\\migrate.py": "cd11c05fa852e3cc606fd955aa4ecf357aa23643f780b4d6cd512ad7c872b56d",
+    "agent-service\\safebank_agent\\models.py": "d2602a961cec9132a31eae4283136a199629ee05baf255b3b5f18d82976b8098",
+    "agent-service\\safebank_agent\\prompts.py": "0155090a9be8c213c646ef6df835d8594aa12f62430b336ff0c52cd04d444cba",
+    "agent-service\\safebank_agent\\runtime.py": "b242c437f997d417b716668ae8bf640772be728a6cebda84e7388c8dc0ad2bdd",
+    "agent-service\\safebank_agent\\safety.py": "bde83a76d160800521b377b5b6df77d4732953bf44bd90994277d327c7840f10",
+    "agent-service\\safebank_agent\\schema.py": "95a1923bb265a15762edda29094e05c5c4920cca9d8438c298169594e5fff259",
+    "agent-service\\safebank_agent\\server.py": "428138329f7272a87635bc7f3a543903fa5e17165c0d1d0e486e7aa9e8b282dd",
+    "agent-service\\safebank_agent\\store.py": "d3d66fa14fdb156ad046a85fcc37ad6508b9e6a671e70fdff646c3f45a9cc097",
+    "agent-service\\safebank_agent\\__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+  }
+}

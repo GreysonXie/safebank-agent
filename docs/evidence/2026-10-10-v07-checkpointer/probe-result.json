@@ -1,0 +1,89 @@
+{
+  "scope": "throwaway MySQL checkpoint/fake HTTP probe; zero DeepSeek; no Java integration",
+  "checks": [
+    {
+      "name": "setup_twice",
+      "passed": true
+    },
+    {
+      "name": "interrupt",
+      "passed": true
+    },
+    {
+      "name": "fresh_process_resume",
+      "passed": true
+    },
+    {
+      "name": "completed_duplicate_resume",
+      "passed": true
+    },
+    {
+      "name": "pending_writes",
+      "passed": true
+    },
+    {
+      "name": "stub_version_rejection",
+      "passed": true,
+      "scope": "application-side stub; not Java integration"
+    },
+    {
+      "name": "saved_effect_replay",
+      "passed": true,
+      "scope": "throwaway wrapper; no graph-checkpoint atomicity claim"
+    },
+    {
+      "name": "unknown-before",
+      "passed": true
+    },
+    {
+      "name": "unknown-after",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "python": "3.12.14",
+  "mysql": "8.4.11",
+  "versions": {
+    "langgraph": "1.2.12",
+    "langgraph-checkpoint": "4.2.0",
+    "langgraph-checkpoint-mysql": "3.0.0",
+    "pymysql": "1.2.3"
+  },
+  "counters": [
+    {
+      "name": "answer_local",
+      "calls": 1
+    },
+    {
+      "name": "fake_model_reservation",
+      "calls": 3
+    },
+    {
+      "name": "pending_flaky",
+      "calls": 2
+    },
+    {
+      "name": "pending_good",
+      "calls": 1
+    },
+    {
+      "name": "statement_query",
+      "calls": 2
+    }
+  ],
+  "fake_http_sends": 2,
+  "tables": [
+    "checkpoint_blobs",
+    "checkpoint_migrations",
+    "checkpoint_writes",
+    "checkpoints",
+    "probe_calls",
+    "probe_effects"
+  ],
+  "limitations": [
+    "No Java gateway/ACK/grant renewal integration",
+    "No real provider API or production persistence",
+    "No general checkpointer conformance suite or async validation",
+    "Fake effect wrapper verified separately from graph crash atomicity"
+  ]
+}

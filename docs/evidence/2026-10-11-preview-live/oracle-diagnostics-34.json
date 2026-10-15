@@ -1,0 +1,33 @@
+{
+  "providerCalls": 0,
+  "results": [
+    {
+      "group": "REFUND",
+      "verdict": {
+        "message": "缺少原订单或原交易关联字段，不能确认退款对应某笔购物；请分别描述记录，或明确说明可能对应、需订单凭证核对",
+        "ok": false,
+        "code": "ANSWER_NOT_GROUNDED"
+      },
+      "invalidReferences": [],
+      "topLevelFields": [
+        "answer",
+        "kind",
+        "type"
+      ]
+    },
+    {
+      "group": "COMPARE",
+      "verdict": {
+        "code": "ANSWER_NOT_GROUNDED",
+        "ok": false,
+        "message": "回答数字〔200元〕不在已有事实或计算结果中（前接：其他文本；后接：其他文本），请查询、计算或用事实引用修正"
+      },
+      "invalidReferences": [],
+      "topLevelFields": [
+        "answer",
+        "answer_contract_note",
+        "kind"
+      ]
+    }
+  ]
+}

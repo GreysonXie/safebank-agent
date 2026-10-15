@@ -1,0 +1,23 @@
+{
+  "providerCalls": 0,
+  "actualJavaValidator": true,
+  "receiptProjectionFixture": true,
+  "results": [
+    {
+      "question": "改成600元",
+      "originalNode": "draft",
+      "verdict": {
+        "text": "已按新金额更新转账预览：收款人为张三，备注同学，金额600.00元，目前处于待核对状态，尚未执行。\n\n请在操作卡上核对收款人、金额和备注等信息，并按卡片上的安全提示完成授权；实际转账结果以银行处理为准。",
+        "ok": true
+      }
+    },
+    {
+      "question": "改成600元",
+      "originalNode": "repair",
+      "verdict": {
+        "text": "已把转账金额更新为600.00元，收款人为张三，备注为同学，当前是待核对状态，尚未执行。\n\n请在操作卡上核对收款人、金额和备注，并按卡片上的安全提示完成授权；实际转账结果以银行处理为准。",
+        "ok": true
+      }
+    }
+  ]
+}

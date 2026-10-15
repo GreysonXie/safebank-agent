@@ -1,0 +1,25 @@
+{
+  "providerCalls": 0,
+  "actualJavaValidator": true,
+  "receiptProjectionFixture": true,
+  "results": [
+    {
+      "question": "改成600元",
+      "originalNode": "repair",
+      "verdict": {
+        "ok": false,
+        "code": "ANSWER_NOT_GROUNDED",
+        "message": "回答中的〔已按您的要求把转账〕像是在宣称执行成功，不能用分析签发操作结论。解释现有授权时请调用list_mandates刷新，并引用对应state_label；未执行时请明确否定"
+      }
+    },
+    {
+      "question": "请撤销视频服务，先给我看预览，不要直接执行。",
+      "originalNode": "repair",
+      "verdict": {
+        "code": "ANSWER_NOT_GROUNDED",
+        "message": "回答中的〔已生成撤销〕像是在宣称执行成功，不能用分析签发操作结论。解释现有授权时请调用list_mandates刷新，并引用对应state_label；未执行时请明确否定",
+        "ok": false
+      }
+    }
+  ]
+}

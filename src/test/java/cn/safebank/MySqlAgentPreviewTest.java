@@ -25,6 +25,22 @@ class MySqlAgentPreviewTest {
  @BeforeEach void start(){var ds=(DriverManagerDataSource)MySqlTestSupport.fresh("preview");app=new SpringApplicationBuilder(Application.class,TimeConfig.class).profiles("mysql","mysql-test","agent-gateway","langgraph-agent").run("--server.port=0","--spring.datasource.url="+ds.getUrl(),"--bank.agent.service-key="+"x".repeat(64),"--bank.agent.reconcile.enabled=false","--bank.model.debug-budget.path="+System.getProperty("java.io.tmpdir")+"/mandate-receipt-budget-"+UUID.randomUUID()+".json","--logging.level.root=ERROR","--spring.main.banner-mode=off");db=new JdbcTemplate(ds);new ResourceDatabasePopulator(new ClassPathResource("db/fixtures/mysql/v07-synthetic.sql")).execute(ds);contexts=app.getBean(ContextService.class);queries=app.getBean(RiskQueryService.class);caps=app.getBean(AgentCapabilityService.class);turns=app.getBean(GatewayTurnService.class);json=app.getBean(ObjectMapper.class);clock=app.getBean(MutableRiskClock.class);}
  @AfterEach void close(){if(app!=null)app.close();}
  static AgentToolRequestDTO previewRequest(String key,String tool,Object args){var node=json.valueToTree(args);return new AgentToolRequestDTO(ContextEvidenceService.hash(key),caps.inputHash(tool,node),tool,node);}
+ @Test void savingsGraphPreparationReplayAndExecutionUseOriginalWorkflow() throws Exception {
+  String cid=contexts.create("u1");confirmed(cid);String grant=token(cid);
+  var plan=(com.fasterxml.jackson.databind.node.ObjectNode)json.readTree(java.nio.file.Files.readString(java.nio.file.Path.of("agent-service/tests/fixtures/savings_task_plan.json")));
+  plan.put("analysisMonth","2026-09");((com.fasterxml.jackson.databind.node.ObjectNode)plan.path("nodes").get(5).path("params")).put("recipientQuery","旅游基金");
+  int ledger=db.queryForObject("SELECT COUNT(*) FROM ledger",Integer.class),auth=db.queryForObject("SELECT COUNT(*) FROM action_authorizations",Integer.class);
+  var request=previewRequest("savings-original","savings_task_prepare",Map.of("taskPlan",plan));var first=caps.call(grant,request);var replay=caps.call(grant,request);
+  assertEquals(first.data().path("id"),replay.data().path("id"));assertTrue(replay.replay());assertTrue(first.facts().containsKey("savings_task.phase"));
+  assertEquals("〔音乐服务（合成）〕",first.facts().get("savings_task.pending.merchant").display());assertEquals("2026-11-20",first.facts().get("savings_task.schedule.first_date").display());assertEquals("0",first.facts().get("savings_task.progress.verified_revocations").display());
+  assertEquals(auth,db.queryForObject("SELECT COUNT(*) FROM action_authorizations",Integer.class));assertEquals(ledger,db.queryForObject("SELECT COUNT(*) FROM ledger",Integer.class));
+  UUID id=UUID.fromString(first.data().path("id").asText());var workflow=app.getBean(WorkflowService.class);var w=workflow.get("u1",id);
+  for(int i=0;i<3;i++){var action=(ActionVO)w.pendingAction();assertEquals("AWAITING_AUTH",action.status().name());authorize(app.getBean(ActionService.class).status("u1",action.id()));app.getBean(ActionExecutionService.class).submit("u1",action.id());w=workflow.resume("u1",id,w.version());}
+  assertEquals("VERIFIED_SUCCESS",w.state());assertEquals(8300,w.estimatedSavingMinor());assertEquals(ledger,db.queryForObject("SELECT COUNT(*) FROM ledger",Integer.class));
+  var status=caps.call(grant,previewRequest("savings-status","savings_task_status",Map.of("workflowId",id.toString())));assertEquals("VERIFIED_SUCCESS",status.data().path("state").asText());
+  assertEquals("83.00元",status.facts().get("savings_task_status.verified_monthly_saving_minor").display());assertEquals("2",status.facts().get("savings_task_status.progress.verified_revocations").display());assertFalse(status.facts().containsKey("savings_task_status.pending.merchant"));
+  assertThrows(BankException.class,()->workflow.get("u2",id));assertEquals(1,db.queryForObject("SELECT COUNT(*) FROM workflows WHERE id=?",Integer.class,id.toString()));
+ }
  @Test void conversationalTransferPreviewIsIdempotentAndNeverAuthorizes(){
   String grant=token(contexts.create("u1"));var request=previewRequest("transfer-preview","transfer_preview",Map.of("sourceQuery","日常账户","recipientQuery","同学","amountMinor",50000));
   int ledgerBefore=db.queryForObject("SELECT COUNT(*) FROM ledger",Integer.class),authBefore=db.queryForObject("SELECT COUNT(*) FROM action_authorizations",Integer.class);

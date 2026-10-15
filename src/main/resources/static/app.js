@@ -43,7 +43,17 @@ function renderWorkflows(){
   const box=node('article',undefined,'workflow-item');box.dataset.workflowId=w.id;
   box.append(node('h3','联合任务 · 版本 '+w.version+' · '+(statusLabel[w.state]||w.state)),node('p','账单 '+w.request.month+' → '+w.request.recipientId+' · 预计月度节省 '+money(w.estimatedSavingMinor)+'（仅计本任务已核验撤销）','hint'));
   const list=node('ol',undefined,'workflow-steps');for(const step of w.steps){const item=node('li',(step.kind==='REVOKE'?'撤销 '+step.key.substring(7):'登记月度储蓄')+' · '+(statusLabel[step.status]||step.status)+' · v'+step.inputVersion+(step.errorCode?' · '+step.errorCode:''));const inspect=node('button','查看动作');inspect.type='button';inspect.onclick=()=>perform(inspect,async()=>{showAction(await api('/actions/'+step.actionId));$('actions').scrollIntoView({block:'start'});});item.append(inspect);list.append(item);}
-  box.append(list);if(w.partial)box.append(node('p','已有步骤完成；取消或修改后续任务不会撤回这些银行操作。','hint'));
+  const history=node('details');history.append(node('summary','操作记录与回执（'+w.steps.length+'）'),list);box.append(history);
+  const planDetails=node('details');planDetails.append(node('summary','查看完整计划与依赖'));const planBody=node('div');planDetails.append(planBody);
+  planDetails.ontoggle=async()=>{if(!planDetails.open)return;planBody.replaceChildren(node('p','正在读取原任务步骤…','hint'));
+   try{const plan=await api('/workflows/'+w.id+'/plan');if(!planDetails.isConnected)return;
+    if(plan.version!==w.version){planBody.replaceChildren(node('p','任务版本已变化，请刷新后查看。','hint'));return;}
+    const names={mandate_lookup:'核对代扣查询',account_query:'核对账户',mandate_revoke:'撤销银行代扣',compute_savings:'核算已确认节省',schedule_create:'登记定时储蓄'};
+    const states={VALIDATED:'前置已校验',WAITING_DEPENDENCY:'等待前置步骤',BLOCKED_UNKNOWN:'结果未知，等待查单',AWAITING_AUTH:'等待逐项确认',AUTHORIZED:'已授权，尚未核验完成',VERIFIED_SUCCESS:'已核验完成',VERIFIED_FAILED:'未完成',CANCELLED:'已取消',PENDING:'银行处理中'};
+    const stepNames=Object.fromEntries(plan.nodes.map((step,index)=>[step.id,'步骤 '+(index+1)+'：'+(names[step.type]||'业务步骤')]));
+    const steps=node('ol',undefined,'workflow-steps');for(const step of plan.nodes){const item=node('li',(names[step.type]||'业务步骤')+' · '+(states[step.displayState]||step.displayState));if(step.dependsOn.length)item.append(node('small','前置：'+step.dependsOn.map(id=>stepNames[id]||'待核对步骤').join('；'),'hint'));steps.append(item);}planBody.replaceChildren(steps,node('p','计划登记和前置校验不代表银行操作完成；定时委托登记也不代表未来到账。','hint'));
+   }catch(error){if(planDetails.isConnected)planBody.replaceChildren(node('p','步骤读取失败：'+error.message,'hint'));}
+  };box.append(planDetails);if(w.partial)box.append(node('p','已有步骤完成；取消或修改后续任务不会撤回这些银行操作。','hint'));
   if(w.state==='VERIFIED_SUCCESS'||w.state==='PARTIAL_SUCCESS')box.append(node('p','请逐项检查结果。定时计划登记不代表未来转账已发生；商户合同状态仍未知。','hint'));
   const controls=node('div',undefined,'workflow-controls');const resume=node('button','查单并继续');resume.onclick=()=>perform(resume,async()=>{await api('/workflows/'+w.id+'/resume',{version:w.version});await refresh();});controls.append(resume);
   if(w.pendingAction&&w.pendingAction.id){const inspect=node('button','查看当前确认项');inspect.onclick=()=>{showAction(w.pendingAction);$('actions').scrollIntoView({block:'start'});};controls.append(inspect);showAction(w.pendingAction);}

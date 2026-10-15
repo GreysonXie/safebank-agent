@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-13",
+  "providerBatches": [
+    31,
+    32
+  ],
+  "providerCallsWithUsage": 10,
+  "totalTokens": 23135,
+  "testFeeUpperCny": "0.098780",
+  "cumulativeUpperIncludingReservationsCny": "3.771920",
+  "authorizedTotalCapCny": "4.50",
+  "historicalUnknownReservations": 3,
+  "newUnknownReservations": 0,
+  "finalTargetedSafetyInteractionsPassed": 3,
+  "finalTargetedSafetyInteractionsAttempted": 3,
+  "freeRegressionTestsPassed": 50,
+  "fundsUnchanged": true,
+  "authorizationsUnchanged": true,
+  "restoredMode": "LANGGRAPH_MOCK",
+  "limitations": [
+    "Scripted tool-data injection regression only; no real-model indirect injection test.",
+    "Batch31 failed and is preserved; source changed after it finished. Batch32 frozen source unchanged.",
+    "Batch32 followup required one warning rewording; lexical false rejections remain possible.",
+    "Risk-held mixed query did not query bank history; not financial task completion evidence.",
+    "No general typed user-amount fact quoting support; bank numeric validation unchanged."
+  ]
+}

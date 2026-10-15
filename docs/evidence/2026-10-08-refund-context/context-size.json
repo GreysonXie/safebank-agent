@@ -1,0 +1,11 @@
+{
+  "basis": "serialized JSON characters, not billed tokens; actual synthetic August/September statements",
+  "fullCatalogChars": 46543,
+  "summaryCatalogChars": 12542,
+  "reviewDetailsCatalogChars": 28177,
+  "summaryReductionPercent": 73.05287583524913,
+  "reviewReductionPercent": 39.46028403841609,
+  "fullFactCount": 356,
+  "summaryFactCount": 134,
+  "reviewFactCount": 356
+}

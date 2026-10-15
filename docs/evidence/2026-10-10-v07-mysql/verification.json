@@ -1,0 +1,73 @@
+{
+  "date": "2026-10-10",
+  "mysql": "8.4.11",
+  "tests": {
+    "mysql-combined": {
+      "selected": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "mysql-final": {
+      "selected": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "review-mysql-green": {
+      "selected": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "h2-package": {
+      "selected": 287,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 18
+    },
+    "clock-green": {
+      "selected": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "checks-export-green": {
+      "selected": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "h2-clock-delta-package": {
+      "selected": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "dependencies": [
+    "BOOT-INF/lib/mysql-connector-j-9.4.0.jar",
+    "BOOT-INF/lib/flyway-core-11.7.2.jar",
+    "BOOT-INF/lib/flyway-mysql-11.7.2.jar"
+  ],
+  "jarSha256": "4a4f745ba5c36df0acaf21b3d01d9be80dd9dca9f17450ac4ca4b1b374028fda",
+  "packaging": "H2 tests passed; live Windows JAR lock blocked repackage; verified candidate stopped then packaging-only succeeded without repeating tests",
+  "runtimeDatabase": "safebank_bank_v07",
+  "syntheticSeed": {
+    "accounts": 5,
+    "transactions": 114,
+    "totalBalanceMinor": 7588480
+  },
+  "runtimeDDL": "denied",
+  "realDeepSeekCalls": 0,
+  "oldServices": {
+    "v05": 8096,
+    "v06": 8110,
+    "operator": 8111
+  },
+  "limitations": [
+    "Flyway warns declared support up to MySQL 8.1",
+    "loopback SSL identity not verified",
+    "no Python production service or ACK/grant services"
+  ]
+}

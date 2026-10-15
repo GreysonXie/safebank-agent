@@ -1,0 +1,13 @@
+{
+  "question": "分析2026-09账单，先告诉我支出和入账分别多少，退款怎么算。",
+  "before": {
+    "answer": "2026-09账单中，支出合计{{statement_2026_09.expense_minor}}，入账合计{{statement_2026_09.income_minor}}，净结余{{statement_2026_09.net_minor}}。\n\n退款的处理方式：{{statement_2026_09.transactions.1.merchant}}于{{statement_2026_09.transactions.1.booked_on}}有正向入账{{statement_2026_09.transactions.1.amount_minor}}，属于非工资类入账，计入上述入账合计并增加净结余；它不抵减支出合计，所以支出合计仍是{{statement_2026_09.expense_minor}}。另外，本人账户内部转账{{statement_2026_09.internal_transfer_minor}}不计入支出。实际交易请以对应账单核对。",
+    "kind": "analysis"
+  },
+  "after": {
+    "answer": "2026-09账单中，支出合计{{statement_2026_09.expense_minor}}，入账合计{{statement_2026_09.income_minor}}，净结余{{statement_2026_09.net_minor}}。\n\n退款的处理方式：{{statement_2026_09.transactions.1.merchant}}于{{statement_2026_09.transactions.1.booked_on}}有正向入账{{statement_2026_09.transactions.1.amount_minor}}，属于非工资类入账，计入上述入账合计并增加净结余；它不抵减支出合计，所以支出合计仍是{{statement_2026_09.expense_minor}}。另外，本人账户内部转账{{statement_2026_09.internal_transfer_minor}}不计入支出。实际交易请以对应账单核对。",
+    "kind": "analysis"
+  },
+  "changed": false,
+  "originalProviderReceiptPreserved": true
+}

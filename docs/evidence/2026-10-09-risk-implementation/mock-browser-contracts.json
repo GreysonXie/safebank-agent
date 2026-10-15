@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "scope": "mocked browser contracts",
+  "checks": [
+    "initialization",
+    "explicit query",
+    "RED proof",
+    "post-verification confirmation",
+    "one submit",
+    "four widths",
+    "no page errors"
+  ],
+  "modelRequests": 0,
+  "browserFallback": "Browser plugin not available"
+}

@@ -1,0 +1,61 @@
+{
+  "fundsUnchanged": true,
+  "fundsHash": "107bff1fe575d0e9d695ef3a5e1906dca78fabc68e0ea85592d0c314eace5db1",
+  "oldBudgetFilesUnchanged": 21,
+  "providerCallsWithUsage": 25,
+  "newUnfinishedLedgerReservations": 1,
+  "newUnknownReserveCny": "0.25",
+  "testFeeUpperCny": "0.223836",
+  "cumulativeUpperIncludingReservationsCny": "2.775636",
+  "historicUnknownReserved": 2,
+  "balanceBeforeCny": "6.48",
+  "balanceAfterCny": "6.35",
+  "restoredMode": "LANGGRAPH_MOCK",
+  "cards": [
+    {
+      "id": "agent-111b1207d5cf1cd196c1bdd5a479e4c788389119a681055a",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":50000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-06cf565c9a744bce0135772d0705d1cb110dea5015e2a66d",
+      "kind": "REVOKE",
+      "status": "CANCELLED",
+      "payload": "{\"mandate_id\":\"video\",\"merchant\":\"视频服务（合成）\",\"charge_amount_minor\":6800,\"billing_interval\":\"MONTHLY\",\"estimated_monthly_saving_minor\":6800,\"contract_status\":\"UNKNOWN\",\"scope\":\"仅撤销银行侧代扣授权，商户合同状态未知\"}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-6780510b9b0b912a15e3be724064bde9b71e9e7b92c49300",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":50000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    }
+  ],
+  "finalCases": [
+    {
+      "question": "从日常账户给张三转500元",
+      "httpStatus": 200,
+      "agentState": "NEEDS_CLARIFICATION",
+      "javaState": "ACKED",
+      "answer": "目前无法唯一确定收款人，暂未生成转账预览。请补充收款人的姓名全称或收款人备注，以便进一步核对。",
+      "calls": 2
+    },
+    {
+      "question": "备注同学的那位",
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "javaState": "PAUSED",
+      "answer": null,
+      "calls": 3
+    }
+  ],
+  "sourceSha256": {
+    "agent-service/safebank_agent/runtime.py": "5ac3c7707ce5113305af3e03645392525cffa1a08350fa9c87d708191953d0ec",
+    "agent-service/safebank_agent/prompts.py": "7e85d0284ac5301b2705aaa842b30b2ea06e89791717d2bdad1473b31d491bc7",
+    "src/main/java/cn/safebank/GroundedAnswer.java": "dfef69bcdac26e2f2cba49b8f6f64fcde98b2d63f95ddbcf1ccb71f38d5a8913",
+    "src/main/java/cn/safebank/service/AgentPreviewService.java": "1902cb76a104e58691ab2975945a30765ad1059692187bd7463c9bb37d973e0f"
+  }
+}

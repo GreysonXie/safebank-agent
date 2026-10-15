@@ -1,0 +1,20 @@
+{
+  "providerCalls": 0,
+  "results": [
+    {
+      "probe": "chat_without_csrf",
+      "httpStatus": 403,
+      "expectedDenied": true
+    },
+    {
+      "probe": "forged_agent_grant_submit",
+      "httpStatus": 403,
+      "expectedDenied": true
+    },
+    {
+      "probe": "python_agent_no_service_auth",
+      "httpStatus": 403,
+      "expectedDenied": true
+    }
+  ]
+}

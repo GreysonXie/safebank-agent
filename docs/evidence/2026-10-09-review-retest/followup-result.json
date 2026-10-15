@@ -1,0 +1,138 @@
+{
+  "scope": "real model multi-turn queries/advice/clarification; no authorization or financial execution",
+  "cases": 1,
+  "repeats": 1,
+  "turns": 2,
+  "model_request_budget": 5,
+  "model_requests_reserved_or_reported": 5,
+  "passed": 2,
+  "abort_reason": "",
+  "actual_token_usage": null,
+  "records": [
+    {
+      "case": "focused_comparison_repair_followup",
+      "repeat": 1,
+      "turn": 1,
+      "prompt": "简短比较2026-09与2026-08的支出，只说明两月支出、差额和降幅，不展开分类占比。",
+      "reply": "2026-09支出5,369.33元，2026-08支出6,547.92元。9月比8月少支出1,178.59元，降幅18%。以上支出口径为负向非内",
+      "answer_source": "MODEL_GROUNDED",
+      "trace": [
+        "get_statement",
+        "get_statement",
+        "business_answer_review / PASS"
+      ],
+      "fact_references": [
+        "e0.month",
+        "e1.month",
+        "e0.expense_minor",
+        "e1.expense_minor",
+        "comparison.e0_e1.expense_difference_minor",
+        "comparison.e0_e1.expense_change_percent"
+      ],
+      "passed": true,
+      "failure": "",
+      "preview_cleanup_ok": true,
+      "balance_unchanged": true,
+      "model_usage": {
+        "request_count": 3,
+        "request_limit": 5,
+        "generation_requests": 2,
+        "review_requests": 1,
+        "usage_reported_requests": 3,
+        "usage_complete": true,
+        "prompt_tokens": 23075,
+        "completion_tokens": 230,
+        "total_tokens": 23305,
+        "prompt_cache_hit_tokens": 12160,
+        "prompt_cache_miss_tokens": 10915,
+        "calls": [
+          {
+            "prompt_cache_miss_tokens": 201,
+            "kind": "generation",
+            "total_tokens": 3602,
+            "completion_tokens": 73,
+            "success": true,
+            "prompt_tokens": 3529,
+            "prompt_cache_hit_tokens": 3328
+          },
+          {
+            "prompt_cache_miss_tokens": 475,
+            "kind": "generation",
+            "total_tokens": 7950,
+            "completion_tokens": 51,
+            "success": true,
+            "prompt_tokens": 7899,
+            "prompt_cache_hit_tokens": 7424
+          },
+          {
+            "prompt_cache_miss_tokens": 10239,
+            "kind": "review",
+            "total_tokens": 11753,
+            "completion_tokens": 106,
+            "success": true,
+            "prompt_tokens": 11647,
+            "prompt_cache_hit_tokens": 1408
+          }
+        ]
+      },
+      "elapsed_ms": 3188
+    },
+    {
+      "case": "focused_comparison_repair_followup",
+      "repeat": 1,
+      "turn": 2,
+      "prompt": "只核对维修支出，需要哪些资料？",
+      "reply": "只看维修这一类：2026-09只有一笔，2026-09-10〔设备维修（合成）〕2,000.00元（支出类别“维修”，占该月支出37.25%）；2026-08没有维修类记录。\n\n这笔金额不小，若您想核对确实属于维修、且金额合理，需要您提供：维修的对象（哪台设备/什么故障）、维修方名称或联系方式、报价或收据/发票、以及是否有保修或保险可覆盖。银行账单本身只有日期、商户和金额，没有维修性质、报价或支付渠道字段，因此无法单凭记录判断它是一次性支出还是别的情形。\n\n如需我把这笔与对方凭证逐项对照，把上述报价单或收据发来即可。",
+      "answer_source": "MODEL_GROUNDED",
+      "trace": [
+        "business_answer_review / PASS"
+      ],
+      "fact_references": [
+        "e0.transactions.9.merchant",
+        "e0.month",
+        "e0.transactions.9.booked_on",
+        "e1.month",
+        "e0.categories.维修",
+        "e0.analysis.category_share_percent.维修"
+      ],
+      "passed": true,
+      "failure": "",
+      "preview_cleanup_ok": true,
+      "balance_unchanged": true,
+      "model_usage": {
+        "request_count": 2,
+        "request_limit": 2,
+        "generation_requests": 1,
+        "review_requests": 1,
+        "usage_reported_requests": 2,
+        "usage_complete": true,
+        "prompt_tokens": 24977,
+        "completion_tokens": 261,
+        "total_tokens": 25238,
+        "prompt_cache_hit_tokens": 4480,
+        "prompt_cache_miss_tokens": 20497,
+        "calls": [
+          {
+            "prompt_cache_miss_tokens": 10087,
+            "kind": "generation",
+            "total_tokens": 13314,
+            "completion_tokens": 155,
+            "success": true,
+            "prompt_tokens": 13159,
+            "prompt_cache_hit_tokens": 3072
+          },
+          {
+            "prompt_cache_miss_tokens": 10410,
+            "kind": "review",
+            "total_tokens": 11924,
+            "completion_tokens": 106,
+            "success": true,
+            "prompt_tokens": 11818,
+            "prompt_cache_hit_tokens": 1408
+          }
+        ]
+      },
+      "elapsed_ms": 3109
+    }
+  ]
+}

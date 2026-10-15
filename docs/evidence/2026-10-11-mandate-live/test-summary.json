@@ -1,0 +1,10 @@
+{
+  "mandateRegression": 6,
+  "answerAndCapturedProtocolRegression": 10,
+  "failures": 0,
+  "freeReplayPassed": true,
+  "revisedPromptRealModelVerified": false,
+  "providerRequests": 1,
+  "totalTokens": 554,
+  "originalLedgerRecordsPreserved": true
+}

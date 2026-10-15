@@ -1,0 +1,68 @@
+{
+  "agentState": "COMPLETED",
+  "agentResultHash": "4717f187b0260cfee6464d03397d7010167d0eeb4c92e1166acfccf1e921b8e0",
+  "agentOutputVersion": 2,
+  "effects": [
+    {
+      "node": "plan",
+      "purpose": "model",
+      "state": "SUCCEEDED",
+      "resultStored": true
+    },
+    {
+      "node": "tools",
+      "purpose": "tool",
+      "state": "SUCCEEDED",
+      "resultStored": true
+    },
+    {
+      "node": "draft",
+      "purpose": "model",
+      "state": "SUCCEEDED",
+      "resultStored": true
+    },
+    {
+      "node": "repair",
+      "purpose": "model",
+      "state": "SUCCEEDED",
+      "resultStored": true
+    }
+  ],
+  "modelUsage": [
+    {
+      "purpose": "draft",
+      "state": "SUCCEEDED",
+      "promptTokens": 5360,
+      "completionTokens": 267
+    },
+    {
+      "purpose": "plan",
+      "state": "SUCCEEDED",
+      "promptTokens": 636,
+      "completionTokens": 21
+    },
+    {
+      "purpose": "repair",
+      "state": "SUCCEEDED",
+      "promptTokens": 5412,
+      "completionTokens": 253
+    }
+  ],
+  "javaState": "ACKED",
+  "javaResultHash": "4717f187b0260cfee6464d03397d7010167d0eeb4c92e1166acfccf1e921b8e0",
+  "javaOutputVersion": 2,
+  "bankTools": [
+    {
+      "tool": "mandate_receipt",
+      "queryActionMatches": true,
+      "queriedAt": "2026-10-11T04:13:53.098366Z",
+      "quarterlyRows": [
+        {
+          "merchant": "季度安全服务（合成）",
+          "amountMinor": 18000,
+          "billingInterval": "QUARTERLY"
+        }
+      ]
+    }
+  ]
+}

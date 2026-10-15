@@ -1,0 +1,168 @@
+{
+  "synthetic": true,
+  "seed": 20261007,
+  "snapshot_at": "2026-10-07T10:00:00+08:00",
+  "history_start": "2026-04-01",
+  "history_end": "2026-09-30",
+  "currency": "CNY",
+  "amount_unit": "integer_minor",
+  "usage_data_available": false,
+  "opening_balance_minor": {
+    "checking": 3000000,
+    "travel": 2000000,
+    "other": 0,
+    "external-a": 0,
+    "external-b": 0
+  },
+  "snapshot_balance_minor": {
+    "checking": 5154480,
+    "travel": 2334000,
+    "other": 100000,
+    "external-a": 0,
+    "external-b": 0
+  },
+  "transaction_count": 114,
+  "counts": {
+    "accounts": 5,
+    "recipients": 3,
+    "mandates": 5,
+    "users": 2
+  },
+  "months": {
+    "2026-04": {
+      "transaction_count": 20,
+      "expense_minor": 364558,
+      "income_minor": 850000,
+      "internal_transfer_minor": 100000,
+      "categories": {
+        "居住": 250000,
+        "订阅": 27500,
+        "公用事业": 11742,
+        "通信": 8900,
+        "餐饮": 16745,
+        "日用品": 41946,
+        "交通": 3725,
+        "配送": 4000
+      },
+      "anomaly_candidate_ids": [
+        "syn-0002"
+      ]
+    },
+    "2026-05": {
+      "transaction_count": 17,
+      "expense_minor": 345749,
+      "income_minor": 850000,
+      "internal_transfer_minor": 100000,
+      "categories": {
+        "居住": 250000,
+        "订阅": 9500,
+        "公用事业": 16202,
+        "通信": 8900,
+        "餐饮": 15613,
+        "日用品": 37475,
+        "交通": 8059
+      },
+      "anomaly_candidate_ids": [
+        "syn-0018"
+      ]
+    },
+    "2026-06": {
+      "transaction_count": 19,
+      "expense_minor": 398768,
+      "income_minor": 850000,
+      "internal_transfer_minor": 100000,
+      "categories": {
+        "居住": 250000,
+        "订阅": 9500,
+        "公用事业": 9962,
+        "通信": 8900,
+        "餐饮": 18142,
+        "日用品": 40557,
+        "交通": 3707,
+        "配送": 2000,
+        "医疗": 56000
+      },
+      "anomaly_candidate_ids": [
+        "syn-0034"
+      ]
+    },
+    "2026-07": {
+      "transaction_count": 20,
+      "expense_minor": 630720,
+      "income_minor": 850000,
+      "internal_transfer_minor": 100000,
+      "categories": {
+        "居住": 250000,
+        "订阅": 27500,
+        "公用事业": 13940,
+        "通信": 8900,
+        "餐饮": 18668,
+        "日用品": 40478,
+        "交通": 3234,
+        "配送": 2000,
+        "旅行": 266000
+      },
+      "anomaly_candidate_ids": [
+        "syn-0050"
+      ]
+    },
+    "2026-08": {
+      "transaction_count": 18,
+      "expense_minor": 654792,
+      "income_minor": 850000,
+      "internal_transfer_minor": 100000,
+      "categories": {
+        "居住": 250000,
+        "订阅": 9500,
+        "公用事业": 8775,
+        "通信": 8900,
+        "餐饮": 17097,
+        "日用品": 37357,
+        "交通": 1163,
+        "配送": 2000,
+        "购物": 320000
+      },
+      "anomaly_candidate_ids": [
+        "syn-0066",
+        "syn-0108"
+      ]
+    },
+    "2026-09": {
+      "transaction_count": 19,
+      "expense_minor": 536933,
+      "income_minor": 1170000,
+      "internal_transfer_minor": 100000,
+      "categories": {
+        "居住": 250000,
+        "订阅": 9500,
+        "公用事业": 8276,
+        "通信": 8900,
+        "餐饮": 18424,
+        "日用品": 36350,
+        "交通": 5483,
+        "维修": 200000
+      },
+      "anomaly_candidate_ids": [
+        "syn-0082",
+        "syn-0110"
+      ]
+    }
+  },
+  "schema_sha256": "056a543118146ab30e8ebefca4bab3a984b6440d10fed104a15bb51889679cc6",
+  "fixture_sha256": "82916c2671a3638c82dbb941bfa49cec60157408e2fce866568c0852f37333c8",
+  "refund_links": [
+    {
+      "debit_id": "syn-0108",
+      "credit_id": "syn-0109"
+    }
+  ],
+  "known_monthly_mandate_ids": [
+    "music",
+    "video"
+  ],
+  "unknown_interval_mandate_ids": [
+    "cloud-unknown"
+  ],
+  "known_monthly_saving_minor": 8300,
+  "empty_month": "2026-03"
+}

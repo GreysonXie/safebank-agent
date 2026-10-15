@@ -1,0 +1,8 @@
+{
+  "mode": "LANGGRAPH_MOCK",
+  "question": "季度安全服务显示180元，这是每个月扣180元吗？我不用这项服务了，银行侧撤销以后商户合同会同时结束、后续就一定不收费吗？请只围绕这项说明。",
+  "answer": "依据本次确认查询的快照，〔季度安全服务（合成）〕：按季度收费，约定金额180.00元，银行侧授权有效。银行侧撤销须到业务页逐项确认；无法确认商户合同是否终止或以后是否继续收费。",
+  "providerCalls": 0,
+  "budgetUnchanged": true,
+  "note": "Proves tool/data/Java-validation flow; does not prove revised prompt causes the real model to choose correctly."
+}

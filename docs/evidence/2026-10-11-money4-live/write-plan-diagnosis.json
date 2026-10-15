@@ -1,0 +1,10 @@
+{
+  "runState": "RECONCILIATION_REQUIRED",
+  "errorCode": "INVALID_PLAN",
+  "plan": {
+    "clarification": "",
+    "kind": "general",
+    "tools": []
+  },
+  "modelDraft": null
+}

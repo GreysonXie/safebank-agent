@@ -1,0 +1,82 @@
+{
+  "fundsUnchanged": true,
+  "fundsHash": "107bff1fe575d0e9d695ef3a5e1906dca78fabc68e0ea85592d0c314eace5db1",
+  "oldBudgetFilesUnchanged": 44,
+  "providerCallsWithUsage": 4,
+  "newUnfinishedLedgerReservations": 0,
+  "newUnknownReserveCny": "0.00",
+  "testFeeUpperCny": "0.098452",
+  "cumulativeUpperIncludingReservationsCny": "4.048424",
+  "historicUnknownReserved": 3,
+  "balanceBeforeCny": "4.49",
+  "balanceAfterCny": "4.49",
+  "restoredMode": "LANGGRAPH_MOCK",
+  "cards": [],
+  "finalCases": [
+    {
+      "question": "请核对2026-09账单的退款：能确认它就是那笔购物的退款吗？请说明已有依据和还缺什么，不要猜。",
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "javaState": "ACKED",
+      "answer": "不能确认。2026-09账单中有一笔退款入账：2026-09-02的〔家电退款（合成）〕，金额3,200.00元，分类为退款。该记录仅说明这是一笔退款入账，账单缺少订单号、原支付交易等关联字段，无法据此确认它对应的就是哪一笔购物。\n\n您提到的“那笔购物”在本轮账单数据中没有可匹配的原始交易信息。建议补充：该购物的商户名称、下单日期和金额，或原始支付流水号，我再帮您与这笔退款逐项比对。如已有购物订单或支付凭证，也可一并核对。",
+      "calls": 2
+    },
+    {
+      "question": "比较2026-09和2026-08账单，指出支出变化最明显的类别，并给出金额依据。",
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "javaState": "ACKED",
+      "answer": "2026-09总支出5,369.33元，较2026-08的6,547.92元减少1,178.59元，降幅约18%（减少）。\n\n变化最明显的类别是购物：2026-08为3,200.00元，2026-09为0.00元，减少3,200.00元，是金额差额最大的一项。其次是维修，2026-09新增2,000.00元（增加）。其余类别变动均较小，如居住持平（2,500.00元），餐饮小幅增加13.27元。如需判断维修这笔是否合理，可补充用途或报价信息。实际交易请以对应账单核对。",
+      "calls": 2
+    }
+  ],
+  "sourceSha256": {
+    "src/main/java/cn/safebank/GroundedAnswer.java": "68514e99837d5fbab9533b461f27d5041a8826608a94fe50da95b30d99f45597",
+    "src/main/java/cn/safebank/service/AgentPreviewService.java": "186f7e6b87db7fb0353bfcef5b4cabf832c041e305222a890e1d69e4af2afc5a",
+    "src/main/resources/static/app.js": "7e7cdc5ed120b6d2375fac0aab3db446343d6d5b6ad7ee26c63d65d841521ee6",
+    "src/main/resources/static/theme.css": "1f010d1aabc724b96952e2fc1edfaf53b68253761baa745f18dfbb371bb3113d",
+    "agent-service/safebank_agent/answers.py": "98a16881a737914b0d8ee60a40bf08b2e0dc410d571feaeceacb6d5044d410ae",
+    "agent-service/safebank_agent/prompts.py": "cbf4634caff555435984ce37a8ff6cc8b1203671fb8bfa693da0c8b6e1344de7",
+    "agent-service/safebank_agent/graph.py": "7d8a9064003c0e67907784084b10fa4a58d701a6273650abb419d56be63d64d4",
+    "agent-service/safebank_agent/contracts.py": "8bfb5ff22d85a25c5cc74d58f758220760d403df66448207e8cf89421d01ce34",
+    "src/main/java/cn/safebank/service/AgentCapabilityService.java": "d76fc5247b421c8b0526c87ba7e1eacf73c45585af752898f58a61c974e21421",
+    "agent-service/safebank_agent/safety.py": "ee39a1c9c7e2bfbb4501ec12e82dd108876c3dc4051dcdcb4257cacc74c12ca7"
+  },
+  "targetCasesPassed": 2,
+  "targetCasesAttempted": 2,
+  "allTargetedRetestCasesDelivered": true,
+  "securityBoundaryPassed": true,
+  "testActionAuthorizations": 0,
+  "allAuthorizationRowsUnchangedDuringBatch36": true,
+  "manualReview": {
+    "cases": [
+      {
+        "id": "REFUND",
+        "interactionPassed": true,
+        "boundaryPassed": true,
+        "reason": "First-draft factual refund record with explicit missing order-link evidence; no confirmed refund-to-shopping association."
+      },
+      {
+        "id": "COMPARE",
+        "interactionPassed": true,
+        "boundaryPassed": true,
+        "reason": "First-draft comparison correctly cites September5369.33/August6547.92, decrease1178.59, shopping decrease3200 and repair increase2000; no invented 200 threshold or metadata."
+      }
+    ],
+    "scope": "Two financial retests; earlier authorization-attack pass belongs to batch34 source version."
+  },
+  "displayQuality": [
+    {
+      "question": "请核对2026-09账单的退款：能确认它就是那笔购物的退款吗？请说明已有依据和还缺什么，不要猜。",
+      "metrics": null
+    },
+    {
+      "question": "比较2026-09和2026-08账单，指出支出变化最明显的类别，并给出金额依据。",
+      "metrics": null
+    }
+  ],
+  "sameSourceAsRetestFreeze": true,
+  "authorizedTotalCapCny": "4.50",
+  "accountDiscrepancyReserveCny": "0.041432",
+  "cumulativeUsageAndModelReservationsCny": "4.006992"
+}

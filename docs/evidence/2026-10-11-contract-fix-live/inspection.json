@@ -1,0 +1,217 @@
+{
+  "batches": 6,
+  "cases": 13,
+  "newProviderRequests": 29,
+  "newTokens": 68370,
+  "newUsageComplete": true,
+  "historicalUnknownReservationsPreserved": 1,
+  "globalUpperCny": "1.552476",
+  "maxInFlightConservativeGuardCny": "3.159164",
+  "authorizedCny": 4,
+  "ratesUpperPerMillionCny": {
+    "input": 4,
+    "output": 12
+  },
+  "officialPricingSource": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+  "oldLedgersUnchanged": true,
+  "ledgerHistory": [
+    {
+      "file": "20261011-money4-context.json",
+      "calls": 19,
+      "sha256": "a443ea221d4af59f3996c0f4e69964fe3e8733b7155aeee0f25e97933c627b1f"
+    },
+    {
+      "file": "20261011-mandate-followup-context.json",
+      "calls": 11,
+      "sha256": "0a8106299ca6838175064909f09e97bc8691a916ac79a3d4a30dacd4b099a847"
+    },
+    {
+      "file": "20261011-volume-01-context.json",
+      "calls": 8,
+      "sha256": "61ee6e6f1b83b0ed17133197f53cb3cc057fa3f65483723fb127d353ea221f51"
+    },
+    {
+      "file": "20261011-volume-02-context.json",
+      "calls": 8,
+      "sha256": "731472f6ea817153b67af56a7112da5c982d82cabc510000b80a91ccf170454b"
+    },
+    {
+      "file": "20261011-volume-03-context.json",
+      "calls": 11,
+      "sha256": "02ec4041da6da1152bbdb2d5a6408007029c8bad4c792af2bbb7eeaccc4d0ad3"
+    },
+    {
+      "file": "20261011-volume-04-context.json",
+      "calls": 9,
+      "sha256": "89c4c3a45825742749d7e8699e498a70d19d9e9fff4149931553eee58563677b"
+    },
+    {
+      "file": "20261011-volume-05-context.json",
+      "calls": 8,
+      "sha256": "ddc553bb6bad62c9d34c94b9dd4f23e95b7479db2dd9aed8d1a9569b4eefda9a"
+    },
+    {
+      "file": "20261011-volume-06-context.json",
+      "calls": 9,
+      "sha256": "80867db3ad616a333d65ef3459c694845141d68bc94c8c2e53bf405eeb9c1553"
+    },
+    {
+      "file": "20261011-contract-fix-01-context.json",
+      "calls": 7,
+      "sha256": "aa64d9739a7089e5d81d699df2c3c7e401fede45337ddfd7b0f1612235d85340"
+    },
+    {
+      "file": "20261011-contract-fix-02-context.json",
+      "calls": 6,
+      "sha256": "97f60aa26a3a5bbd947d4a7ea82d20de43f2d9a9e0a545a3a8306f5996d0f5ed"
+    },
+    {
+      "file": "20261011-contract-fix-03-context.json",
+      "calls": 7,
+      "sha256": "b5a502eea850188b93ae91cbd4760190d4fac20059f49c1f046fa2b0ba8527c3"
+    },
+    {
+      "file": "20261011-contract-fix-04-context.json",
+      "calls": 3,
+      "sha256": "2282802599b91d2f53f8dd178d0dd5b96f8bc3d92f1987e3c632bf7a08805c36"
+    },
+    {
+      "file": "20261011-contract-fix-05-context.json",
+      "calls": 3,
+      "sha256": "42e76462d6211eab5f38e3b3790afeb603e7bbe9be40181a4ffdb968c26c74c3"
+    },
+    {
+      "file": "20261011-contract-fix-06-context.json",
+      "calls": 3,
+      "sha256": "276a82ec4537d7ca58e76045c07bb683d9cb6a9b4f35e653f264d1ba79b45f6a"
+    }
+  ],
+  "http200": 10,
+  "httpFailures": 3,
+  "caseStateChecks": [
+    {
+      "batch": 1,
+      "case": 1,
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "agentError": "ANSWER_REPAIR_EXHAUSTED",
+      "javaState": "PAUSED"
+    },
+    {
+      "batch": 1,
+      "case": 2,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 1,
+      "case": 3,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 2,
+      "case": 1,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 2,
+      "case": 2,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 2,
+      "case": 3,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 3,
+      "case": 1,
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "agentError": "ANSWER_REPAIR_EXHAUSTED",
+      "javaState": "PAUSED"
+    },
+    {
+      "batch": 3,
+      "case": 2,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 3,
+      "case": 3,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 4,
+      "case": 1,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 4,
+      "case": 2,
+      "httpStatus": 200,
+      "agentState": "NEEDS_CLARIFICATION",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 5,
+      "case": 1,
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "agentError": "ANSWER_REPAIR_EXHAUSTED",
+      "javaState": "PAUSED"
+    },
+    {
+      "batch": 6,
+      "case": 1,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    }
+  ],
+  "balanceBeforeCny": "7.54",
+  "balanceAfterCny": "7.49",
+  "displayedDeltaCny": "0.05",
+  "finalWebMode": "LANGGRAPH_MOCK",
+  "finalHealth": {
+    "framework": "LangGraph",
+    "modelMode": "mock",
+    "status": "UP"
+  },
+  "limitations": "HTTP success is not semantic correctness; upper cost is a conservative bound, displayed balance is not exact billing."
+}

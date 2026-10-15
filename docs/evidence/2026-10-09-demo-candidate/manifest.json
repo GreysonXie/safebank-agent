@@ -1,0 +1,17 @@
+{
+  "candidate": "demo-candidate-20261009",
+  "productionSourceCommit": "0f93f85c4869fe8cdc85998bc4795a7123d82764",
+  "sha256": "5B157AC1C2535A408AB28EF48FB80C2944C5B04141C21A6DCD7E3AD5C9FDFDA7",
+  "frozenJar": "target/releases/demo-candidate-0f93f85/safebank-agent-0.4.1.jar",
+  "entry": "http://127.0.0.1:8096/",
+  "localCoreScenesPassed": 3,
+  "realModelRequestsThisRound": 0,
+  "realConversationAcceptance": "pending; previous full two-turn manual acceptance failed",
+  "previousJavaTests": {
+    "skipped": 1,
+    "failed": 0,
+    "passed": 192,
+    "total": 193
+  },
+  "scope": "local synthetic bank demo candidate; not competition submission"
+}

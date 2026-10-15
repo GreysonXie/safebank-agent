@@ -1,0 +1,29 @@
+{
+  "question": "季度安全服务显示180元，这是每个月扣180元吗？我不用这项服务了，银行侧撤销以后商户合同会同时结束、后续就一定不收费吗？请只围绕这项说明。",
+  "syntheticOnly": true,
+  "requestLimit": 2,
+  "baselineRequests": 18,
+  "authorizedCumulativeCny": 4,
+  "initialBalanceCny": "7.80",
+  "conversationId": "54238636-f183-4f55-bd65-2610a2de22de",
+  "queryActionId": "a6cdcb4b-ceb0-4113-af54-9c88bcadc8f3",
+  "riskLevel": "YELLOW",
+  "confirmedQueryTime": "2026-10-11T03:26:42.562070Z",
+  "httpStatus": 400,
+  "errorCode": "AGENT_RECONCILING",
+  "answer": null,
+  "elapsedSeconds": 76.2,
+  "requests": 0,
+  "priorCallsUnchanged": true,
+  "calls": [],
+  "moneyGuard": {
+    "balanceBefore": "7.84",
+    "capCny": 4,
+    "priorReservedCny": "0.85",
+    "reservations": 0,
+    "conservativeReservedCny": "0.85"
+  },
+  "totalTokens": null,
+  "balanceAfterCny": "7.80",
+  "displayedBatchDeltaCny": "0.00"
+}

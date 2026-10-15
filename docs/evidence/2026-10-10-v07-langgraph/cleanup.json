@@ -1,0 +1,11 @@
+{
+  "removedOwnedTemporaryDatabaseCount": 4,
+  "scope": "exact names extracted from this stage m3 test logs only",
+  "preserved": [
+    "safebank_v07_test_main",
+    "safebank_bank_v07",
+    "safebank_bank_v07_m2",
+    "safebank_bank_v07_m3",
+    "safebank_agent_v07_m3"
+  ]
+}

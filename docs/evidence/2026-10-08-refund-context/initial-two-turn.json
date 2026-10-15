@@ -1,0 +1,148 @@
+{
+  "scope": "real model multi-turn queries/advice/clarification; no authorization or financial execution",
+  "cases": 1,
+  "repeats": 1,
+  "turns": 2,
+  "model_request_budget": 8,
+  "model_requests_reserved_or_reported": 5,
+  "passed": 2,
+  "abort_reason": "",
+  "actual_token_usage": null,
+  "records": [
+    {
+      "case": "refund_order_evidence",
+      "repeat": 1,
+      "turn": 1,
+      "prompt": "比较2026-08与2026-09，家电购物支出和退款入账分别是什么情况？",
+      "reply": "两个月的家电相关记录分属不同口径，先分开说：\n\n支出侧\n2026-08：08-25〔家电商店（合成）〕支出3,200.00元，计入“购物”类别，是8月最大支出类别（购物3,200.00元，占当月支出48.87%）。\n2026-09：没有“购物”类别支出记录，也没有其他〔家电商店（合成）〕支出。9月最大支出类别是“居住”2,500.00元。\n\n入账侧（退款）\n2026-09：09-02〔家电退款（合成）〕入账3,200.00元，计入“退款”类别，包含在9月入账合计11,700.00元里（工资8,500.00元 + 该笔退款3,200.00元）。\n2026-08：无退款入账。\n\n两点需要说明：\n一是这笔3,200.00元退款与8月那笔3,200.00元〔家电商店（合成）〕支出金额相同、商户名称相近，但银行记录里退款与原订单没有关联字段，无法据此确认二者是同一笔订单，建议您用订单号或退款凭证核对。\n二是按账单口径，退款增加入账和净结余，但不抵减支出合计——9月支出合计5,369.33元中不含这笔退款；因此9月支出比8月少1,178.59元（降幅21.95%），主要来自8月那笔3,200.00元购物支出在9月不再发生，与退款入账是两个独立口径。",
+      "answer_source": "MODEL_GROUNDED",
+      "trace": [
+        "get_statement",
+        "get_statement",
+        "business_answer_review / PASS",
+        "answer_customer"
+      ],
+      "fact_references": [
+        "e0.transactions.16.merchant",
+        "e1.transactions.1.merchant",
+        "e0.month",
+        "e1.month",
+        "e0.transactions.16.booked_on",
+        "e1.transactions.1.booked_on",
+        "e0.categories.购物",
+        "e0.analysis.category_share_percent.购物",
+        "e0.categories.居住",
+        "e1.income_minor",
+        "e0.income_minor",
+        "e1.expense_minor",
+        "comparison.e0_e1.expense_difference_minor",
+        "comparison.e0_e1.expense_change_percent"
+      ],
+      "passed": true,
+      "failure": "",
+      "preview_cleanup_ok": true,
+      "balance_unchanged": true,
+      "model_usage": {
+        "request_count": 3,
+        "request_limit": 6,
+        "generation_requests": 2,
+        "review_requests": 1,
+        "usage_reported_requests": 3,
+        "usage_complete": true,
+        "prompt_tokens": 27818,
+        "completion_tokens": 611,
+        "total_tokens": 28429,
+        "prompt_cache_hit_tokens": 2944,
+        "prompt_cache_miss_tokens": 24874,
+        "calls": [
+          {
+            "completion_tokens": 117,
+            "total_tokens": 3480,
+            "kind": "generation",
+            "prompt_cache_miss_tokens": 3363,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_tokens": 3363,
+            "success": true
+          },
+          {
+            "completion_tokens": 388,
+            "total_tokens": 13309,
+            "kind": "generation",
+            "prompt_cache_miss_tokens": 9977,
+            "prompt_cache_hit_tokens": 2944,
+            "prompt_tokens": 12921,
+            "success": true
+          },
+          {
+            "completion_tokens": 106,
+            "total_tokens": 11640,
+            "kind": "review",
+            "prompt_cache_miss_tokens": 11534,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_tokens": 11534,
+            "success": true
+          }
+        ]
+      },
+      "elapsed_ms": 4750
+    },
+    {
+      "case": "refund_order_evidence",
+      "repeat": 1,
+      "turn": 2,
+      "prompt": "仅凭这两笔都是3200元，能确定9月退款对应8月那次购物吗？需要什么证据？",
+      "reply": "不能确定。\n\n银行账单里，退款记录和原购物交易之间没有关联字段（没有原订单号、原交易ID这类可追溯的引用）。金额相同、商户名称相似，只能说明“看起来可能相关”，不能作为同一笔订单的确认依据；这也可能只是巧合，例如另一个订单的退款，或同一商户不同订单的部分/全额退款。\n\n要确认对应关系，需要的是账单以外的凭证，比如：\n- 8月那笔支付的订单号或交易号，以及9月退款的退款单号，两者是否指向同一订单\n- 商户开具的退款凭证/退款说明（写明原订单号、退款金额、退款日期）\n- 支付渠道的对账单或平台订单详情页，能看到“原交易—退款”的配对关系\n\n如果您能提供上述任一项，我可以帮您把凭证上的订单号和两个月的银行记录逐项对照。在拿到凭证之前，只能分别描述为“8月有一笔3,200.00元购物支出”和“9月有一笔3,200.00元退款入账”，不能写成同一笔订单的退回。",
+      "answer_source": "MODEL_GROUNDED",
+      "trace": [
+        "business_answer_review / PASS"
+      ],
+      "fact_references": [
+        "e0.month",
+        "e1.month",
+        "e0.categories.购物"
+      ],
+      "passed": true,
+      "failure": "",
+      "preview_cleanup_ok": true,
+      "balance_unchanged": true,
+      "model_usage": {
+        "request_count": 2,
+        "request_limit": 5,
+        "generation_requests": 1,
+        "review_requests": 1,
+        "usage_reported_requests": 2,
+        "usage_complete": true,
+        "prompt_tokens": 25527,
+        "completion_tokens": 338,
+        "total_tokens": 25865,
+        "prompt_cache_hit_tokens": 4224,
+        "prompt_cache_miss_tokens": 21303,
+        "calls": [
+          {
+            "completion_tokens": 232,
+            "total_tokens": 13938,
+            "kind": "generation",
+            "prompt_cache_miss_tokens": 10890,
+            "prompt_cache_hit_tokens": 2816,
+            "prompt_tokens": 13706,
+            "success": true
+          },
+          {
+            "completion_tokens": 106,
+            "total_tokens": 11927,
+            "kind": "review",
+            "prompt_cache_miss_tokens": 10413,
+            "prompt_cache_hit_tokens": 1408,
+            "prompt_tokens": 11821,
+            "success": true
+          }
+        ]
+      },
+      "elapsed_ms": 3235
+    }
+  ],
+  "manual_review": {
+    "refund_linkage": "Both replies explicitly state matching amounts and similar merchants cannot establish same-order identity; require original-order/refund proof.",
+    "remaining_issue": "First reply states decrease 21.95% with September versus August, while 1178.59/6547.92 rounds to 18%. This motivated calendar-ordered comparison evidence."
+  }
+}

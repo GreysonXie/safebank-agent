@@ -1,0 +1,199 @@
+{
+  "syntheticOnly": true,
+  "authorizedCumulativeCny": 4,
+  "maxNewRequests": 6,
+  "baselineLedgerCalls": 5,
+  "batches": [
+    {
+      "batch": 1,
+      "question": "季度安全服务显示180元，这是每个月扣180元吗？我不用这项服务了，银行侧撤销以后商户合同会同时结束、后续就一定不收费吗？请只围绕这项说明。",
+      "modelRequestLimit": 3,
+      "conversationId": "31593522-f01d-44df-bb73-83aa9873303b",
+      "httpStatus": 200,
+      "errorCode": null,
+      "answer": "不是每月180元。这项〔季度安全服务（合成）〕的授权金额为180.00元，收费周期为按季度，折算的每月预算约当60.00元；当前银行侧授权状态为银行侧授权有效，下次续费日期为2026-10-15。\n\n关于撤销后的边界：银行侧撤销只代表这张代扣授权失效，并不等于商户合同同时终止，也不能据此断定后续一定不再收费。若商户与你另有协议，仍可能通过其他方式出账；合同是否结束需与商户确认。请到代扣业务页办理撤销并查看该笔授权状态；银行没有服务使用记录，无法判断你是否仍在使用该项服务。",
+      "elapsedSeconds": 7.51,
+      "contextVersion": 2,
+      "calls": [
+        {
+          "purpose": "plan",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 636,
+            "completion_tokens": 21,
+            "total_tokens": 657,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 252
+          }
+        },
+        {
+          "purpose": "draft",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 2168,
+            "completion_tokens": 193,
+            "total_tokens": 2361,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 2168
+          }
+        }
+      ],
+      "allUsageRecorded": true,
+      "turnId": "3d39c541-99b0-4761-a042-61e5b1f4a2bd",
+      "runState": "COMPLETED",
+      "runError": null,
+      "modelEffects": {
+        "draft": {
+          "content": {
+            "answer": "不是每月180元。这项〔季度安全服务（合成）〕的授权金额为{{mandates_latest.2.amount_minor}}，收费周期为按季度，折算的每月预算约当{{mandates_latest.2.budget_monthly_equivalent_minor}}；当前银行侧授权状态为{{mandates_latest.2.state_label}}，下次续费日期为{{mandates_latest.2.renewal_date}}。\n\n关于撤销后的边界：银行侧撤销只代表这张代扣授权失效，并不等于商户合同同时终止，也不能据此断定后续一定不再收费。若商户与你另有协议，仍可能通过其他方式出账；合同是否结束需与商户确认。请到代扣业务页办理撤销并查看该笔授权状态；银行没有服务使用记录，无法判断你是否仍在使用该项服务。",
+            "kind": "analysis",
+            "type": "json_object"
+          },
+          "finish_reason": "stop",
+          "id": "583b298a-4057-4755-83ff-0b838e160314",
+          "model": "deepseek-flash",
+          "raw_content": "{\"kind\":\"analysis\",\"answer\":\"不是每月180元。这项〔季度安全服务（合成）〕的授权金额为{{mandates_latest.2.amount_minor}}，收费周期为按季度，折算的每月预算约当{{mandates_latest.2.budget_monthly_equivalent_minor}}；当前银行侧授权状态为{{mandates_latest.2.state_label}}，下次续费日期为{{mandates_latest.2.renewal_date}}。\\n\\n关于撤销后的边界：银行侧撤销只代表这张代扣授权失效，并不等于商户合同同时终止，也不能据此断定后续一定不再收费。若商户与你另有协议，仍可能通过其他方式出账；合同是否结束需与商户确认。请到代扣业务页办理撤销并查看该笔授权状态；银行没有服务使用记录，无法判断你是否仍在使用该项服务。\",\"type\":\"json_object\"}",
+          "usage": {
+            "completion_tokens": 193,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 2168,
+            "prompt_tokens": 2168,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 2361
+          }
+        },
+        "plan": {
+          "content": {
+            "kind": "analysis",
+            "tools": [
+              {
+                "args": {},
+                "tool": "mandate_receipt"
+              }
+            ]
+          },
+          "finish_reason": "stop",
+          "id": "66ceee9f-7539-41b8-9fb7-6ef23b5d6193",
+          "model": "deepseek-flash",
+          "raw_content": "{\"kind\":\"analysis\",\"tools\":[{\"tool\":\"mandate_receipt\",\"args\":{}}]}",
+          "usage": {
+            "completion_tokens": 21,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 252,
+            "prompt_tokens": 636,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 657
+          }
+        }
+      }
+    },
+    {
+      "batch": 2,
+      "question": "季度安全服务跟其余代扣相比收费周期有什么不同？目前明确月付的有效代扣每月合计多少？请不要把季度收费当成月付。",
+      "modelRequestLimit": 3,
+      "conversationId": "32319012-809c-4d0d-a2cf-e52bcdf79c20",
+      "httpStatus": 200,
+      "errorCode": null,
+      "answer": "季度安全服务（〔季度安全服务（合成）〕）是按季度收费，金额180.00元，与按月收费的代扣不同；按季度意味着每3个月扣一次，而不是每月扣一次，因此不计入月付合计。\n\n目前明确按月收费且银行侧授权有效的代扣有三项：〔音乐服务（合成）〕15.00元、〔视频服务（合成）〕68.00元，以及一项〔已撤销服务（合成）〕，后者银行侧授权已撤销，仅是已发生的历史收费，不代表当前仍在执行，也不代表以后不会收费。商户名称：〔已撤销服务（合成）〕不计入当前的每月可省金额。\n\n明确月付的有效代扣每月合计为83.00元。该合计只包含查询时有效、且收费周期明确为按月的授权；季度收费和收费周期未知的项目都没有计入。云空间（〔云空间（合成）〕）的收费周期为未知，需要到代扣业务页进一步核实，不能按每月计入。",
+      "elapsedSeconds": 6.16,
+      "contextVersion": 2,
+      "calls": [
+        {
+          "purpose": "plan",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 626,
+            "completion_tokens": 21,
+            "total_tokens": 647,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 242
+          }
+        },
+        {
+          "purpose": "draft",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 5515,
+            "completion_tokens": 259,
+            "total_tokens": 5774,
+            "prompt_cache_hit_tokens": 896,
+            "prompt_cache_miss_tokens": 4619
+          }
+        }
+      ],
+      "allUsageRecorded": true,
+      "turnId": "ddd02d6d-389c-4037-afc9-ef6156b5b87e",
+      "runState": "COMPLETED",
+      "runError": null,
+      "modelEffects": {
+        "plan": {
+          "content": {
+            "kind": "analysis",
+            "tools": [
+              {
+                "args": {},
+                "tool": "mandate_receipt"
+              }
+            ]
+          },
+          "finish_reason": "stop",
+          "id": "6c82688e-9817-4dac-87a3-fe333454f757",
+          "model": "deepseek-flash",
+          "raw_content": "{\"kind\":\"analysis\",\"tools\":[{\"tool\":\"mandate_receipt\",\"args\":{}}]}",
+          "usage": {
+            "completion_tokens": 21,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 242,
+            "prompt_tokens": 626,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 647
+          }
+        },
+        "draft": {
+          "content": {
+            "answer": "季度安全服务（{{mandates_latest.2.merchant}}）是按季度收费，金额{{mandates_latest.2.amount_minor}}，与按月收费的代扣不同；按季度意味着每3个月扣一次，而不是每月扣一次，因此不计入月付合计。\n\n目前明确按月收费且银行侧授权有效的代扣有三项：音乐服务{{mandates_latest.1.amount_minor}}、视频服务{{mandates_latest.4.amount_minor}}，以及一项{{mandates_latest.3.merchant}}，后者银行侧授权已撤销，仅是已发生的历史收费，不代表当前仍在执行，也不代表以后不会收费。已撤销服务不计入当前的每月可省金额。\n\n明确月付的有效代扣每月合计为{{mandates_summary.known_monthly_total_minor}}。该合计只包含查询时有效、且收费周期明确为按月的授权；季度收费和收费周期未知的项目都没有计入。云空间（{{mandates_latest.0.merchant}}）的收费周期为未知，需要到代扣业务页进一步核实，不能按每月计入。",
+            "kind": "analysis",
+            "type": "json_object"
+          },
+          "finish_reason": "stop",
+          "id": "5e8170de-e55c-4812-afee-a6113c6d493c",
+          "model": "deepseek-flash",
+          "raw_content": "{\"kind\":\"analysis\",\"answer\":\"季度安全服务（{{mandates_latest.2.merchant}}）是按季度收费，金额{{mandates_latest.2.amount_minor}}，与按月收费的代扣不同；按季度意味着每3个月扣一次，而不是每月扣一次，因此不计入月付合计。\\n\\n目前明确按月收费且银行侧授权有效的代扣有三项：音乐服务{{mandates_latest.1.amount_minor}}、视频服务{{mandates_latest.4.amount_minor}}，以及一项{{mandates_latest.3.merchant}}，后者银行侧授权已撤销，仅是已发生的历史收费，不代表当前仍在执行，也不代表以后不会收费。已撤销服务不计入当前的每月可省金额。\\n\\n明确月付的有效代扣每月合计为{{mandates_summary.known_monthly_total_minor}}。该合计只包含查询时有效、且收费周期明确为按月的授权；季度收费和收费周期未知的项目都没有计入。云空间（{{mandates_latest.0.merchant}}）的收费周期为未知，需要到代扣业务页进一步核实，不能按每月计入。\",\"type\":\"json_object\"}",
+          "usage": {
+            "completion_tokens": 259,
+            "prompt_cache_hit_tokens": 896,
+            "prompt_cache_miss_tokens": 4619,
+            "prompt_tokens": 5515,
+            "prompt_tokens_details": {
+              "cached_tokens": 896
+            },
+            "total_tokens": 5774
+          }
+        }
+      }
+    }
+  ],
+  "balanceBeforeCny": "7.64",
+  "priorCallsUnchanged": true,
+  "newCalls": 4,
+  "moneyGuard": {
+    "balanceBefore": "7.84",
+    "capCny": 4,
+    "priorReservedCny": "2.35",
+    "reservations": 4,
+    "conservativeReservedCny": "3.35",
+    "guardLoaded": true
+  },
+  "balanceAfterCny": "7.64",
+  "displayedBatchDeltaCny": "0.00"
+}

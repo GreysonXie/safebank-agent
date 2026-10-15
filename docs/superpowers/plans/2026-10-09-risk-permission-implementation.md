@@ -32,12 +32,12 @@
 计划确认后才使用using-git-worktrees建立`.worktrees/v05-risk-permission`、分支`feature/v0.5-risk-permission`，不在冻结demo分支上同时开发。复用现有Maven缓存；以下命令均在该隔离目录执行，变量初始化一次：
 
 ```powershell
-$env:JAVA_HOME='<LOCAL_PATH> Files\Java\jdk-21'
+$env:JAVA_HOME='C:\Program Files\Java\jdk-21'
 $env:PATH=$env:JAVA_HOME+'\bin;'+$env:PATH
 $env:JAVA_TOOL_OPTIONS='-Dfile.encoding=UTF-8'
 $env:SPRING_PROFILES_ACTIVE='test'
-$riskMaven='<LOCAL_PATH>'
-$riskRepoCache='<LOCAL_PATH>'
+$riskMaven='D:\2.临时消息文件\研一\深金赛\safebank-agent\.tools\apache-maven-3.9.9\bin\mvn.cmd'
+$riskRepoCache='D:\2.临时消息文件\研一\深金赛\safebank-agent\.m2'
 ```
 
 每次命令检查真实退出码和报告。两个Maven进程不并行。中间任务不用全套构建；仅修改文档时不重跑Java。test profile仅用于Maven测试，候选启动脚本显式指定risk-demo profile，不沿用test环境；任务8验收通过后按既有受控替换流程交付，不能自动迁移旧文件库或推送仓库。

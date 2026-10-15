@@ -31,7 +31,7 @@ Windows可在项目目录运行`notepad .env`，修改以下配置后保存；�
 ```dotenv
 SAFEBANK_MODEL_MODE=deepseek
 DEEPSEEK_API_KEY=填写你自己的密钥
-SAFEBANK_MODEL_NAME=deepseek-v4-flash
+SAFEBANK_MODEL_NAME=deepseek-flash
 SAFEBANK_MODEL_SMOKE_CAP=20
 ```
 

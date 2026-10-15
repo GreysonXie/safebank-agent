@@ -1,0 +1,36 @@
+{
+  "providerHTTPCalls": 0,
+  "baseline": "af6a16a",
+  "source": "Actual confirmed synthetic mandate tool receipt from accepted live question",
+  "question": "季度安全服务显示180元，这是每个月扣180元吗？我不用这项服务了，银行侧撤销以后商户合同会同时结束、后续就一定不收费吗？请只围绕这项说明。",
+  "factCountBefore": 60,
+  "factCountAfter": 17,
+  "catalogCharsBefore": 10289,
+  "catalogCharsAfter": 2622,
+  "characterReductionPercent": 74.52,
+  "removedReferencesFromOriginalDeliveredAnswer": [
+    "mandates_latest.3.merchant",
+    "mandates_latest.3.state_label"
+  ],
+  "focusedFactIds": [
+    "calendar.days_per_week",
+    "calendar.months_per_quarter",
+    "calendar.months_per_year",
+    "calendar.percent_whole",
+    "calendar.quarters_per_year",
+    "mandates_latest.2.amount_minor",
+    "mandates_latest.2.billing_interval",
+    "mandates_latest.2.budget_monthly_equivalent_minor",
+    "mandates_latest.2.contract_status",
+    "mandates_latest.2.id",
+    "mandates_latest.2.merchant",
+    "mandates_latest.2.renewal_date",
+    "mandates_latest.2.state_label",
+    "mandates_latest.2.status",
+    "mandates_latest.2.user_id",
+    "mandates_latest.observation.expiresAt",
+    "mandates_latest.observation.queriedAt"
+  ],
+  "mockAnswer": "依据本次确认查询的快照，{{mandates_latest.2.merchant}}：按季度收费，约定金额{{mandates_latest.2.amount_minor}}，{{mandates_latest.2.state_label}}。银行侧撤销须到业务页逐项确认；无法确认商户合同是否终止或以后是否继续收费。",
+  "limitations": "Character reduction is not token or charge reduction; mock answer does not establish real model obedience."
+}

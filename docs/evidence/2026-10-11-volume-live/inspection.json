@@ -1,0 +1,282 @@
+{
+  "batches": 6,
+  "cases": 24,
+  "newProviderRequests": 53,
+  "newTokens": 152358,
+  "newUsageComplete": true,
+  "historicalUnknownReservationsPreserved": 1,
+  "globalUpperCny": "1.253860",
+  "maxInFlightConservativeGuardCny": "3.505072",
+  "authorizedCny": 4,
+  "ratesUpperPerMillionCny": {
+    "input": 4,
+    "output": 12
+  },
+  "officialPricingSource": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+  "oldLedgersUnchanged": true,
+  "ledgerHistory": [
+    {
+      "file": "20261011-money4-context.json",
+      "calls": 19,
+      "sha256": "a443ea221d4af59f3996c0f4e69964fe3e8733b7155aeee0f25e97933c627b1f"
+    },
+    {
+      "file": "20261011-mandate-followup-context.json",
+      "calls": 11,
+      "sha256": "0a8106299ca6838175064909f09e97bc8691a916ac79a3d4a30dacd4b099a847"
+    },
+    {
+      "file": "20261011-volume-01-context.json",
+      "calls": 8,
+      "sha256": "61ee6e6f1b83b0ed17133197f53cb3cc057fa3f65483723fb127d353ea221f51"
+    },
+    {
+      "file": "20261011-volume-02-context.json",
+      "calls": 8,
+      "sha256": "731472f6ea817153b67af56a7112da5c982d82cabc510000b80a91ccf170454b"
+    },
+    {
+      "file": "20261011-volume-03-context.json",
+      "calls": 11,
+      "sha256": "02ec4041da6da1152bbdb2d5a6408007029c8bad4c792af2bbb7eeaccc4d0ad3"
+    },
+    {
+      "file": "20261011-volume-04-context.json",
+      "calls": 9,
+      "sha256": "89c4c3a45825742749d7e8699e498a70d19d9e9fff4149931553eee58563677b"
+    },
+    {
+      "file": "20261011-volume-05-context.json",
+      "calls": 8,
+      "sha256": "ddc553bb6bad62c9d34c94b9dd4f23e95b7479db2dd9aed8d1a9569b4eefda9a"
+    },
+    {
+      "file": "20261011-volume-06-context.json",
+      "calls": 9,
+      "sha256": "80867db3ad616a333d65ef3459c694845141d68bc94c8c2e53bf405eeb9c1553"
+    }
+  ],
+  "http200": 17,
+  "httpFailures": 7,
+  "caseStateChecks": [
+    {
+      "batch": 1,
+      "case": 1,
+      "httpStatus": 200,
+      "agentState": "NEEDS_CLARIFICATION",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 1,
+      "case": 2,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 1,
+      "case": 3,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 1,
+      "case": 4,
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "agentError": "ANSWER_REPAIR_EXHAUSTED",
+      "javaState": "PAUSED"
+    },
+    {
+      "batch": 2,
+      "case": 1,
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "agentError": "ANSWER_REPAIR_EXHAUSTED",
+      "javaState": "PAUSED"
+    },
+    {
+      "batch": 2,
+      "case": 2,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 2,
+      "case": 3,
+      "httpStatus": 200,
+      "agentState": "NEEDS_CLARIFICATION",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 2,
+      "case": 4,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 3,
+      "case": 1,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 3,
+      "case": 2,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 3,
+      "case": 3,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 3,
+      "case": 4,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 4,
+      "case": 1,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 4,
+      "case": 2,
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "agentError": "ANSWER_REPAIR_EXHAUSTED",
+      "javaState": "PAUSED"
+    },
+    {
+      "batch": 4,
+      "case": 3,
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "agentError": "INVALID_CLARIFICATION",
+      "javaState": "PAUSED"
+    },
+    {
+      "batch": 4,
+      "case": 4,
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "agentError": "ANSWER_REPAIR_EXHAUSTED",
+      "javaState": "PAUSED"
+    },
+    {
+      "batch": 5,
+      "case": 1,
+      "httpStatus": 200,
+      "agentState": "NEEDS_CLARIFICATION",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 5,
+      "case": 2,
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "agentError": "ANSWER_REPAIR_EXHAUSTED",
+      "javaState": "PAUSED"
+    },
+    {
+      "batch": 5,
+      "case": 3,
+      "httpStatus": 200,
+      "agentState": "NEEDS_CLARIFICATION",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 5,
+      "case": 4,
+      "httpStatus": 200,
+      "agentState": "NEEDS_CLARIFICATION",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 6,
+      "case": 1,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 6,
+      "case": 2,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 6,
+      "case": 3,
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "javaState": "ACKED",
+      "resultHashMatched": true
+    },
+    {
+      "batch": 6,
+      "case": 4,
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "agentError": "ANSWER_REPAIR_EXHAUSTED",
+      "javaState": "PAUSED"
+    }
+  ],
+  "balanceBeforeCny": "7.63",
+  "balanceAfterCny": "7.56",
+  "displayedDeltaCny": "0.07",
+  "finalWebMode": "LANGGRAPH_MOCK",
+  "finalHealth": {
+    "framework": "LangGraph",
+    "modelMode": "mock",
+    "status": "UP"
+  },
+  "limitations": "HTTP success is not semantic correctness; upper cost is a conservative bound, displayed balance is not exact billing."
+}

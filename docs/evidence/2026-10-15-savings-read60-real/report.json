@@ -1,0 +1,12 @@
+{
+  "state": "RECONCILIATION_REQUIRED",
+  "errorCode": "MODEL_EFFECT_UNKNOWN",
+  "modelFailure": "ReadTimeout",
+  "providerSends": 1,
+  "toolCalls": 0,
+  "javaValidations": 0,
+  "accepted": false,
+  "usageReceived": false,
+  "cumulativeReservedCny": "5.540488",
+  "reservationRetained": true
+}

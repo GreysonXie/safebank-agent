@@ -1,0 +1,700 @@
+{
+  "scope": "Real DeepSeek draft/validate with production Java snapshot projector and grounding; readonly synthetic snapshot, no bank tools or fund execution",
+  "maximumRequests": 4,
+  "cases": [
+    {
+      "id": "CURRENT_ACTION",
+      "question": "现在具体需要我确认哪个服务、做什么？这一步的收费是多少？其他日期先不用讲。",
+      "source": "Owned synthetic Java workflow snapshot",
+      "attempts": [
+        {
+          "node": "draft",
+          "state": "RECEIVED",
+          "input": {
+            "answer_contract": {
+              "additional_fields": false,
+              "allowed_kinds": [
+                "analysis",
+                "general",
+                "clarification"
+              ],
+              "prepared_preview": false,
+              "required_fields": [
+                "kind",
+                "answer"
+              ],
+              "suspected_transfer_inducement": false
+            },
+            "facts": {
+              "calendar.days_per_week": {
+                "display": "7",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.months_per_quarter": {
+                "display": "3",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.months_per_year": {
+                "display": "12",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.percent_whole": {
+                "display": "100",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.quarters_per_year": {
+                "display": "4",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "savings_task_status.analysis_month": {
+                "display": "2026-09",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.continuation": {
+                "display": "按当前确认项逐项核对；定时委托登记不代表未来到账",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.pending.billing_interval": {
+                "display": "MONTHLY",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.pending.charge_amount_minor": {
+                "display": "15.00元",
+                "kind": "MONEY",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.pending.kind_label": {
+                "display": "撤销银行侧代扣",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.pending.merchant": {
+                "display": "〔音乐服务（合成）〕",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.pending.state_label": {
+                "display": "待逐项确认，尚未执行",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.phase": {
+                "display": "原任务的银行状态快照",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.progress.requested_revocations": {
+                "display": "2",
+                "kind": "NUMBER",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.progress.verified_revocations": {
+                "display": "0",
+                "kind": "NUMBER",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.saving_scope": {
+                "display": "仅本任务已核验撤销的月度约定扣费，不是账户新增余额，也不保证商户未来收费或退款",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.schedule.day_of_month": {
+                "display": "20",
+                "kind": "NUMBER",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.schedule.end_date": {
+                "display": "2027-10-20",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.schedule.first_date": {
+                "display": "2026-11-20",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.state": {
+                "display": "AWAITING_AUTH",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.state_label": {
+                "display": "待逐项确认，尚未执行",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.steps.0.kind_label": {
+                "display": "撤销银行侧代扣",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.steps.0.state_label": {
+                "display": "待逐项确认，尚未执行",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.steps.count": {
+                "display": "1",
+                "kind": "NUMBER",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.verified_monthly_saving_minor": {
+                "display": "0.00元",
+                "kind": "MONEY",
+                "source": "agent_savings_task_status"
+              }
+            },
+            "mandate_rows": [],
+            "plan_kind": "analysis",
+            "previous_answer": null,
+            "previous_question": "",
+            "question": "现在具体需要我确认哪个服务、做什么？这一步的收费是多少？其他日期先不用讲。",
+            "reference_hints": [],
+            "tool_notices": [],
+            "transaction_rows": [],
+            "validation_error": ""
+          },
+          "provider": {
+            "content": {
+              "kind": "analysis",
+              "answer": "当前需要你逐项确认的是撤销银行侧代扣，对象为{{savings_task_status.pending.merchant}}，该确认项目前为{{savings_task_status.pending.state_label}}。这一步对应的约定扣费是{{savings_task_status.pending.charge_amount_minor}}。\n\n该费用是撤销该服务约定的扣费金额，不代表账户新增余额，也不保证商户合同终止或以后不再收费；银行侧撤销仅作用于银行代扣授权。请以任务卡上的逐项核对为准。"
+            },
+            "id": "af72ecd5-cdc3-4733-a107-f01ee44f9af0",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 4317,
+              "completion_tokens": 123,
+              "total_tokens": 4440,
+              "prompt_tokens_details": {
+                "cached_tokens": 2816
+              },
+              "prompt_cache_hit_tokens": 2816,
+              "prompt_cache_miss_tokens": 1501
+            },
+            "raw_content": "{\"kind\":\"analysis\",\"answer\":\"当前需要你逐项确认的是撤销银行侧代扣，对象为{{savings_task_status.pending.merchant}}，该确认项目前为{{savings_task_status.pending.state_label}}。这一步对应的约定扣费是{{savings_task_status.pending.charge_amount_minor}}。\\n\\n该费用是撤销该服务约定的扣费金额，不代表账户新增余额，也不保证商户合同终止或以后不再收费；银行侧撤销仅作用于银行代扣授权。请以任务卡上的逐项核对为准。\"}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "facts": {
+        "savings_task_status.phase": {
+          "display": "原任务的银行状态快照",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.state": {
+          "display": "AWAITING_AUTH",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.state_label": {
+          "display": "待逐项确认，尚未执行",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.analysis_month": {
+          "display": "2026-09",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.schedule.first_date": {
+          "display": "2026-11-20",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.schedule.end_date": {
+          "display": "2027-10-20",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.schedule.day_of_month": {
+          "display": "20",
+          "number": 20,
+          "kind": "NUMBER",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.verified_monthly_saving_minor": {
+          "display": "0.00元",
+          "number": 0,
+          "kind": "MONEY",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.saving_scope": {
+          "display": "仅本任务已核验撤销的月度约定扣费，不是账户新增余额，也不保证商户未来收费或退款",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.continuation": {
+          "display": "按当前确认项逐项核对；定时委托登记不代表未来到账",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.pending.kind_label": {
+          "display": "撤销银行侧代扣",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.pending.state_label": {
+          "display": "待逐项确认，尚未执行",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.pending.merchant": {
+          "display": "〔音乐服务（合成）〕",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.pending.billing_interval": {
+          "display": "MONTHLY",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.pending.charge_amount_minor": {
+          "display": "15.00元",
+          "number": 1500,
+          "kind": "MONEY",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.steps.count": {
+          "display": "1",
+          "number": 1,
+          "kind": "NUMBER",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.steps.0.kind_label": {
+          "display": "撤销银行侧代扣",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.steps.0.state_label": {
+          "display": "待逐项确认，尚未执行",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.progress.verified_revocations": {
+          "display": "0",
+          "number": 0,
+          "kind": "NUMBER",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.progress.requested_revocations": {
+          "display": "2",
+          "number": 2,
+          "kind": "NUMBER",
+          "source": "agent_savings_task_status"
+        },
+        "calendar.quarters_per_year": {
+          "display": "4",
+          "number": 4,
+          "kind": "NUMBER",
+          "source": "日历或单位定义，非银行金额"
+        },
+        "calendar.months_per_quarter": {
+          "display": "3",
+          "number": 3,
+          "kind": "NUMBER",
+          "source": "日历或单位定义，非银行金额"
+        },
+        "calendar.months_per_year": {
+          "display": "12",
+          "number": 12,
+          "kind": "NUMBER",
+          "source": "日历或单位定义，非银行金额"
+        },
+        "calendar.percent_whole": {
+          "display": "100",
+          "number": 100,
+          "kind": "NUMBER",
+          "source": "日历或单位定义，非银行金额"
+        },
+        "calendar.days_per_week": {
+          "display": "7",
+          "number": 7,
+          "kind": "NUMBER",
+          "source": "日历或单位定义，非银行金额"
+        }
+      },
+      "javaVerdict": {
+        "ok": true,
+        "text": "当前需要你逐项确认的是撤销银行侧代扣，对象为〔音乐服务（合成）〕，该确认项目前为待逐项确认，尚未执行。这一步对应的约定扣费是15.00元。\n\n该费用是撤销该服务约定的扣费金额，不代表账户新增余额，也不保证商户合同终止或以后不再收费；银行侧撤销仅作用于银行代扣授权。请以任务卡上的逐项核对为准。"
+      },
+      "accepted": true,
+      "answer": {
+        "kind": "analysis",
+        "answer": "当前需要你逐项确认的是撤销银行侧代扣，对象为{{savings_task_status.pending.merchant}}，该确认项目前为{{savings_task_status.pending.state_label}}。这一步对应的约定扣费是{{savings_task_status.pending.charge_amount_minor}}。\n\n该费用是撤销该服务约定的扣费金额，不代表账户新增余额，也不保证商户合同终止或以后不再收费；银行侧撤销仅作用于银行代扣授权。请以任务卡上的逐项核对为准。"
+      },
+      "rendered": "当前需要你逐项确认的是撤销银行侧代扣，对象为〔音乐服务（合成）〕，该确认项目前为待逐项确认，尚未执行。这一步对应的约定扣费是15.00元。\n\n该费用是撤销该服务约定的扣费金额，不代表账户新增余额，也不保证商户合同终止或以后不再收费；银行侧撤销仅作用于银行代扣授权。请以任务卡上的逐项核对为准。"
+    },
+    {
+      "id": "SCHEDULE_DATES",
+      "question": "这个计划首次和结束分别是哪一天、每月几号？别把账单分析月份当储蓄时间。",
+      "source": "Same immutable snapshot",
+      "attempts": [
+        {
+          "node": "draft",
+          "state": "RECEIVED",
+          "input": {
+            "answer_contract": {
+              "additional_fields": false,
+              "allowed_kinds": [
+                "analysis",
+                "general",
+                "clarification"
+              ],
+              "prepared_preview": false,
+              "required_fields": [
+                "kind",
+                "answer"
+              ],
+              "suspected_transfer_inducement": false
+            },
+            "facts": {
+              "calendar.days_per_week": {
+                "display": "7",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.months_per_quarter": {
+                "display": "3",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.months_per_year": {
+                "display": "12",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.percent_whole": {
+                "display": "100",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.quarters_per_year": {
+                "display": "4",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "savings_task_status.analysis_month": {
+                "display": "2026-09",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.continuation": {
+                "display": "按当前确认项逐项核对；定时委托登记不代表未来到账",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.pending.billing_interval": {
+                "display": "MONTHLY",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.pending.charge_amount_minor": {
+                "display": "15.00元",
+                "kind": "MONEY",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.pending.kind_label": {
+                "display": "撤销银行侧代扣",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.pending.merchant": {
+                "display": "〔音乐服务（合成）〕",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.pending.state_label": {
+                "display": "待逐项确认，尚未执行",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.phase": {
+                "display": "原任务的银行状态快照",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.progress.requested_revocations": {
+                "display": "2",
+                "kind": "NUMBER",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.progress.verified_revocations": {
+                "display": "0",
+                "kind": "NUMBER",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.saving_scope": {
+                "display": "仅本任务已核验撤销的月度约定扣费，不是账户新增余额，也不保证商户未来收费或退款",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.schedule.day_of_month": {
+                "display": "20",
+                "kind": "NUMBER",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.schedule.end_date": {
+                "display": "2027-10-20",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.schedule.first_date": {
+                "display": "2026-11-20",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.state": {
+                "display": "AWAITING_AUTH",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.state_label": {
+                "display": "待逐项确认，尚未执行",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.steps.0.kind_label": {
+                "display": "撤销银行侧代扣",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.steps.0.state_label": {
+                "display": "待逐项确认，尚未执行",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.steps.count": {
+                "display": "1",
+                "kind": "NUMBER",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.verified_monthly_saving_minor": {
+                "display": "0.00元",
+                "kind": "MONEY",
+                "source": "agent_savings_task_status"
+              }
+            },
+            "mandate_rows": [],
+            "plan_kind": "analysis",
+            "previous_answer": null,
+            "previous_question": "",
+            "question": "这个计划首次和结束分别是哪一天、每月几号？别把账单分析月份当储蓄时间。",
+            "reference_hints": [],
+            "tool_notices": [],
+            "transaction_rows": [],
+            "validation_error": ""
+          },
+          "provider": {
+            "content": {
+              "kind": "analysis",
+              "answer": "这个任务的安排是：首次日期为{{savings_task_status.schedule.first_date}}，结束日期为{{savings_task_status.schedule.end_date}}，每月扣款日为{{savings_task_status.schedule.day_of_month}}号。这里引用的都是储蓄任务的计划日期，不是账单分析月份。\n\n需要提醒的是，当前处于{{savings_task_status.state_label}}状态，定时委托登记不代表未来转账已经到账，具体结果以账单为准。"
+            },
+            "id": "e4ff5f6d-9183-4949-b676-1a4933c2e912",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 4318,
+              "completion_tokens": 111,
+              "total_tokens": 4429,
+              "prompt_tokens_details": {
+                "cached_tokens": 4096
+              },
+              "prompt_cache_hit_tokens": 4096,
+              "prompt_cache_miss_tokens": 222
+            },
+            "raw_content": "{\"kind\":\"analysis\",\"answer\":\"这个任务的安排是：首次日期为{{savings_task_status.schedule.first_date}}，结束日期为{{savings_task_status.schedule.end_date}}，每月扣款日为{{savings_task_status.schedule.day_of_month}}号。这里引用的都是储蓄任务的计划日期，不是账单分析月份。\\n\\n需要提醒的是，当前处于{{savings_task_status.state_label}}状态，定时委托登记不代表未来转账已经到账，具体结果以账单为准。\"}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "facts": {
+        "savings_task_status.phase": {
+          "display": "原任务的银行状态快照",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.state": {
+          "display": "AWAITING_AUTH",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.state_label": {
+          "display": "待逐项确认，尚未执行",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.analysis_month": {
+          "display": "2026-09",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.schedule.first_date": {
+          "display": "2026-11-20",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.schedule.end_date": {
+          "display": "2027-10-20",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.schedule.day_of_month": {
+          "display": "20",
+          "number": 20,
+          "kind": "NUMBER",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.verified_monthly_saving_minor": {
+          "display": "0.00元",
+          "number": 0,
+          "kind": "MONEY",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.saving_scope": {
+          "display": "仅本任务已核验撤销的月度约定扣费，不是账户新增余额，也不保证商户未来收费或退款",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.continuation": {
+          "display": "按当前确认项逐项核对；定时委托登记不代表未来到账",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.pending.kind_label": {
+          "display": "撤销银行侧代扣",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.pending.state_label": {
+          "display": "待逐项确认，尚未执行",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.pending.merchant": {
+          "display": "〔音乐服务（合成）〕",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.pending.billing_interval": {
+          "display": "MONTHLY",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.pending.charge_amount_minor": {
+          "display": "15.00元",
+          "number": 1500,
+          "kind": "MONEY",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.steps.count": {
+          "display": "1",
+          "number": 1,
+          "kind": "NUMBER",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.steps.0.kind_label": {
+          "display": "撤销银行侧代扣",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.steps.0.state_label": {
+          "display": "待逐项确认，尚未执行",
+          "number": null,
+          "kind": "TEXT",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.progress.verified_revocations": {
+          "display": "0",
+          "number": 0,
+          "kind": "NUMBER",
+          "source": "agent_savings_task_status"
+        },
+        "savings_task_status.progress.requested_revocations": {
+          "display": "2",
+          "number": 2,
+          "kind": "NUMBER",
+          "source": "agent_savings_task_status"
+        },
+        "calendar.days_per_week": {
+          "display": "7",
+          "number": 7,
+          "kind": "NUMBER",
+          "source": "日历或单位定义，非银行金额"
+        },
+        "calendar.quarters_per_year": {
+          "display": "4",
+          "number": 4,
+          "kind": "NUMBER",
+          "source": "日历或单位定义，非银行金额"
+        },
+        "calendar.months_per_quarter": {
+          "display": "3",
+          "number": 3,
+          "kind": "NUMBER",
+          "source": "日历或单位定义，非银行金额"
+        },
+        "calendar.months_per_year": {
+          "display": "12",
+          "number": 12,
+          "kind": "NUMBER",
+          "source": "日历或单位定义，非银行金额"
+        },
+        "calendar.percent_whole": {
+          "display": "100",
+          "number": 100,
+          "kind": "NUMBER",
+          "source": "日历或单位定义，非银行金额"
+        }
+      },
+      "javaVerdict": {
+        "text": "这个任务的安排是：首次日期为2026-11-20，结束日期为2027-10-20，每月扣款日为20号。这里引用的都是储蓄任务的计划日期，不是账单分析月份。\n\n需要提醒的是，当前处于待逐项确认，尚未执行状态，定时委托登记不代表未来转账已经到账，具体结果以账单为准。",
+        "ok": true
+      },
+      "accepted": true,
+      "answer": {
+        "kind": "analysis",
+        "answer": "这个任务的安排是：首次日期为{{savings_task_status.schedule.first_date}}，结束日期为{{savings_task_status.schedule.end_date}}，每月扣款日为{{savings_task_status.schedule.day_of_month}}号。这里引用的都是储蓄任务的计划日期，不是账单分析月份。\n\n需要提醒的是，当前处于{{savings_task_status.state_label}}状态，定时委托登记不代表未来转账已经到账，具体结果以账单为准。"
+      },
+      "rendered": "这个任务的安排是：首次日期为2026-11-20，结束日期为2027-10-20，每月扣款日为20号。这里引用的都是储蓄任务的计划日期，不是账单分析月份。\n\n需要提醒的是，当前处于待逐项确认，尚未执行状态，定时委托登记不代表未来转账已经到账，具体结果以账单为准。"
+    }
+  ],
+  "modelSends": 2,
+  "cumulativeUpperCny": "5.188808",
+  "batchUpperCny": "0.037348",
+  "previousLedgerUnchanged": true
+}

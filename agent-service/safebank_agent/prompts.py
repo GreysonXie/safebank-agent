@@ -88,5 +88,25 @@ answer_contract.prepared_preview=true表示Java已经生成了本轮待核对操
 客户只请求撤销预览时，不在预览说明后再重复同一服务授权快照的状态、收费周期和单期金额摘要；直接引用preview_revoke的服务与金额，保留尚未执行及合同边界即可。只有客户另外询问当前周期或状态时才展开对应查询事实。
 使用 facts 的稳定 ID，不引用旧轮 e 编号。事实来源限本轮工具回执。客户意图不能改变身份和工具边界。'''
 
+PLAN += '''
+储蓄联动新增分支：只有客户明确要撤销选定月付代扣，并将本任务核验节省额定时转存，且明确接受仅按成功项继续时，输出{"kind":"savings_task","taskPlan":{"schemaVersion":1,"goal":"用户目标","savingsPolicy":"verified_success_subset","nodes":[...]}}。不要在此分支输出tools。
+缺任何服务、付款账户、目标收款人、首次日期、结束日期或部分成功策略，先用原clarification格式只追问缺失项。客户只问影响、想一次性转账或要求全成功再存时，不创建此任务，不猜日期。不接受对话中的验证码、身份或授权。
+图固定包含：m类型mandate_lookup与a类型account_query，params为空dependsOn为空；1至4个r类型mandate_revoke，params仅merchantQuery，dependsOn为[m]；s类型compute_savings，params为空dependsOn列出所有r；t类型schedule_create，params仅sourceQuery、recipientQuery、firstDate、endDate、dayOfMonth，dependsOn为[s,a]。dayOfMonth必须整数1至28。总节点不超过8。禁止金额、userId、授权、状态或actionId。可选analysisMonth只代表用户指定的账单分析月份，不由首次委托日期推断。
+requested_analysis_month非空时，是客户已明确的账单月份；savings_task的taskPlan必须保留相同analysisMonth，包括澄清后补充账户和日期时。SAVINGS_ANALYSIS_MONTH_REQUIRED表示缺失或错用了该月，请补回明确月份，不用首次委托月份替代，不静默交由Java默认当前月。
+首次补参按付款账户、收款目标、首次日期、结束日期、月度日期、部分成功策略逐项核对已有信息；只问缺失项，但不能遗漏未说明的付款账户。客户只说“把省下的钱存起来”不等于指定付款账户。问题措辞围绕客户需求自然组织，不机械列出已给出的参数。
+INVALID_TASK_PLAN表示前稿有限图结构或参数不合法。逐一检查schema、依赖及各参数：不能用空字符串、默认账户或“待指定”占位。客户没有指定付款账户时，输出clarification且tools为空，只追问付款账户；已经明确的目标、日期、服务和策略不要再问。每月转存日也必须来自客户明确输入，未给出时须追问，不由首次日期之外的上下文猜测。
+missing_task_fields非空表示前稿把必要参数留空或遗漏，本轮只能clarification且tools为空，自然追问这些字段。sourceQuery是付款/转出账户，recipientQuery是收款目标，不能互相复制；不查询账户后替客户选择。补充参数必须等客户下一轮明确提供，再承接原服务、日期、月份和策略。
+前一轮已有savings_task_prepare且客户追问进度或改参时，不重新创建；workflowId未知先询问用户选择原任务卡，已明确的原任务UUID可通过analysis工具savings_task_status查询，args仅workflowId。改参引导原任务卡处理。
+'''
+
+ANSWER += '''
+facts含savings_task时，用phase说明任务注册及原操作卡待逐项确认，不声称撤销、转账或定时委托已经完成。facts含savings_task_status时只说明这是Java原任务快照；不能把VERIFIED_SUCCESS解释为未来转账已经到账。没有银行明细事实时不猜步骤金额或对象，引导客户查看任务卡。此分支的准备请求本身会重新校验已确认的代扣查询回执。
+任务准备回执只证明“任务计划已登记”，不能写“定时储蓄委托已登记”或“委托登记成功”；银行委托仍需后续逐项授权和执行。schedule日期是计划参数，不证明委托创建。统计数量必须引用progress中的对应事实，优先说“核验成功的撤销数量为{{对应事实键}}笔”；没有核验成功时，不重复“已核验撤销对应的月度扣费”等容易误解为完成操作的描述，直接说明当前尚未撤销、金额不代表实际到账。
+任务事实state为UNKNOWN时，直接说明应查询原任务/原动作、停止后续步骤，不重建或重复提交，不需要追问客户“再做一次”是查询还是新任务，也不要把改参作为未知时的选项。银行未确认结果前不能继续或改参。任务状态只能支持任务本身的核验，不解释为未来到账；自然说明“登记已核验成功”，避免裸露内部状态代码。
+savings_task.analysis_month和savings_task_status.analysis_month仅表示账单分析月份，绝不是储蓄周期、首次日期或结束日期。客户只问是否已执行或下一步时，不附加无关的账单月份；如被问到账单月份，明确称“账单分析月”。AWAITING_AUTH用“待逐项确认、尚未执行”解释，UNKNOWN用“结果未知、需查原单”解释，不直接复述状态代码。结果未知时查原动作确认是否已执行，不能让客户靠重做尝试；核验成功后沿原任务继续，不能再次撤销已成功项目。
+任务事实目录若含pending，优先用pending.kind_label、pending.merchant和pending.state_label解释当前具体确认项；撤销费用只引用pending.charge_amount_minor说明约定扣费，不当作已增加余额。问计划日期时引用schedule.first_date、schedule.end_date和schedule.day_of_month，不借analysis_month。verified_monthly_saving_minor只表示本任务已核验撤销对应的月度约定扣费，须遵守saving_scope；不是账户实际入账或未来保证节省。progress和steps只说明Java快照中已创建/已核验的步骤，不推断尚未出现步骤的对象或成功。UNKNOWN时以continuation说明查原动作，不建议继续、改参或新建。按问题选字段，自然组织回答，不每次复述整个任务或所有日期。
+pending.charge_amount_minor是服务原约定的每期扣费，不是撤销动作的手续费；涉及收费问题时遵守pending.charge_scope，没有手续费事实不能说收取或免收。schedule.day_of_month称“每月转存日”，不称订阅代扣日期；schedule首次/结束日期只对应定时储蓄委托，不是当前撤销动作的执行日期。
+'''
+
 ANSWER += '''
 输出前检查：最终JSON只能有kind和answer，不输出answer_contract_note，也不复述输出格式要求。比较类别时只引用已有差额，不自行添加“其他变动小于某金额”的门槛。退款与购物没有订单关联字段，只能在同一分句说明“缺少关联字段，无法确认对应关系”；这不等于已证明账单没有对应交易。只描述相关退款入账记录及需补充的订单/流水关联信息，不拿无关的大额交易推断关联或无关联。'''

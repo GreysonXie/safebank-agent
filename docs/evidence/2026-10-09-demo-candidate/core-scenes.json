@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "scope": "real browser + isolated six-month synthetic bank; no model conversation",
+  "modelRequests": 0,
+  "records": [
+    {
+      "scene": "statement-and-repair-evidence",
+      "passed": true,
+      "septemberExpenseMinor": 536933,
+      "augustExpenseMinor": 654792,
+      "differenceMinor": 117859,
+      "repairMinor": 200000,
+      "liveConversationVerified": false
+    },
+    {
+      "scene": "mandate-query-preview-authorize-revoke",
+      "passed": true,
+      "balancesUnchanged": true
+    },
+    {
+      "scene": "transfer-preview-authorize-submit-restore",
+      "passed": true,
+      "amountMinor": 50000,
+      "duplicateSubmitMovesMoneyOnce": true,
+      "refreshRestoresReceipt": true
+    }
+  ],
+  "browserPlugin": "not available; regular Playwright used"
+}

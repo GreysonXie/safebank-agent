@@ -31,9 +31,9 @@ music / video 明确 MONTHLY，已核验撤销后可分别计 1500 / 6800 分预
 
 ```powershell
 python fixtures/v03/generate.py
-& '<LOCAL_PATH> Files\Java\jdk-21\bin\java.exe' '-Dfile.encoding=UTF-8' --class-path '.m2/com/h2database/h2/2.3.232/h2-2.3.232.jar' fixtures/v03/VerifyFixture.java fixtures/v03/v03-synthetic-bank.sql
+& 'C:\Program Files\Java\jdk-21\bin\java.exe' '-Dfile.encoding=UTF-8' --class-path '.m2/com/h2database/h2/2.3.232/h2-2.3.232.jar' fixtures/v03/VerifyFixture.java fixtures/v03/v03-synthetic-bank.sql
 # 或验证 Spring 等效的 schema 先建表、fixture 单独作为 data 路径：
-& '<LOCAL_PATH> Files\Java\jdk-21\bin\java.exe' '-Dfile.encoding=UTF-8' --class-path '.m2/com/h2database/h2/2.3.232/h2-2.3.232.jar' fixtures/v03/VerifyFixture.java fixtures/v03/v03-synthetic-bank.sql src/main/resources/schema.sql
+& 'C:\Program Files\Java\jdk-21\bin\java.exe' '-Dfile.encoding=UTF-8' --class-path '.m2/com/h2database/h2/2.3.232/h2-2.3.232.jar' fixtures/v03/VerifyFixture.java fixtures/v03/v03-synthetic-bank.sql src/main/resources/schema.sql
 ```
 
 本次已用本机 Python 3 与 Java 21 / H2 2.3.232 实际验证：独立装载和 schema 先建表两条路径、新内存库装载、114 条/六个月、余额与逐笔历史核对、同名收款人、交易归属、引用完整性、内部借贷配对、8300 分已知月度节省、运行时证据表为空、重复装载在空库防护处拒绝且原数据与余额不变。生成器重复运行三个产物 SHA256 完全相同。
@@ -46,7 +46,7 @@ SQL 要求所有业务表为空；非空时停止报 `SYNTHETIC_FIXTURE_REQUIRES
 
 ```powershell
 ./run.ps1 package
-& '<LOCAL_PATH> Files\Java\jdk-21\bin\java.exe' '-Dfile.encoding=UTF-8' -jar target/safebank-agent-0.4.1.jar '--spring.datasource.url=jdbc:h2:mem:v03synthetic;DB_CLOSE_DELAY=-1' '--spring.sql.init.schema-locations=classpath:schema.sql' '--spring.sql.init.data-locations=file:fixtures/v03/v03-synthetic-bank.sql' '--spring.sql.init.continue-on-error=false' '--server.port=8081' '--bank.model.api-key=' '--bank.simulation.faults-enabled=false'
+& 'C:\Program Files\Java\jdk-21\bin\java.exe' '-Dfile.encoding=UTF-8' -jar target/safebank-agent-0.4.1.jar '--spring.datasource.url=jdbc:h2:mem:v03synthetic;DB_CLOSE_DELAY=-1' '--spring.sql.init.schema-locations=classpath:schema.sql' '--spring.sql.init.data-locations=file:fixtures/v03/v03-synthetic-bank.sql' '--spring.sql.init.continue-on-error=false' '--server.port=8081' '--bank.model.api-key=' '--bank.simulation.faults-enabled=false'
 ```
 
 覆盖 data-locations 后不会装载原 `data.sql`。使用内存库进程退出即丢弃，不碰默认 `data/safebank`。jar 版本路径随父项目版本变化；先核对构建产物名称。命令明确空模型密钥，只做本地合成模式；本任务未验证应用启动和模型对话。若执行部分失败草案，独立测试环境显式开启 `bank.simulation.faults-enabled=true`，在真实预览返回 action_id 后配置草案所列 FaultMode；绝不预造 action id 或授权。每个场景使用全新内存库与初始快照，并通过现有 TestClockConfiguration/测试依赖注入固定到 `2026-10-07T10:00:00+08:00`；该命令本身没有冻结应用时钟。

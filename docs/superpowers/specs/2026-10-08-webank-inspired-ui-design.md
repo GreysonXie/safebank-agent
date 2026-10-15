@@ -12,7 +12,7 @@
 
 ## 官网实际观察
 
-2026-10-08 使用 Playwright + 本机 Edge，只读访问 [微众银行官网](http<LOCAL_PATH> 插件未提供；网页文字抓取首次超时，改用真实浏览器，成功检查 1440 × 1000 视口和 scrollY=0/850/1700 的页面。
+2026-10-08 使用 Playwright + 本机 Edge，只读访问 [微众银行官网](https://www.webank.com/)。Browser 插件未提供；网页文字抓取首次超时，改用真实浏览器，成功检查 1440 × 1000 视口和 scrollY=0/850/1700 的页面。
 
 观察到：
 
@@ -22,7 +22,7 @@
 - 页面 CSS 的导航与交互规则出现 #3A5ECF、#D80C18，另有 #1A4F99 和 #F5F7FA 等颜色。这些是本次抓取的网页色值，不定义为官方品牌手册标准色。
 - 官网文案强调普惠、科技创新以及无障碍金融服务。设计借鉴应服务客户理解业务，而不是只复制装饰。
 
-样式来源：[官网加载的 CSS](http<LOCAL_PATH> target/webank-reference/，仅作本地研究材料，未加入产品资源或 Git 提交。
+样式来源：[官网加载的 CSS](https://tctp.tctpwebankcdn.net/owb-res/owb-res/assets/mainGenerator.65cb5d8f.css)。检查记录及截图在 target/webank-reference/，仅作本地研究材料，未加入产品资源或 Git 提交。
 
 ## 方案取舍
 
@@ -76,9 +76,9 @@
 
 关键金额、交易行、授权勾选、执行按钮和回执终态不参与滚动隐藏或位移；新数据立即可读。首屏主要任务入口不等动画才可使用。用户往返滚动时不反复播放；后台刷新不把整屏重新隐藏；银行执行期间不播放庆祝或成功动画。
 
-实现建议：现有原生静态前端使用 [IntersectionObserver](http<LOCAL_PATH> 观察非关键区块，CSS 只动画 opacity/transform；不引入整套官网动画库。默认内容可见，只有增强能力可用且用户允许动效时启用；JavaScript 或观察器不可用时正文仍可读。首次呈现后取消观察，避免重复播放。
+实现建议：现有原生静态前端使用 [IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) 观察非关键区块，CSS 只动画 opacity/transform；不引入整套官网动画库。默认内容可见，只有增强能力可用且用户允许动效时启用；JavaScript 或观察器不可用时正文仍可读。首次呈现后取消观察，避免重复播放。
 
-尊重 [prefers-reduced-motion](http<LOCAL_PATH>
+尊重 [prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion)：开启减少动态效果时直接呈现最终状态；动画中切换偏好也立即停止并呈现内容。键盘聚焦内容必须立即可见；视口滚动不被接管，无视差、闪烁或数字从零开始计数。
 
 ## 审核与验收
 
@@ -96,6 +96,6 @@
 
 ## 概念稿审阅
 
-红蓝候选稿：<LOCAL_PATH> view_image 检查，保留三栏结构、六项导航、合成账单金额、对话输入和待确认区域；红色集中于自有 S 标识及导航激活短线。
+红蓝候选稿：C:/Users/21310/.codex/generated_images/01a10f2b-16e0-7b81-a7c9-c098b64eb9af/exec-509747cd-4d2e-4198-8f0a-35706f00b317.png。已用 view_image 检查，保留三栏结构、六项导航、合成账单金额、对话输入和待确认区域；红色集中于自有 S 标识及导航激活短线。
 
 它是待审核的静态候选图，不是已经实现的页面。图中示例对话仅表达回答后的设计状态。实施前应去掉无已定义功能的右上角省略菜单和“合成数据演示”箭头，并把“模型已配置·未验证”前的绿色点改为中性灰色，避免暗示已连接。颜色 token、状态语义与本文件文字约定优先；这些细节随视觉方案一起提交团队审阅。

@@ -1,0 +1,1 @@
+{"evidence": [{"tool": "agent_transfer_preview", "data": {"recipient_label": "张三", "recipient_name": "张三", "recipient_note": "同学", "amount_minor": 60000}}], "answer": {"answer": "已按您的指定生成转账预览：收款人{{preview_transfer.recipient_name}}，备注{{preview_transfer.recipient_note}}，金额{{preview_transfer.amount_minor}}。该预览目前为待核对操作卡，尚未授权或执行，请在卡片上核对收款人与金额，并按页面安全提示完成授权。", "kind": "analysis"}}

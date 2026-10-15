@@ -1,0 +1,43 @@
+{
+  "scope": "real browser and synthetic-bank HTTP; three isolated disposable databases; no model calls",
+  "passed": true,
+  "modelRequests": 0,
+  "records": [
+    {
+      "scenario": "normal",
+      "passed": true,
+      "state": "VERIFIED_SUCCESS",
+      "savingMinor": 8300,
+      "workflowId": "a4d97b7d-9f91-462d-870c-e8e68d871b42",
+      "refreshPreservesProgress": true,
+      "unknownOriginalActionId": null,
+      "scheduledActionId": "8b971927-5fdd-4b23-b598-af0486e518a0",
+      "repeatedDueReusesAction": true,
+      "balancesVerified": true
+    },
+    {
+      "scenario": "partial",
+      "passed": true,
+      "state": "PARTIAL_SUCCESS",
+      "savingMinor": 1500,
+      "workflowId": "a1e1fcc1-86a4-4e32-85b9-351ae0b867d7",
+      "refreshPreservesProgress": true,
+      "unknownOriginalActionId": null,
+      "scheduledActionId": "f268dabb-452d-4ee7-8bd3-b22dc3a4a01e",
+      "repeatedDueReusesAction": true,
+      "balancesVerified": true
+    },
+    {
+      "scenario": "unknown",
+      "passed": true,
+      "state": "VERIFIED_SUCCESS",
+      "savingMinor": 8300,
+      "workflowId": "2569d3e3-a7ab-4b86-becc-49d5d394531e",
+      "refreshPreservesProgress": true,
+      "unknownOriginalActionId": "21156d44-e220-4f60-ab62-6bf5cb802272",
+      "scheduledActionId": "0d9e6694-a6a3-4e0f-9fc8-c7f4286a9bfa",
+      "repeatedDueReusesAction": true,
+      "balancesVerified": true
+    }
+  ]
+}

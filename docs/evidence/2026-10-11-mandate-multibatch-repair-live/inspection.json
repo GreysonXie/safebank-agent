@@ -1,0 +1,86 @@
+{
+  "batches": [
+    {
+      "batch": 1,
+      "turnId": "3d39c541-99b0-4761-a042-61e5b1f4a2bd",
+      "agentState": "COMPLETED",
+      "agentResultHash": "bdf3d2d69ad6538c8bf326fdc6e8dde39b733dfc63e46d7b0d22197ae4dcda3b",
+      "agentOutputVersion": 2,
+      "usage": [
+        {
+          "purpose": "draft",
+          "state": "SUCCEEDED",
+          "promptTokens": 2168,
+          "completionTokens": 193
+        },
+        {
+          "purpose": "plan",
+          "state": "SUCCEEDED",
+          "promptTokens": 636,
+          "completionTokens": 21
+        }
+      ],
+      "javaState": "ACKED",
+      "javaResultHash": "bdf3d2d69ad6538c8bf326fdc6e8dde39b733dfc63e46d7b0d22197ae4dcda3b",
+      "javaOutputVersion": 2
+    },
+    {
+      "batch": 2,
+      "turnId": "ddd02d6d-389c-4037-afc9-ef6156b5b87e",
+      "agentState": "COMPLETED",
+      "agentResultHash": "7773f236c06d2d6664c8fbb4a18b49a7da5c8ec7887bdac04b3abd9ce1cba938",
+      "agentOutputVersion": 2,
+      "usage": [
+        {
+          "purpose": "plan",
+          "state": "SUCCEEDED",
+          "promptTokens": 626,
+          "completionTokens": 21
+        },
+        {
+          "purpose": "draft",
+          "state": "SUCCEEDED",
+          "promptTokens": 5515,
+          "completionTokens": 259
+        }
+      ],
+      "javaState": "ACKED",
+      "javaResultHash": "7773f236c06d2d6664c8fbb4a18b49a7da5c8ec7887bdac04b3abd9ce1cba938",
+      "javaOutputVersion": 2
+    },
+    {
+      "batch": 3,
+      "turnId": "fd787df7-521c-4236-8482-8e1db02a8842",
+      "agentState": "COMPLETED",
+      "agentResultHash": "53a48277559e3e183046b6564da51c4081438114a059e6980ccd5809356d9fff",
+      "agentOutputVersion": 2,
+      "usage": [
+        {
+          "purpose": "draft",
+          "state": "SUCCEEDED",
+          "promptTokens": 6062,
+          "completionTokens": 159
+        },
+        {
+          "purpose": "plan",
+          "state": "SUCCEEDED",
+          "promptTokens": 626,
+          "completionTokens": 21
+        }
+      ],
+      "javaState": "ACKED",
+      "javaResultHash": "53a48277559e3e183046b6564da51c4081438114a059e6980ccd5809356d9fff",
+      "javaOutputVersion": 2
+    }
+  ],
+  "newProviderRequests": 6,
+  "totalTokens": 16307,
+  "finalWebMode": "LANGGRAPH_MOCK",
+  "finalAgentHealth": {
+    "framework": "LangGraph",
+    "modelMode": "mock",
+    "status": "UP"
+  },
+  "classificationRegressionPassedOnOneLiveSample": true,
+  "limitations": "One successful sample is not a comprehensive semantic correctness guarantee."
+}

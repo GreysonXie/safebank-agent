@@ -1,0 +1,1443 @@
+{
+  "phase": 23,
+  "stage": {
+    "state": "LAUNCHED",
+    "cap": 15,
+    "balanceBeforeCny": "5.89",
+    "historicalUpperCny": "3.098224",
+    "unknownReserved": 3,
+    "history": [
+      {
+        "file": "20261011-money4-context.json",
+        "calls": 19,
+        "sha256": "a443ea221d4af59f3996c0f4e69964fe3e8733b7155aeee0f25e97933c627b1f"
+      },
+      {
+        "file": "20261011-mandate-followup-context.json",
+        "calls": 11,
+        "sha256": "0a8106299ca6838175064909f09e97bc8691a916ac79a3d4a30dacd4b099a847"
+      },
+      {
+        "file": "20261011-volume-01-context.json",
+        "calls": 8,
+        "sha256": "61ee6e6f1b83b0ed17133197f53cb3cc057fa3f65483723fb127d353ea221f51"
+      },
+      {
+        "file": "20261011-volume-02-context.json",
+        "calls": 8,
+        "sha256": "731472f6ea817153b67af56a7112da5c982d82cabc510000b80a91ccf170454b"
+      },
+      {
+        "file": "20261011-volume-03-context.json",
+        "calls": 11,
+        "sha256": "02ec4041da6da1152bbdb2d5a6408007029c8bad4c792af2bbb7eeaccc4d0ad3"
+      },
+      {
+        "file": "20261011-volume-04-context.json",
+        "calls": 9,
+        "sha256": "89c4c3a45825742749d7e8699e498a70d19d9e9fff4149931553eee58563677b"
+      },
+      {
+        "file": "20261011-volume-05-context.json",
+        "calls": 8,
+        "sha256": "ddc553bb6bad62c9d34c94b9dd4f23e95b7479db2dd9aed8d1a9569b4eefda9a"
+      },
+      {
+        "file": "20261011-volume-06-context.json",
+        "calls": 9,
+        "sha256": "80867db3ad616a333d65ef3459c694845141d68bc94c8c2e53bf405eeb9c1553"
+      },
+      {
+        "file": "20261011-contract-fix-01-context.json",
+        "calls": 7,
+        "sha256": "aa64d9739a7089e5d81d699df2c3c7e401fede45337ddfd7b0f1612235d85340"
+      },
+      {
+        "file": "20261011-contract-fix-02-context.json",
+        "calls": 6,
+        "sha256": "97f60aa26a3a5bbd947d4a7ea82d20de43f2d9a9e0a545a3a8306f5996d0f5ed"
+      },
+      {
+        "file": "20261011-contract-fix-03-context.json",
+        "calls": 7,
+        "sha256": "b5a502eea850188b93ae91cbd4760190d4fac20059f49c1f046fa2b0ba8527c3"
+      },
+      {
+        "file": "20261011-contract-fix-04-context.json",
+        "calls": 3,
+        "sha256": "2282802599b91d2f53f8dd178d0dd5b96f8bc3d92f1987e3c632bf7a08805c36"
+      },
+      {
+        "file": "20261011-contract-fix-05-context.json",
+        "calls": 3,
+        "sha256": "42e76462d6211eab5f38e3b3790afeb603e7bbe9be40181a4ffdb968c26c74c3"
+      },
+      {
+        "file": "20261011-contract-fix-06-context.json",
+        "calls": 3,
+        "sha256": "276a82ec4537d7ca58e76045c07bb683d9cb6a9b4f35e653f264d1ba79b45f6a"
+      },
+      {
+        "file": "20261011-contract-fix-07-context.json",
+        "calls": 7,
+        "sha256": "f325f23ac4f174742b5de9c33bbff83b8e643fbab2f7e8a3bb48404e0fe8da8d"
+      },
+      {
+        "file": "20261011-contract-fix-08-context.json",
+        "calls": 5,
+        "sha256": "20e05cb365086885f0d4bb63b418486741bde6b8df021eec2d06c80722a954e8"
+      },
+      {
+        "file": "20261011-contract-fix-09-context.json",
+        "calls": 10,
+        "sha256": "f1740c4cf96d96c798215d121b5b6ea037c3d203ce76d4f7dd7e7ee76c23422d"
+      },
+      {
+        "file": "20261011-contract-fix-10-context.json",
+        "calls": 4,
+        "sha256": "baf905b1324e9df7f46d8c67614c8fc52173166dc52ee53c2fd3324767b46e0c"
+      },
+      {
+        "file": "20261011-contract-fix-11-context.json",
+        "calls": 10,
+        "sha256": "9f0d612ac9818236a30f3dec59a59976b060ecaae7d2ff63f6c73a878579e52e"
+      },
+      {
+        "file": "20261011-contract-fix-12-context.json",
+        "calls": 4,
+        "sha256": "be9a92580d3c2bb0a6472a33121a41c2bc4adb2c7f4da0a58250f286c0ffd8c4"
+      },
+      {
+        "file": "20261011-contract-fix-13-context.json",
+        "calls": 10,
+        "sha256": "ddddd1295ce2fdd1354f6d22e867a86562063c0b4e7707f316c0ba4d0cbcb5a2"
+      },
+      {
+        "file": "20261011-contract-fix-14-context.json",
+        "calls": 11,
+        "sha256": "2416f5d912f41704c535c04f763682adad70ae02baad92f08c1414ca04ffc2e2"
+      },
+      {
+        "file": "20261011-contract-fix-15-context.json",
+        "calls": 5,
+        "sha256": "9e62e429ed935a35e6431db6950ff0d1df68c4704fdece439b67efd9b6ff350e"
+      },
+      {
+        "file": "20261011-contract-fix-16-context.json",
+        "calls": 8,
+        "sha256": "acca59799d3e1bceff5a0e0104b1533d6fb5f03b30de8ab90184e6c0cea2f78b"
+      },
+      {
+        "file": "20261011-contract-fix-17-context.json",
+        "calls": 7,
+        "sha256": "a6fd77ee42da80f0ce181c22aa10c195684cb3c0cf75d0b8757f1d0238a6248e"
+      },
+      {
+        "file": "20261011-contract-fix-18-context.json",
+        "calls": 3,
+        "sha256": "052c287cbb0c7f4c6e968d4fee4c4739acdacef820ef360d1769dfe2605d06e2"
+      },
+      {
+        "file": "20261011-contract-fix-19-context.json",
+        "calls": 6,
+        "sha256": "d7e056f8815bc4e3d84b40796a294b886b6072221a0e6c4ec5b2783b7c44b62e"
+      },
+      {
+        "file": "20261011-contract-fix-20-context.json",
+        "calls": 2,
+        "sha256": "33878b83d81a664404867fb4c1fdfbb7b0bde8cf44e6e457ebada6b25466dac0"
+      },
+      {
+        "file": "20261011-contract-fix-21-context.json",
+        "calls": 6,
+        "sha256": "cfe6c27c53874a89b8aad76f3593a6e47bca3e091ec4b937376e0ec8159a9e2c"
+      },
+      {
+        "file": "20261011-contract-fix-22-context.json",
+        "calls": 8,
+        "sha256": "0db42243d8b771aa04aaa979fdf8a87de23575cde2026aa5e7ab7e6396ff695f"
+      }
+    ],
+    "phase": "20261011-contract-fix-23",
+    "ledger": "D:\\2.临时消息文件\\研一\\深金赛\\safebank-agent\\.superpowers\\deepseek-v06-debug\\20261011-contract-fix-23-context.json",
+    "guard": "D:\\2.临时消息文件\\研一\\深金赛\\safebank-agent\\.worktrees\\v07-python-langgraph-mysql\\.superpowers\\sdd\\2026-10-10-v07-langgraph-agent-implementation\\20261011-contract-fix-23-money.json",
+    "ratesUpperPerMillionCny": {
+      "input": 4,
+      "output": 12
+    },
+    "batchCapCny": ".30",
+    "priceSource": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+    "batchPriorCny": "0",
+    "purpose": "new targeted preview followup; preserves all old unknown reservations; no old turn replay",
+    "baselineBudgetHashes": {
+      "20261010-v06-context.json": "ddca625d614a804243f05ff8f5b753dc38a670248e657099ab53bea9b3a2b24c",
+      "20261011-contract-fix-01-context.json": "aa64d9739a7089e5d81d699df2c3c7e401fede45337ddfd7b0f1612235d85340",
+      "20261011-contract-fix-02-context.json": "97f60aa26a3a5bbd947d4a7ea82d20de43f2d9a9e0a545a3a8306f5996d0f5ed",
+      "20261011-contract-fix-03-context.json": "b5a502eea850188b93ae91cbd4760190d4fac20059f49c1f046fa2b0ba8527c3",
+      "20261011-contract-fix-04-context.json": "2282802599b91d2f53f8dd178d0dd5b96f8bc3d92f1987e3c632bf7a08805c36",
+      "20261011-contract-fix-05-context.json": "42e76462d6211eab5f38e3b3790afeb603e7bbe9be40181a4ffdb968c26c74c3",
+      "20261011-contract-fix-06-context.json": "276a82ec4537d7ca58e76045c07bb683d9cb6a9b4f35e653f264d1ba79b45f6a",
+      "20261011-contract-fix-07-context.json": "f325f23ac4f174742b5de9c33bbff83b8e643fbab2f7e8a3bb48404e0fe8da8d",
+      "20261011-contract-fix-08-context.json": "20e05cb365086885f0d4bb63b418486741bde6b8df021eec2d06c80722a954e8",
+      "20261011-contract-fix-09-context.json": "f1740c4cf96d96c798215d121b5b6ea037c3d203ce76d4f7dd7e7ee76c23422d",
+      "20261011-contract-fix-10-context.json": "baf905b1324e9df7f46d8c67614c8fc52173166dc52ee53c2fd3324767b46e0c",
+      "20261011-contract-fix-11-context.json": "9f0d612ac9818236a30f3dec59a59976b060ecaae7d2ff63f6c73a878579e52e",
+      "20261011-contract-fix-12-context.json": "be9a92580d3c2bb0a6472a33121a41c2bc4adb2c7f4da0a58250f286c0ffd8c4",
+      "20261011-contract-fix-13-context.json": "ddddd1295ce2fdd1354f6d22e867a86562063c0b4e7707f316c0ba4d0cbcb5a2",
+      "20261011-contract-fix-14-context.json": "2416f5d912f41704c535c04f763682adad70ae02baad92f08c1414ca04ffc2e2",
+      "20261011-contract-fix-15-context.json": "9e62e429ed935a35e6431db6950ff0d1df68c4704fdece439b67efd9b6ff350e",
+      "20261011-contract-fix-16-context.json": "acca59799d3e1bceff5a0e0104b1533d6fb5f03b30de8ab90184e6c0cea2f78b",
+      "20261011-contract-fix-17-context.json": "a6fd77ee42da80f0ce181c22aa10c195684cb3c0cf75d0b8757f1d0238a6248e",
+      "20261011-contract-fix-18-context.json": "052c287cbb0c7f4c6e968d4fee4c4739acdacef820ef360d1769dfe2605d06e2",
+      "20261011-contract-fix-19-context.json": "d7e056f8815bc4e3d84b40796a294b886b6072221a0e6c4ec5b2783b7c44b62e",
+      "20261011-contract-fix-20-context.json": "33878b83d81a664404867fb4c1fdfbb7b0bde8cf44e6e457ebada6b25466dac0",
+      "20261011-contract-fix-21-context.json": "cfe6c27c53874a89b8aad76f3593a6e47bca3e091ec4b937376e0ec8159a9e2c",
+      "20261011-contract-fix-22-context.json": "0db42243d8b771aa04aaa979fdf8a87de23575cde2026aa5e7ab7e6396ff695f",
+      "20261011-mandate-followup-context.json": "0a8106299ca6838175064909f09e97bc8691a916ac79a3d4a30dacd4b099a847",
+      "20261011-money4-context.json": "a443ea221d4af59f3996c0f4e69964fe3e8733b7155aeee0f25e97933c627b1f",
+      "20261011-volume-01-context.json": "61ee6e6f1b83b0ed17133197f53cb3cc057fa3f65483723fb127d353ea221f51",
+      "20261011-volume-02-context.json": "731472f6ea817153b67af56a7112da5c982d82cabc510000b80a91ccf170454b",
+      "20261011-volume-03-context.json": "02ec4041da6da1152bbdb2d5a6408007029c8bad4c792af2bbb7eeaccc4d0ad3",
+      "20261011-volume-04-context.json": "89c4c3a45825742749d7e8699e498a70d19d9e9fff4149931553eee58563677b",
+      "20261011-volume-05-context.json": "ddc553bb6bad62c9d34c94b9dd4f23e95b7479db2dd9aed8d1a9569b4eefda9a",
+      "20261011-volume-06-context.json": "80867db3ad616a333d65ef3459c694845141d68bc94c8c2e53bf405eeb9c1553"
+    }
+  },
+  "syntheticOnly": true,
+  "cases": [
+    {
+      "group": "transfer",
+      "question": "从日常账户给张三转500元",
+      "conversationId": "aae03b0d-5465-471f-a887-6c6f40817021",
+      "confirmedMandateQuery": false,
+      "httpStatus": 200,
+      "response": {
+        "text": "未能唯一确定收款人，因此尚未生成转账预览。请补充收款人“张三”的手机号或收款人备注，以便确认具体收款对象；确认后再生成待核对预览。",
+        "mode": "LANGGRAPH_MODEL",
+        "agentBackend": "PYTHON_LANGGRAPH",
+        "toolResults": [
+          {
+            "tool": "transfer_preview",
+            "evidenceId": "f4b18b91-5554-4dd1-9735-e2f927e1b2c6",
+            "observedAt": "2026-10-11T15:37:42.960755Z",
+            "result": {
+              "code": "RECIPIENT_CLARIFICATION_REQUIRED"
+            }
+          }
+        ],
+        "results": [],
+        "data": {},
+        "actions": [],
+        "trace": [],
+        "answerSource": "PROGRAM_VERIFIED_LANGGRAPH",
+        "clarification": {
+          "required": true
+        },
+        "conversationId": "aae03b0d-5465-471f-a887-6c6f40817021",
+        "contextVersion": 2,
+        "context": {
+          "conversationId": "aae03b0d-5465-471f-a887-6c6f40817021",
+          "version": 2,
+          "intent": "GENERAL",
+          "state": "NEEDS_CLARIFICATION",
+          "slots": {},
+          "proposal": null,
+          "displayHistory": [
+            {
+              "assistant": "未能唯一确定收款人，因此尚未生成转账预览。请补充收款人“张三”的手机号或收款人备注，以便确认具体收款对象；确认后再生成待核对预览。",
+              "user": "从日常账户给张三转500元"
+            }
+          ],
+          "bankReferences": []
+        }
+      },
+      "elapsedSeconds": 9.22,
+      "semanticPassed": true,
+      "displayQuality": {
+        "internalRecipientIdentifierAbsent": true,
+        "objectNameNotRepeated": true,
+        "amountNotRepeated": true,
+        "numericOmissionNoticeAbsent": true,
+        "characterCount": 65
+      },
+      "calls": [
+        {
+          "javaTurnId": "ca303131-3614-4bf1-9fc4-18b5ee71298f",
+          "purpose": "plan",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 1251,
+            "completion_tokens": 35,
+            "total_tokens": 1286,
+            "prompt_cache_hit_tokens": 1024,
+            "prompt_cache_miss_tokens": 227
+          }
+        },
+        {
+          "javaTurnId": "ca303131-3614-4bf1-9fc4-18b5ee71298f",
+          "purpose": "draft",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 2387,
+            "completion_tokens": 54,
+            "total_tokens": 2441,
+            "prompt_cache_hit_tokens": 1792,
+            "prompt_cache_miss_tokens": 595
+          }
+        },
+        {
+          "javaTurnId": "ca303131-3614-4bf1-9fc4-18b5ee71298f",
+          "purpose": "repair",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 2466,
+            "completion_tokens": 48,
+            "total_tokens": 2514,
+            "prompt_cache_hit_tokens": 2304,
+            "prompt_cache_miss_tokens": 162
+          }
+        }
+      ],
+      "turnId": "ca303131-3614-4bf1-9fc4-18b5ee71298f",
+      "agentState": "NEEDS_CLARIFICATION",
+      "agentError": null,
+      "agentHash": "01d4688548195d13255f84dea7484377a6956c5d2797c3894b378324e014a81a",
+      "agentVersion": 2,
+      "modelEffects": [
+        {
+          "node": "draft",
+          "result": {
+            "content": {
+              "answer": "收款人“张三”未能唯一匹配到账户中的收款人。请补充该收款人的手机号或收款人备注，以便确认具体收款对象；确认后我再为你生成500元转账的待核对预览。",
+              "kind": "clarification"
+            },
+            "finish_reason": "stop",
+            "id": "ddc05c5b-7134-4cc0-8aa1-87343488e864",
+            "model": "deepseek-flash",
+            "raw_content": "{\"kind\":\"clarification\",\"answer\":\"收款人“张三”未能唯一匹配到账户中的收款人。请补充该收款人的手机号或收款人备注，以便确认具体收款对象；确认后我再为你生成500元转账的待核对预览。\"}",
+            "usage": {
+              "completion_tokens": 54,
+              "prompt_cache_hit_tokens": 1792,
+              "prompt_cache_miss_tokens": 595,
+              "prompt_tokens": 2387,
+              "prompt_tokens_details": {
+                "cached_tokens": 1792
+              },
+              "total_tokens": 2441
+            }
+          }
+        },
+        {
+          "node": "plan",
+          "result": {
+            "content": {
+              "kind": "analysis",
+              "tools": [
+                {
+                  "args": {
+                    "amountMinor": 50000,
+                    "recipientQuery": "张三",
+                    "sourceQuery": "日常账户"
+                  },
+                  "tool": "transfer_preview"
+                }
+              ]
+            },
+            "finish_reason": "stop",
+            "id": "c6711dad-2ac9-4da3-89e7-6634da9a16f1",
+            "model": "deepseek-flash",
+            "raw_content": "{\"kind\":\"analysis\",\"tools\":[{\"tool\":\"transfer_preview\",\"args\":{\"sourceQuery\":\"日常账户\",\"recipientQuery\":\"张三\",\"amountMinor\":50000}}]}",
+            "usage": {
+              "completion_tokens": 35,
+              "prompt_cache_hit_tokens": 1024,
+              "prompt_cache_miss_tokens": 227,
+              "prompt_tokens": 1251,
+              "prompt_tokens_details": {
+                "cached_tokens": 1024
+              },
+              "total_tokens": 1286
+            }
+          }
+        },
+        {
+          "node": "repair",
+          "result": {
+            "content": {
+              "answer": "未能唯一确定收款人，因此尚未生成转账预览。请补充收款人“张三”的手机号或收款人备注，以便确认具体收款对象；确认后再生成待核对预览。",
+              "kind": "clarification"
+            },
+            "finish_reason": "stop",
+            "id": "51201a25-9dce-4796-9dec-130892e59c75",
+            "model": "deepseek-flash",
+            "raw_content": "{\"kind\":\"clarification\",\"answer\":\"未能唯一确定收款人，因此尚未生成转账预览。请补充收款人“张三”的手机号或收款人备注，以便确认具体收款对象；确认后再生成待核对预览。\"}",
+            "usage": {
+              "completion_tokens": 48,
+              "prompt_cache_hit_tokens": 2304,
+              "prompt_cache_miss_tokens": 162,
+              "prompt_tokens": 2466,
+              "prompt_tokens_details": {
+                "cached_tokens": 2304
+              },
+              "total_tokens": 2514
+            }
+          }
+        }
+      ],
+      "javaState": "ACKED",
+      "javaHash": "01d4688548195d13255f84dea7484377a6956c5d2797c3894b378324e014a81a",
+      "javaVersion": 2
+    },
+    {
+      "group": "transfer",
+      "question": "备注同学的那位",
+      "conversationId": "aae03b0d-5465-471f-a887-6c6f40817021",
+      "confirmedMandateQuery": false,
+      "httpStatus": 200,
+      "response": {
+        "text": "已生成一笔给张三的转账预览，金额500.00元，备注为同学，与您指定的收款人匹配。当前仅为待核对操作卡，尚未执行。请在实际操作卡上核对收款人、金额和备注，并按安全提示完成授权。",
+        "mode": "LANGGRAPH_MODEL",
+        "agentBackend": "PYTHON_LANGGRAPH",
+        "toolResults": [
+          {
+            "tool": "transfer_preview",
+            "evidenceId": "fd0fc993-7f45-4b01-ab07-94284aa689e4",
+            "observedAt": "2026-10-11T15:37:52.185197Z",
+            "result": {
+              "pendingAction": {
+                "id": "agent-421aa02ce4c679e0472f11cfd72d89761bdd4734a6df872a",
+                "user_id": "u1",
+                "kind": "TRANSFER",
+                "payload_hash": "44a09fcc62e4a7d2d0bbea0098e4b997f7ef7cd00bda2a7cfa8d2607eda63807",
+                "status": "AWAITING_AUTH",
+                "expires_at": "2026-10-11T15:42:52.109972Z",
+                "receipt_id": null,
+                "error_code": null,
+                "source_id": "checking",
+                "recipient_id": "zhang-a",
+                "recipient_label": "张三 / 张三 TEST-3271（合成）",
+                "amount_minor": 50000,
+                "currency": "CNY",
+                "fee_minor": 0,
+                "security": {
+                  "decisionId": "e5315045-e06a-4265-a94c-daf356809273",
+                  "policyVersion": "bank-risk-v1",
+                  "riskLevel": "YELLOW",
+                  "requiredAssurance": "CONFIRMED",
+                  "reasonCode": "EXPLICIT_CONFIRMATION_REQUIRED",
+                  "businessDate": "2026-10-11",
+                  "effectiveMinor": 10000,
+                  "projectedMinor": 60000,
+                  "validUntil": "2026-10-11T15:42:52.126015Z",
+                  "nextStep": "CONFIRM",
+                  "verificationMode": "EXTERNAL_MFA_REQUIRED",
+                  "needsRefresh": false
+                }
+              }
+            }
+          }
+        ],
+        "results": [
+          {
+            "tool": "agent_transfer_preview",
+            "data": {
+              "recipient_note": "同学",
+              "recipient_name": "张三",
+              "recipient_label": "张三",
+              "amount_minor": 50000
+            },
+            "observation": {}
+          }
+        ],
+        "data": {
+          "recipient_note": "同学",
+          "recipient_name": "张三",
+          "recipient_label": "张三",
+          "amount_minor": 50000
+        },
+        "actions": [
+          {
+            "id": "agent-421aa02ce4c679e0472f11cfd72d89761bdd4734a6df872a",
+            "user_id": "u1",
+            "kind": "TRANSFER",
+            "payload_hash": "44a09fcc62e4a7d2d0bbea0098e4b997f7ef7cd00bda2a7cfa8d2607eda63807",
+            "status": "AWAITING_AUTH",
+            "expires_at": "2026-10-11T15:42:52.109972Z",
+            "receipt_id": null,
+            "error_code": null,
+            "source_id": "checking",
+            "recipient_id": "zhang-a",
+            "recipient_label": "张三 / 张三 TEST-3271（合成）",
+            "amount_minor": 50000,
+            "currency": "CNY",
+            "fee_minor": 0,
+            "security": {
+              "decisionId": "e5315045-e06a-4265-a94c-daf356809273",
+              "policyVersion": "bank-risk-v1",
+              "riskLevel": "YELLOW",
+              "requiredAssurance": "CONFIRMED",
+              "reasonCode": "EXPLICIT_CONFIRMATION_REQUIRED",
+              "businessDate": "2026-10-11",
+              "effectiveMinor": 10000,
+              "projectedMinor": 60000,
+              "validUntil": "2026-10-11T15:42:52.126015Z",
+              "nextStep": "CONFIRM",
+              "verificationMode": "EXTERNAL_MFA_REQUIRED",
+              "needsRefresh": false
+            }
+          }
+        ],
+        "trace": [],
+        "answerSource": "PROGRAM_VERIFIED_LANGGRAPH",
+        "clarification": {
+          "required": false
+        },
+        "conversationId": "aae03b0d-5465-471f-a887-6c6f40817021",
+        "contextVersion": 3,
+        "context": {
+          "conversationId": "aae03b0d-5465-471f-a887-6c6f40817021",
+          "version": 3,
+          "intent": "GENERAL",
+          "state": "ACTIVE",
+          "slots": {},
+          "proposal": null,
+          "displayHistory": [
+            {
+              "assistant": "未能唯一确定收款人，因此尚未生成转账预览。请补充收款人“张三”的手机号或收款人备注，以便确认具体收款对象；确认后再生成待核对预览。",
+              "user": "从日常账户给张三转500元"
+            },
+            {
+              "assistant": "已生成一笔给张三的转账预览，金额500.00元，备注为同学，与您指定的收款人匹配。当前仅为待核对操作卡，尚未执行。请在实际操作卡上核对收款人、金额和备注，并按安全提示完成授权。",
+              "user": "备注同学的那位"
+            }
+          ],
+          "bankReferences": []
+        }
+      },
+      "elapsedSeconds": 6.38,
+      "semanticPassed": true,
+      "displayQuality": {
+        "internalRecipientIdentifierAbsent": true,
+        "objectNameNotRepeated": true,
+        "amountNotRepeated": true,
+        "numericOmissionNoticeAbsent": true,
+        "characterCount": 88
+      },
+      "calls": [
+        {
+          "javaTurnId": "447b69e7-4ffc-4c2f-b303-a3336e647724",
+          "purpose": "plan",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 1290,
+            "completion_tokens": 35,
+            "total_tokens": 1325,
+            "prompt_cache_hit_tokens": 1152,
+            "prompt_cache_miss_tokens": 138
+          }
+        },
+        {
+          "javaTurnId": "447b69e7-4ffc-4c2f-b303-a3336e647724",
+          "purpose": "draft",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 2461,
+            "completion_tokens": 88,
+            "total_tokens": 2549,
+            "prompt_cache_hit_tokens": 1920,
+            "prompt_cache_miss_tokens": 541
+          }
+        }
+      ],
+      "turnId": "447b69e7-4ffc-4c2f-b303-a3336e647724",
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "agentHash": "85acae5ff8fc1421c3533e5f109f96e47adcb183f5e34ea94cf51fcb607530f8",
+      "agentVersion": 3,
+      "modelEffects": [
+        {
+          "node": "draft",
+          "result": {
+            "content": {
+              "answer": "已生成一笔给{{preview_transfer.recipient_name}}的转账预览，金额{{preview_transfer.amount_minor}}，备注为{{preview_transfer.recipient_note}}，与您指定的收款人匹配。当前仅为待核对操作卡，尚未执行。请在实际操作卡上核对收款人、金额和备注，并按安全提示完成授权。",
+              "kind": "analysis"
+            },
+            "finish_reason": "stop",
+            "id": "2b75b9bf-328a-451c-8d6b-1d8da3bd8620",
+            "model": "deepseek-flash",
+            "raw_content": "{\"kind\":\"analysis\",\"answer\":\"已生成一笔给{{preview_transfer.recipient_name}}的转账预览，金额{{preview_transfer.amount_minor}}，备注为{{preview_transfer.recipient_note}}，与您指定的收款人匹配。当前仅为待核对操作卡，尚未执行。请在实际操作卡上核对收款人、金额和备注，并按安全提示完成授权。\"}",
+            "usage": {
+              "completion_tokens": 88,
+              "prompt_cache_hit_tokens": 1920,
+              "prompt_cache_miss_tokens": 541,
+              "prompt_tokens": 2461,
+              "prompt_tokens_details": {
+                "cached_tokens": 1920
+              },
+              "total_tokens": 2549
+            }
+          }
+        },
+        {
+          "node": "plan",
+          "result": {
+            "content": {
+              "kind": "analysis",
+              "tools": [
+                {
+                  "args": {
+                    "amountMinor": 50000,
+                    "recipientQuery": "同学",
+                    "sourceQuery": "日常账户"
+                  },
+                  "tool": "transfer_preview"
+                }
+              ]
+            },
+            "finish_reason": "stop",
+            "id": "e6e70bb9-c07d-4bb4-bc82-d17be704bf80",
+            "model": "deepseek-flash",
+            "raw_content": "{\"kind\":\"analysis\",\"tools\":[{\"tool\":\"transfer_preview\",\"args\":{\"sourceQuery\":\"日常账户\",\"recipientQuery\":\"同学\",\"amountMinor\":50000}}]}",
+            "usage": {
+              "completion_tokens": 35,
+              "prompt_cache_hit_tokens": 1152,
+              "prompt_cache_miss_tokens": 138,
+              "prompt_tokens": 1290,
+              "prompt_tokens_details": {
+                "cached_tokens": 1152
+              },
+              "total_tokens": 1325
+            }
+          }
+        }
+      ],
+      "javaState": "ACKED",
+      "javaHash": "85acae5ff8fc1421c3533e5f109f96e47adcb183f5e34ea94cf51fcb607530f8",
+      "javaVersion": 3
+    },
+    {
+      "group": "transfer",
+      "question": "改成600元",
+      "conversationId": "aae03b0d-5465-471f-a887-6c6f40817021",
+      "confirmedMandateQuery": false,
+      "httpStatus": 400,
+      "response": {
+        "code": "AGENT_REVIEW_REQUIRED",
+        "message": "原轮次状态需要核对，已暂停自动处理"
+      },
+      "elapsedSeconds": 8.03,
+      "calls": [
+        {
+          "javaTurnId": "41a3ccdc-f937-4a98-8238-6a91a3fba5b3",
+          "purpose": "plan",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 1285,
+            "completion_tokens": 35,
+            "total_tokens": 1320,
+            "prompt_cache_hit_tokens": 1151,
+            "prompt_cache_miss_tokens": 134
+          }
+        },
+        {
+          "javaTurnId": "41a3ccdc-f937-4a98-8238-6a91a3fba5b3",
+          "purpose": "draft",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 2456,
+            "completion_tokens": 60,
+            "total_tokens": 2516,
+            "prompt_cache_hit_tokens": 2048,
+            "prompt_cache_miss_tokens": 408
+          }
+        },
+        {
+          "javaTurnId": "41a3ccdc-f937-4a98-8238-6a91a3fba5b3",
+          "purpose": "repair",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 2591,
+            "completion_tokens": 83,
+            "total_tokens": 2674,
+            "prompt_cache_hit_tokens": 2176,
+            "prompt_cache_miss_tokens": 415
+          }
+        }
+      ],
+      "turnId": "41a3ccdc-f937-4a98-8238-6a91a3fba5b3",
+      "agentState": "RECONCILIATION_REQUIRED",
+      "agentError": "ANSWER_REPAIR_EXHAUSTED",
+      "agentHash": null,
+      "agentVersion": null,
+      "modelEffects": [
+        {
+          "node": "plan",
+          "result": {
+            "content": {
+              "kind": "analysis",
+              "tools": [
+                {
+                  "args": {
+                    "amountMinor": 60000,
+                    "recipientQuery": "同学",
+                    "sourceQuery": "日常账户"
+                  },
+                  "tool": "transfer_preview"
+                }
+              ]
+            },
+            "finish_reason": "stop",
+            "id": "4c9a8cdc-d0b5-443c-8f69-df0fc6ad5f23",
+            "model": "deepseek-flash",
+            "raw_content": "{\"kind\":\"analysis\",\"tools\":[{\"tool\":\"transfer_preview\",\"args\":{\"sourceQuery\":\"日常账户\",\"recipientQuery\":\"同学\",\"amountMinor\":60000}}]}",
+            "usage": {
+              "completion_tokens": 35,
+              "prompt_cache_hit_tokens": 1151,
+              "prompt_cache_miss_tokens": 134,
+              "prompt_tokens": 1285,
+              "prompt_tokens_details": {
+                "cached_tokens": 1151
+              },
+              "total_tokens": 1320
+            }
+          }
+        },
+        {
+          "node": "draft",
+          "result": {
+            "content": {
+              "answer": "已按您的指定生成转账预览：收款人张三，备注同学，金额改为600.00元。该预览目前仅为待核对操作卡，尚未授权或执行。请在操作卡上核对收款人和金额，并按页面安全提示完成授权。",
+              "kind": "analysis"
+            },
+            "finish_reason": "stop",
+            "id": "57050728-4623-4d4d-8c26-9fc6dcc96510",
+            "model": "deepseek-flash",
+            "raw_content": "{\"kind\":\"analysis\",\"answer\":\"已按您的指定生成转账预览：收款人张三，备注同学，金额改为600.00元。该预览目前仅为待核对操作卡，尚未授权或执行。请在操作卡上核对收款人和金额，并按页面安全提示完成授权。\"}",
+            "usage": {
+              "completion_tokens": 60,
+              "prompt_cache_hit_tokens": 2048,
+              "prompt_cache_miss_tokens": 408,
+              "prompt_tokens": 2456,
+              "prompt_tokens_details": {
+                "cached_tokens": 2048
+              },
+              "total_tokens": 2516
+            }
+          }
+        },
+        {
+          "node": "repair",
+          "result": {
+            "content": {
+              "answer": "已按您的指定生成转账预览：收款人{{preview_transfer.recipient_name}}，备注{{preview_transfer.recipient_note}}，金额{{preview_transfer.amount_minor}}。该预览目前为待核对操作卡，尚未授权或执行，请在卡片上核对收款人与金额，并按页面安全提示完成授权。",
+              "kind": "analysis"
+            },
+            "finish_reason": "stop",
+            "id": "2742460f-e8cf-42d6-8f0e-ba0fdb0f3e97",
+            "model": "deepseek-flash",
+            "raw_content": "{\"kind\":\"analysis\",\"answer\":\"已按您的指定生成转账预览：收款人{{preview_transfer.recipient_name}}，备注{{preview_transfer.recipient_note}}，金额{{preview_transfer.amount_minor}}。该预览目前为待核对操作卡，尚未授权或执行，请在卡片上核对收款人与金额，并按页面安全提示完成授权。\"}",
+            "usage": {
+              "completion_tokens": 83,
+              "prompt_cache_hit_tokens": 2176,
+              "prompt_cache_miss_tokens": 415,
+              "prompt_tokens": 2591,
+              "prompt_tokens_details": {
+                "cached_tokens": 2176
+              },
+              "total_tokens": 2674
+            }
+          }
+        }
+      ],
+      "javaState": "PAUSED",
+      "javaHash": null,
+      "javaVersion": null
+    },
+    {
+      "group": "mandate",
+      "question": "视频服务现在可以取消吗？银行撤销有什么影响？",
+      "conversationId": "835abb23-23ba-410b-9669-84c19b689c56",
+      "confirmedMandateQuery": true,
+      "httpStatus": 200,
+      "response": {
+        "text": "〔视频服务（合成）〕当前银行侧授权有效，金额68.00元，约定按月收费。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止、退款或以后不会收费；实际交易请以对应账单核对。若需要取消，我可以先帮你生成撤销预览供核对，但不会直接代办执行。",
+        "mode": "LANGGRAPH_MODEL",
+        "agentBackend": "PYTHON_LANGGRAPH",
+        "toolResults": [
+          {
+            "tool": "mandate_receipt",
+            "evidenceId": "159a7a66-ec93-429c-a987-09a27c321c3e",
+            "observedAt": "2026-10-11T15:38:04.451171Z",
+            "result": {
+              "mandates": [
+                {
+                  "id": "cloud-unknown",
+                  "user_id": "u1",
+                  "merchant": "云空间（合成）",
+                  "amount_minor": 1200,
+                  "renewal_date": "2026-10-16",
+                  "status": "ACTIVE",
+                  "contract_status": "UNKNOWN",
+                  "billing_interval": "UNKNOWN"
+                },
+                {
+                  "id": "music",
+                  "user_id": "u1",
+                  "merchant": "音乐服务（合成）",
+                  "amount_minor": 1500,
+                  "renewal_date": "2026-10-20",
+                  "status": "ACTIVE",
+                  "contract_status": "UNKNOWN",
+                  "billing_interval": "MONTHLY"
+                },
+                {
+                  "id": "quarterly",
+                  "user_id": "u1",
+                  "merchant": "季度安全服务（合成）",
+                  "amount_minor": 18000,
+                  "renewal_date": "2026-10-15",
+                  "status": "ACTIVE",
+                  "contract_status": "UNKNOWN",
+                  "billing_interval": "QUARTERLY"
+                },
+                {
+                  "id": "revoked",
+                  "user_id": "u1",
+                  "merchant": "已撤销服务（合成）",
+                  "amount_minor": 900,
+                  "renewal_date": "2026-10-22",
+                  "status": "REVOKED",
+                  "contract_status": "UNKNOWN",
+                  "billing_interval": "MONTHLY"
+                },
+                {
+                  "id": "video",
+                  "user_id": "u1",
+                  "merchant": "视频服务（合成）",
+                  "amount_minor": 6800,
+                  "renewal_date": "2026-10-20",
+                  "status": "ACTIVE",
+                  "contract_status": "UNKNOWN",
+                  "billing_interval": "MONTHLY"
+                }
+              ],
+              "expiresAt": "2026-10-11T15:43:04.451171Z",
+              "queriedAt": "2026-10-11T15:38:04.451171Z",
+              "snapshotHash": "2d0737d2ef0ca15a7a8ffc237a443b4fbb1b9615d650d1a2963392db2b9967cb",
+              "queryActionId": "c023e1e3-3cee-40e4-a873-d2d1675603d8"
+            }
+          }
+        ],
+        "results": [
+          {
+            "tool": "list_mandates",
+            "data": [
+              {
+                "id": "cloud-unknown",
+                "user_id": "u1",
+                "merchant": "云空间（合成）",
+                "amount_minor": 1200,
+                "renewal_date": "2026-10-16",
+                "status": "ACTIVE",
+                "contract_status": "UNKNOWN",
+                "billing_interval": "UNKNOWN"
+              },
+              {
+                "id": "music",
+                "user_id": "u1",
+                "merchant": "音乐服务（合成）",
+                "amount_minor": 1500,
+                "renewal_date": "2026-10-20",
+                "status": "ACTIVE",
+                "contract_status": "UNKNOWN",
+                "billing_interval": "MONTHLY"
+              },
+              {
+                "id": "quarterly",
+                "user_id": "u1",
+                "merchant": "季度安全服务（合成）",
+                "amount_minor": 18000,
+                "renewal_date": "2026-10-15",
+                "status": "ACTIVE",
+                "contract_status": "UNKNOWN",
+                "billing_interval": "QUARTERLY"
+              },
+              {
+                "id": "revoked",
+                "user_id": "u1",
+                "merchant": "已撤销服务（合成）",
+                "amount_minor": 900,
+                "renewal_date": "2026-10-22",
+                "status": "REVOKED",
+                "contract_status": "UNKNOWN",
+                "billing_interval": "MONTHLY"
+              },
+              {
+                "id": "video",
+                "user_id": "u1",
+                "merchant": "视频服务（合成）",
+                "amount_minor": 6800,
+                "renewal_date": "2026-10-20",
+                "status": "ACTIVE",
+                "contract_status": "UNKNOWN",
+                "billing_interval": "MONTHLY"
+              }
+            ],
+            "observation": {
+              "queriedAt": "2026-10-11T15:38:04.451171Z",
+              "expiresAt": "2026-10-11T15:43:04.451171Z"
+            }
+          }
+        ],
+        "data": [
+          {
+            "id": "cloud-unknown",
+            "user_id": "u1",
+            "merchant": "云空间（合成）",
+            "amount_minor": 1200,
+            "renewal_date": "2026-10-16",
+            "status": "ACTIVE",
+            "contract_status": "UNKNOWN",
+            "billing_interval": "UNKNOWN"
+          },
+          {
+            "id": "music",
+            "user_id": "u1",
+            "merchant": "音乐服务（合成）",
+            "amount_minor": 1500,
+            "renewal_date": "2026-10-20",
+            "status": "ACTIVE",
+            "contract_status": "UNKNOWN",
+            "billing_interval": "MONTHLY"
+          },
+          {
+            "id": "quarterly",
+            "user_id": "u1",
+            "merchant": "季度安全服务（合成）",
+            "amount_minor": 18000,
+            "renewal_date": "2026-10-15",
+            "status": "ACTIVE",
+            "contract_status": "UNKNOWN",
+            "billing_interval": "QUARTERLY"
+          },
+          {
+            "id": "revoked",
+            "user_id": "u1",
+            "merchant": "已撤销服务（合成）",
+            "amount_minor": 900,
+            "renewal_date": "2026-10-22",
+            "status": "REVOKED",
+            "contract_status": "UNKNOWN",
+            "billing_interval": "MONTHLY"
+          },
+          {
+            "id": "video",
+            "user_id": "u1",
+            "merchant": "视频服务（合成）",
+            "amount_minor": 6800,
+            "renewal_date": "2026-10-20",
+            "status": "ACTIVE",
+            "contract_status": "UNKNOWN",
+            "billing_interval": "MONTHLY"
+          }
+        ],
+        "actions": [],
+        "trace": [],
+        "answerSource": "PROGRAM_VERIFIED_LANGGRAPH",
+        "clarification": {
+          "required": false
+        },
+        "conversationId": "835abb23-23ba-410b-9669-84c19b689c56",
+        "contextVersion": 2,
+        "context": {
+          "conversationId": "835abb23-23ba-410b-9669-84c19b689c56",
+          "version": 2,
+          "intent": "GENERAL",
+          "state": "ACTIVE",
+          "slots": {},
+          "proposal": null,
+          "displayHistory": [
+            {
+              "assistant": "〔视频服务（合成）〕当前银行侧授权有效，金额68.00元，约定按月收费。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止、退款或以后不会收费；实际交易请以对应账单核对。若需要取消，我可以先帮你生成撤销预览供核对，但不会直接代办执行。",
+              "user": "视频服务现在可以取消吗？银行撤销有什么影响？"
+            }
+          ],
+          "bankReferences": []
+        }
+      },
+      "elapsedSeconds": 6.75,
+      "semanticPassed": true,
+      "displayQuality": {
+        "internalRecipientIdentifierAbsent": true,
+        "objectNameNotRepeated": true,
+        "amountNotRepeated": true,
+        "numericOmissionNoticeAbsent": true,
+        "characterCount": 117
+      },
+      "calls": [
+        {
+          "javaTurnId": "65d0f5e9-8a68-4f5f-b3f9-ff0bd1c433de",
+          "purpose": "plan",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 1261,
+            "completion_tokens": 21,
+            "total_tokens": 1282,
+            "prompt_cache_hit_tokens": 1024,
+            "prompt_cache_miss_tokens": 237
+          }
+        },
+        {
+          "javaTurnId": "65d0f5e9-8a68-4f5f-b3f9-ff0bd1c433de",
+          "purpose": "draft",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 3960,
+            "completion_tokens": 93,
+            "total_tokens": 4053,
+            "prompt_cache_hit_tokens": 1920,
+            "prompt_cache_miss_tokens": 2040
+          }
+        }
+      ],
+      "turnId": "65d0f5e9-8a68-4f5f-b3f9-ff0bd1c433de",
+      "agentState": "COMPLETED",
+      "agentError": null,
+      "agentHash": "27b9ae51c60be3dc990fdbdb73087750fc0136ffadf8f1df1d8b460ab8353b23",
+      "agentVersion": 2,
+      "modelEffects": [
+        {
+          "node": "draft",
+          "result": {
+            "content": {
+              "answer": "〔视频服务（合成）〕当前{{mandates_latest.4.state_label}}，金额{{mandates_latest.4.amount_minor}}，约定按月收费。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止、退款或以后不会收费；实际交易请以对应账单核对。若需要取消，我可以先帮你生成撤销预览供核对，但不会直接代办执行。",
+              "kind": "analysis"
+            },
+            "finish_reason": "stop",
+            "id": "5bb92d7b-0c20-4565-9185-1ed4f2bbd7a6",
+            "model": "deepseek-flash",
+            "raw_content": "{\"kind\":\"analysis\",\"answer\":\"〔视频服务（合成）〕当前{{mandates_latest.4.state_label}}，金额{{mandates_latest.4.amount_minor}}，约定按月收费。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止、退款或以后不会收费；实际交易请以对应账单核对。若需要取消，我可以先帮你生成撤销预览供核对，但不会直接代办执行。\"}",
+            "usage": {
+              "completion_tokens": 93,
+              "prompt_cache_hit_tokens": 1920,
+              "prompt_cache_miss_tokens": 2040,
+              "prompt_tokens": 3960,
+              "prompt_tokens_details": {
+                "cached_tokens": 1920
+              },
+              "total_tokens": 4053
+            }
+          }
+        },
+        {
+          "node": "plan",
+          "result": {
+            "content": {
+              "kind": "analysis",
+              "tools": [
+                {
+                  "args": {},
+                  "tool": "mandate_receipt"
+                }
+              ]
+            },
+            "finish_reason": "stop",
+            "id": "e45ce362-ddc7-4b43-802c-a1b20e30086e",
+            "model": "deepseek-flash",
+            "raw_content": "{\"kind\":\"analysis\",\"tools\":[{\"tool\":\"mandate_receipt\",\"args\":{}}]}",
+            "usage": {
+              "completion_tokens": 21,
+              "prompt_cache_hit_tokens": 1024,
+              "prompt_cache_miss_tokens": 237,
+              "prompt_tokens": 1261,
+              "prompt_tokens_details": {
+                "cached_tokens": 1024
+              },
+              "total_tokens": 1282
+            }
+          }
+        }
+      ],
+      "javaState": "ACKED",
+      "javaHash": "27b9ae51c60be3dc990fdbdb73087750fc0136ffadf8f1df1d8b460ab8353b23",
+      "javaVersion": 2
+    },
+    {
+      "group": "mandate",
+      "question": "请撤销视频服务，先给我看预览，不要直接执行。",
+      "conversationId": "835abb23-23ba-410b-9669-84c19b689c56",
+      "confirmedMandateQuery": true,
+      "httpStatus": 400,
+      "response": {
+        "code": "AGENT_REVIEW_REQUIRED",
+        "message": "原轮次状态需要核对，已暂停自动处理"
+      },
+      "elapsedSeconds": 8.89,
+      "calls": [
+        {
+          "javaTurnId": "f9b5a2fe-8d22-46e6-913c-99ae2fad191f",
+          "purpose": "plan",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 1289,
+            "completion_tokens": 43,
+            "total_tokens": 1332,
+            "prompt_cache_hit_tokens": 1152,
+            "prompt_cache_miss_tokens": 137
+          }
+        },
+        {
+          "javaTurnId": "f9b5a2fe-8d22-46e6-913c-99ae2fad191f",
+          "purpose": "draft",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 2735,
+            "completion_tokens": 127,
+            "total_tokens": 2862,
+            "prompt_cache_hit_tokens": 2048,
+            "prompt_cache_miss_tokens": 687
+          }
+        },
+        {
+          "javaTurnId": "f9b5a2fe-8d22-46e6-913c-99ae2fad191f",
+          "purpose": "repair",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 2937,
+            "completion_tokens": 136,
+            "total_tokens": 3073,
+            "prompt_cache_hit_tokens": 2432,
+            "prompt_cache_miss_tokens": 505
+          }
+        }
+      ],
+      "turnId": "f9b5a2fe-8d22-46e6-913c-99ae2fad191f",
+      "agentState": "RECONCILIATION_REQUIRED",
+      "agentError": "ANSWER_REPAIR_EXHAUSTED",
+      "agentHash": null,
+      "agentVersion": null,
+      "modelEffects": [
+        {
+          "node": "repair",
+          "result": {
+            "content": {
+              "answer": "已为您生成撤销视频服务的待核对操作卡：对象为{{preview_revoke.merchant}}，金额{{preview_revoke.amount_minor}}，当前仅预览、尚未执行。请在实际操作卡上核对服务与金额，并按卡片安全提示完成授权；届时才会执行。\n\n该服务当前{{mandates_latest.4.state_label}}，约定按月收费，单期{{mandates_latest.4.amount_minor}}。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止、退款或以后不会收费；实际交易请以对应账单核对。",
+              "kind": "analysis"
+            },
+            "finish_reason": "stop",
+            "id": "d7ad6e2f-ad64-4b05-903d-ec0185c7faef",
+            "model": "deepseek-flash",
+            "raw_content": "{\"kind\":\"analysis\",\"answer\":\"已为您生成撤销视频服务的待核对操作卡：对象为{{preview_revoke.merchant}}，金额{{preview_revoke.amount_minor}}，当前仅预览、尚未执行。请在实际操作卡上核对服务与金额，并按卡片安全提示完成授权；届时才会执行。\\n\\n该服务当前{{mandates_latest.4.state_label}}，约定按月收费，单期{{mandates_latest.4.amount_minor}}。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止、退款或以后不会收费；实际交易请以对应账单核对。\"}",
+            "usage": {
+              "completion_tokens": 136,
+              "prompt_cache_hit_tokens": 2432,
+              "prompt_cache_miss_tokens": 505,
+              "prompt_tokens": 2937,
+              "prompt_tokens_details": {
+                "cached_tokens": 2432
+              },
+              "total_tokens": 3073
+            }
+          }
+        },
+        {
+          "node": "plan",
+          "result": {
+            "content": {
+              "kind": "analysis",
+              "question": "",
+              "tools": [
+                {
+                  "args": {},
+                  "tool": "mandate_receipt"
+                },
+                {
+                  "args": {
+                    "merchantQuery": "视频服务"
+                  },
+                  "tool": "revoke_preview"
+                }
+              ]
+            },
+            "finish_reason": "stop",
+            "id": "765d9427-6112-425f-8a44-42d41712e12f",
+            "model": "deepseek-flash",
+            "raw_content": "{\"kind\":\"analysis\",\"tools\":[{\"tool\":\"mandate_receipt\",\"args\":{}},{\"tool\":\"revoke_preview\",\"args\":{\"merchantQuery\":\"视频服务\"}}],\"question\":\"\"}",
+            "usage": {
+              "completion_tokens": 43,
+              "prompt_cache_hit_tokens": 1152,
+              "prompt_cache_miss_tokens": 137,
+              "prompt_tokens": 1289,
+              "prompt_tokens_details": {
+                "cached_tokens": 1152
+              },
+              "total_tokens": 1332
+            }
+          }
+        },
+        {
+          "node": "draft",
+          "result": {
+            "content": {
+              "answer": "已为您生成撤销视频服务的待核对操作卡：对象为{{preview_revoke.merchant}}，金额{{preview_revoke.amount_minor}}，当前仅预览，尚未执行。请在实际操作卡上核对服务与金额后，按卡片安全提示完成授权；届时才会执行。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止、退款或以后不会收费。该服务当前为{{mandates_latest.4.state_label}}，约定按月收费，单期{{mandates_latest.4.amount_minor}}。",
+              "kind": "analysis"
+            },
+            "finish_reason": "stop",
+            "id": "47f4f0b2-37ea-43fa-aeb9-991501261290",
+            "model": "deepseek-flash",
+            "raw_content": "{\"kind\":\"analysis\",\"answer\":\"已为您生成撤销视频服务的待核对操作卡：对象为{{preview_revoke.merchant}}，金额{{preview_revoke.amount_minor}}，当前仅预览，尚未执行。请在实际操作卡上核对服务与金额后，按卡片安全提示完成授权；届时才会执行。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止、退款或以后不会收费。该服务当前为{{mandates_latest.4.state_label}}，约定按月收费，单期{{mandates_latest.4.amount_minor}}。\"}",
+            "usage": {
+              "completion_tokens": 127,
+              "prompt_cache_hit_tokens": 2048,
+              "prompt_cache_miss_tokens": 687,
+              "prompt_tokens": 2735,
+              "prompt_tokens_details": {
+                "cached_tokens": 2048
+              },
+              "total_tokens": 2862
+            }
+          }
+        }
+      ],
+      "javaState": "PAUSED",
+      "javaHash": null,
+      "javaVersion": null
+    }
+  ],
+  "moneyGuard": {
+    "balanceBefore": "7.84",
+    "capCny": 4,
+    "priorReservedCny": "3.098224",
+    "reservations": 0,
+    "requests": [
+      {
+        "upperCny": "0.005424",
+        "state": "USAGE_RECORDED",
+        "inputBytes": 5917,
+        "maxOutput": 450,
+        "usage": {
+          "prompt_tokens": 1251,
+          "completion_tokens": 35,
+          "total_tokens": 1286,
+          "prompt_tokens_details": {
+            "cached_tokens": 1024
+          },
+          "prompt_cache_hit_tokens": 1024,
+          "prompt_cache_miss_tokens": 227
+        }
+      },
+      {
+        "upperCny": "0.010196",
+        "state": "USAGE_RECORDED",
+        "inputBytes": 11175,
+        "maxOutput": 1100,
+        "usage": {
+          "prompt_tokens": 2387,
+          "completion_tokens": 54,
+          "total_tokens": 2441,
+          "prompt_tokens_details": {
+            "cached_tokens": 1792
+          },
+          "prompt_cache_hit_tokens": 1792,
+          "prompt_cache_miss_tokens": 595
+        }
+      },
+      {
+        "upperCny": "0.01044",
+        "state": "USAGE_RECORDED",
+        "inputBytes": 11566,
+        "maxOutput": 1100,
+        "usage": {
+          "prompt_tokens": 2466,
+          "completion_tokens": 48,
+          "total_tokens": 2514,
+          "prompt_tokens_details": {
+            "cached_tokens": 2304
+          },
+          "prompt_cache_hit_tokens": 2304,
+          "prompt_cache_miss_tokens": 162
+        }
+      },
+      {
+        "upperCny": "0.00558",
+        "state": "USAGE_RECORDED",
+        "inputBytes": 6099,
+        "maxOutput": 450,
+        "usage": {
+          "prompt_tokens": 1290,
+          "completion_tokens": 35,
+          "total_tokens": 1325,
+          "prompt_tokens_details": {
+            "cached_tokens": 1152
+          },
+          "prompt_cache_hit_tokens": 1152,
+          "prompt_cache_miss_tokens": 138
+        }
+      },
+      {
+        "upperCny": "0.0109",
+        "state": "USAGE_RECORDED",
+        "inputBytes": 11462,
+        "maxOutput": 1100,
+        "usage": {
+          "prompt_tokens": 2461,
+          "completion_tokens": 88,
+          "total_tokens": 2549,
+          "prompt_tokens_details": {
+            "cached_tokens": 1920
+          },
+          "prompt_cache_hit_tokens": 1920,
+          "prompt_cache_miss_tokens": 541
+        }
+      },
+      {
+        "upperCny": "0.00556",
+        "state": "USAGE_RECORDED",
+        "inputBytes": 6078,
+        "maxOutput": 450,
+        "usage": {
+          "prompt_tokens": 1285,
+          "completion_tokens": 35,
+          "total_tokens": 1320,
+          "prompt_tokens_details": {
+            "cached_tokens": 1151
+          },
+          "prompt_cache_hit_tokens": 1151,
+          "prompt_cache_miss_tokens": 134
+        }
+      },
+      {
+        "upperCny": "0.010544",
+        "state": "USAGE_RECORDED",
+        "inputBytes": 11441,
+        "maxOutput": 1100,
+        "usage": {
+          "prompt_tokens": 2456,
+          "completion_tokens": 60,
+          "total_tokens": 2516,
+          "prompt_tokens_details": {
+            "cached_tokens": 2048
+          },
+          "prompt_cache_hit_tokens": 2048,
+          "prompt_cache_miss_tokens": 408
+        }
+      },
+      {
+        "upperCny": "0.01136",
+        "state": "USAGE_RECORDED",
+        "inputBytes": 12081,
+        "maxOutput": 1100,
+        "usage": {
+          "prompt_tokens": 2591,
+          "completion_tokens": 83,
+          "total_tokens": 2674,
+          "prompt_tokens_details": {
+            "cached_tokens": 2176
+          },
+          "prompt_cache_hit_tokens": 2176,
+          "prompt_cache_miss_tokens": 415
+        }
+      },
+      {
+        "upperCny": "0.005296",
+        "state": "USAGE_RECORDED",
+        "inputBytes": 5969,
+        "maxOutput": 450,
+        "usage": {
+          "prompt_tokens": 1261,
+          "completion_tokens": 21,
+          "total_tokens": 1282,
+          "prompt_tokens_details": {
+            "cached_tokens": 1024
+          },
+          "prompt_cache_hit_tokens": 1024,
+          "prompt_cache_miss_tokens": 237
+        }
+      },
+      {
+        "upperCny": "0.016956",
+        "state": "USAGE_RECORDED",
+        "inputBytes": 17002,
+        "maxOutput": 1100,
+        "usage": {
+          "prompt_tokens": 3960,
+          "completion_tokens": 93,
+          "total_tokens": 4053,
+          "prompt_tokens_details": {
+            "cached_tokens": 1920
+          },
+          "prompt_cache_hit_tokens": 1920,
+          "prompt_cache_miss_tokens": 2040
+        }
+      },
+      {
+        "upperCny": "0.005672",
+        "state": "USAGE_RECORDED",
+        "inputBytes": 6092,
+        "maxOutput": 450,
+        "usage": {
+          "prompt_tokens": 1289,
+          "completion_tokens": 43,
+          "total_tokens": 1332,
+          "prompt_tokens_details": {
+            "cached_tokens": 1152
+          },
+          "prompt_cache_hit_tokens": 1152,
+          "prompt_cache_miss_tokens": 137
+        }
+      },
+      {
+        "upperCny": "0.012464",
+        "state": "USAGE_RECORDED",
+        "inputBytes": 12461,
+        "maxOutput": 1100,
+        "usage": {
+          "prompt_tokens": 2735,
+          "completion_tokens": 127,
+          "total_tokens": 2862,
+          "prompt_tokens_details": {
+            "cached_tokens": 2048
+          },
+          "prompt_cache_hit_tokens": 2048,
+          "prompt_cache_miss_tokens": 687
+        }
+      },
+      {
+        "upperCny": "0.01338",
+        "state": "USAGE_RECORDED",
+        "inputBytes": 13358,
+        "maxOutput": 1100,
+        "usage": {
+          "prompt_tokens": 2937,
+          "completion_tokens": 136,
+          "total_tokens": 3073,
+          "prompt_tokens_details": {
+            "cached_tokens": 2432
+          },
+          "prompt_cache_hit_tokens": 2432,
+          "prompt_cache_miss_tokens": 505
+        }
+      }
+    ],
+    "batchCapCny": ".30",
+    "batchPriorCny": "0",
+    "conservativeReservedCny": "3.221996",
+    "guardVersion": "INPUT_BYTES_USAGE_V1",
+    "guardLoaded": true,
+    "batchUpperCny": "0.123772"
+  },
+  "reservedCalls": 13,
+  "oldLedgersUnchanged": true
+}

@@ -1,0 +1,55 @@
+{
+  "credentialScan": {
+    "actualKeyOccurrences": 0
+  },
+  "browser": {
+    "pageErrors": 0,
+    "viewports": [
+      1440,
+      390
+    ],
+    "chatPosts": 0,
+    "restoration": "verified on actual pre-correction candidate; final candidate checked fresh",
+    "passed": true
+  },
+  "scope": "v0.6 isolated synthetic candidate; user chose to retain branch and worktree for team trial",
+  "verifiedAt": "2026-10-10T04:15:11.1035283+00:00",
+  "model": {
+    "reportedTotalTokens": 71502,
+    "realTurns": 3,
+    "reportedPromptTokens": 69862,
+    "reportedCompletionTokens": 1640,
+    "cap": 20,
+    "failedUsage": "unknown",
+    "successfulResponses": 10,
+    "reserved": 11,
+    "fallbackTurns": 2,
+    "groundedTurns": 1,
+    "postCorrectionPaidRetest": false,
+    "failedConnectionReservations": 1,
+    "remaining": 9
+  },
+  "candidate": {
+    "memoryResetOnRestart": true,
+    "businessPort": 8110,
+    "old8096Preserved": true,
+    "operatorPort": 8111,
+    "pid": 62672,
+    "jarSha256": "9E72959B5D9A350254D3C764F5149B4D94A2168FFA44EF35FA151485B06C6ACE"
+  },
+  "review": {
+    "fixed": 5,
+    "important": 5,
+    "comparisonRegressionTests": 45,
+    "critical": 0,
+    "independentReviews": 1,
+    "targetedRegressionTests": 55
+  },
+  "tests": {
+    "skipped": 1,
+    "paidTestSkipped": true,
+    "failures": 0,
+    "run": 270,
+    "errors": 0
+  }
+}

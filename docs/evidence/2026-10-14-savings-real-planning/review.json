@@ -1,0 +1,47 @@
+{
+  "supplierSends": 6,
+  "budget": {
+    "cumulativeUpperCny": "4.824664",
+    "batchUpperCny": "0.059856"
+  },
+  "scope": "Planning only; no bank tool calls or funds execution",
+  "cases": [
+    {
+      "id": "T01_complete",
+      "protocolPassed": true,
+      "businessPassed": true,
+      "javaContractAccepted": true
+    },
+    {
+      "id": "T02_missing",
+      "protocolPassed": true,
+      "businessPassed": false,
+      "reason": "Actual clarification omitted unspecified source account; syntactic clarification alone is not sufficient"
+    },
+    {
+      "id": "T02_followup",
+      "protocolPassed": false,
+      "businessPassed": false,
+      "javaContractAccepted": true,
+      "reason": "Explicit analysisMonth 2026-09 omitted; Java schema accepts optional month but business intent does not"
+    },
+    {
+      "id": "T13_status",
+      "protocolPassed": true,
+      "businessPassed": true
+    },
+    {
+      "id": "T13_repeat",
+      "protocolPassed": true,
+      "businessPassed": true
+    },
+    {
+      "id": "T14_consultation",
+      "protocolPassed": true,
+      "businessPassed": true
+    }
+  ],
+  "businessPassed": 4,
+  "businessTotal": 6,
+  "fixState": "Month omission/wrong-month now blocked and bounded-repaired in graph; missing-source clarification guidance strengthened; 44 free tests passed, fixes not re-tested with supplier"
+}

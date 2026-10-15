@@ -1,0 +1,31 @@
+{
+  "providerCalls": 0,
+  "actualJavaValidator": true,
+  "projectionFixture": true,
+  "results": [
+    {
+      "phase": 13,
+      "question": "请撤销视频服务，先给我看预览，不要直接执行。",
+      "capturedDraft": {
+        "answer": "已为您生成视频服务的撤销预览，供核对：服务为{{preview_revoke.merchant}}，金额{{preview_revoke.amount_minor}}。该操作卡目前待您核对，尚未执行；确认无误后再提交即可，聊天中的确认不会直接触发执行。\n\n该服务当前为{{mandates_latest.4.state_label}}，约定按月收费，单期金额{{mandates_latest.4.amount_minor}}。撤销针对的是银行侧授权关系，并非终止商户合同；撤销后不代表商户不会再尝试扣款，实际交易请以对应账单核对。",
+        "kind": "analysis"
+      },
+      "verdict": {
+        "ok": true,
+        "text": "已为您生成〔视频服务（合成）〕的撤销预览，供核对：服务为〔视频服务（合成）〕，金额68.00元。该操作卡目前待您核对，尚未执行；确认无误后再提交即可，聊天中的确认不会直接触发执行。\n\n该服务当前为银行侧授权有效，约定按月收费，单期金额68.00元。撤销针对的是银行侧授权关系，并非终止商户合同；撤销后不代表商户不会再尝试扣款，实际交易请以对应账单核对。"
+      }
+    },
+    {
+      "phase": 15,
+      "question": "备注同学的那位",
+      "capturedDraft": {
+        "answer": "您指的是收款人备注为“同学”的那位，转账预览已匹配到{{preview_transfer.recipient_label}}，转账金额{{preview_transfer.amount_minor}}。该操作卡目前仅待核对，尚未执行；请核对收款人与金额，确认无误后再从操作卡完成转账。",
+        "kind": "analysis"
+      },
+      "verdict": {
+        "ok": true,
+        "text": "您指的是收款人备注为“同学”的那位，转账预览已匹配到张三 / 张三 TEST-3271（合成），转账金额500.00元。该操作卡目前仅待核对，尚未执行；请核对收款人与金额，确认无误后再从操作卡完成转账。"
+      }
+    }
+  ]
+}

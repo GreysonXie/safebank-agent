@@ -324,7 +324,7 @@ class GroundedAnswerTest {
             assertThrows(BankException.class,()->scope().render(args(phrase+"账单支出{{e0.expense_minor}}。")),phrase);
     }
     @Test void literalRejectionIncludesOnlyWhitelistedGrammarForDiagnosis() {
-        var failure=assertThrows(BankException.class,()->scope().render(args("客户sk-SECRETabcdefghijklmnopqrstuvwxyz收到两块钱。支出{{e0.expense_minor}}。")));
+        var failure=assertThrows(BankException.class,()->scope().render(args("客户sk-00000000000000000000000000000000收到两块钱。支出{{e0.expense_minor}}。")));
         assertTrue(failure.getMessage().contains("后接：钱"));
         assertFalse(failure.getMessage().contains("SECRET"));
         assertFalse(failure.getMessage().contains("客户"));

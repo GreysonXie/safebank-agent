@@ -1,0 +1,9 @@
+{
+  "skippedPaid": 1,
+  "failures": 0,
+  "scope": "complete Java suite; candidate resource-only rebuild and actual browser acceptance recorded separately",
+  "modelRequests": 0,
+  "tests": 242,
+  "errors": 0,
+  "command": "Maven package with test profile and empty model key"
+}

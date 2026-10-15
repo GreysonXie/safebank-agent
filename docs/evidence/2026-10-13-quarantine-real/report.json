@@ -1,0 +1,40 @@
+{
+  "scope": "Actual draft/validate nodes, synthetic Java facts; no live bank tools or funds writes",
+  "totalCapCny": "5",
+  "priorIncludingReservationsCny": "4.260040",
+  "cases": [
+    {
+      "id": "JSON_BREAK",
+      "subBatch": 1,
+      "attempts": [],
+      "accepted": false,
+      "errorType": "ConnectError"
+    },
+    {
+      "id": "CLOSING_CHAT",
+      "subBatch": 1,
+      "attempts": [],
+      "accepted": false,
+      "errorType": "ConnectError"
+    },
+    {
+      "id": "JSON_BREAK_REWRITE",
+      "subBatch": 2,
+      "attempts": [],
+      "accepted": false,
+      "errorType": "ConnectError"
+    },
+    {
+      "id": "CONTROL",
+      "subBatch": 2,
+      "attempts": [],
+      "accepted": false,
+      "errorType": "ConnectError"
+    }
+  ],
+  "pricingSource": "https://api-docs.deepseek.com/quick_start/pricing/",
+  "pricePolicy": "Conservative CNY upper: input 4/output 12 per million; exceeds published Flash USD peak .3/1.2 using a 10 CNY/USD budget conversion buffer, not an observed exchange rate.",
+  "usedUpperCny": "0",
+  "cumulativeIncludingReservationsCny": "4.260040",
+  "historyUnchanged": true
+}

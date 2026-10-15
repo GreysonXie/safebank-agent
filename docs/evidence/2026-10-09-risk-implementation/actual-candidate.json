@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "scope": "actual Java/MyBatis isolated synthetic backend + browser",
+  "modelRequests": 0,
+  "initialBalance": 5154480,
+  "finalBalance": 5026180,
+  "checks": [
+    "bill comparison",
+    "explicit query and repeat receipt",
+    "600+600 red step-up",
+    "verified proof still requires confirmation",
+    "single debit on replay",
+    "revoke leaves balance unchanged",
+    "schedule creates scope without debit",
+    "due occurrence executes once",
+    "left/business/right and mobile below",
+    "four widths",
+    "no page errors"
+  ],
+  "jarSha256": "0C70287B70B84E48BFABED78E6501E509F200CF777505508913CA2140FCFB898",
+  "browserFallback": "Browser plugin not available"
+}

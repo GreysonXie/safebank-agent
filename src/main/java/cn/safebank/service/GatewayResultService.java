@@ -35,6 +35,16 @@ public class GatewayResultService {
   var response=new LinkedHashMap<String,Object>();response.put("text",text);response.put("mode","FAKE_AGENT");response.put("agentBackend","FAKE_PYTHON_PROTOCOL");response.put("toolResults",mapper.receipts(g.getTurnId()).stream().map(x->Map.of("tool",x.getToolName(),"result",tree(x.getResultJson()),"evidenceId",x.getId(),"observedAt",x.getObservedAt().toString())).toList());
   var displayEvidence=capabilities.evidence(mapper.receipts(g.getTurnId()));
   response.put("results",displayEvidence);response.put("data",displayEvidence.isEmpty()?Map.of():displayEvidence.getLast().data());response.put("actions",previews.cards(g.getUserId(),g.getConversationId()));response.put("trace",List.of());response.put("answerSource","PROGRAM_VERIFIED_FAKE_AGENT");
+  var taskRows=mapper.receipts(g.getTurnId()).stream().filter(row->Set.of("savings_task_prepare","savings_task_status").contains(row.getToolName())).toList();
+  if(!taskRows.isEmpty()){
+   var task=tree(taskRows.getLast().getResultJson());
+   if(!task.has("code")){
+    response.put("data",Map.of("workflow",task));
+    var cards=new ArrayList<Object>(previews.cards(g.getUserId(),g.getConversationId()));
+    if(task.path("pendingAction").has("id"))cards.add(task.get("pendingAction"));
+    response.put("actions",cards);
+   }
+  }
   response.put("clarification",Map.of("required",state==ConversationState.NEEDS_CLARIFICATION));
   if(environment.matchesProfiles("langgraph-agent")){response.put("mode",environment.getProperty("bank.agent.model-mode","mock").equals("deepseek")?"LANGGRAPH_MODEL":"LANGGRAPH_MOCK");response.put("agentBackend","PYTHON_LANGGRAPH");response.put("answerSource","PROGRAM_VERIFIED_LANGGRAPH");}
   var evidence=new ArrayList<EvidenceInput>();for(var row:mapper.receipts(g.getTurnId())){var data=tree(row.getResultJson());if(row.getToolName().equals("statement"))evidence.add(new EvidenceInput("gateway:"+row.getId(),"get_statement",null,data,row.getObservedAt().toInstant(),null));}

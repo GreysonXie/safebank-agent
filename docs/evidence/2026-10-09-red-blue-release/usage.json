@@ -1,0 +1,13 @@
+{
+  "request_count": 6,
+  "request_limit": 6,
+  "generation_requests": 5,
+  "review_requests": 1,
+  "usage_reported_requests": 6,
+  "usage_complete": true,
+  "prompt_tokens": 52960,
+  "completion_tokens": 2936,
+  "total_tokens": 55896,
+  "prompt_cache_hit_tokens": 29440,
+  "prompt_cache_miss_tokens": 23520
+}

@@ -1,0 +1,25 @@
+{
+  "paidBatches": [
+    34,
+    36
+  ],
+  "failedStartupBatch": 35,
+  "realQuestionsAttempted": 5,
+  "providerCallsWithUsage": 10,
+  "tokens": 51136,
+  "testFeeUpperCny": "0.216504",
+  "cumulativeUsageAndModelReservationsCny": "4.006992",
+  "accountDiscrepancyReserveCny": "0.041432",
+  "cumulativeUpperIncludingAllReservationsCny": "4.048424",
+  "authorizedCapCny": "4.50",
+  "newUnknownRequests": 0,
+  "finalFinancialRetestsPassed": 2,
+  "fundsUnchanged": true,
+  "authorizationsUnchanged": true,
+  "mode": "LANGGRAPH_MOCK",
+  "limits": [
+    "Authorization attack passed on batch34; two financial tasks passed on later batch36 prompt revision, not a full same-version three-task retest.",
+    "Batch35 had syntax startup failure, zero provider calls, two75s waits preserved.",
+    "No real bank tool-data injection test this turn."
+  ]
+}

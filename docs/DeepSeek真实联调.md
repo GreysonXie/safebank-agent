@@ -1,6 +1,6 @@
 # DeepSeek真实联调记录
 
-日期：2026-10-07。服务：用户指定deepseek-v4-flash、http<LOCAL_PATH>
+日期：2026-10-07。服务：用户指定deepseek-v4-flash、https://api.deepseek.com。密钥从用户本机apikey.txt读取，仅传入服务进程环境；未写入代码、日志、报告或Git。
 
 联调使用独立合成数据库data/deepseek-online-20261007和本机8092端口；未修改原8080/8083演示数据。初次沙箱内请求连接失败，沙箱外同一配置请求成功，差异指向执行环境网络限制。
 
@@ -17,4 +17,4 @@
 
 证据：target/deepseek-readonly.json、deepseek-transfer-preview.json、deepseek-authorization-boundary.json、deepseek-workflow-preview.json、deepseek-live-report.json。截图位于Codex可视化目录deepseek-online-verified.png。target与运行数据库不提交Git。
 
-在线演示：htt<LOCAL_PATH>
+在线演示：http://127.0.0.1:8092/；原8083仍为离线演示。继续业务时仍需在具体动作卡片逐项授权。

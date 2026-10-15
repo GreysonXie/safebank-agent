@@ -1,0 +1,25 @@
+{
+  "pythonTests": 125,
+  "mysqlTests": 40,
+  "financialExecutionInBrowser": false,
+  "browser": "Edge/Playwright",
+  "sourceHashes": {
+    "src/main/java/cn/safebank/GroundedAnswer.java": "108395492BE168EF2E6CA5E7D3AD675AC8D8AE0A9BE4970BC8D7CB800595E197",
+    "agent-service/safebank_agent/graph.py": "FF97FED681D78CD54E8FE856A501942C7F2A8EB74AF339AC60FF6831AFA2B1E4",
+    "agent-service/safebank_agent/prompts.py": "3E2007A12CDD6CF43A9088593D603007D06AF064A5A839162182F4ED0BC07F47",
+    "src/main/java/cn/safebank/service/ActionService.java": "4BE1A03CF396ADC4923ECFE0CB3E0A5A6B830232B22E9D99469CDCC477629536",
+    "src/main/java/cn/safebank/service/AgentPreviewService.java": "16D0C4E4EA2BA65806056CD4F1F00A3E5785E6560EC70C209F185BDBFAC6AAD1",
+    "agent-service/safebank_agent/models.py": "D2602A961CEC9132A31EAE4283136A199629EE05BAF255B3B5F18D82976B8098",
+    "src/main/java/cn/safebank/service/AgentCapabilityService.java": "D76FC5247B421C8B0526C87BA7E1EACF73C45585AF752898F58A61C974E21421",
+    "agent-service/tests/test_preview_planning.py": "AAAE17DC2BEE79A8FA5E217F31D186827203C78FE780EFD0587275FD645952B1",
+    "src/test/java/cn/safebank/MySqlAgentPreviewTest.java": "C5930469ECF17D1FB7D10C7D871B0D15E90C28F278A3E50C0838FF594C814C25",
+    "src/main/resources/static/app.js": "0FF89D18C19F990F122988D52C25070B735DB19F8A75462FF19E205F6655BB8B",
+    "src/main/java/cn/safebank/service/GatewayResultService.java": "2CA95D7C466C04D100F82AA1606A1081E75A9032C0DFAE2045C6D55ECD958513"
+  },
+  "providerCalls": 0,
+  "javaBoundaryTests": 51,
+  "baseCommit": "608ff2e",
+  "schemaChanges": 0,
+  "port": 8134,
+  "modelMode": "LANGGRAPH_MOCK"
+}

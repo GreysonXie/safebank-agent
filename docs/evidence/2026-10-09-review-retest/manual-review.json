@@ -1,0 +1,24 @@
+{
+  "automatic_passed": 2,
+  "manual_full_conversation_passed": false,
+  "checks": [
+    {
+      "turn": 1,
+      "arithmetic_correct": true,
+      "response_complete": false,
+      "finding": "Final sentence stops at 负向非内. Review passed but the wording is incomplete.",
+      "provider_finish_reason": "not retained by existing model adapter; cannot determine why generation ended",
+      "reply_characters": 73
+    },
+    {
+      "turn": 2,
+      "focus_changed": true,
+      "does_not_repeat_statement_totals": true,
+      "boundary_correct": true,
+      "finding": "Focuses on repair object/fault, supplier, quotation/receipt/invoice, warranty/insurance; cannot determine reasonableness from bank records.",
+      "reply_characters": 261
+    }
+  ],
+  "all_balances_unchanged": true,
+  "scope": "One original comparison plus an approved additional two-turn conversation; total ten requests, no further paid attempts."
+}

@@ -1,6 +1,6 @@
 # SafeBank v0.7 M2：Java 只读 Agent 网关
 
-当前候选入口 htt<LOCAL_PATH> 与 MyBatis、资金和权限服务保留；Python stdlib 服务在 8133 模拟协议，未接入正式 LangGraph，也未调用 DeepSeek。页面明确显示“网关协议模拟”。此阶段验证跨服务安全与恢复，不能证明自然语言回答质量提升。
+当前候选入口 http://127.0.0.1:8132/。Java 与 MyBatis、资金和权限服务保留；Python stdlib 服务在 8133 模拟协议，未接入正式 LangGraph，也未调用 DeepSeek。页面明确显示“网关协议模拟”。此阶段验证跨服务安全与恢复，不能证明自然语言回答质量提升。
 
 ## 实现范围
 
@@ -32,7 +32,7 @@
 
 ## 当前运行与恢复边界
 
-MySQL 程序与数据在 <LOCAL_PATH> Java 网页8132和fake服务8133运行；8130及8096/8110/8111停止。M1原JAR的SHA校验副本保留于本机忽略目录，代码在 `archive/v07-mysql-m1`，M1数据未升级或重导入。早期原版本也继续保留。
+MySQL 程序与数据在 D:/SafeBankRuntime/mysql，继续共用一个3307实例。仅当前 Java 网页8132和fake服务8133运行；8130及8096/8110/8111停止。M1原JAR的SHA校验副本保留于本机忽略目录，代码在 `archive/v07-mysql-m1`，M1数据未升级或重导入。早期原版本也继续保留。
 
 `start-agent-gateway-demo.ps1` 校验独立数据库、账号、64位hex内部凭证与空闲端口后启动，不读取模型密钥。数据库凭证和服务密钥只留本机忽略配置/环境；首次导入种子独立执行，重复导入拒绝。进程启动输出不等于就绪，需检查 /api/session 的 FAKE_AGENT 模式。
 

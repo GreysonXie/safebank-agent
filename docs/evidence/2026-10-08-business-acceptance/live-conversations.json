@@ -1,0 +1,450 @@
+{
+  "scope": "real model multi-turn queries/advice/clarification; no authorization or financial execution",
+  "cases": 3,
+  "repeats": 1,
+  "turns": 6,
+  "model_request_budget": 18,
+  "model_requests_reserved_or_reported": 17,
+  "passed": 6,
+  "abort_reason": "",
+  "actual_token_usage": null,
+  "records": [
+    {
+      "case": "holdout_month_coverage",
+      "repeat": 1,
+      "turn": 1,
+      "prompt": "我想知道2026年9月支出最多的是哪个类别。",
+      "reply": "2026年9月支出最多的类别是居住，金额2,500.00元，占当月非内部转账支出的46.56%。\n\n这一项来自2026-09-01的〔租金（合成）〕，也是当月大额支出候选之一。",
+      "answer_source": "MODEL_GROUNDED",
+      "trace": [
+        "get_statement",
+        "answer_customer / ANSWER_NOT_GROUNDED / 回答数字〔9〕不在已有事实或计算结果中，请查询、计算或用事实引用修正",
+        "business_answer_review / PASS"
+      ],
+      "fact_references": [
+        "e0.transactions.0.merchant",
+        "statement_2026_09.categories.居住",
+        "statement_2026_09.analysis.category_share_percent.居住",
+        "statement_2026_09.transactions.0.booked_on",
+        "statement_2026_09.transactions.0.merchant",
+        "e0.month",
+        "e0.transactions.4.category"
+      ],
+      "passed": true,
+      "failure": "",
+      "preview_cleanup_ok": true,
+      "balance_unchanged": true,
+      "model_usage": {
+        "request_count": 4,
+        "request_limit": 6,
+        "generation_requests": 3,
+        "review_requests": 1,
+        "usage_reported_requests": 4,
+        "usage_complete": true,
+        "prompt_tokens": 34728,
+        "completion_tokens": 289,
+        "total_tokens": 35017,
+        "prompt_cache_hit_tokens": 15488,
+        "prompt_cache_miss_tokens": 19240,
+        "calls": [
+          {
+            "prompt_cache_miss_tokens": 1944,
+            "kind": "generation",
+            "total_tokens": 3393,
+            "completion_tokens": 41,
+            "success": true,
+            "prompt_tokens": 3352,
+            "prompt_cache_hit_tokens": 1408
+          },
+          {
+            "prompt_cache_miss_tokens": 7995,
+            "kind": "generation",
+            "total_tokens": 10989,
+            "completion_tokens": 50,
+            "success": true,
+            "prompt_tokens": 10939,
+            "prompt_cache_hit_tokens": 2944
+          },
+          {
+            "prompt_cache_miss_tokens": 163,
+            "kind": "generation",
+            "total_tokens": 11135,
+            "completion_tokens": 92,
+            "success": true,
+            "prompt_tokens": 11043,
+            "prompt_cache_hit_tokens": 10880
+          },
+          {
+            "prompt_cache_miss_tokens": 9138,
+            "kind": "review",
+            "total_tokens": 9500,
+            "completion_tokens": 106,
+            "success": true,
+            "prompt_tokens": 9394,
+            "prompt_cache_hit_tokens": 256
+          }
+        ]
+      },
+      "elapsed_ms": 4688
+    },
+    {
+      "case": "holdout_month_coverage",
+      "repeat": 1,
+      "turn": 2,
+      "prompt": "再把这个类别8月的情况也查一下，和9月比到底多花还是少花了？如果8月最大类别不一样，也一起告诉我。",
+      "reply": "居住这一项两个月完全相同：8月是2,500.00元，9月也是2,500.00元，均来自当月1日的〔租金（合成）〕，所以既没多花也没少花，持平。\n\n另外，8月支出最多的类别并不是居住。8月最大类别是购物，3,200.00元，占当月支出的48.87%，来自2026-08-25的〔家电商店（合成）〕；居住当月占38.18%，排在购物之后。这个3,200.00元的购物在9月以退款形式入账（不计入支出类别，也不抵减9月支出）。\n\n顺带说明，两月的支出比较：9月合计5,369.33元，比8月的6,547.92元减少1,178.59元，降幅18%。",
+      "answer_source": "MODEL_GROUNDED",
+      "trace": [
+        "get_statement",
+        "business_answer_review / PASS"
+      ],
+      "fact_references": [
+        "e0.transactions.0.merchant",
+        "e1.transactions.16.merchant",
+        "e1.transactions.16.booked_on",
+        "e1.month",
+        "e0.month",
+        "e0.transactions.0.booked_on",
+        "e0.categories.居住",
+        "e0.transactions.1.amount_minor",
+        "e1.analysis.category_share_percent.购物",
+        "e1.analysis.category_share_percent.居住",
+        "e0.expense_minor",
+        "e1.expense_minor",
+        "comparison.e0_e1.expense_difference_minor",
+        "comparison.e0_e1.expense_change_percent"
+      ],
+      "passed": true,
+      "failure": "",
+      "preview_cleanup_ok": true,
+      "balance_unchanged": true,
+      "model_usage": {
+        "request_count": 3,
+        "request_limit": 6,
+        "generation_requests": 2,
+        "review_requests": 1,
+        "usage_reported_requests": 3,
+        "usage_complete": true,
+        "prompt_tokens": 47361,
+        "completion_tokens": 321,
+        "total_tokens": 47682,
+        "prompt_cache_hit_tokens": 14592,
+        "prompt_cache_miss_tokens": 32769,
+        "calls": [
+          {
+            "prompt_cache_miss_tokens": 8317,
+            "kind": "generation",
+            "total_tokens": 11174,
+            "completion_tokens": 41,
+            "success": true,
+            "prompt_tokens": 11133,
+            "prompt_cache_hit_tokens": 2816
+          },
+          {
+            "prompt_cache_miss_tokens": 8548,
+            "kind": "generation",
+            "total_tokens": 19090,
+            "completion_tokens": 174,
+            "success": true,
+            "prompt_tokens": 18916,
+            "prompt_cache_hit_tokens": 10368
+          },
+          {
+            "prompt_cache_miss_tokens": 15904,
+            "kind": "review",
+            "total_tokens": 17418,
+            "completion_tokens": 106,
+            "success": true,
+            "prompt_tokens": 17312,
+            "prompt_cache_hit_tokens": 1408
+          }
+        ]
+      },
+      "elapsed_ms": 3968
+    },
+    {
+      "case": "original_bill_followup",
+      "repeat": 1,
+      "turn": 1,
+      "prompt": "分析2026-09账单",
+      "reply": "2026-09 账单概览如下。\n\n收支\n入账合计 11,700.00元（含 8,500.00元工资，以及 3,200.00元〔家电退款（合成）〕等非工资入账）。\n支出合计 5,369.33元（只统计负向非内部转账交易，退款不计入抵减）。\n内部转账 1,000.00元已单独剔除，不计入收支。\n净结余 6,330.67元，支出约为入账的 45.89%。\n\n结构（按类别占支出）\n居住 2,500.00元，占 46.56%，是最大类别。\n维修 2,000.00元，占 37.25%。\n其余为日用品 363.50元、餐饮 184.24元、订阅 95.00元、通信 89.00元、公用事业 82.76元、交通 54.83元（占比最小的类别）。\n可见本月支出主要由居住和维修两项推动。\n\n大额核对（单笔支出达 2,000 元的候选）\n2026-09-01 〔租金（合成）〕 2,500.00元，居住类。\n2026-09-10 〔设备维修（合成）〕 2,000.00元，维修类。\n两笔合计 4,500.00元，占本月支出的 83.81%。这只是按金额门槛筛出的候选，不能据此判断是否合理或存在异常。维修这笔建议您确认一下：维修的是什么设备、对方报价多少、有没有凭证或保修说明；租金这笔可确认是否为月付房租及是否已扣除押金或补贴。\n\n订阅类支出\n本月订阅类支出 95.00元，共 3 笔：云空间 12.00元（09-16）、〔音乐服务（合成）〕 15.00元（09-20）、〔视频服务（合成）〕 68.00元（09-20）。银行侧没有服务使用记录，无法判断您实际是否还在使用；如果假设其中某些已不再需要，可以再按授权情况核算预计影响，但这不等于已经省下的金额。\n\n需要提醒：以上只是账单数据分析，不含风险或欺诈结论。如需查看某项的具体交易或按月对比，告诉我月份即可。",
+      "answer_source": "MODEL_GROUNDED",
+      "trace": [
+        "get_statement",
+        "business_answer_review / PASS"
+      ],
+      "fact_references": [
+        "e0.transactions.0.merchant",
+        "e0.transactions.1.merchant",
+        "e0.transactions.9.merchant",
+        "e0.transactions.15.merchant",
+        "e0.transactions.16.merchant",
+        "e0.month",
+        "e0.transactions.0.booked_on",
+        "e0.transactions.9.booked_on",
+        "e0.transactions.13.booked_on",
+        "e0.transactions.15.booked_on",
+        "e0.transactions.4.category",
+        "e0.transactions.11.category",
+        "e0.income_minor",
+        "e0.transactions.3.amount_minor",
+        "e0.transactions.1.amount_minor",
+        "e0.expense_minor",
+        "e0.internal_transfer_minor",
+        "e0.analysis.net_minor",
+        "e0.analysis.expense_income_percent",
+        "e0.categories.居住",
+        "e0.analysis.category_share_percent.居住",
+        "e0.categories.维修",
+        "e0.analysis.category_share_percent.维修",
+        "e0.categories.日用品",
+        "e0.categories.餐饮",
+        "e0.categories.订阅",
+        "e0.categories.通信",
+        "e0.categories.公用事业",
+        "e0.categories.交通",
+        "e0.analysis.large_expense_total_minor",
+        "e0.analysis.large_expense_share_percent",
+        "calendar.months_per_quarter",
+        "e0.transactions.13.amount_minor",
+        "e0.transactions.15.amount_minor",
+        "e0.transactions.16.amount_minor"
+      ],
+      "passed": true,
+      "failure": "",
+      "preview_cleanup_ok": true,
+      "balance_unchanged": true,
+      "model_usage": {
+        "request_count": 3,
+        "request_limit": 6,
+        "generation_requests": 2,
+        "review_requests": 1,
+        "usage_reported_requests": 3,
+        "usage_complete": true,
+        "prompt_tokens": 24050,
+        "completion_tokens": 619,
+        "total_tokens": 24669,
+        "prompt_cache_hit_tokens": 15232,
+        "prompt_cache_miss_tokens": 8818,
+        "calls": [
+          {
+            "prompt_cache_miss_tokens": 145,
+            "kind": "generation",
+            "total_tokens": 3386,
+            "completion_tokens": 41,
+            "success": true,
+            "prompt_tokens": 3345,
+            "prompt_cache_hit_tokens": 3200
+          },
+          {
+            "prompt_cache_miss_tokens": 308,
+            "kind": "generation",
+            "total_tokens": 11404,
+            "completion_tokens": 472,
+            "success": true,
+            "prompt_tokens": 10932,
+            "prompt_cache_hit_tokens": 10624
+          },
+          {
+            "prompt_cache_miss_tokens": 8365,
+            "kind": "review",
+            "total_tokens": 9879,
+            "completion_tokens": 106,
+            "success": true,
+            "prompt_tokens": 9773,
+            "prompt_cache_hit_tokens": 1408
+          }
+        ]
+      },
+      "elapsed_ms": 4547
+    },
+    {
+      "case": "original_bill_followup",
+      "repeat": 1,
+      "turn": 2,
+      "prompt": "核对大额支出",
+      "reply": "上面已列出的大额候选，我再按核对要点整理一遍，方便您逐项确认。\n\n2026-09-01〔租金（合成）〕，居住类，2,500.00元\n需要您确认：这是不是当月房租；租期和月租金是否就是这个数；是否包含了押金、物业费或补贴抵扣；有没有租赁合同或收据可对照。\n\n2026-09-10〔设备维修（合成）〕，维修类，2,000.00元\n需要您确认：维修的是什么设备；是谁提供的维修；对方报价和实际收费是否一致；有没有报价单、发票或保修凭证；这笔是何时约定的。\n\n两笔合计 4,500.00元，占本月支出的 83.81%，是本月支出的主要构成。\n\n说明一点：这两笔是按金额门槛筛出的候选，类别明确、商户名称看起来正常，但并不代表它们低风险或没有疑问；银行数据也不能证明支出合理或存在欺诈。核对结论取决于上面这些背景信息。您可以把知道的情况告诉我，我帮您逐项对照账单。",
+      "answer_source": "MODEL_GROUNDED",
+      "trace": [
+        "business_answer_review / PASS"
+      ],
+      "fact_references": [
+        "e0.transactions.0.merchant",
+        "e0.transactions.9.merchant",
+        "e0.transactions.0.booked_on",
+        "e0.transactions.9.booked_on",
+        "e0.categories.居住",
+        "e0.categories.维修",
+        "e0.analysis.large_expense_total_minor",
+        "e0.analysis.large_expense_share_percent"
+      ],
+      "passed": true,
+      "failure": "",
+      "preview_cleanup_ok": true,
+      "balance_unchanged": true,
+      "model_usage": {
+        "request_count": 2,
+        "request_limit": 6,
+        "generation_requests": 1,
+        "review_requests": 1,
+        "usage_reported_requests": 2,
+        "usage_complete": true,
+        "prompt_tokens": 21455,
+        "completion_tokens": 331,
+        "total_tokens": 21786,
+        "prompt_cache_hit_tokens": 12032,
+        "prompt_cache_miss_tokens": 9423,
+        "calls": [
+          {
+            "prompt_cache_miss_tokens": 803,
+            "kind": "generation",
+            "total_tokens": 11652,
+            "completion_tokens": 225,
+            "success": true,
+            "prompt_tokens": 11427,
+            "prompt_cache_hit_tokens": 10624
+          },
+          {
+            "prompt_cache_miss_tokens": 8620,
+            "kind": "review",
+            "total_tokens": 10134,
+            "completion_tokens": 106,
+            "success": true,
+            "prompt_tokens": 10028,
+            "prompt_cache_hit_tokens": 1408
+          }
+        ]
+      },
+      "elapsed_ms": 2594
+    },
+    {
+      "case": "original_recipient_followup",
+      "repeat": 1,
+      "turn": 1,
+      "prompt": "我要给张三转账，但先别执行",
+      "reply": "查到两位叫“张三”的收款人，需要您确认是哪一位：\n\n1. 张三 TEST-3271（合成），备注〔同学〕\n2. 张三 TEST-8862（合成），备注〔同事〕\n\n另外还需要确定转账金额和付款账户。请告诉我选哪一位、转多少，我再做预览（预览不会实际执行，确认后才生效）。",
+      "answer_source": "MODEL_GROUNDED",
+      "trace": [
+        "resolve_recipient",
+        "business_answer_review / PASS"
+      ],
+      "fact_references": [
+        "e0.0.note",
+        "e0.0.label",
+        "e0.1.note",
+        "e0.1.label"
+      ],
+      "passed": true,
+      "failure": "",
+      "preview_cleanup_ok": true,
+      "balance_unchanged": true,
+      "model_usage": {
+        "request_count": 3,
+        "request_limit": 6,
+        "generation_requests": 2,
+        "review_requests": 1,
+        "usage_reported_requests": 3,
+        "usage_complete": true,
+        "prompt_tokens": 9259,
+        "completion_tokens": 230,
+        "total_tokens": 9489,
+        "prompt_cache_hit_tokens": 7552,
+        "prompt_cache_miss_tokens": 1707,
+        "calls": [
+          {
+            "prompt_cache_miss_tokens": 148,
+            "kind": "generation",
+            "total_tokens": 3394,
+            "completion_tokens": 46,
+            "success": true,
+            "prompt_tokens": 3348,
+            "prompt_cache_hit_tokens": 3200
+          },
+          {
+            "prompt_cache_miss_tokens": 810,
+            "kind": "generation",
+            "total_tokens": 3832,
+            "completion_tokens": 78,
+            "success": true,
+            "prompt_tokens": 3754,
+            "prompt_cache_hit_tokens": 2944
+          },
+          {
+            "prompt_cache_miss_tokens": 749,
+            "kind": "review",
+            "total_tokens": 2263,
+            "completion_tokens": 106,
+            "success": true,
+            "prompt_tokens": 2157,
+            "prompt_cache_hit_tokens": 1408
+          }
+        ]
+      },
+      "elapsed_ms": 2453
+    },
+    {
+      "case": "original_recipient_followup",
+      "repeat": 1,
+      "turn": 2,
+      "prompt": "同学那位，先只告诉我还缺什么信息，不要生成操作",
+      "reply": "好的，收款人已确定为张三（备注〔同学〕）。目前还不能预览，还缺两项：\n\n一是转账金额，请告诉我具体转多少（元）；二是付款账户，也就是从您哪个账户转出。\n\n金额需要由您确认（这是敏感参数），账户这边我可以先帮您列出可选账户，需要的话说一声。补齐这两项后我再做预览，且只有您确认后才会真正执行。",
+      "answer_source": "MODEL_GROUNDED",
+      "trace": [
+        "business_answer_review / PASS"
+      ],
+      "fact_references": [
+        "e0.0.note"
+      ],
+      "passed": true,
+      "failure": "",
+      "preview_cleanup_ok": true,
+      "balance_unchanged": true,
+      "model_usage": {
+        "request_count": 2,
+        "request_limit": 3,
+        "generation_requests": 1,
+        "review_requests": 1,
+        "usage_reported_requests": 2,
+        "usage_complete": true,
+        "prompt_tokens": 6136,
+        "completion_tokens": 193,
+        "total_tokens": 6329,
+        "prompt_cache_hit_tokens": 4224,
+        "prompt_cache_miss_tokens": 1912,
+        "calls": [
+          {
+            "prompt_cache_miss_tokens": 1034,
+            "kind": "generation",
+            "total_tokens": 3937,
+            "completion_tokens": 87,
+            "success": true,
+            "prompt_tokens": 3850,
+            "prompt_cache_hit_tokens": 2816
+          },
+          {
+            "prompt_cache_miss_tokens": 878,
+            "kind": "review",
+            "total_tokens": 2392,
+            "completion_tokens": 106,
+            "success": true,
+            "prompt_tokens": 2286,
+            "prompt_cache_hit_tokens": 1408
+          }
+        ]
+      },
+      "elapsed_ms": 1953
+    }
+  ],
+  "manual_review": {
+    "status": "needs_improvement",
+    "scope": "all six final customer replies inspected against transaction fields and conversation requests",
+    "findings": [
+      {
+        "case": "holdout_month_coverage",
+        "turn": 2,
+        "finding": "Reply links September 3200-yuan refund to August 3200-yuan purchase, but exposed transaction fields lack an original-order/refund reference. Matching amount and related merchant labels support a hypothesis, not a confirmed relationship."
+      }
+    ],
+    "budget_observation": "First turn needed one extra generation after numeric grounding rejected 9; original candidate was not retained, so whether rejection was justified is unverified."
+  }
+}

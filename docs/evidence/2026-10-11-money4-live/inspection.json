@@ -1,0 +1,170 @@
+[
+  {
+    "runState": "RECONCILIATION_REQUIRED",
+    "errorCode": "BANK_CALLBACK_REJECTED",
+    "plan": {
+      "kind": "general",
+      "tools": []
+    },
+    "toolReceipts": []
+  },
+  {
+    "runState": "COMPLETED",
+    "errorCode": null,
+    "plan": {
+      "kind": "analysis",
+      "tools": [
+        {
+          "args": {
+            "month": "2026-09"
+          },
+          "tool": "statement"
+        },
+        {
+          "args": {},
+          "tool": "recurring_analysis"
+        }
+      ]
+    },
+    "toolReceipts": [
+      {
+        "tool": "statement",
+        "jsonBytes": 3021
+      },
+      {
+        "tool": "recurring_analysis",
+        "jsonBytes": 1918
+      }
+    ]
+  },
+  {
+    "runState": "COMPLETED",
+    "errorCode": null,
+    "plan": {
+      "kind": "analysis",
+      "tools": [
+        {
+          "args": {
+            "month": "2026-09"
+          },
+          "tool": "statement"
+        },
+        {
+          "args": {},
+          "tool": "recurring_analysis"
+        }
+      ]
+    },
+    "toolReceipts": [
+      {
+        "tool": "recurring_analysis",
+        "jsonBytes": 1918
+      },
+      {
+        "tool": "statement",
+        "jsonBytes": 3021
+      }
+    ]
+  },
+  {
+    "runState": "NEEDS_CLARIFICATION",
+    "errorCode": null,
+    "plan": {
+      "kind": "clarification",
+      "question": "请问要分析哪个月份的账单？",
+      "tools": []
+    },
+    "toolReceipts": []
+  },
+  {
+    "runState": "RECONCILIATION_REQUIRED",
+    "errorCode": "INVALID_ANSWER",
+    "plan": {
+      "kind": "analysis",
+      "tools": [
+        {
+          "args": {
+            "month": "2026-09"
+          },
+          "tool": "statement"
+        }
+      ]
+    },
+    "toolReceipts": [
+      {
+        "tool": "statement",
+        "jsonBytes": 3021
+      }
+    ]
+  },
+  {
+    "runState": "RECONCILIATION_REQUIRED",
+    "errorCode": "INVALID_PLAN",
+    "plan": {
+      "clarification": "",
+      "kind": "general",
+      "tools": []
+    },
+    "toolReceipts": []
+  },
+  {
+    "runState": "RECONCILIATION_REQUIRED",
+    "errorCode": "INVALID_ANSWER",
+    "plan": {
+      "kind": "analysis",
+      "tools": [
+        {
+          "args": {
+            "month": "2026-09"
+          },
+          "tool": "statement"
+        }
+      ]
+    },
+    "toolReceipts": [
+      {
+        "tool": "statement",
+        "jsonBytes": 3021
+      }
+    ]
+  },
+  {
+    "runState": "NEEDS_CLARIFICATION",
+    "errorCode": null,
+    "plan": {
+      "kind": "clarification",
+      "question": "我无法执行转账，也不能跳过确认。请到业务页的转账功能中逐项确认并提交；需要我先帮你核对与转账相关的账单或授权信息吗？",
+      "tools": []
+    },
+    "toolReceipts": []
+  },
+  {
+    "runState": "COMPLETED",
+    "errorCode": null,
+    "plan": {
+      "kind": "analysis",
+      "tools": [
+        {
+          "args": {
+            "month": "2026-09"
+          },
+          "tool": "statement"
+        },
+        {
+          "args": {},
+          "tool": "recurring_analysis"
+        }
+      ]
+    },
+    "toolReceipts": [
+      {
+        "tool": "statement",
+        "jsonBytes": 3021
+      },
+      {
+        "tool": "recurring_analysis",
+        "jsonBytes": 1918
+      }
+    ]
+  }
+]

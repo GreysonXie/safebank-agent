@@ -1,0 +1,18 @@
+{
+  "request_count": 17,
+  "generation_requests": 11,
+  "review_requests": 6,
+  "prompt_tokens": 142989,
+  "completion_tokens": 1983,
+  "total_tokens": 144972,
+  "prompt_cache_hit_tokens": 69120,
+  "prompt_cache_miss_tokens": 73869,
+  "request_budget": 24,
+  "successful_provider_requests": 17,
+  "initial_blocked_attempts": 1,
+  "initial_failed_reservation": 6,
+  "conservative_reserved_or_reported_total": 23,
+  "provider_usage_complete": true,
+  "actual_currency_cost": null,
+  "currency_cost_note": "Use provider billing console; cached prompt tokens have separate billing; no price estimate made."
+}

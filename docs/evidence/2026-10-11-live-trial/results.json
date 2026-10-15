@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-11",
+  "syntheticBankOnly": true,
+  "maximumProviderSends": 6,
+  "turnLimit": 2,
+  "questions": [
+    {
+      "question": "分析2026-09账单，哪些支出最值得关注？",
+      "receivedAnswer": false,
+      "errorCode": "AGENT_REVIEW_REQUIRED",
+      "answer": null,
+      "contextVersion": null,
+      "elapsedSeconds": 6.91
+    }
+  ],
+  "baselineReserved": 13,
+  "reservedAfter": 15,
+  "phaseReservations": 2,
+  "remaining": 5,
+  "calls": [
+    {
+      "purpose": "plan",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 289,
+        "completion_tokens": 23,
+        "total_tokens": 312,
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 161
+      }
+    },
+    {
+      "purpose": "draft",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 2987,
+        "completion_tokens": 383,
+        "total_tokens": 3370,
+        "prompt_cache_hit_tokens": 384,
+        "prompt_cache_miss_tokens": 2603
+      }
+    }
+  ],
+  "usageComplete": true,
+  "totalTokens": 3682
+}

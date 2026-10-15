@@ -1,0 +1,14 @@
+{
+  "request_count": 8,
+  "generation_requests": 6,
+  "review_requests": 2,
+  "prompt_tokens": 83092,
+  "completion_tokens": 1965,
+  "total_tokens": 85057,
+  "prompt_cache_hit_tokens": 24448,
+  "prompt_cache_miss_tokens": 58644,
+  "request_budget": 8,
+  "usage_complete": true,
+  "actual_currency_cost": null,
+  "cost_note": "Provider-reported tokens; different prompts and turns from previous acceptance, so no billed-cost reduction percentage is claimed."
+}

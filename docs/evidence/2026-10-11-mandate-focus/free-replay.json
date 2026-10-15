@@ -1,0 +1,22 @@
+{
+  "mode": "LANGGRAPH_MOCK",
+  "cases": [
+    {
+      "question": "季度安全服务显示180元，这是每个月扣180元吗？我不用这项服务了，银行侧撤销以后商户合同会同时结束、后续就一定不收费吗？请只围绕这项说明。",
+      "answer": "依据本次确认查询的快照，〔季度安全服务（合成）〕：按季度收费，约定金额180.00元，银行侧授权有效。银行侧撤销须到业务页逐项确认；无法确认商户合同是否终止或以后是否继续收费。",
+      "httpStatus": 200
+    },
+    {
+      "question": "目前明确月付的有效代扣每个月一共多少？",
+      "answer": "依据本次确认查询的快照，查询时有效且明确按月收费的授权合计为83.00元；收费周期未知或按季度收费的授权不计入该合计。这不代表取消后保证节省。",
+      "httpStatus": 200
+    }
+  ],
+  "providerCalls": 0,
+  "budgetFilesUnchanged": true,
+  "budgetHashes": [
+    "a443ea221d4af59f3996c0f4e69964fe3e8733b7155aeee0f25e97933c627b1f",
+    "b3055e78894b4b0236197387d91649ee29087a642e0595f0a6855990f0b36cf4"
+  ],
+  "limitations": "Offline model validates integration only; real model answer quality remains to be checked."
+}

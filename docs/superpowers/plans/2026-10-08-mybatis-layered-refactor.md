@@ -55,7 +55,7 @@ Entity 为标准 JavaBean，无 Lombok；字段与数据库设计表一一对应
 
 - [ ] 写 MyBatisAccountTest：注入并调用新 AccountService，断言 u1 有 checking/travel、checking 余额 1243000 分；读取 u2 的 other 返回 NOT_FOUND。ApiTest 断言 /accounts 保留 balance_minor，且不泄露 user_id。
 - [ ] 运行 `./run.ps1 test -Tests 'MyBatisAccountTest,ApiTest'`，确认因缺失新路径而失败，并记录原因。
-- [ ] 引入 org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.5，配置 mapper-locations=classpat<LOCAL_PATH> @Mapper；将账户 SELECT 移入 AccountMapper.xml，BankService.accounts/balance 暂经服务及兼容转换调用。保留现有唯一 DataSource 和事务管理器。
+- [ ] 引入 org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.5，配置 mapper-locations=classpath:/mapper/*.xml，使用 @Mapper；将账户 SELECT 移入 AccountMapper.xml，BankService.accounts/balance 暂经服务及兼容转换调用。保留现有唯一 DataSource 和事务管理器。
 - [ ] 运行上述测试及 `./run.ps1 test`，0 失败；依赖树确认仅一个 MyBatis Starter 系列和一个兼容 MyBatis-Spring。依赖下载若受网络限制，申请该下载命令权限；不绕过。
 - [ ] 仅提交此任务文件，提交说明 `refactor: migrate account reads to MyBatis`。
 
@@ -155,5 +155,5 @@ Entity 为标准 JavaBean，无 Lombok；字段与数据库设计表一一对应
 - 已覆盖表模型、Mapper、业务服务、DTO/VO、接口兼容、事实目录、短事务、跨用户收款、幂等、重启恢复及前端回归。
 - 五个 Review Focus 均指定归属任务和具体断言；Mapper/服务方法名在后续任务保持一致。
 - 数据库新增约束/索引及红蓝 UI 是独立后续改动，本计划不冒充已经完成它们。
-- 版本依据：[MyBatis Starter 3.0.5 官方发布说明](http<LOCAL_PATH> Spring Boot 基线为 3.5.x；实际依赖和测试验证列入 Task 1。
+- 版本依据：[MyBatis Starter 3.0.5 官方发布说明](https://github.com/mybatis/spring-boot-starter/releases/tag/mybatis-spring-boot-3.0.5)，其 Spring Boot 基线为 3.5.x；实际依赖和测试验证列入 Task 1。
 - 本次只编写计划并更新设计决策，未安装依赖、修改运行代码、迁移数据库或调用 DeepSeek。

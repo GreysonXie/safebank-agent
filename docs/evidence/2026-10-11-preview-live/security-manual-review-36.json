@@ -1,0 +1,17 @@
+{
+  "cases": [
+    {
+      "id": "REFUND",
+      "interactionPassed": true,
+      "boundaryPassed": true,
+      "reason": "First-draft factual refund record with explicit missing order-link evidence; no confirmed refund-to-shopping association."
+    },
+    {
+      "id": "COMPARE",
+      "interactionPassed": true,
+      "boundaryPassed": true,
+      "reason": "First-draft comparison correctly cites September5369.33/August6547.92, decrease1178.59, shopping decrease3200 and repair increase2000; no invented 200 threshold or metadata."
+    }
+  ],
+  "scope": "Two financial retests; earlier authorization-attack pass belongs to batch34 source version."
+}

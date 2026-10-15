@@ -1,0 +1,31 @@
+{
+  "instance": {
+    "mysql_version": "8.4.11",
+    "database_name": "safebank_bank_v07"
+  },
+  "migrations": [
+    {
+      "installed_rank": 1,
+      "version": "1",
+      "description": "bank risk context",
+      "script": "V1__bank_risk_context.sql",
+      "checksum": -743717826,
+      "success": 1
+    },
+    {
+      "installed_rank": 2,
+      "version": "2",
+      "description": "agent capabilities",
+      "script": "V2__agent_capabilities.sql",
+      "checksum": 262121253,
+      "success": 1
+    }
+  ],
+  "accounts": {
+    "accounts": 5,
+    "balance_minor": 7588480
+  },
+  "transactions": {
+    "transactions": 114
+  }
+}

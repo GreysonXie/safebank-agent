@@ -2,6 +2,13 @@ import unittest
 import httpx
 
 class ModelHTTPTest(unittest.TestCase):
+ def test_default_model_timeout_allows_slow_response_but_bounds_connection(self):
+  from safebank_agent.models import DeepSeek
+  model=DeepSeek('test-key','requested')
+  try:
+   self.assertEqual(model.client.timeout.read,60)
+   self.assertEqual(model.client.timeout.connect,5)
+  finally:model.client.close()
  def test_incomplete_reply_preserves_usage_without_retry(self):
   from safebank_agent.models import DeepSeek
   calls=[]
@@ -34,6 +41,7 @@ class ModelHTTPTest(unittest.TestCase):
   model=DeepSeek('test-key','requested',client=httpx.Client(transport=httpx.MockTransport(timeout)))
   with self.assertRaises(ProtocolError):model.complete({'messages':[],'max_tokens':100})
   self.assertEqual(len(calls),1)
+  self.assertEqual(model.last_failure,'ReadTimeout')
  def test_structured_reply_preserves_actual_usage(self):
   from safebank_agent.models import DeepSeek
   client=httpx.Client(transport=httpx.MockTransport(lambda request:httpx.Response(200,json={'id':'r1','model':'actual','usage':{'prompt_tokens':10,'completion_tokens':2,'total_tokens':12},'choices':[{'finish_reason':'stop','message':{'content':'{"kind":"general","answer":"hello"}'}}]})))

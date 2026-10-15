@@ -8,7 +8,7 @@
 - Flyway V1 建立现有24表的完整最终列结构，V2增加 grant/tool receipt 两表。后两表只有存储结构，令牌签发、续签、工具回调与 ACK 协议均未实现。
 - mysql profile 使用独立连接和迁移凭证；应用账号仅有指定业务库的 SELECT/INSERT/UPDATE/DELETE。H2路径默认关闭Flyway，保留旧初始化行为。
 - UTC DATETIME(6) / mysql专用类型处理器和微秒业务时钟；上海自然日与 BIGINT 整数分保持原含义。NULL保留，原 offset 不保存，纳秒向下截断为微秒。
-- JSON/CLOB改LONGTEXT，不改 MySQL JSON 类型，不重新序列化授权payload/hash。固定 utf8mb4_0900_bin，大小写和尾部空格可区分；原utf8mb4_bin为PAD SPACE，不能满足此边界。[MySQL官方说明](http<LOCAL_PATH>
+- JSON/CLOB改LONGTEXT，不改 MySQL JSON 类型，不重新序列化授权payload/hash。固定 utf8mb4_0900_bin，大小写和尾部空格可区分；原utf8mb4_bin为PAD SPACE，不能满足此边界。[MySQL官方说明](https://dev.mysql.com/doc/refman/8.4/en/charset-binary-collations.html)
 - MyBatis按databaseId区分两条upsert；核对动作归属，拒绝不同归属写入。DAO统一插入/更新返回值，仍保持一条记录成功的现有服务契约。
 - MyBatis只读启动核验对照26表InnoDB/表collation、V1/V2列、CHECK谓词、唯一键和复合FK指纹；不创建、补表或修复约束。后续迁移需有意更新此清单。
 
@@ -60,4 +60,4 @@ Flyway11.7.2运行时警告其标称最新支持MySQL8.1；本机8.4.11迁移及
 
 ## 后续本地环境整理
 
-经用户授权，MySQL 程序及数据已迁到 `<LOCAL_PATH>`，逻辑及冷备保留在 D 盘。26 张表结构和全部数据、数据库用户校验一致，8130 候选已恢复。8096/8110/8111 旧服务现已停止，代码及数据保留；上文“原入口保持原进程”描述的是 M1 交付时状态。仅清理 C 盘两个已迁移副本，释放约 1.59 GiB。[当前运行位置及恢复说明](2026-10-10-本地运行环境整理.md)。
+经用户授权，MySQL 程序及数据已迁到 `D:/SafeBankRuntime/mysql`，逻辑及冷备保留在 D 盘。26 张表结构和全部数据、数据库用户校验一致，8130 候选已恢复。8096/8110/8111 旧服务现已停止，代码及数据保留；上文“原入口保持原进程”描述的是 M1 交付时状态。仅清理 C 盘两个已迁移副本，释放约 1.59 GiB。[当前运行位置及恢复说明](2026-10-10-本地运行环境整理.md)。

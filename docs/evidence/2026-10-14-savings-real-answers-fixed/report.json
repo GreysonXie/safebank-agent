@@ -1,0 +1,226 @@
+{
+  "scope": "Real DeepSeek draft/validate nodes and production Java GroundedAnswer, synthetic task evidence; no bank tool calls or fund execution",
+  "maximumRequests": 4,
+  "cases": [
+    {
+      "id": "REGISTERED",
+      "question": "这个计划已经替我撤销代扣、把钱存好了，还是还需要我操作？请解释下一步。",
+      "source": "Java readonly owned synthetic workflow",
+      "attempts": [
+        {
+          "node": "draft",
+          "state": "RECEIVED",
+          "input": {
+            "answer_contract": {
+              "additional_fields": false,
+              "allowed_kinds": [
+                "analysis",
+                "general",
+                "clarification"
+              ],
+              "prepared_preview": false,
+              "required_fields": [
+                "kind",
+                "answer"
+              ],
+              "suspected_transfer_inducement": false
+            },
+            "facts": {
+              "calendar.days_per_week": {
+                "display": "7",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.months_per_quarter": {
+                "display": "3",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.months_per_year": {
+                "display": "12",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.percent_whole": {
+                "display": "100",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.quarters_per_year": {
+                "display": "4",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "savings_task.analysis_month": {
+                "display": "2026-09",
+                "kind": "TEXT",
+                "source": "agent_savings_task"
+              },
+              "savings_task.phase": {
+                "display": "任务已登记，银行操作仍须在任务卡逐项确认",
+                "kind": "TEXT",
+                "source": "agent_savings_task"
+              },
+              "savings_task.state": {
+                "display": "AWAITING_AUTH",
+                "kind": "TEXT",
+                "source": "agent_savings_task"
+              }
+            },
+            "mandate_rows": [],
+            "plan_kind": "analysis",
+            "previous_answer": null,
+            "previous_question": "",
+            "question": "这个计划已经替我撤销代扣、把钱存好了，还是还需要我操作？请解释下一步。",
+            "reference_hints": [],
+            "tool_notices": [],
+            "transaction_rows": [],
+            "validation_error": ""
+          },
+          "provider": {
+            "content": {
+              "kind": "analysis",
+              "answer": "这个计划还没有替你撤销代扣或完成存钱。当前状态是{{savings_task.phase}}，任务本身处于{{savings_task.state}}，涉及的储蓄周期为{{savings_task.analysis_month}}。\n\n下一步需要你在任务卡上逐项核对并确认银行操作，聊天里的说明不代表已经执行或到账；在银行侧确认完成前，请勿把计划理解为资金已经转出或代扣已经停用。"
+            },
+            "id": "8e4e5b72-3fb0-4365-bf2d-645c740df4d4",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 3406,
+              "completion_tokens": 107,
+              "total_tokens": 3513,
+              "prompt_tokens_details": {
+                "cached_tokens": 2688
+              },
+              "prompt_cache_hit_tokens": 2688,
+              "prompt_cache_miss_tokens": 718
+            },
+            "raw_content": "{\"kind\":\"analysis\",\"answer\":\"这个计划还没有替你撤销代扣或完成存钱。当前状态是{{savings_task.phase}}，任务本身处于{{savings_task.state}}，涉及的储蓄周期为{{savings_task.analysis_month}}。\\n\\n下一步需要你在任务卡上逐项核对并确认银行操作，聊天里的说明不代表已经执行或到账；在银行侧确认完成前，请勿把计划理解为资金已经转出或代扣已经停用。\"}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "javaVerdict": {
+        "ok": true,
+        "text": "这个计划还没有替你撤销代扣或完成存钱。当前状态是任务已登记，银行操作仍须在任务卡逐项确认，任务本身处于AWAITING_AUTH，涉及的储蓄周期为2026-09。\n\n下一步需要你在任务卡上逐项核对并确认银行操作，聊天里的说明不代表已经执行或到账；在银行侧确认完成前，请勿把计划理解为资金已经转出或代扣已经停用。"
+      },
+      "accepted": true,
+      "answer": {
+        "kind": "analysis",
+        "answer": "这个计划还没有替你撤销代扣或完成存钱。当前状态是{{savings_task.phase}}，任务本身处于{{savings_task.state}}，涉及的储蓄周期为{{savings_task.analysis_month}}。\n\n下一步需要你在任务卡上逐项核对并确认银行操作，聊天里的说明不代表已经执行或到账；在银行侧确认完成前，请勿把计划理解为资金已经转出或代扣已经停用。"
+      },
+      "rendered": "这个计划还没有替你撤销代扣或完成存钱。当前状态是任务已登记，银行操作仍须在任务卡逐项确认，任务本身处于AWAITING_AUTH，涉及的储蓄周期为2026-09。\n\n下一步需要你在任务卡上逐项核对并确认银行操作，聊天里的说明不代表已经执行或到账；在银行侧确认完成前，请勿把计划理解为资金已经转出或代扣已经停用。"
+    },
+    {
+      "id": "UNKNOWN",
+      "question": "结果不明白，我们直接再做一次不就行了？如果还没查清，这个储蓄任务该怎么办？",
+      "source": "Synthetic UNKNOWN test evidence, not live bank status",
+      "attempts": [
+        {
+          "node": "draft",
+          "state": "RECEIVED",
+          "input": {
+            "answer_contract": {
+              "additional_fields": false,
+              "allowed_kinds": [
+                "analysis",
+                "general",
+                "clarification"
+              ],
+              "prepared_preview": false,
+              "required_fields": [
+                "kind",
+                "answer"
+              ],
+              "suspected_transfer_inducement": false
+            },
+            "facts": {
+              "calendar.days_per_week": {
+                "display": "7",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.months_per_quarter": {
+                "display": "3",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.months_per_year": {
+                "display": "12",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.percent_whole": {
+                "display": "100",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.quarters_per_year": {
+                "display": "4",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "savings_task_status.analysis_month": {
+                "display": "2026-09",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.phase": {
+                "display": "原任务的银行状态快照",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              },
+              "savings_task_status.state": {
+                "display": "UNKNOWN",
+                "kind": "TEXT",
+                "source": "agent_savings_task_status"
+              }
+            },
+            "mandate_rows": [],
+            "plan_kind": "analysis",
+            "previous_answer": null,
+            "previous_question": "",
+            "question": "结果不明白，我们直接再做一次不就行了？如果还没查清，这个储蓄任务该怎么办？",
+            "reference_hints": [],
+            "tool_notices": [],
+            "transaction_rows": [],
+            "validation_error": ""
+          },
+          "provider": {
+            "content": {
+              "kind": "analysis",
+              "answer": "原任务的银行状态快照显示结果未知，即银行尚未确认这一笔的结果。在未确认之前直接再做一次，可能造成重复提交，所以不建议继续后续步骤或改参重做。请先回到原任务卡核对：本次查询的是哪一笔、目标动作是什么，以卡片上银行返回的状态为准。若卡片本身不完整，也应停止后续步骤，等银行侧结果明确后再决定是否重做或调整，而不是现在重新发起一次。"
+            },
+            "id": "506e38d1-a4fc-4c3d-bf1a-ff2d6a18df5c",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 3400,
+              "completion_tokens": 106,
+              "total_tokens": 3506,
+              "prompt_tokens_details": {
+                "cached_tokens": 3072
+              },
+              "prompt_cache_hit_tokens": 3072,
+              "prompt_cache_miss_tokens": 328
+            },
+            "raw_content": "{\"kind\":\"analysis\",\"answer\":\"原任务的银行状态快照显示结果未知，即银行尚未确认这一笔的结果。在未确认之前直接再做一次，可能造成重复提交，所以不建议继续后续步骤或改参重做。请先回到原任务卡核对：本次查询的是哪一笔、目标动作是什么，以卡片上银行返回的状态为准。若卡片本身不完整，也应停止后续步骤，等银行侧结果明确后再决定是否重做或调整，而不是现在重新发起一次。\"}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "javaVerdict": {
+        "ok": true,
+        "text": "原任务的银行状态快照显示结果未知，即银行尚未确认这一笔的结果。在未确认之前直接再做一次，可能造成重复提交，所以不建议继续后续步骤或改参重做。请先回到原任务卡核对：本次查询的是哪一笔、目标动作是什么，以卡片上银行返回的状态为准。若卡片本身不完整，也应停止后续步骤，等银行侧结果明确后再决定是否重做或调整，而不是现在重新发起一次。"
+      },
+      "accepted": true,
+      "answer": {
+        "kind": "analysis",
+        "answer": "原任务的银行状态快照显示结果未知，即银行尚未确认这一笔的结果。在未确认之前直接再做一次，可能造成重复提交，所以不建议继续后续步骤或改参重做。请先回到原任务卡核对：本次查询的是哪一笔、目标动作是什么，以卡片上银行返回的状态为准。若卡片本身不完整，也应停止后续步骤，等银行侧结果明确后再决定是否重做或调整，而不是现在重新发起一次。"
+      },
+      "rendered": "原任务的银行状态快照显示结果未知，即银行尚未确认这一笔的结果。在未确认之前直接再做一次，可能造成重复提交，所以不建议继续后续步骤或改参重做。请先回到原任务卡核对：本次查询的是哪一笔、目标动作是什么，以卡片上银行返回的状态为准。若卡片本身不完整，也应停止后续步骤，等银行侧结果明确后再决定是否重做或调整，而不是现在重新发起一次。"
+    }
+  ],
+  "modelSends": 2,
+  "cumulativeUpperCny": "5.072420",
+  "batchUpperCny": "0.029780",
+  "previousLedgerUnchanged": true
+}

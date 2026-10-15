@@ -1,0 +1,19 @@
+{
+  "providerCalls": 0,
+  "actualJavaValidator": true,
+  "projectionFixture": true,
+  "results": [
+    {
+      "phase": 17,
+      "question": "改成600元",
+      "capturedDraft": {
+        "answer": "已按你的要求更新转账预览：收款人为{{preview_transfer.recipient_label}}，备注为{{preview_transfer.recipient_note}}，金额为{{preview_transfer.amount_minor}}。\n\n该笔转账当前只是操作卡待核对状态，尚未执行。请核对收款对象、金额和备注无误后，在操作卡中确认提交；如需继续调整，可以直接告诉我新的金额或备注。",
+        "kind": "analysis"
+      },
+      "verdict": {
+        "ok": true,
+        "text": "已按你的要求更新转账预览：收款人为张三 / 张三 TEST-3271（合成），备注为同学，金额为600.00元。\n\n该笔转账当前只是操作卡待核对状态，尚未执行。请核对收款对象、金额和备注无误后，在操作卡中确认提交；如需继续调整，可以直接告诉我新的金额或备注。"
+      }
+    }
+  ]
+}

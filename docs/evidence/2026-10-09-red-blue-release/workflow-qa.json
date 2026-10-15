@@ -1,0 +1,43 @@
+{
+  "scope": "real browser and synthetic-bank HTTP; three isolated disposable databases; no model calls",
+  "passed": true,
+  "modelRequests": 0,
+  "records": [
+    {
+      "scenario": "normal",
+      "passed": true,
+      "state": "VERIFIED_SUCCESS",
+      "savingMinor": 8300,
+      "workflowId": "642daffc-6615-41fb-a996-89b37b7bdd7a",
+      "refreshPreservesProgress": true,
+      "unknownOriginalActionId": null,
+      "scheduledActionId": "66fed7e2-3a35-47f5-a584-439f91495eb2",
+      "repeatedDueReusesAction": true,
+      "balancesVerified": true
+    },
+    {
+      "scenario": "partial",
+      "passed": true,
+      "state": "PARTIAL_SUCCESS",
+      "savingMinor": 1500,
+      "workflowId": "1dbc7085-ce85-41d3-b339-d4194038c2cd",
+      "refreshPreservesProgress": true,
+      "unknownOriginalActionId": null,
+      "scheduledActionId": "8fc9d615-311e-4bac-9ea2-7eb51696af77",
+      "repeatedDueReusesAction": true,
+      "balancesVerified": true
+    },
+    {
+      "scenario": "unknown",
+      "passed": true,
+      "state": "VERIFIED_SUCCESS",
+      "savingMinor": 8300,
+      "workflowId": "c194a342-4c1f-4e66-830d-ccc922c7bc3f",
+      "refreshPreservesProgress": true,
+      "unknownOriginalActionId": "6da5fea9-cfa2-46dc-98ef-0d40cc662414",
+      "scheduledActionId": "3e542e6a-91e0-4f59-a7bb-c06364f304ad",
+      "repeatedDueReusesAction": true,
+      "balancesVerified": true
+    }
+  ]
+}

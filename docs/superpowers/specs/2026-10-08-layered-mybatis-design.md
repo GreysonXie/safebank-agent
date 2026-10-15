@@ -107,5 +107,5 @@ Mapper 返回 Entity 或专用查询投影，不返回任意 Map。统计查询�
 
 ## 官方依据
 
-- [MyBatis Starter 版本兼容表](http<LOCAL_PATH> 系列适配 Spring Boot 3.2–3.5，4.0 系列面向 Boot 4。
-- [Spring 编程式事务文档](http<LOCAL_PATH> 仍是受支持的显式事务方式。
+- [MyBatis Starter 版本兼容表](https://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/)：3.0 系列适配 Spring Boot 3.2–3.5，4.0 系列面向 Boot 4。
+- [Spring 编程式事务文档](https://docs.spring.io/spring-framework/reference/data-access/transaction/programmatic.html)：TransactionTemplate 仍是受支持的显式事务方式。

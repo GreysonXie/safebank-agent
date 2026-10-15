@@ -1,0 +1,65 @@
+{
+  "question": "2026-09账单里的退款，能说明我的实际消费减少了吗？",
+  "syntheticOnly": true,
+  "requestLimit": 3,
+  "baselineStageRequests": 15,
+  "authorizedCumulativeCny": 4,
+  "httpStatus": 200,
+  "errorCode": null,
+  "answer": "退款会减少您2026年09月的净支出体验，但并不等于把某笔已发生的消费“抹掉”。该月支出合计5,369.33元只统计负向非内部转账，正向退款计入入账，不会抵减该支出口径；入账合计11,700.00元包含退款等非工资入账，净结余为6,330.67元。账单中可见一笔退款3,200.00元，日期2026-09-02，商户〔家电退款（合成）〕。仅凭金额或商户相同，无法证明它与某笔订单直接关联，因此不能据此确认某项具体消费实际减少。若想核实，请提供对应订单号、退款凭证或原支付交易，我可帮您逐笔比对。",
+  "elapsedSeconds": 11.67,
+  "contextVersion": 2,
+  "requests": 3,
+  "calls": [
+    {
+      "purpose": "plan",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 451,
+        "completion_tokens": 23,
+        "total_tokens": 474,
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 195
+      }
+    },
+    {
+      "purpose": "draft",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 8603,
+        "completion_tokens": 221,
+        "total_tokens": 8824,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 8603
+      }
+    },
+    {
+      "purpose": "repair",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 8655,
+        "completion_tokens": 218,
+        "total_tokens": 8873,
+        "prompt_cache_hit_tokens": 8448,
+        "prompt_cache_miss_tokens": 207
+      }
+    }
+  ],
+  "allUsageRecorded": true,
+  "totalTokens": 18171,
+  "moneyGuard": {
+    "priorProviderPeakUpperCny": "0.076726",
+    "guardLoaded": true,
+    "balanceBefore": "7.84",
+    "priorCompletedRequests": 15,
+    "priorReservedCny": "0.10",
+    "conservativeReservedCny": "0.85",
+    "capCny": 4,
+    "reservations": 3
+  },
+  "balanceAfterCny": "7.81",
+  "stageDisplayedBalanceDeltaCny": "0.03"
+}

@@ -1,0 +1,13 @@
+{
+  "scope": "mock browser contracts; backend API separately verified",
+  "checks": [
+    "refresh without chat",
+    "exact retry request",
+    "two-tab conflict",
+    "desktop/mobile",
+    "no page errors"
+  ],
+  "modelRequests": 0,
+  "chatPosts": 5,
+  "pageErrors": []
+}

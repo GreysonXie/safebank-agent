@@ -33,10 +33,10 @@ public final class GroundedAnswer {
         +"|(?:transfer|payment|refund|cancellation)[^，,。；;！？!?\\n]{0,30}(?:completed|successful|succeeded|processed)"
         +"|(?:sent|refunded|transferred)\\b",Pattern.CASE_INSENSITIVE);
     private static final Pattern NEGATIVE_PREFIX=Pattern.compile(
-        "(?:没有|尚未|未曾|未|不能|无法|不会|并非|不代表|不说明|不意味着|不等于|即使|如果|假设|若|如)"
-        +"(?:替你|自动|为你|实际|真的|任何|确认|证明|保证|已经|已|就|立即|成功|执行|发起|发生|过|或|及|银行侧|银行|某项|该项|近期|据此|推断|某个月|直接|告知|\\h|[“\"‘]){0,6}\\z");
+        "(?:没有|尚未|未曾|未|不能|无法|不会|谈不上|并非|不代表|不说明|不意味着|不等于|即使|如果|假设|若|如)"
+        +"(?:替你|自动|为你|实际|真的|任何|确认|证明|保证|已经|已|就|立即|成功|执行|发起|发生|过|或|及|银行侧|银行|某项|该项|近期|据此|推断|某个月|之后|以后|未来|每个月|每月|钱|资金|款项|转账|的|直接|告知|\\h|[“\"‘]){0,6}\\z");
     private static final Pattern NEGATIVE_WITHIN=Pattern.compile(
-        "(?:没有|尚未|未曾|未|不能|无法|不会|不代表|不意味着|不等于)(?:已经|已|确认|证明|真的|实际|\\s){0,3}"
+        "(?:没有|尚未|未曾|未|不能|无法|不会|谈不上|不代表|不意味着|不等于)(?:已经|已|确认|证明|真的|实际|\\s){0,3}"
         +"(?:成功|完成|生效|通过|撤销|取消|终止)(?:商户合同|合同|订阅|转账|退款|扣款)?$"
         +"|\\b(?:not|never)(?:\\s+(?:yet|been|actually|already))?\\s+(?:completed|successful|succeeded|processed)$",Pattern.CASE_INSENSITIVE);
     private static final Pattern DATE_LITERAL=Pattern.compile("(?<![0-9])(20\\d{2})\\h*(?:-|年)\\h*(\\d{1,2})(?:(?:\\h*-\\h*|\\h*月\\h*(?=\\d{1,2}\\h*(?:日|号)))(\\d{1,2})(?:\\h*(?:日|号))?)?\\h*月?(?![0-9-])");
@@ -89,12 +89,12 @@ public final class GroundedAnswer {
     }
     private static String stablePrefix(BankReplyComposer.Evidence item) {
         if(item.tool().equals("get_statement")&&item.data() instanceof Map<?,?> map)return "statement_"+map.get("month").toString().replace("-","_");
-        return switch(item.tool()){case "agent_transfer_preview"->"preview_transfer";case "agent_revoke_preview"->"preview_revoke";case "list_mandates"->"mandates_latest";case "get_accounts"->"accounts_latest";
+        return switch(item.tool()){case "agent_savings_task"->"savings_task";case "agent_savings_task_status"->"savings_task_status";case "agent_transfer_preview"->"preview_transfer";case "agent_revoke_preview"->"preview_revoke";case "list_mandates"->"mandates_latest";case "get_accounts"->"accounts_latest";
             case "detect_recurring_payments"->"recurring_latest";case "resolve_recipient"->"recipients_latest";case "list_transfer_schedules"->"schedules_latest";default->item.tool();};
     }
     public static boolean cacheable(BankReplyComposer.Evidence item) {
         return Set.of("get_statement","get_accounts","list_mandates","detect_recurring_payments",
-            "resolve_recipient","list_transfer_schedules","agent_transfer_preview","agent_revoke_preview").contains(item.tool());
+            "resolve_recipient","list_transfer_schedules","agent_transfer_preview","agent_revoke_preview","agent_savings_task","agent_savings_task_status").contains(item.tool());
     }
     /** Full read data stays in bank evidence; the model receives it once in the fact catalog. */
     public Object modelToolResult(String tool,Object result) {
@@ -347,12 +347,16 @@ public final class GroundedAnswer {
             String display=entry.getValue().display();
             if(claimText.contains(display)){references.add(entry.getKey());claimText=claimText.replace(display,"");}
         }
-        if(evidence.stream().anyMatch(e->Set.of("agent_transfer_preview","agent_revoke_preview").contains(e.tool()))) {
+        if(evidence.stream().anyMatch(e->Set.of("agent_transfer_preview","agent_revoke_preview","agent_savings_task").contains(e.tool()))) {
             var generic=Pattern.compile("(?:已(?:经)?(?:为你|为您)?(?:执行|办理|操作)(?:成功|完成)|(?:执行|办理|操作)(?:已|已经)(?:成功|完成)|已(?:经)?(?:成功(?:执行|办理|操作)|完成操作))").matcher(claimText);
             while(generic.find()) {
                 String prefix=claimText.substring(Math.max(0,generic.start()-16),generic.start());
                 if(!NEGATIVE_PREFIX.matcher(prefix).find())throw invalid("当前仅有待确认预览，不能宣称执行或办理成功");
             }
+        }
+        if(evidence.stream().anyMatch(e->e.tool().equals("agent_savings_task"))) {
+            var registration=Pattern.compile("定时(?:储蓄)?委托(?:已(?:经)?登记|登记成功)|已(?:经)?登记定时(?:储蓄)?委托").matcher(claimText);
+            if(registration.find())throw invalid("当前仅登记任务计划，银行定时储蓄委托尚未登记；请区分任务计划和银行委托");
         }
         var claims=EXECUTION_CLAIM.matcher(claimText);
         while(claims.find()){
@@ -368,13 +372,27 @@ public final class GroundedAnswer {
             boolean previewAmountAdjusted=claims.group().matches("已(?:经)?(?:按(?:你|您)(?:的要求|的指定|指定))?(?:把|将)转账")
                 &&Pattern.compile("^金额(?:更新|调整|修改|改)为\\{\\{preview_transfer\\.amount_minor}}").matcher(claimText.substring(claims.end())).find()
                 &&evidence.stream().anyMatch(e->e.tool().equals("agent_transfer_preview"));
-            if(!previewPrepared&&!previewAmountAdjusted&&!accounting&&!prerequisite&&!NEGATIVE_PREFIX.matcher(prefix).find()&&!NEGATIVE_WITHIN.matcher(claims.group()).find())
+            boolean taskRegistered=claims.group().matches("计划(?:(?:目前|现在|只是|仅|仅仅|为你|为您))*已(?:经)?完成")
+                &&Pattern.compile("^登记(?:[，,。；;！？!?\\s]|$)").matcher(suffix).find()
+                &&evidence.stream().anyMatch(e->e.tool().equals("agent_savings_task"));
+            var zeroCountReference=Pattern.compile("^\\{\\{(savings_task(?:_status)?\\.progress\\.verified_revocations)}}笔(?=[，,。；;！？!?\\s]|$)").matcher(claimText.substring(claims.end()));
+            boolean zeroCount=false;
+            if(claims.group().equals("已核验撤销")&&zeroCountReference.find()) {
+                var count=facts.get(zeroCountReference.group(1));
+                zeroCount=count!=null&&count.number()!=null&&count.number().compareTo(BigDecimal.ZERO)==0;
+            }
+            if(!zeroCount&&!taskRegistered&&!previewPrepared&&!previewAmountAdjusted&&!accounting&&!prerequisite&&!NEGATIVE_PREFIX.matcher(prefix).find()&&!NEGATIVE_WITHIN.matcher(claims.group()).find())
                 throw invalid("回答中的〔"+claims.group()+"〕像是在宣称执行成功，不能用分析签发操作结论。解释现有授权时请调用list_mandates刷新，并引用对应state_label；未执行时请明确否定");
         }
         var matcher=REFERENCE.matcher(text);var rendered=new StringBuilder();
         while(matcher.find()) {
             String id=matcher.group(1).strip();Fact fact=facts.get(id);
             if(fact==null)throw invalid("事实引用不存在："+id+"；请查事实目录或重新查询");
+            if(id.matches("savings_task(?:_status)?\\.analysis_month")){
+                String role=text.substring(Math.max(0,matcher.start()-24),matcher.start()).replaceFirst("(?s).*[，,。；;！？!?\\n]","");
+                if(Pattern.compile("(?:储蓄周期|存款周期|首次(?:转存)?(?:日期|时间)|结束日期)\\h*(?:是|为|[:：])?\\h*$").matcher(role).find())
+                    throw invalid("账单分析月不能解释为储蓄周期或首次/结束转存日期");
+            }
             if(hypotheticalFact(fact)&&!hypotheticalContext(text,matcher.start()))
                 throw invalid("假设或预算引用必须在同一分句明确说明，不能当作实际银行数据");
             references.add(id);matcher.appendReplacement(rendered,Matcher.quoteReplacement(fact.display()));

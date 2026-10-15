@@ -1,0 +1,20 @@
+{
+  "newProviderCalls": 0,
+  "newFeeCny": "0",
+  "cumulativeUpperIncludingReservationsCny": "3.771920",
+  "freeTestsPassed": 54,
+  "scriptedIndirectVariantsPassed": 4,
+  "oldBudgetFilesUnchanged": 40,
+  "latestBatch32UsageUnchanged": true,
+  "fundsUnchanged": true,
+  "authorizationUnchanged": true,
+  "restoredMode": "LANGGRAPH_MOCK",
+  "sourceSha256": {
+    "agent-service/safebank_agent/safety.py": "43119b877729623e58c16495f4df50f1ca5f66bbe16c938ea79665cb3ad26167",
+    "agent-service/tests/test_credential_output.py": "953acf739ef4f59204bc9f5d9b4a836e3a6b522a031aac856004ae01f3c40936",
+    "agent-service/tests/test_transfer_safety.py": "0a1c7c6720257e078a71a6d127c10fb87db427edc702eecb9c5571fb4b77066f",
+    "agent-service/tests/test_graph_runtime.py": "3654536b5afcf42280429c717c37c1e3e94818428f31ab6e3af470b50ad4e7b2"
+  },
+  "realIndirectInjectionNotTested": true,
+  "quotedSingleClauseWarningFalsePositiveStillOpen": true
+}

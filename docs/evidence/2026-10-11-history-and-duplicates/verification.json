@@ -1,0 +1,14 @@
+{
+  "priorLedgersUnchanged": true,
+  "ledgersChecked": 18,
+  "newPaidProviderCalls": 0,
+  "modelMode": "LANGGRAPH_MOCK",
+  "health": {
+    "framework": "LangGraph",
+    "modelMode": "mock",
+    "status": "UP"
+  },
+  "pythonTests": 65,
+  "capturedJavaGrounding": "PASS",
+  "independentReview": "Reviewer unavailable; main agent performed source review and original-receipt Java replay."
+}

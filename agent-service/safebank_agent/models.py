@@ -2,6 +2,7 @@
 import json
 import re
 import threading
+from pathlib import Path
 import httpx
 from .contracts import ProtocolError,canonical
 
@@ -10,7 +11,8 @@ class DeepSeek:
     def __init__(self,key,model,url='https://api.deepseek.com',client=None,max_sends=None):
         self.key=key;self.name=model;self.url=url
         self.max_sends=max_sends;self.sends=0;self.lock=threading.Lock()
-        self.client=client or httpx.Client(timeout=httpx.Timeout(30,connect=5),follow_redirects=False)
+        self.last_failure=None
+        self.client=client or httpx.Client(timeout=httpx.Timeout(60,connect=5,write=10,pool=5),follow_redirects=False)
     def check_can_send(self):
         with self.lock:
             if self.max_sends is not None and self.sends>=self.max_sends:raise ProtocolError('MODEL_STAGE_CAP')
@@ -18,6 +20,7 @@ class DeepSeek:
         with self.lock:
             if self.max_sends is not None and self.sends>=self.max_sends:raise ProtocolError('MODEL_STAGE_CAP')
             self.sends+=1
+            self.last_failure=None
         body={'model':self.name,'messages':payload['messages'],'max_tokens':min(payload['max_tokens'],2048),'response_format':{'type':'json_object'},'stream':False,'thinking':{'type':'disabled'}}
         try:
             with self.client.stream('POST',self.url+'/chat/completions',json=body,headers={'Authorization':'Bearer '+self.key}) as response:
@@ -54,7 +57,10 @@ class DeepSeek:
                 except (ValueError,RecursionError):result['response_error']='MODEL_CONTENT_NOT_JSON'
             return result
         except ProtocolError:raise
-        except Exception:raise ProtocolError('MODEL_TRANSPORT_OR_FORMAT_FAILED') from None
+        except Exception as error:
+            # Class name only: exception text can include credentials or request data.
+            self.last_failure=type(error).__name__
+            raise ProtocolError('MODEL_TRANSPORT_OR_FORMAT_FAILED') from None
 
 class MockModel:
     """Finite offline fixtures, explicitly labelled; not evidence of model quality."""
@@ -62,6 +68,13 @@ class MockModel:
     def complete(self,payload):
         context=json.loads(payload['messages'][-1]['content']);question=context['question']
         if 'facts' not in context:
+            # Exact opt-in fixture only: this is not a natural-language planner.
+            demo=json.loads((Path(__file__).parent/'fixtures/savings_task_demo.json').read_text(encoding='utf-8'))
+            if question==demo['question']:
+                return {'content':{'kind':'savings_task','taskPlan':demo['taskPlan']},'model':'offline-fixture','usage':None}
+            identifier=context.get('previous_workflow_id')
+            if question in ('查看储蓄任务进度','看看任务进度') and isinstance(identifier,str) and re.fullmatch(r'[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}',identifier):
+                return {'content':{'kind':'analysis','tools':[{'tool':'savings_task_status','args':{'workflowId':identifier}}]},'model':'offline-fixture','usage':None}
             request_question=question
             if context.get('previous_plan',{}).get('kind')=='clarification' and not any(x in question for x in ('分析','账单','余额','取消','撤销','退款','不要','不用')):
                 question=context.get('previous_question','')+'，'+question
@@ -108,6 +121,15 @@ class MockModel:
                 if match:mandate_rows.setdefault(match[1],{})[match[2]]=fact
             if context.get('tool_notices') and not mandate_rows:
                 notice=context['tool_notices'][0];answer=notice['message']
+            elif any(k in facts for k in ('savings_task.phase','savings_task_status.phase')):
+                prefix='savings_task_status' if 'savings_task_status.phase' in facts else 'savings_task'
+                answer='本次核验信息：{{'+prefix+'.phase}}。'
+                if prefix+'.state_label' in facts:answer+='任务状态为{{'+prefix+'.state_label}}。'
+                elif prefix+'.state' in facts:answer+='任务状态为{{'+prefix+'.state}}。'
+                if prefix+'.pending.merchant' in facts:
+                    answer+='当前需要核对{{'+prefix+'.pending.merchant}}'
+                    answer+='的{{'+prefix+'.pending.kind_label}}。' if prefix+'.pending.kind_label' in facts else '。'
+                answer+='任务登记不代表银行操作执行成功；请在原任务卡查看回执，未执行的操作仍需逐项确认。'
             elif 'preview_transfer.amount_minor' in facts:
                 answer='待确认收款对象{{preview_transfer.recipient_label}}，金额{{preview_transfer.amount_minor}}。尚未执行转账，请核对操作卡并明确确认。'
             elif 'preview_revoke.merchant' in facts:

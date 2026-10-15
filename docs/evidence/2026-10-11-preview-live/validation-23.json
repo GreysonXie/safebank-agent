@@ -1,0 +1,131 @@
+{
+  "fundsUnchanged": true,
+  "fundsHash": "107bff1fe575d0e9d695ef3a5e1906dca78fabc68e0ea85592d0c314eace5db1",
+  "oldBudgetFilesUnchanged": 31,
+  "providerCallsWithUsage": 13,
+  "newUnfinishedLedgerReservations": 0,
+  "newUnknownReserveCny": "0.00",
+  "testFeeUpperCny": "0.123772",
+  "cumulativeUpperIncludingReservationsCny": "3.221996",
+  "historicUnknownReserved": 3,
+  "balanceBeforeCny": "5.89",
+  "balanceAfterCny": "5.88",
+  "restoredMode": "LANGGRAPH_MOCK",
+  "cards": [
+    {
+      "id": "agent-363bff93cd666561ecf387cf6c4ce08585d2cb45b980508f",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":60000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-421aa02ce4c679e0472f11cfd72d89761bdd4734a6df872a",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":50000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-7d24779f32eb5d34b106d2c5c3bc84418f166c6d89280423",
+      "kind": "REVOKE",
+      "status": "CANCELLED",
+      "payload": "{\"mandate_id\":\"video\",\"merchant\":\"视频服务（合成）\",\"charge_amount_minor\":6800,\"billing_interval\":\"MONTHLY\",\"estimated_monthly_saving_minor\":6800,\"contract_status\":\"UNKNOWN\",\"scope\":\"仅撤销银行侧代扣授权，商户合同状态未知\"}",
+      "receiptId": null
+    }
+  ],
+  "finalCases": [
+    {
+      "question": "从日常账户给张三转500元",
+      "httpStatus": 200,
+      "agentState": "NEEDS_CLARIFICATION",
+      "javaState": "ACKED",
+      "answer": "未能唯一确定收款人，因此尚未生成转账预览。请补充收款人“张三”的手机号或收款人备注，以便确认具体收款对象；确认后再生成待核对预览。",
+      "calls": 3
+    },
+    {
+      "question": "备注同学的那位",
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "javaState": "ACKED",
+      "answer": "已生成一笔给张三的转账预览，金额500.00元，备注为同学，与您指定的收款人匹配。当前仅为待核对操作卡，尚未执行。请在实际操作卡上核对收款人、金额和备注，并按安全提示完成授权。",
+      "calls": 2
+    },
+    {
+      "question": "改成600元",
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "javaState": "PAUSED",
+      "answer": null,
+      "calls": 3
+    },
+    {
+      "question": "视频服务现在可以取消吗？银行撤销有什么影响？",
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "javaState": "ACKED",
+      "answer": "〔视频服务（合成）〕当前银行侧授权有效，金额68.00元，约定按月收费。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止、退款或以后不会收费；实际交易请以对应账单核对。若需要取消，我可以先帮你生成撤销预览供核对，但不会直接代办执行。",
+      "calls": 2
+    },
+    {
+      "question": "请撤销视频服务，先给我看预览，不要直接执行。",
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "javaState": "PAUSED",
+      "answer": null,
+      "calls": 3
+    }
+  ],
+  "sourceSha256": {
+    "src/main/java/cn/safebank/GroundedAnswer.java": "35558efa187cc3071fbada84113850ca1fcaa6b4863b8cb0016bbf1c07a9d97b",
+    "src/main/java/cn/safebank/service/AgentPreviewService.java": "186f7e6b87db7fb0353bfcef5b4cabf832c041e305222a890e1d69e4af2afc5a",
+    "src/main/resources/static/app.js": "7e7cdc5ed120b6d2375fac0aab3db446343d6d5b6ad7ee26c63d65d841521ee6",
+    "src/main/resources/static/theme.css": "1f010d1aabc724b96952e2fc1edfaf53b68253761baa745f18dfbb371bb3113d",
+    "agent-service/safebank_agent/answers.py": "98a16881a737914b0d8ee60a40bf08b2e0dc410d571feaeceacb6d5044d410ae",
+    "agent-service/safebank_agent/prompts.py": "0237590e2058c8fa2efa97e1606bd1dda44db83da64d76f8f6ea1cf7d392aaa7"
+  },
+  "targetCasesPassed": 3,
+  "targetCasesAttempted": 5,
+  "allFiveTargetCasesPassed": false,
+  "displayQuality": [
+    {
+      "question": "从日常账户给张三转500元",
+      "metrics": {
+        "internalRecipientIdentifierAbsent": true,
+        "objectNameNotRepeated": true,
+        "amountNotRepeated": true,
+        "numericOmissionNoticeAbsent": true,
+        "characterCount": 65
+      }
+    },
+    {
+      "question": "备注同学的那位",
+      "metrics": {
+        "internalRecipientIdentifierAbsent": true,
+        "objectNameNotRepeated": true,
+        "amountNotRepeated": true,
+        "numericOmissionNoticeAbsent": true,
+        "characterCount": 88
+      }
+    },
+    {
+      "question": "改成600元",
+      "metrics": null
+    },
+    {
+      "question": "视频服务现在可以取消吗？银行撤销有什么影响？",
+      "metrics": {
+        "internalRecipientIdentifierAbsent": true,
+        "objectNameNotRepeated": true,
+        "amountNotRepeated": true,
+        "numericOmissionNoticeAbsent": true,
+        "characterCount": 117
+      }
+    },
+    {
+      "question": "请撤销视频服务，先给我看预览，不要直接执行。",
+      "metrics": null
+    }
+  ],
+  "sameSourceAsFreeValidatedPolish": true
+}
