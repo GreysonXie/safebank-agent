@@ -25,6 +25,13 @@ def main():
   def complete(self,payload):
    r=super().complete(payload);capture['responses'].append({'context':json.loads(payload['messages'][-1]['content']),'response':r});save_capture();return r
  model=CapturedModel(key,os.getenv('SAFEBANK_QA_MODEL_NAME','deepseek-flash'),max_sends=3)
+ if not replay_path:
+  def observe_provider(response):
+   if response.status_code!=200:
+    response.read()
+    capture['providerError']={'status':response.status_code,'body':response.text[:3000].replace(key,'[REDACTED]')}
+    save_capture()
+  model.client.event_hooks['response']=[observe_provider]
  if replay_path:
   captured=json.loads(Path(replay_path).read_text(encoding='utf-8'))['responses']
   class ReplayModel(CapturedModel):

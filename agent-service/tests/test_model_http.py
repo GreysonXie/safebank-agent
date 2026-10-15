@@ -2,6 +2,22 @@ import unittest
 import httpx
 
 class ModelHTTPTest(unittest.TestCase):
+ def test_keepalive_data_does_not_allow_unbounded_model_wait(self):
+  from safebank_agent.models import DeepSeek
+  from safebank_agent.contracts import ProtocolError
+  from unittest.mock import patch
+  model=DeepSeek('test-key','requested',client=httpx.Client(transport=httpx.MockTransport(lambda request:httpx.Response(200,content=b' '))))
+  with patch('safebank_agent.models.monotonic',side_effect=[0,91]):
+   with self.assertRaisesRegex(ProtocolError,'MODEL_DEADLINE_EXCEEDED'):model.complete({'messages':[],'max_tokens':100})
+  self.assertEqual(model.sends,1)
+ def test_http_error_records_status_without_response_body_or_retry(self):
+  from safebank_agent.models import DeepSeek
+  from safebank_agent.contracts import ProtocolError
+  calls=[]
+  def reply(request):calls.append(request);return httpx.Response(400,json={'error':{'message':'private provider text'}})
+  model=DeepSeek('test-key','requested',client=httpx.Client(transport=httpx.MockTransport(reply)))
+  with self.assertRaisesRegex(ProtocolError,'MODEL_HTTP_FAILED'):model.complete({'messages':[],'max_tokens':100})
+  self.assertEqual(model.last_failure,'HTTP_400');self.assertEqual(len(calls),1)
  def test_default_model_timeout_allows_slow_response_but_bounds_connection(self):
   from safebank_agent.models import DeepSeek
   model=DeepSeek('test-key','requested')

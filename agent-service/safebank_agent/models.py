@@ -2,6 +2,7 @@
 import json
 import re
 import threading
+from time import monotonic
 from pathlib import Path
 import httpx
 from .contracts import ProtocolError,canonical
@@ -22,11 +23,18 @@ class DeepSeek:
             self.sends+=1
             self.last_failure=None
         body={'model':self.name,'messages':payload['messages'],'max_tokens':min(payload['max_tokens'],2048),'response_format':{'type':'json_object'},'stream':False,'thinking':{'type':'disabled'}}
+        started=monotonic()
         try:
             with self.client.stream('POST',self.url+'/chat/completions',json=body,headers={'Authorization':'Bearer '+self.key}) as response:
-                if response.status_code!=200:raise ProtocolError('MODEL_HTTP_FAILED')
+                if response.status_code!=200:
+                    self.last_failure='HTTP_'+str(response.status_code)
+                    raise ProtocolError('MODEL_HTTP_FAILED')
                 chunks=[];size=0
                 for chunk in response.iter_bytes():
+                    # Checked on data arrival; one blocked read remains bounded by read timeout.
+                    if monotonic()-started>90:
+                        self.last_failure='TotalDeadline'
+                        raise ProtocolError('MODEL_DEADLINE_EXCEEDED')
                     size+=len(chunk)
                     if size>65536:raise ProtocolError('MODEL_RESPONSE_TOO_LARGE')
                     chunks.append(chunk)
