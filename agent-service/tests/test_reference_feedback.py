@@ -4,6 +4,21 @@ from safebank_agent.answers import GroundingRejection
 from safebank_agent.contracts import ProtocolError
 
 class ReferenceFeedbackTest(unittest.TestCase):
+ def test_missing_references_are_repaired_before_unrelated_bank_claim_rejection(self):
+  class Context:
+   def validate(self,*args):raise AssertionError('Missing references should be diagnosed first')
+  state={'request':{'text':'看储蓄任务','modelRequestLimit':3,'turnId':'test-turn','expectedVersion':1},'receipts':[{'evidenceId':'test-evidence','facts':{'savings_task.phase':{'display':'待确认','kind':'TEXT'}}}],'answer':{'kind':'analysis','answer':'任务已经登记，核验成功的撤销为0笔。'},'repair':0}
+  update=build(None,Context()).nodes['validate'].invoke(state)
+  self.assertEqual(update['repair'],1);self.assertFalse(update['validated']);self.assertIn('analysis必须引用',update['validation_error'])
+ def test_draft_contract_shows_actual_reference_syntax_without_inventing_facts(self):
+  class Context:
+   def model(self,state,node,index,payload):
+    self.payload=json.loads(payload['messages'][-1]['content']);return {'content':{'kind':'analysis','answer':'当前为{{savings_task.phase}}。'}}
+   def note(self,*args):pass
+  context=Context();state={'request':{'text':'看储蓄任务'},'plan':{'kind':'analysis','tools':[]},'receipts':[{'facts':{'savings_task.phase':{'display':'待确认','kind':'TEXT'}}}]}
+  build(None,context).nodes['draft'].invoke(state)
+  self.assertEqual(context.payload['answer_contract']['fact_reference_example'],'{{savings_task.phase}}')
+  self.assertTrue(context.payload['answer_contract']['analysis_requires_fact_reference'])
  def setUp(self):
   self.facts={'statement_2026_09.expense_minor':{'display':'5369.33元','kind':'MONEY'},'statement_2026_09.analysis.net_minor':{'display':'6330.67元','kind':'MONEY'}}
   self.state={'request':{'text':'分析2026-09账单','modelRequestLimit':3,'turnId':'test-turn','expectedVersion':1},'receipts':[{'facts':self.facts,'data':{},'evidenceId':'test-evidence'}],'answer':{'kind':'analysis','answer':'结余{{statement_2026_09.net_minor}}。'},'repair':0}

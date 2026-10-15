@@ -8,6 +8,27 @@ class Context:
  def model(self,state,node,index,payload):self.payloads.append(json.loads(payload['messages'][-1]['content']));return {'content':next(self.answers)}
 
 class ClarificationContextTest(unittest.TestCase):
+ def test_supplied_recipient_does_not_need_name_or_phone_before_lookup(self):
+  context=Context({'kind':'clarification','tools':[],'question':'请说明付款账户、金额以及收款人的姓名或手机号。'},{'kind':'clarification','tools':[],'question':'请说明付款账户和金额。'})
+  result=build(None,context).nodes['plan'].invoke({'request':{'text':'给同学转钱','modelRequestLimit':3}})
+  self.assertEqual(result['plan']['question'],'请说明付款账户和金额。')
+  self.assertEqual(context.payloads[0]['recipient_hint'],'同学');self.assertEqual(context.payloads[1]['validation_error'],'REDUNDANT_RECIPIENT_CLARIFICATION')
+ def test_recipient_hint_survives_amount_only_followup_without_claiming_a_match(self):
+  context=Context({'kind':'clarification','tools':[],'question':'请说明付款账户。'})
+  build(None,context).nodes['plan'].invoke({'request':{'text':'500元'},'previous_plan':{'kind':'clarification','tools':[]},'clarification_context':['给王老师转钱']})
+  self.assertEqual(context.payloads[0]['recipient_hint'],'王老师')
+ def test_recipient_hint_does_not_restore_old_business_or_block_real_ambiguity(self):
+  from safebank_agent.conversation import transfer_recipient_hint
+  clarification={'kind':'clarification','tools':[]}
+  for text,previous in [('换个问题，分析账单',clarification),('重名了，怎么选',clarification),('不是同学，换个人',clarification),('500元',{'kind':'analysis','tools':[{'tool':'transfer_preview','args':{}}]})]:
+   self.assertIsNone(transfer_recipient_hint(text,previous,['给同学转钱'],'给同学转钱'))
+  self.assertEqual(transfer_recipient_hint('给李老师转钱',{},[],''),'李老师')
+  for text in ('同事','重新说收款人','先核对手机号'):
+   self.assertIsNone(transfer_recipient_hint(text,clarification,['给同学转钱'],'给同学转钱'))
+  self.assertIsNone(transfer_recipient_hint('给同学转钱，先核对手机号',{},[],''))
+  for correction in ('不是同学，是同事','有两位同名同学','改给同事','换个问题，分析账单'):
+   self.assertIsNone(transfer_recipient_hint('500元',clarification,['给同学转钱',correction],correction))
+  self.assertEqual(transfer_recipient_hint('500元',clarification,['给同学转钱','给同事转钱'],'给同事转钱'),'同事')
  def test_explicit_revoke_preview_cannot_be_satisfied_by_only_reading_mandates(self):
   context=Context({'kind':'analysis','tools':[{'tool':'mandate_receipt','args':{}}]},{'kind':'analysis','tools':[{'tool':'mandate_receipt','args':{}},{'tool':'revoke_preview','args':{'merchantQuery':'音乐服务'}}]})
   result=build(None,context).nodes['plan'].invoke({'request':{'text':'只生成音乐服务撤销预览，先不执行','modelRequestLimit':3}})

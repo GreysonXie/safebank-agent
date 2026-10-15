@@ -40,6 +40,26 @@ class SavingsTaskRuntimeTest(storage_support.RuntimeSchemaTest):
  def tearDown(self):self.runtime.close()
  def proposal(self):
   return {'kind':'savings_task','taskPlan':json.loads((Path(__file__).parent/'fixtures/savings_task_plan.json').read_text(encoding='utf-8'))}
+ def test_captured_reference_free_savings_reply_gets_precise_repair_then_java_validation(self):
+  import os,subprocess,tempfile
+  from safebank_agent.contracts import canonical,bank_hash
+  from safebank_agent.answers import GroundingRejection
+  repo=Path(__file__).resolve().parents[2];captured=json.loads((Path(__file__).parent/'fixtures/captured_savings_no_references.json').read_text(encoding='utf-8'))['answer']
+  temporary_root=repo/'.team-local/tmp';temporary_root.mkdir(parents=True,exist_ok=True)
+  with tempfile.TemporaryDirectory(dir=temporary_root) as folder:
+   fixture=Path(folder)/'facts.json';fixture.write_text(json.dumps({'evidence':[{'tool':'agent_savings_task','data':{'phase':'待确认'}}]}),encoding='utf-8');validations=[]
+   def validate(result,token):
+    done=subprocess.run([str(Path(os.environ['JAVA_HOME'])/'bin/java.exe'),'-Dfile.encoding=UTF-8','-Dsun.stdout.encoding=UTF-8','-cp',os.environ['SAFEBANK_TEST_JAVA_CLASSPATH'],str(Path(__file__).parent/'fixtures/GroundingOracle.java'),str(fixture)],input=canonical(result['answer'])+'\n',capture_output=True,text=True,encoding='utf-8',timeout=15)
+    self.assertEqual(done.returncode,0);verdict=json.loads(done.stdout.splitlines()[-1]);validations.append(verdict)
+    if not verdict['ok']:raise GroundingRejection()
+    return {'text':verdict['text'],'resultHash':bank_hash('agent_result',result)}
+   self.bank.validate=validate
+   self.request['modelRequestLimit']=3
+   self.model.responses=[self.proposal(),captured,{'kind':'analysis','answer':'任务为{{savings_task.phase}}。尚未执行银行操作，请在任务卡核对。'}]
+   run=self.runtime.accept(self.request);self.runtime.execute(run['id']);saved=self.store.get(run['id'])
+   self.assertEqual(saved['state'],'RESULT_READY',saved.get('error_code'));self.assertEqual(len(validations),2);self.assertTrue(all(v['ok'] for v in validations))
+   self.assertEqual(self.bank.calls,1);self.assertEqual(self.model.calls,3)
+   self.assertIn('analysis必须引用',self.model.contexts[2]['validation_error']);self.assertEqual(self.model.contexts[2]['previous_answer'],captured)
  def restart(self):
   self.runtime.close()
   from safebank_agent.runtime import Runtime
@@ -47,7 +67,7 @@ class SavingsTaskRuntimeTest(storage_support.RuntimeSchemaTest):
  def follow(self,version=2):
   return self.runtime.accept(dict(self.request,turnId=uuid.uuid4().hex,requestId=uuid.uuid4().hex,expectedVersion=version,text='看看任务进度'))
  def test_completed_checkpoint_recovery_does_not_register_twice(self):
-  self.model.responses=[self.proposal(),{'kind':'analysis','answer':'计划已生成，请在操作卡逐项核对确认，尚未执行。'}]
+  self.model.responses=[self.proposal(),{'kind':'analysis','answer':'计划为{{savings_task.phase}}，请在操作卡逐项核对确认，尚未执行。'}]
   run=self.runtime.accept(self.request);original=self.store.result
   def crash(*args):raise SystemExit('after checkpoint before result')
   self.store.result=crash
@@ -61,10 +81,10 @@ class SavingsTaskRuntimeTest(storage_support.RuntimeSchemaTest):
   checkpoint=self.runtime.graph.get_state({'configurable':{'thread_id':saved['thread_id']}})
   self.assertEqual(checkpoint.values['workflow_id'],self.bank.identifier)
  def test_restart_status_uses_original_task_without_prepare(self):
-  self.model.responses=[self.proposal(),{'kind':'analysis','answer':'计划已生成，尚未执行。'}]
+  self.model.responses=[self.proposal(),{'kind':'analysis','answer':'计划为{{savings_task.phase}}，尚未执行。'}]
   first=self.runtime.accept(self.request);self.runtime.execute(first['id']);old=self.store.get(first['id'])
   self.assertEqual(old['state'],'RESULT_READY',old.get('error_code'));self.store.ack(first['id'],2,old['result_hash']);self.restart()
-  self.model.responses=[{'kind':'analysis','tools':[{'tool':'savings_task_status','args':{'workflowId':self.bank.identifier}}]},{'kind':'analysis','answer':'请在操作卡查看待确认步骤。'}]
+  self.model.responses=[{'kind':'analysis','tools':[{'tool':'savings_task_status','args':{'workflowId':self.bank.identifier}}]},{'kind':'analysis','answer':'当前为{{savings_task.phase}}，请在操作卡查看待确认步骤。'}]
   run=self.follow();self.runtime.execute(run['id'])
   self.assertEqual(self.store.get(run['id'])['state'],'RESULT_READY')
   self.assertEqual(self.model.contexts[2]['previous_workflow_id'],self.bank.identifier)
@@ -74,13 +94,13 @@ class SavingsTaskRuntimeTest(storage_support.RuntimeSchemaTest):
   first=self.runtime.accept(self.request);self.runtime.execute(first['id']);old=self.store.get(first['id'])
   self.assertEqual(old['state'],'RESULT_READY',old.get('error_code'));self.assertIsNotNone(old['interrupt_id'])
   self.store.ack(first['id'],2,old['result_hash']);self.restart()
-  self.model.responses=[{'kind':'analysis','tools':[{'tool':'savings_task_status','args':{'workflowId':self.bank.identifier}}]},{'kind':'analysis','answer':'请在操作卡查看待确认步骤。'}]
+  self.model.responses=[{'kind':'analysis','tools':[{'tool':'savings_task_status','args':{'workflowId':self.bank.identifier}}]},{'kind':'analysis','answer':'当前为{{savings_task.phase}}，请在操作卡查看待确认步骤。'}]
   run=self.follow();self.runtime.execute(run['id'])
   self.assertEqual(self.store.get(run['id'])['state'],'RESULT_READY')
   self.assertEqual(self.model.contexts[2]['previous_workflow_id'],self.bank.identifier)
   self.assertEqual(self.bank.calls,2)
  def test_lost_prepare_receipt_reuses_original_operation_key(self):
-  self.model.responses=[self.proposal(),{'kind':'analysis','answer':'计划待确认，尚未执行。'}]
+  self.model.responses=[self.proposal(),{'kind':'analysis','answer':'计划为{{savings_task.phase}}，尚未执行。'}]
   original=self.bank.tool;accepted={};attempts=[]
   def lost(request,token):
    key=request['operationKey'];attempts.append(key)

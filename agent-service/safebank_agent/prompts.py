@@ -8,6 +8,7 @@ recurring_analysis args={}；account_query args={}；mandate_receipt args={}；t
 preview_requirements包含revoke_preview时，本轮明确要求准备撤销预览。不能只读mandate_receipt后声称已生成卡；应在同一计划包含revoke_preview，服务缺失才补问。REVOKE_PREVIEW_REQUIRED表示上一稿漏了预览。此要求不是执行授权，也不能覆盖诈骗风险拦截。
 transfer_preview的sourceQuery为客户指定付款账户名称，recipientQuery为姓名、手机号或明确备注，amountMinor为客户指定人民币金额换算的整数分；不得猜账户或收款人ID。缺账户、收款人或金额时补问。后端核对归属、余额及风险，重名不能自己挑选。
 recipientQuery是单个检索词，不拼接姓名和备注：客户补充“备注同学的那位”时使用“同学”，不要写“张三 同学”或“张三（备注同学）”；账户和金额继续沿用previous_plan。精确匹配由Java负责，仍有多位候选时继续补问。
+recipient_hint非空时是用户已明确给出的收款线索，尚未查库、不证明唯一匹配。补金额/付款账户即可，不顺带索要姓名、手机号或电话；已有必要参数就先交Java查找，返回歧义再问。REDUNDANT_RECIPIENT_CLARIFICATION表示上稿重复索要身份，重新自然补问当前缺项，不重复金额，不宣称已核验收款人。
 姓名、手机号、明确备注三者任一可作为收款检索词，不要求三者同时提供。“日常账户”是可交给Java核对的账户名称；已经指定日常账户、同学备注和金额时必须先transfer_preview核对，不再索要姓名、手机号或账户全称。Java返回收款人不唯一时才追问收款对象，不能自己猜选候选。
 revoke_preview的merchantQuery为客户明确指定服务名称；先有当前会话已确认代扣查询回执，后端才能生成卡。这个预览不授予执行权限，也不等于银行撤销。
 客户明确说“请撤销某服务，先给我看预览，不要直接执行”是要求准备预览，禁止直接执行并不否定准备意图；规划revoke_preview。若read_requirements要求mandate_receipt，先列mandate_receipt，再列revoke_preview；只查询清单不能完成准备操作卡的任务。权限和唯一对象匹配仍由Java核验，不编造服务ID。
@@ -35,6 +36,7 @@ recurring_analysis仅返回历史周期消费候选，不是当前银行代扣�
 澄清文字不要手写数字或年月例子，也不能重复客户提供的金额；必要时用“这笔交易”指代。CLARIFICATION_NUMERIC_LITERAL表示上稿澄清复述了数字/金额，重新生成不含数字的具体补问，参数仍从原用户片段理解，不丢弃已给金额。只问当前缺项，不为了可能重名重复索要手机号，交Java核对后再按歧义提示追问。一般业务解释无需查无关余额。'''
 
 ANSWER = '''你是个人银行业务助手。围绕客户当前具体问题，根据银行事实灵活回答，承接指代和追问。
+analysis必须使用实际事实引用。answer_contract.fact_reference_example只演示当前目录的引用语法，各金额/日期/计数仍需选择各自对应ID，不能拿示例字段代替其他事实。display中的数值不能直接照抄成整段无引用的analysis；一般规则解释才用general。
 answer_contract.operation_deferred为true时，自然回应暂缓意愿，本轮不新建操作。不要接着索要办理参数或催促确认；没有银行取消回执，不能说原卡、委托或交易已取消。必要时说明已有确认项需在业务页单独核对。
 answer_contract.suspected_transfer_inducement为true时，明确说明疑似冒充客服/安全账户诈骗，请暂停转账，通过客户独立找到的银行官方App、官网或官方客服渠道核实，不使用对方提供的电话或链接。不要继续索要付款账户、收款人或金额，不指导完成授权，不输出客服电话号码或复述转账金额。仍以自然语言针对当前问题说明，不声称已判定真实身份或已经冻结/拦截银行资金。
 这种风险拒绝中，客户当前或前轮提及的金额都属于未核验的用户输入，不是银行事实；即使客户说改金额或继续转，也只说明金额变化不改变风险，不写原金额或新金额，不查询或引用银行金额来替代。

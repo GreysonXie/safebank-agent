@@ -2,6 +2,18 @@ import json,uuid
 from .test_store_effects import RuntimeSchemaTest
 
 class GraphRuntimeTest(RuntimeSchemaTest):
+ def test_redundant_identity_questions_are_repaired_across_parameter_fragments(self):
+  self.request.update(text='给同学转钱',modelRequestLimit=3)
+  self.model.responses=[{'kind':'clarification','tools':[],'question':'请说明付款账户、金额，以及收款人的姓名或手机号。'},{'kind':'clarification','tools':[],'question':'请说明付款账户和金额。'}]
+  first=self.runtime.accept(self.request);self.runtime.execute(first['id']);saved=self.store.get(first['id'])
+  self.assertEqual(saved['state'],'RESULT_READY',saved.get('error_code'));self.store.ack(first['id'],2,saved['result_hash'])
+  self.model.responses=[{'kind':'clarification','tools':[],'question':'请提供转出账户，以及收款同学的姓名或手机号。'},{'kind':'clarification','tools':[],'question':'请说明付款账户。'}]
+  follow=dict(self.request,text='500元',expectedVersion=2,turnId=uuid.uuid4().hex,requestId=uuid.uuid4().hex)
+  run=self.runtime.accept(follow);self.runtime.execute(run['id']);saved=self.store.get(run['id'])
+  self.assertEqual(saved['state'],'RESULT_READY',saved.get('error_code'));self.assertEqual(json.loads(saved['result_json'])['answer']['answer'],'请说明付款账户。')
+  state=self.runtime.graph.get_state({'configurable':{'thread_id':saved['thread_id']}}).values
+  self.assertEqual(state['clarification_context'],['给同学转钱']);self.assertEqual(state['request']['text'],'500元')
+  self.assertEqual(self.bank.calls,0);self.assertEqual(self.model.calls,4)
  def test_model_request_rejection_reaches_runtime_without_becoming_unknown(self):
   from safebank_agent.contracts import ModelRequestRejected
   def reject(payload):raise ModelRequestRejected(401)
