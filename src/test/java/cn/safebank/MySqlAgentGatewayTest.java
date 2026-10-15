@@ -48,6 +48,14 @@ class MySqlAgentGatewayTest {
     @AfterAll static void close(){if(app!=null)app.close();if(fake!=null)fake.stop(0);}
     @BeforeEach void time(){clock.set(NOW);fault="NONE";runs.clear();starts.set(0);}
     static TurnLease lease(){return turns.begin("u1",new ChatRequestDTO("测试只读网关",null),NOW.plusSeconds(1800)).lease();}
+    @Test void statusProjectionIsOwnedReadonlyAndPreservesPausedState(){
+        var l=lease();var status=app.getBean(AgentTurnStatusService.class);
+        int auth=db.queryForObject("SELECT COUNT(*) FROM action_authorizations",Integer.class),ledger=db.queryForObject("SELECT COUNT(*) FROM ledger",Integer.class);
+        var first=status.status("u1",l.turnId());assertEquals("PENDING",first.state());assertFalse(first.requiresReview());assertEquals(0,first.outputVersion());
+        assertEquals("NOT_FOUND",assertThrows(BankException.class,()->status.status("u2",l.turnId())).code);
+        app.getBean(GatewayResultService.class).pause(l.turnId());assertTrue(status.status("u1",l.turnId()).requiresReview());
+        assertEquals(auth,db.queryForObject("SELECT COUNT(*) FROM action_authorizations",Integer.class));assertEquals(ledger,db.queryForObject("SELECT COUNT(*) FROM ledger",Integer.class));assertEquals(0,starts.get());
+    }
     @Test void retryReadsReadyOriginalTurnWithoutPostingAgain(){
         String cid=contexts.create("u1");var request=new ChatRequestDTO("待恢复查询",null,cid,"ready-retry",1L);var l=turns.begin("u1",request,NOW.plusSeconds(300)).lease();
         var result=json.createObjectNode().put("turnId",l.turnId()).put("inputVersion",1);result.set("answer",json.createObjectNode().put("kind","clarification").put("answer","请提供月份。"));result.set("evidenceIds",json.createArrayNode());runs.put(l.turnId(),json.createObjectNode().put("state","RESULT_READY").set("result",result));

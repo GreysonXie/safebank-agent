@@ -156,12 +156,18 @@ async function pollOriginalChat(text){
 }
 async function sendQuestion(text){
  if(!appReady){notify('正在恢复业务会话，请稍候。');return;}if(chatBusy||!text)return;
+ if(pendingChatRequest&&pendingChatRequest.text!==text){
+  lastFailedQuestion=pendingChatRequest.text;
+  $('prompt').value=text;
+  $('chat-status').textContent='上次请求尚未完成，请先核对原请求。新问题已保留在输入框，不会替换原请求。';
+  $('chat-retry').hidden=false;return;
+ }
  chatBusy=true;lastFailedQuestion='';$('chat-retry').hidden=true;
  $('context-reset').disabled=true;
  const button=$('chat-form').querySelector('button[type="submit"]');button.disabled=true;
  document.querySelectorAll('[data-prompt]').forEach(b=>b.disabled=true);
  $('chat-form').setAttribute('aria-busy','true');$('chat-status').textContent='正在处理问题并核对数据，请稍候…';
- if(pendingChatRequest?.text!==text)message(text,'user');$('prompt').value='';
+ if(pendingChatRequest?.text!==text)message(text,'user');if($('prompt').value.trim()===text)$('prompt').value='';
  let answerReceived=false;
  try{const r=await pollOriginalChat(text);answerReceived=true;acceptContextAnswer(r);message(r.text);setMode(r.mode,'deepseek-v4-flash');
   if(r.results?.length||Object.keys(r.data||{}).length)showData(r.data,r.results);
@@ -170,7 +176,7 @@ async function sendQuestion(text){
   if(pending.length){const link=node('button','核对待确认操作');link.type='button';link.onclick=()=>{$('actions').scrollIntoView({block:'center',behavior:'smooth'});const card=actionCards.get(pending[pending.length-1].id);if(card){card.tabIndex=-1;card.focus({preventScroll:true});}};const bubble=node('div',undefined,'bubble assistant');bubble.append(link);$('messages').append(bubble);$('messages').scrollTop=$('messages').scrollHeight;}
   $('chat-status').textContent='';
  }catch(e){if(answerReceived){$('chat-status').textContent='已收到回答，但页面更新失败：'+e.message+'。请刷新页面核对任务和回执。';}else{lastFailedQuestion=text;$('chat-status').textContent='本次未获得回答：'+e.message;$('chat-retry').hidden=false;await handleContextFailure(e);}}
- finally{chatBusy=false;button.disabled=false;document.querySelectorAll('[data-prompt]').forEach(b=>b.disabled=false);$('chat-form').setAttribute('aria-busy','false');$('context-reset').disabled=!businessConversation;}
+ finally{chatBusy=false;button.disabled=false;document.querySelectorAll('[data-prompt]').forEach(b=>b.disabled=false);$('chat-form').setAttribute('aria-busy','false');$('context-reset').disabled=!businessConversation||!!pendingChatRequest;}
 }
 $('chat-form').onsubmit=event=>{event.preventDefault();sendQuestion($('prompt').value.trim());};
 $('chat-retry').onclick=()=>sendQuestion(lastFailedQuestion);

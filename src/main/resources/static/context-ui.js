@@ -10,6 +10,10 @@ function contextStorageRead(key){try{return JSON.parse(sessionStorage.getItem(ke
 function contextStorageWrite(key,value){try{if(value===null)sessionStorage.removeItem(key);else sessionStorage.setItem(key,JSON.stringify(value));}catch{/* This tab still works when browser storage is unavailable. */}}
 function prepareContextRequest(text){
  if(pendingChatRequest?.text===text)return pendingChatRequest;
+ if(pendingChatRequest){
+  const error=Error('上次请求尚未完成，请先核对原请求，再发送新问题。');
+  error.code='ORIGINAL_REQUEST_PENDING';throw error;
+ }
  pendingChatRequest={text,modelRequestLimit:5,requestId:crypto.randomUUID()};
  if(businessConversation){pendingChatRequest.conversationId=businessConversation.conversationId;pendingChatRequest.expectedContextVersion=businessConversation.version;}
  contextStorageWrite('safebank.pendingChat',pendingChatRequest);return pendingChatRequest;
@@ -24,7 +28,7 @@ function renderBusinessContext(view,clarification){
  $('context-summary').textContent=items.length?items.join(' · '):'可承接月份、对象和待补参数；记忆不代表操作授权。';
  const options=$('context-choices');options.replaceChildren();
  if(clarification){options.append(node('p',clarification.question,'hint'));for(const r of clarification.recipientCandidates||[]){const button=node('button',r.name+' · '+r.note+' · '+r.label);button.type='button';button.onclick=()=>{$('prompt').value='选择收款人 '+r.name+'，备注 '+r.note;$('prompt').focus();};options.append(button);}}
- $('context-reset').disabled=!view||chatBusy;
+ $('context-reset').disabled=!view||chatBusy||!!pendingChatRequest;
 }
 function acceptContextAnswer(response){
  if(response.context)renderBusinessContext(response.context,response.clarification);
