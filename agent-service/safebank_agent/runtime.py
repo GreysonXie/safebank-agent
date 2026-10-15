@@ -103,7 +103,7 @@ class Runtime:
                     output=self.graph.invoke(None,config)
                 else:
                     prior=checkpoint.values
-                    output=self.graph.invoke({'request':request,'previous_question':prior.get('request',{}).get('text',''),'previous_plan':prior.get('plan',{}),'previous_workflow_id':prior.get('workflow_id'),'receipts':[],'answer':{},'repair':0,'validated':False},config)
+                    output=self.graph.invoke({'request':request,'clarification_context':[],'previous_question':prior.get('request',{}).get('text',''),'previous_plan':prior.get('plan',{}),'previous_workflow_id':prior.get('workflow_id'),'receipts':[],'answer':{},'repair':0,'validated':False},config)
                 self.store.check(lease)
                 interrupt_id=None
                 if output.get('__interrupt__'):

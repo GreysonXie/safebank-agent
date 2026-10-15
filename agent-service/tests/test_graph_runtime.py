@@ -312,6 +312,56 @@ class GraphRuntimeTest(RuntimeSchemaTest):
   self.runtime.accept(dict(self.request,grant='renewed'));self.runtime.execute(run['id'])
   self.assertEqual(self.model.calls,1);self.assertEqual(len(self.bank.reservations),1);self.assertEqual(self.store.get(run['id'])['state'],'RESULT_READY')
 
+ def test_three_fragment_clarification_survives_restart_then_clears_for_new_business(self):
+  from safebank_agent.models import MockModel
+  from safebank_agent.runtime import Runtime
+  class ContextModel:
+   mode='mock'
+   def __init__(self):self.payloads=[];self.calls=0
+   def complete(self,payload):self.calls+=1;self.payloads.append(json.loads(payload['messages'][-1]['content']));return MockModel().complete(payload)
+  self.runtime.close();self.model=ContextModel();calls=[]
+  def tool(body,token):
+   self.bank.calls+=1;calls.append(body)
+   facts={'preview_transfer.recipient_label':{'display':'同学','kind':'TEXT'},'preview_transfer.amount_minor':{'display':'500.00元','kind':'MONEY'}} if body['tool']=='transfer_preview' else {'statement_2026_09.expense_minor':{'display':'5369.33元','kind':'MONEY'}}
+   return {'evidenceId':uuid.uuid4().hex,'facts':facts}
+  self.bank.tool=tool;self.runtime=Runtime(self.store,self.config,self.bank,self.model)
+  for version,question in enumerate(('给同学转钱','500元','日常账户'),1):
+   request=dict(self.request,text=question,expectedVersion=version,turnId=uuid.uuid4().hex,requestId=uuid.uuid4().hex,modelRequestLimit=2)
+   run=self.runtime.accept(request);self.runtime.execute(run['id']);saved=self.store.get(run['id'])
+   self.assertEqual(saved['state'],'RESULT_READY',saved.get('error_code'))
+   self.assertEqual(saved['result_kind'],'clarification' if version<3 else 'analysis')
+   self.store.ack(run['id'],version+1,saved['result_hash'])
+   if version==2:self.runtime.close();self.runtime=Runtime(self.store,self.config,self.bank,self.model)
+  self.assertEqual(calls[0]['args'],{'sourceQuery':'日常账户','recipientQuery':'同学','amountMinor':50000})
+  plans=[p for p in self.model.payloads if 'facts' not in p]
+  self.assertEqual(plans[2]['clarification_context'],['给同学转钱','500元'])
+  follow=dict(self.request,text='换个问题，分析2026-09账单',expectedVersion=4,turnId=uuid.uuid4().hex,requestId=uuid.uuid4().hex,modelRequestLimit=2)
+  run=self.runtime.accept(follow);self.runtime.execute(run['id']);self.assertEqual(self.store.get(run['id'])['state'],'RESULT_READY')
+  self.assertEqual([c['tool'] for c in calls],['transfer_preview','statement'])
+  self.assertEqual([p for p in self.model.payloads if 'facts' not in p][-1]['clarification_context'],[])
+
+ def test_deferral_exits_clarification_without_tool_and_keeps_plan_repair_bounded(self):
+  self.model.responses=[{'kind':'clarification','tools':[],'question':'请说明付款账户。'}]
+  first=self.runtime.accept(self.request);self.runtime.execute(first['id']);saved=self.store.get(first['id']);self.store.ack(first['id'],2,saved['result_hash'])
+  self.model.responses=[{'kind':'analysis','tools':[{'tool':'revoke_preview','args':{'merchantQuery':'音乐服务'}}]},{'kind':'general','tools':[]},{'kind':'general','answer':'好的，先不办理，已有确认项如需取消请在页面单独核对。'}]
+  request=dict(self.request,text='先不办',expectedVersion=2,turnId=uuid.uuid4().hex,requestId=uuid.uuid4().hex,modelRequestLimit=3)
+  run=self.runtime.accept(request);self.runtime.execute(run['id']);saved=self.store.get(run['id'])
+  self.assertEqual(saved['state'],'RESULT_READY',saved.get('error_code'));self.assertEqual(saved['result_kind'],'general');self.assertIsNone(saved['interrupt_id'])
+  self.assertEqual(self.bank.calls,0);self.assertEqual(self.model.calls,4)
+  self.store.ack(run['id'],3,saved['result_hash']);self.assertIsNone(self.store.binding(saved['binding_id'])['waiting_run_id'])
+
+ def test_explicit_business_switch_during_wait_does_not_call_old_transfer_tool(self):
+  self.request.update(text='给同学转钱')
+  self.model.responses=[{'kind':'clarification','tools':[],'question':'请说明金额和付款账户。'}]
+  first=self.runtime.accept(self.request);self.runtime.execute(first['id']);saved=self.store.get(first['id']);self.store.ack(first['id'],2,saved['result_hash'])
+  calls=[];original=self.bank.tool
+  def tool(body,token):calls.append(body['tool']);return original(body,token)
+  self.bank.tool=tool
+  self.model.responses=[{'kind':'analysis','tools':[{'tool':'statement','args':{'month':'2026-09'}}]},{'kind':'analysis','answer':'账单支出为{{statement_2026_09.expense_minor}}。'}]
+  follow=dict(self.request,text='换个问题，分析2026-09账单',expectedVersion=2,turnId=uuid.uuid4().hex,requestId=uuid.uuid4().hex,modelRequestLimit=2)
+  run=self.runtime.accept(follow);self.runtime.execute(run['id']);saved=self.store.get(run['id'])
+  self.assertEqual(saved['state'],'RESULT_READY',saved.get('error_code'));self.assertEqual(calls,['statement'])
+
 class Model:
  mode='mock'
  def __init__(self):self.responses=[];self.calls=0
