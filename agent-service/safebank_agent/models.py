@@ -153,6 +153,12 @@ class MockModel:
             actionable_notices=[notice for notice in context.get('tool_notices',[]) if notice.get('code')!='TRANSACTION_CATALOG_PARTIAL']
             if actionable_notices and not mandate_rows:
                 notice=actionable_notices[0];answer=notice['message']
+                if notice.get('code')=='RECIPIENT_CLARIFICATION_REQUIRED':
+                    refs=context.get('answer_contract',{}).get('transfer_clarification',{}).get('candidate_distinction_refs',[])
+                    choices={}
+                    for ref in refs:choices.setdefault(ref.rsplit('.',1)[0],ref)
+                    if choices:answer='请确认你指的是'+ '，还是'.join(choices.values())+'对应的收款人？尚未生成转账预览。'
+                    if context.get('answer_contract',{}).get('transfer_clarification',{}).get('has_indistinguishable_candidates'):answer+='部分候选现有信息无法区分，请先核对并补充备注。'
             elif any(k in facts for k in ('savings_task.phase','savings_task_status.phase')):
                 prefix='savings_task_status' if 'savings_task_status.phase' in facts else 'savings_task'
                 answer='本次核验信息：{{'+prefix+'.phase}}。'

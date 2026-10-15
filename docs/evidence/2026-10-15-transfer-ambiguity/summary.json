@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-15",
+  "scope": "captured-style error plus scripted free replay; not new provider generation",
+  "pythonPassed": 156,
+  "mysqlPassed": 11,
+  "http": {
+    "turns": 3,
+    "scriptedModelResponses": 6,
+    "oneRewriteOfCapturedStyleBadClarification": true,
+    "tools": [
+      "transfer_preview",
+      "transfer_preview"
+    ],
+    "sameSourceAndAmountAfterSelection": true,
+    "onePendingPreview": true,
+    "authorizationLedgerBalancesUnchanged": true,
+    "bankExecutions": 0
+  },
+  "candidate": {
+    "mode": "LANGGRAPH_MODEL",
+    "model": "deepseek-flash",
+    "ownedLabelLookupPassed": true,
+    "requestBudgetPreserved": true,
+    "providerProbeSent": false
+  },
+  "providerSendsByAgentThisBatch": 0,
+  "review": {
+    "importantFixed": 2,
+    "secondReviewPerformed": false
+  },
+  "limitations": [
+    "new provider wording not retested",
+    "bounded finite redundant-source wording checks",
+    "very large candidate sets truncated and ambiguity must remain",
+    "indistinguishable candidates require more identifying data"
+  ]
+}

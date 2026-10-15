@@ -59,6 +59,13 @@ class MySqlAgentPreviewTest {
   String grant=token(contexts.create("u1"));int before=db.queryForObject("SELECT COUNT(*) FROM actions",Integer.class);
   var ambiguous=caps.call(grant,previewRequest("ambiguous","transfer_preview",Map.of("sourceQuery","日常账户","recipientQuery","张三","amountMinor",50000)));
   assertEquals("RECIPIENT_CLARIFICATION_REQUIRED",ambiguous.data().path("code").asText());assertFalse(ambiguous.data().has("pendingAction"));
+  assertTrue(ambiguous.data().path("sourceResolved").asBoolean());assertEquals("AMBIGUOUS",ambiguous.data().path("recipientResolution").asText());
+  assertEquals(2,ambiguous.data().path("candidates").size());assertTrue(ambiguous.facts().containsKey("recipients_latest.0.note"));
+  assertFalse(ambiguous.data().path("candidates").get(0).has("id"));assertFalse(ambiguous.data().toString().contains("TEST-PHONE"));
+  var turn=caps.authorize(grant,true);var results=app.getBean(GatewayResultService.class);
+  var ack=results.complete(new AgentResultDTO(turn.getTurnId(),1,json.createObjectNode().put("kind","clarification").put("answer","付款账户已明确。请确认是备注{{recipients_latest.0.note}}，还是备注{{recipients_latest.1.note}}的收款人？尚未生成预览。"),List.of(ambiguous.evidenceId())));
+  results.acknowledged(turn.getTurnId(),ack.resultHash(),ack.outputVersion());
+
   var unconfirmed=caps.call(token(contexts.create("u1")),previewRequest("unconfirmed-preview","revoke_preview",Map.of("merchantQuery","视频服务")));
   assertEquals("QUERY_CONFIRMATION_REQUIRED",unconfirmed.data().path("code").asText());assertEquals(before,db.queryForObject("SELECT COUNT(*) FROM actions",Integer.class));
  }

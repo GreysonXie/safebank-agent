@@ -44,7 +44,10 @@ public class AgentPreviewService {
   if(tool.equals("transfer_preview")){
    var sources=accounts.list(user).stream().filter(a->a.id().equals(args.path("sourceQuery").asText())||name(a.label()).equals(name(args.path("sourceQuery").asText()))).toList();
    var targets=recipients.search(user,args.path("recipientQuery").asText());
-   if(targets.size()!=1)return notice("RECIPIENT_CLARIFICATION_REQUIRED");
+   if(targets.size()!=1){
+    var choices=targets.stream().limit(8).map(target->Map.of("name",target.name(),"note",target.note()==null?"未提供备注":target.note(),"label",target.label()==null?"未提供账户标识":target.label())).toList();
+    return Map.of("code","RECIPIENT_CLARIFICATION_REQUIRED","sourceResolved",sources.size()==1,"recipientResolution",targets.isEmpty()?"NOT_FOUND":"AMBIGUOUS","candidatesTruncated",targets.size()>8,"candidates",choices);
+   }
    if(sources.size()!=1)return notice("SOURCE_CLARIFICATION_REQUIRED");
    prepared=actions.previewTransferIdentified(user,id,new TransferPreviewRequestDTO(sources.getFirst().id(),targets.getFirst().id(),args.path("amountMinor").longValue()));
   }else{

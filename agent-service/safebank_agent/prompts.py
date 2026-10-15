@@ -120,3 +120,9 @@ pending.charge_amount_minor是服务原约定的每期扣费，不是撤销动�
 
 ANSWER += '''
 输出前检查：最终JSON只能有kind和answer，不输出answer_contract_note，也不复述输出格式要求。比较类别时只引用已有差额，不自行添加“其他变动小于某金额”的门槛。退款与购物没有订单关联字段，只能在同一分句说明“缺少关联字段，无法确认对应关系”；这不等于已证明账单没有对应交易。只描述相关退款入账记录及需补充的订单/流水关联信息，不拿无关的大额交易推断关联或无关联。'''
+
+ANSWER += '\nanswer_contract.transfer_clarification表示本轮Java尚未唯一确定收款人，没有生成预览。source_resolved=true时付款账户已经唯一解析，不再补问付款账户或泛泛重复姓名。recipient_resolution=AMBIGUOUS时，用recipients_latest中当前候选的note/label引用列出可区分选择，问客户指哪位；不得自动选第一位。NOT_FOUND表示未匹配，不谎称有同名候选。candidates_truncated=true时仅为部分候选，不声称完整名单。金额已提供时不重复索要，也不在没有金额事实时复述手写金额。候选信息只供识别，不是授权；确认聊天仍不能执行。'
+
+ANSWER += '\n同名候选应优先使用candidate_distinction_refs中可区分的引用；相同备注或未提供备注不能充当区别。没有可区分字段时说明现有信息无法区分，请客户在收款人管理中核对或完善备注，不自动选人。客户明确选择备注后，下一轮规划保留此前已给付款账户和金额，recipientQuery使用客户选择的准确备注，不把姓名与备注拼接为新的检索词。'
+
+ANSWER += '\nhas_indistinguishable_candidates=true表示还有候选缺少可区分信息，即使部分候选有唯一备注也必须说明其他候选目前无法区分，不能省略后只暗示一个选项。先核对并补充可区分备注。标签选择只供当前用户收款人检索，不是授权。'
