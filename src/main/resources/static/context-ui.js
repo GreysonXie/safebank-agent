@@ -1,8 +1,9 @@
 // Conversation state belongs to this tab. A retry reuses the exact original request.
 let businessConversation=null,pendingChatRequest=null;
+let savedConversations=[],conversationSwitchBusy=false;
 async function createMandateQueryIntent(){
  if(!['LANGGRAPH_MOCK','LANGGRAPH_MODEL','FAKE_AGENT'].includes(currentAgentMode))return api('/query-intents',{operation:'QUERY_MANDATES'});
- if(chatBusy||pendingChatRequest)throw Error('请等待当前对话请求完成，或恢复原请求后再查询代扣。');
+ if(chatBusy||conversationSwitchBusy||pendingChatRequest)throw Error('请等待当前对话请求完成，或恢复原请求后再查询代扣。');
  if(!businessConversation?.conversationId)renderBusinessContext(await api('/conversations',{}),null);
  return api('/query-intents',{operation:'QUERY_MANDATES',conversationId:businessConversation.conversationId,expectedContextVersion:businessConversation.version});
 }
@@ -42,13 +43,63 @@ async function restoreBusinessContext(showHistory=false){
 }
 async function initializeBusinessContext(user){
  const previous=contextStorageRead('safebank.contextUser');
- if(previous!==user){contextStorageWrite('safebank.context',null);contextStorageWrite('safebank.pendingChat',null);}
+ if(previous!==user){contextStorageWrite('safebank.context',null);contextStorageWrite('safebank.pendingChat',null);contextStorageWrite('safebank.savedConversations',null);}
+ savedConversations=contextStorageRead('safebank.savedConversations')||[];
+ $('context-new').onclick=()=>perform($('context-new'),startNewBusinessConversation);renderSavedConversations();
  contextStorageWrite('safebank.contextUser',user);businessConversation=contextStorageRead('safebank.context');pendingChatRequest=contextStorageRead('safebank.pendingChat');
  $('context-reset').onclick=()=>perform($('context-reset'),async()=>{if(!businessConversation)return;const view=await api('/conversations/'+encodeURIComponent(businessConversation.conversationId)+'/context/reset',{expectedContextVersion:businessConversation.version});renderBusinessContext(view,null);pendingChatRequest=null;contextStorageWrite('safebank.pendingChat',null);$('messages').replaceChildren();message('对话草案已清空。原银行确认项仍需单独取消，已执行动作和回执保留。');$('chat-retry').hidden=true;});
  await restoreBusinessContext(true);
  if(pendingChatRequest){lastFailedQuestion=pendingChatRequest.text;$('chat-retry').hidden=false;$('chat-status').textContent='上次请求尚未收到完整回答。可恢复原请求，不会自动重发。';}
 }
 async function handleContextFailure(error){
- if(['CONFLICT','CONTEXT_INTERRUPTED'].includes(error.code)){pendingChatRequest=null;contextStorageWrite('safebank.pendingChat',null);await restoreBusinessContext(false);$('chat-retry').hidden=true;$('chat-status').textContent=error.message+'。请核对最新状态后再提出新问题。';}
+ if(error.code==='MODEL_REQUEST_BUDGET_EXCEEDED'){pendingChatRequest=null;contextStorageWrite('safebank.pendingChat',null);$('prompt').value=lastFailedQuestion;$('chat-retry').hidden=true;$('chat-status').textContent=error.message+'。问题已保留在输入框。';}
+ else if(['CONFLICT','CONTEXT_INTERRUPTED'].includes(error.code)){pendingChatRequest=null;contextStorageWrite('safebank.pendingChat',null);await restoreBusinessContext(false);$('chat-retry').hidden=true;$('chat-status').textContent=error.message+'。请核对最新状态后再提出新问题。';}
  else if(['NOT_FOUND','CONTEXT_EXPIRED'].includes(error.code)){businessConversation=null;pendingChatRequest=null;contextStorageWrite('safebank.pendingChat',null);renderBusinessContext(null,null);$('chat-retry').hidden=true;$('chat-status').textContent='上下文已不可用，请重新提出问题；原动作仍从历史回执核对。';}
+}
+
+function archiveActiveConversation(){
+ if(!businessConversation?.conversationId)return;
+ const saved={context:businessConversation,pending:pendingChatRequest,draft:$('prompt').value,label:pendingChatRequest?.text||'对话 '+new Date().toLocaleString()};
+ savedConversations=savedConversations.filter(item=>item.context.conversationId!==businessConversation.conversationId);
+ savedConversations.unshift(saved);contextStorageWrite('safebank.savedConversations',savedConversations);
+}
+function renderSavedConversations(){
+ const box=$('context-saved');box.replaceChildren();
+ if(!savedConversations.length){box.append(node('p','暂无保留的对话','hint'));return;}
+ for(const saved of savedConversations){
+  const button=node('button',saved.label.slice(0,60)+(saved.pending?' · 原请求待核对':''));button.type='button';button.disabled=chatBusy||conversationSwitchBusy;
+  button.onclick=()=>perform(button,()=>selectSavedConversation(saved.context.conversationId));box.append(button);
+ }
+}
+function activateConversation(context,pending,draft){
+ pendingChatRequest=pending;contextStorageWrite('safebank.pendingChat',pending);
+ renderBusinessContext(context,null);$('messages').replaceChildren();$('prompt').value=draft||'';
+ lastFailedQuestion=pending?.text||'';$('chat-retry').hidden=!pending;
+ $('chat-status').textContent=pending?'原请求已恢复，点击“核对原请求”查看状态。':'';
+ renderSavedConversations();
+}
+function setConversationSwitchBusy(value){
+ conversationSwitchBusy=value;$('context-new').disabled=value;
+ $('chat-form').querySelector('button[type="submit"]').disabled=value;
+ $('context-reset').disabled=value||!businessConversation||!!pendingChatRequest;renderSavedConversations();
+}
+async function startNewBusinessConversation(){
+ if(chatBusy||conversationSwitchBusy)return;
+ setConversationSwitchBusy(true);
+ try{const view=await api('/conversations',{});
+ archiveActiveConversation();activateConversation(view,null,'');
+ message('新对话已建立。旧对话保留在“已保留的对话”，可返回核对；银行确认项和回执仍可查看。');
+ $('prompt').focus();
+ }finally{setConversationSwitchBusy(false);}
+}
+async function selectSavedConversation(id){
+ if(chatBusy||conversationSwitchBusy)return;
+ const saved=savedConversations.find(item=>item.context.conversationId===id);if(!saved)return;
+ setConversationSwitchBusy(true);
+ try{const view=await api('/conversations/'+encodeURIComponent(id));
+ archiveActiveConversation();savedConversations=savedConversations.filter(item=>item.context.conversationId!==id);
+ contextStorageWrite('safebank.savedConversations',savedConversations);
+ activateConversation(view,saved.pending,saved.draft);
+ for(const turn of view.displayHistory||[]){if(turn.user)message(turn.user,'user');if(turn.assistant)message(turn.assistant);}
+ }finally{setConversationSwitchBusy(false);}
 }

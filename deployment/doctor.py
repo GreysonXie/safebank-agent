@@ -1,6 +1,7 @@
 """Read-only preflight; never print effective configuration or Docker stderr."""
 import argparse,json,shutil,socket,subprocess,sys
 from pathlib import Path
+from urllib.parse import urlsplit
 
 def check(code,ok,message):return {'code':code,'ok':bool(ok),'message':message}
 
@@ -8,12 +9,19 @@ def inspect_config(config):
  services=config.get('services',{});app=services.get('app',{});mysql=services.get('mysql',{})
  env=app.get('environment',{});password=mysql.get('environment',{}).get('MYSQL_ROOT_PASSWORD','')
  mode=env.get('SAFEBANK_MODEL_MODE');key=env.get('DEEPSEEK_API_KEY')
+ if mode=='openai':key=env.get('SAFEBANK_MODEL_API_KEY')
  checks=[check('MYSQL_PASSWORD',isinstance(password,str) and len(password)>=20 and not password.startswith('REPLACE_'),'Generate a local password with deployment/configure.py; never share .env.'),
-  check('MODEL_MODE',mode in ('mock','deepseek'),'Effective model mode must be mock or deepseek.'),
-  check('MODEL_KEY',mode!='deepseek' or isinstance(key,str) and bool(key.strip()),'DeepSeek mode needs your own key; no provider connection is tested.')]
- try:valid_cap=int(env.get('SAFEBANK_MODEL_SMOKE_CAP',''))>0
+  check('MODEL_MODE',mode in ('mock','deepseek','openai'),'Effective model mode must be mock, deepseek or openai.'),
+  check('MODEL_KEY',mode not in ('deepseek','openai') or isinstance(key,str) and bool(key.strip()),'Real model mode needs your own key; no provider connection is tested.')]
+ if mode=='openai':
+  try:
+   endpoint=urlsplit(env.get('SAFEBANK_MODEL_URL',''));valid_url=endpoint.scheme=='https' and bool(endpoint.hostname) and endpoint.username is None and endpoint.password is None and not endpoint.query and not endpoint.fragment
+   endpoint.port
+  except (ValueError,TypeError):valid_url=False
+  checks.append(check('MODEL_URL',valid_url,'OpenAI-compatible mode needs an HTTPS endpoint without credentials, query or fragment.'))
+ try:valid_cap=1<=int(env.get('SAFEBANK_MODEL_SMOKE_CAP',''))<=100000
  except (TypeError,ValueError):valid_cap=False
- checks.append(check('MODEL_CAP',valid_cap,'Model request cap must be positive; it is not a money budget.'))
+ checks.append(check('MODEL_CAP',valid_cap,'Model request cap must be between 1 and 100000; it is not a money budget.'))
  ports=app.get('ports',[]);port=None;private=False
  if len(ports)==1 and isinstance(ports[0],dict):
   item=ports[0]

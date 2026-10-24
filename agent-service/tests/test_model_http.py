@@ -2,6 +2,25 @@ import unittest
 import httpx
 
 class ModelHTTPTest(unittest.TestCase):
+ def test_openai_gateway_uses_standard_json_contract_without_deepseek_parameters(self):
+  import json
+  from safebank_agent.models import OpenAICompatible
+  calls=[]
+  def reply(request):
+   calls.append(request)
+   return httpx.Response(200,json={'model':'gpt-6.1-sol','usage':{'total_tokens':12},'choices':[{'finish_reason':'stop','message':{'content':'{"kind":"general","answer":"hello"}'}}]})
+  with httpx.Client(transport=httpx.MockTransport(reply)) as client:
+   model=OpenAICompatible('fixture-key','gpt-6.1-sol','https://gateway.example/v1/',client=client,max_sends=1)
+   result=model.complete({'messages':[{'role':'user','content':'Return JSON.'}],'max_tokens':100})
+   from safebank_agent.contracts import ProtocolError
+   with self.assertRaisesRegex(ProtocolError,'MODEL_STAGE_CAP'):model.complete({'messages':[],'max_tokens':100})
+  self.assertEqual(model.mode,'openai');self.assertEqual(len(calls),1)
+  self.assertEqual(str(calls[0].url),'https://gateway.example/v1/chat/completions')
+  self.assertEqual(calls[0].headers['Authorization'],'Bearer fixture-key')
+  body=json.loads(calls[0].content)
+  self.assertNotIn('thinking',body);self.assertEqual(body['model'],'gpt-6.1-sol')
+  self.assertEqual(body['response_format'],{'type':'json_object'});self.assertFalse(body['stream'])
+  self.assertEqual(result['content']['answer'],'hello');self.assertEqual(result['usage']['total_tokens'],12)
  def test_only_unambiguous_rejections_have_terminal_failure_type(self):
   from safebank_agent.models import DeepSeek
   from safebank_agent.contracts import ModelRequestRejected,ProtocolError

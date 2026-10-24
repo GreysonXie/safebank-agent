@@ -14,3 +14,30 @@ CREATE TABLE IF NOT EXISTS workflows(id VARCHAR(80) PRIMARY KEY,user_id VARCHAR(
 CREATE TABLE IF NOT EXISTS workflow_steps(workflow_id VARCHAR(80) NOT NULL,step_key VARCHAR(120) NOT NULL,input_version BIGINT NOT NULL,kind VARCHAR(40) NOT NULL,status VARCHAR(40) NOT NULL,action_id VARCHAR(80) NOT NULL UNIQUE,saving_minor BIGINT NOT NULL,error_code VARCHAR(80),PRIMARY KEY(workflow_id,step_key,input_version));
 ALTER TABLE workflows ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE;
 ALTER TABLE workflow_steps ADD COLUMN IF NOT EXISTS evidence_json VARCHAR(16000);
+
+CREATE TABLE IF NOT EXISTS user_profiles (
+ user_id VARCHAR(40) PRIMARY KEY, name VARCHAR(80) NOT NULL, phone VARCHAR(40) NOT NULL, gender VARCHAR(20) NOT NULL,
+ CONSTRAINT ck_profile_gender CHECK(gender IN ('UNKNOWN','MALE','FEMALE','UNDISCLOSED'))
+);
+CREATE TABLE IF NOT EXISTS recipient_details (
+ recipient_id VARCHAR(80) PRIMARY KEY, user_id VARCHAR(40) NOT NULL, gender VARCHAR(20) NOT NULL, savings_target BOOLEAN NOT NULL,
+ CONSTRAINT ck_contact_gender CHECK(gender IN ('UNKNOWN','MALE','FEMALE','UNDISCLOSED'))
+);
+CREATE TABLE IF NOT EXISTS bank_cards (
+ id VARCHAR(80) PRIMARY KEY, user_id VARCHAR(40) NOT NULL, account_id VARCHAR(80) NOT NULL, label VARCHAR(40) NOT NULL,
+ card_type VARCHAR(16) NOT NULL, suffix VARCHAR(4) NOT NULL, status VARCHAR(16) NOT NULL,
+ per_transaction_limit_minor BIGINT NOT NULL, daily_limit_minor BIGINT NOT NULL,
+ online_enabled BOOLEAN NOT NULL, overseas_enabled BOOLEAN NOT NULL, version BIGINT NOT NULL, created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+ CONSTRAINT ck_card_type CHECK(card_type IN ('DEBIT','VIRTUAL')),
+ CONSTRAINT ck_card_status CHECK(status IN ('ACTIVE','LOCKED','LOST')),
+ CONSTRAINT ck_card_limits CHECK(per_transaction_limit_minor>0 AND daily_limit_minor>=per_transaction_limit_minor AND daily_limit_minor<=10000000),
+ CONSTRAINT ck_card_version CHECK(version>=1)
+);
+CREATE TABLE IF NOT EXISTS card_operations (
+ id VARCHAR(80) PRIMARY KEY, user_id VARCHAR(40) NOT NULL, card_id VARCHAR(80), kind VARCHAR(24) NOT NULL,
+ payload VARCHAR(8000) NOT NULL, payload_hash VARCHAR(64) NOT NULL, status VARCHAR(24) NOT NULL, expected_version BIGINT NOT NULL,
+ created_at TIMESTAMP WITH TIME ZONE NOT NULL, expires_at TIMESTAMP WITH TIME ZONE NOT NULL, executed_at TIMESTAMP WITH TIME ZONE,
+ receipt_id VARCHAR(80), result_json VARCHAR(8000),
+ CONSTRAINT ck_card_operation_status CHECK(status IN ('AWAITING_CONFIRMATION','COMPLETED','CANCELLED')),
+ CONSTRAINT ck_card_operation_kind CHECK(kind IN ('APPLY','UPDATE_LIMITS','UPDATE_CONTROLS','LOCK','UNLOCK','REPORT_LOST'))
+);

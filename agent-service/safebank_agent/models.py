@@ -12,19 +12,21 @@ from .conversation import bounded_clarification_context,defers_operation,require
 class DeepSeek:
     mode='deepseek'
     def __init__(self,key,model,url='https://api.deepseek.com',client=None,max_sends=None):
-        self.key=key;self.name=model;self.url=url
+        self.key=key;self.name=model;self.url=url.rstrip('/')
         self.max_sends=max_sends;self.sends=0;self.lock=threading.Lock()
         self.last_failure=None
         self.client=client or httpx.Client(timeout=httpx.Timeout(60,connect=5,write=10,pool=5),follow_redirects=False)
     def check_can_send(self):
         with self.lock:
             if self.max_sends is not None and self.sends>=self.max_sends:raise ProtocolError('MODEL_STAGE_CAP')
+    def request_body(self,payload):
+        return {'model':self.name,'messages':payload['messages'],'max_tokens':min(payload['max_tokens'],2048),'response_format':{'type':'json_object'},'stream':False,'thinking':{'type':'disabled'}}
     def complete(self,payload):
         with self.lock:
             if self.max_sends is not None and self.sends>=self.max_sends:raise ProtocolError('MODEL_STAGE_CAP')
             self.sends+=1
             self.last_failure=None
-        body={'model':self.name,'messages':payload['messages'],'max_tokens':min(payload['max_tokens'],2048),'response_format':{'type':'json_object'},'stream':False,'thinking':{'type':'disabled'}}
+        body=self.request_body(payload)
         started=monotonic()
         try:
             with self.client.stream('POST',self.url+'/chat/completions',json=body,headers={'Authorization':'Bearer '+self.key}) as response:
@@ -73,6 +75,14 @@ class DeepSeek:
             # Class name only: exception text can include credentials or request data.
             self.last_failure=type(error).__name__
             raise ProtocolError('MODEL_TRANSPORT_OR_FORMAT_FAILED') from None
+
+class OpenAICompatible(DeepSeek):
+    """Chat Completions gateway; retain effect receipts and paid-call limits."""
+    mode='openai'
+    def request_body(self,payload):
+        body=super().request_body(payload)
+        body.pop('thinking')
+        return body
 
 class MockModel:
     """Finite offline fixtures, explicitly labelled; not evidence of model quality."""

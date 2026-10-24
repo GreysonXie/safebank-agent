@@ -43,8 +43,8 @@ class Runtime:
             self.adapter.check_can_send()
             r=self.bank.reserve({'operationKey':key,'inputHash':h,'javaTurnId':lease.run_id,'purpose':node},self.token(state));reservation.update(r,operationKey=key,inputHash=h,javaTurnId=lease.run_id,purpose=node)
             return r['reservationId']
-        saved=self.effects.call(lease,node,sequence,'model',payload,lambda key:self.adapter.complete(payload),reserve if self.adapter.mode=='deepseek' else None)
-        if self.adapter.mode=='deepseek':
+        saved=self.effects.call(lease,node,sequence,'model',payload,lambda key:self.adapter.complete(payload),reserve if self.adapter.mode in ('deepseek','openai') else None)
+        if self.adapter.mode in ('deepseek','openai'):
             # Reload original reservation even when the effect was already SUCCEEDED.
             from .contracts import digest
             key=digest([lease.run_id,node,sequence,'model'])

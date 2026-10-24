@@ -20,6 +20,8 @@ public class GatewayTurnService {
     private final TransactionTemplate tx;
     @org.springframework.beans.factory.annotation.Autowired private AgentTurnReceiptMapper turnReceipts;
     @org.springframework.beans.factory.annotation.Autowired private org.springframework.beans.factory.ObjectProvider<AgentModelLimitService> limits;
+    @org.springframework.beans.factory.annotation.Autowired private cn.safebank.model.DebugRequestBudget budget;
+    @org.springframework.beans.factory.annotation.Autowired private org.springframework.core.env.Environment environment;
     public GatewayTurnService(ContextService contexts,AgentGatewayMapper mapper,AgentConversationMapper conversations,Clock clock,PlatformTransactionManager manager){this.contexts=contexts;this.mapper=mapper;this.conversations=conversations;this.clock=clock;tx=new TransactionTemplate(manager);}
     public TurnStart begin(String user,ChatRequestDTO request,Instant sessionExpiry){
         if(!sessionExpiry.isAfter(clock.instant()))throw new BankException("SESSION_REQUIRED","原会话已过期");
@@ -27,6 +29,9 @@ public class GatewayTurnService {
             // Lock before ContextService's ownership pre-read establishes an RR snapshot.
             if(request.conversationId()!=null)conversations.selectOwnedForUpdate(user,request.conversationId());
             var start=contexts.begin(user,request);
+            // Only a new paid turn needs quota. Replays and receipt reconciliation
+            // remain available at the cap. Failure rolls back the new context turn.
+            if(start.lease()!=null&&java.util.Set.of("deepseek","openai").contains(environment.getProperty("bank.agent.model-mode","mock")))budget.requireAvailable();
             if(start.lease()!=null&&!mapper.pendingAck(user,start.lease().conversationId()).isEmpty())throw new BankException("AGENT_RECONCILING","上一轮正在核对完成确认，请等待后再开始新轮");
             if(start.lease()!=null){var l=start.lease();var g=new AgentGatewayTurnEntity();g.setTurnId(l.turnId());g.setConversationId(l.conversationId());g.setUserId(user);g.setRequestId(l.requestId());g.setUserText(l.userText());g.setInputVersion(l.inputVersion());g.setSessionExpiresAt(sessionExpiry.atOffset(ZoneOffset.UTC));g.setCreatedAt(now());g.setNextCheckAt(now().plusSeconds(30));g.setState("PENDING");g.setReconcileFailures(0);require(mapper.insertGateway(g));}
             if(start.lease()!=null&&limits.getIfAvailable()!=null)limits.getObject().save(start.lease().turnId(),request.modelRequestLimit());

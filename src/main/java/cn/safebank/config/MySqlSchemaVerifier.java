@@ -19,6 +19,10 @@ public class MySqlSchemaVerifier {
         try(var in=new ClassPathResource(manifest).getInputStream()) {
             expected=json.readValue(in,new TypeReference<Map<String,List<String>>>(){});
         }
+        try(var in=new ClassPathResource("db/mysql-v6-workspace-manifest.json").getInputStream()) {
+            Map<String,List<String>> workspace=json.readValue(in,new TypeReference<Map<String,List<String>>>(){});
+            for(String kind:List.of("tables","columns","constraints","keys"))expected.get(kind).addAll(workspace.get(kind));
+        }
     }
     public void verify(){
         check("tables",mapper.tables());

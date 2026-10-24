@@ -13,6 +13,29 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.*;
 class DebugRequestBudgetTest {
     @TempDir Path temp;
+    @Test void configuredIncreaseKeepsEveryReservationAndItsOriginalIdentity() throws Exception {
+        var path=temp.resolve("resize.json");var original=new DebugRequestBudget(path,20);
+        String first=original.reserveEffect("1".repeat(64),"2".repeat(64),"original","plan");
+        for(int i=1;i<20;i++)original.reserve();
+        var larger=new DebugRequestBudget(path,100);
+        assertEquals(80,larger.remaining());assertEquals(20,larger.snapshot().reserved());
+        assertEquals(first,larger.reserveEffect("1".repeat(64),"2".repeat(64),"original","plan"));
+        larger.reserve();assertEquals(21,new DebugRequestBudget(path,100).snapshot().reserved());
+        assertEquals(100,new ObjectMapper().readTree(Files.readString(path)).path("limit").asInt());
+    }
+    @Test void loweringLimitBlocksNewSendsButPreservesReceipts() {
+        var path=temp.resolve("lower.json");var original=new DebugRequestBudget(path,20);
+        String first=original.reserveEffect("1".repeat(64),"2".repeat(64),"original","plan");
+        for(int i=1;i<10;i++)original.reserve();
+        var lower=new DebugRequestBudget(path,5);
+        assertEquals(0,lower.remaining());assertEquals(10,lower.snapshot().reserved());
+        assertEquals("MODEL_REQUEST_BUDGET_EXCEEDED",assertThrows(BankException.class,lower::reserve).code);
+        assertEquals(first,lower.reserveEffect("1".repeat(64),"2".repeat(64),"original","plan"));
+        assertEquals(0,new DebugRequestBudget(path,5).remaining());
+    }
+    @Test void invalidConfiguredLimitsAreRejected() {
+        for(int limit:new int[]{0,-1,100001})assertThrows(IllegalArgumentException.class,()->new DebugRequestBudget(temp.resolve("invalid.json"),limit));
+    }
     @Test void everySendIncludingFailedRequestIsCountedAndTwentyFirstIsBlocked() throws Exception {
         var hits=new AtomicInteger();var server=HttpServer.create(new InetSocketAddress("127.0.0.1",0),0);
         server.createContext("/chat/completions",e->{int call=hits.incrementAndGet();byte[] body="{\"choices\":[{\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"ok\"}}]}".getBytes(java.nio.charset.StandardCharsets.UTF_8);e.sendResponseHeaders(call==3?500:200,body.length);e.getResponseBody().write(body);e.close();});server.start();

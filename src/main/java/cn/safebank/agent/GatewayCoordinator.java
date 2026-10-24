@@ -63,6 +63,12 @@ public class GatewayCoordinator {
         }catch(HttpAgentClient.AgentTransportException|BankException error){results.pause(id);}
     }
     static String reviewMessage(String code){
+        if("MODEL_REQUEST_BUDGET_EXCEEDED".equals(code))
+            return "项目累计模型请求额度已用完，请调整本机请求上限并重启。原轮次已保留，不会自动重发；这不是模型账户余额不足";
+        if("MODEL_TURN_BUDGET_EXCEEDED".equals(code))
+            return "本轮模型请求次数已达上限，已停止调用；原轮次已保留，请核对已有查询和操作预览";
+        if("MODEL_DEBUG_BUDGET_INVALID".equals(code))
+            return "项目模型用量记录无法读取或写入，已停止调用；请检查本机用量文件，勿删除历史记录";
         if(code!=null&&code.matches("MODEL_REQUEST_REJECTED_(400|401|403|404|405|413|415|422)"))
             return "模型服务明确拒绝请求，请检查模型名称、请求参数与账户配置；原轮次已保留，不会自动重发";
         if("MODEL_EFFECT_UNKNOWN".equals(code))

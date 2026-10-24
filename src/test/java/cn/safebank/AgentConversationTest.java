@@ -230,7 +230,7 @@ class AgentConversationTest extends BankTestFixture {
             call("calculate_business_metric",Map.of("operation","DIFFERENCE","facts",List.of("e0.expense_minor","e1.expense_minor"))),
             answer("两个月的支出差额为{{calc0}}。先看差额，再核对具体消费变化。", "analysis"));
         var result=agent.chat("u1","比较九月和八月支出",new MockHttpSession());
-        assertTrue(result.get("text").toString().contains("3,320.00"),result.toString());assertEquals("MODEL_GROUNDED",result.get("answerSource"));
+        assertTrue(result.get("text").toString().contains("174.90"),result.toString());assertEquals("MODEL_GROUNDED",result.get("answerSource"));
     }
     @Test void inventedExecutionCannotEnterNaturalLanguageAnswer() {
         var agent=sequence(call("get_accounts",Map.of()),answer("转账成功并到账，余额为{{e0.0.balance_minor}}。", "analysis"),
@@ -312,7 +312,7 @@ class AgentConversationTest extends BankTestFixture {
         var agent=new AgentService(gateway,json,client);var session=new MockHttpSession();
         agent.chat("u1","看2026-09支出",session);
         var result=agent.chat("u1","再和上月比较",session);
-        assertEquals("MODEL_GROUNDED",result.get("answerSource"));assertTrue(result.get("text").toString().contains("83.00"));
+        assertEquals("MODEL_GROUNDED",result.get("answerSource"));assertTrue(result.get("text").toString().contains("3,228.10"));
         var results=(List<BankReplyComposer.Evidence>)result.get("results");
         assertEquals(1,results.size());assertEquals("2026-08",((Map<?,?>)results.getFirst().data()).get("month"));
         assertEquals(0,db.queryForObject("SELECT COUNT(*) FROM actions",Integer.class));

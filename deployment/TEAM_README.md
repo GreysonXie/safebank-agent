@@ -59,9 +59,27 @@ SAFEBANK_MODEL_NAME=deepseek-flash
 SAFEBANK_MODEL_SMOKE_CAP=20
 ```
 
-运行`docker compose up -d --force-recreate app`。**20是模型请求上限，不是20轮或人民币额度**，一轮通常2次，重写可能再加1次；用量账本保存在运行卷中。也请在自己的模型账户设置额度并检查余额。本仓库没有作者密钥或免费模型额度。
+运行`docker compose up -d --force-recreate app`。**`SAFEBANK_MODEL_SMOKE_CAP` 是项目累计模型请求上限，默认 20 次，可设 1–100000**，不是对话轮数或人民币额度。一轮通常 2 次，重写可能再加 1 次；已预留的失败或结果未知调用也计数。用量账本保存在运行卷中，重启、更换密钥和新建对话都不会清零。调整上限时保留原调用记录；降到低于已用次数会阻止新调用，仍可核对原请求和回执。本仓库没有作者密钥或免费模型额度。
+
+页面显示累计已用、上限和剩余次数。耗尽时会说明限制原因，未发送的问题保留在输入框；处理中达到限制的原请求会保留供核对。可点击“新建对话”离开暂停的旧对话，再从“已保留的对话”返回，不会自动重发。切换入口保存在当前浏览器标签页的 sessionStorage，关闭标签页后不提供跨标签恢复；银行确认项和回执仍保存在服务端。额度摘要只返回汇总数字，不公开内部调用标识。
 
 模型只能查询、准备预览，聊天确认不能代替逐动作授权。页面显示mock时不要把结果当作真实模型生成。
+
+## 使用 OpenAI 兼容中转模型
+
+编辑项目根目录的 `.env`，不要把真实密钥写入代码、示例或提交：
+
+```dotenv
+SAFEBANK_MODEL_MODE=openai
+SAFEBANK_MODEL_URL=https://your-gateway.example/v1
+SAFEBANK_MODEL_API_KEY=填写你自己的中转密钥
+SAFEBANK_MODEL_NAME=填写服务商实际提供的模型ID
+SAFEBANK_MODEL_SMOKE_CAP=20
+```
+
+地址填写到 `/v1`（以服务商为准），程序追加 `/chat/completions`，使用 Bearer 密钥认证与 JSON 回答格式，不发送 DeepSeek 专用的 `thinking` 参数。只接受 HTTPS 地址。模型 ID 必须来自中转站提供的列表；中转站的命名不证明上游模型身份。
+
+修改后执行 `docker compose up --build -d --wait --wait-timeout 300`。页面会显示实际配置的模型名和 `LANGGRAPH_MODEL` 模式。只读查询也会消耗中转账户额度；保留原有请求次数限制和逐动作授权机制。`deployment/smoke.py` 仍只用于 mock，拒绝真实模型，避免日常启动意外消耗额度。
 
 ## 试用三场景
 

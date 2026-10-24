@@ -21,4 +21,7 @@ import java.util.*;
     @GetMapping("/recurring") public List<RecurringPaymentVO> recurring(HttpSession s) {
         return statements.recurring(user(s));
     }
+    @GetMapping("/statement/months") public List<String> months(HttpSession s) {
+        return statements.months(user(s));
+    }
 }

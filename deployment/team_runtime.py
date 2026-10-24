@@ -64,10 +64,11 @@ def seed(p):
 
 def environment(p):
     mode=os.getenv('SAFEBANK_MODEL_MODE','mock')
-    if mode not in ('mock','deepseek'):raise RuntimeError('Invalid model mode')
+    if mode not in ('mock','deepseek','openai'):raise RuntimeError('Invalid model mode')
     if mode=='deepseek' and not os.getenv('DEEPSEEK_API_KEY'):raise RuntimeError('Your own DeepSeek key is required')
+    if mode=='openai' and not os.getenv('SAFEBANK_MODEL_API_KEY'):raise RuntimeError('Your own model gateway key is required')
     cap=int(os.getenv('SAFEBANK_MODEL_SMOKE_CAP','20'))
-    if not 1<=cap<=100:raise RuntimeError('Request limit must be between 1 and 100')
+    if not 1<=cap<=100000:raise RuntimeError('Request limit must be between 1 and 100000')
     host=os.getenv('MYSQL_HOST','mysql');port=int(os.getenv('MYSQL_PORT','3306'))
     env=dict(os.environ)
     env.update(SPRING_PROFILES_ACTIVE='mysql,agent-gateway,langgraph-agent',SERVER_ADDRESS='0.0.0.0',SAFEBANK_PORT='8134',SAFEBANK_AGENT_PORT='8135',SAFEBANK_BANK_URL='http://127.0.0.1:8134',SAFEBANK_AGENT_BASE_URL='http://127.0.0.1:8135',SAFEBANK_AGENT_SERVICE_KEY=p['serviceKey'],SAFEBANK_MYSQL_URL=f'jdbc:mysql://{host}:{port}/{BANK_DB}?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&useAffectedRows=false&useSSL=true&verifyServerCertificate=false',SAFEBANK_MYSQL_USER=USERS['bank'],SAFEBANK_MYSQL_PASSWORD=p['bankPassword'],SAFEBANK_MYSQL_MIGRATION_USER=USERS['migration'],SAFEBANK_MYSQL_MIGRATION_PASSWORD=p['migrationPassword'],SAFEBANK_AGENT_DB_CONFIG=json.dumps(database(USERS['agent'],p['agentPassword'],AGENT_DB)),SAFEBANK_MODEL_MODE=mode,SAFEBANK_MODEL_SMOKE_CAP=str(cap),SAFEBANK_MODEL_BUDGET_PATH=str(STATE/'model-usage.json'),BANK_MODEL_DEBUG_BUDGET_LIMIT=str(cap),BANK_MODEL_API_KEY='',SAFEBANK_FAULTS_ENABLED='false',LANGSMITH_TRACING='false',LANGCHAIN_TRACING_V2='false',PYTHONPATH=str(ROOT/'agent-service'))

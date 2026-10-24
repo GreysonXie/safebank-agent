@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.safebank.dao.RecipientMapper">
+    <insert id="insert">INSERT INTO recipients(id,user_id,name,phone,note,account_id) VALUES(#{id},#{userId},#{name},#{phone},#{note},#{accountId})</insert>
+    <update id="updateDetails">UPDATE recipients SET name=#{name},phone=#{phone},note=#{note} WHERE id=#{id} AND user_id=#{userId}</update>
     <resultMap id="row" type="cn.safebank.entity.RecipientEntity">
         <id column="id" property="id"/>
         <result column="user_id" property="userId"/>

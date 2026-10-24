@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.CardMapper">
+ <resultMap id="card" type="cn.safebank.entity.BankCardEntity">
+  <constructor>
+   <idArg column="id" javaType="string"/>
+   <arg column="user_id" javaType="string"/>
+   <arg column="account_id" javaType="string"/>
+   <arg column="label" javaType="string"/>
+   <arg column="card_type" javaType="string"/>
+   <arg column="suffix" javaType="string"/>
+   <arg column="status" javaType="string"/>
+   <arg column="per_transaction_limit_minor" javaType="_long"/>
+   <arg column="daily_limit_minor" javaType="_long"/>
+   <arg column="online_enabled" javaType="_boolean"/>
+   <arg column="overseas_enabled" javaType="_boolean"/>
+   <arg column="version" javaType="_long"/>
+   <arg column="created_at" javaType="java.time.OffsetDateTime"/>
+  </constructor>
+ </resultMap>
+ <resultMap id="operation" type="cn.safebank.entity.CardOperationEntity">
+  <constructor>
+   <idArg column="id" javaType="string"/>
+   <arg column="user_id" javaType="string"/>
+   <arg column="card_id" javaType="string"/>
+   <arg column="kind" javaType="string"/>
+   <arg column="payload" javaType="string"/>
+   <arg column="payload_hash" javaType="string"/>
+   <arg column="status" javaType="string"/>
+   <arg column="expected_version" javaType="_long"/>
+   <arg column="created_at" javaType="java.time.OffsetDateTime"/>
+   <arg column="expires_at" javaType="java.time.OffsetDateTime"/>
+   <arg column="executed_at" javaType="java.time.OffsetDateTime"/>
+   <arg column="receipt_id" javaType="string"/>
+   <arg column="result_json" javaType="string"/>
+  </constructor>
+ </resultMap>
+ <sql id="cardColumns">id,user_id,account_id,label,card_type,suffix,status,per_transaction_limit_minor,daily_limit_minor,online_enabled,overseas_enabled,version,created_at</sql>
+ <sql id="operationColumns">id,user_id,card_id,kind,payload,payload_hash,status,expected_version,created_at,expires_at,executed_at,receipt_id,result_json</sql>
+ <select id="list" resultMap="card">SELECT <include refid="cardColumns"/> FROM bank_cards WHERE user_id=#{userId} ORDER BY created_at DESC,id</select>
+ <select id="owned" resultMap="card">SELECT <include refid="cardColumns"/> FROM bank_cards WHERE user_id=#{userId} AND id=#{id}</select>
+ <select id="lock" resultMap="card">SELECT <include refid="cardColumns"/> FROM bank_cards WHERE user_id=#{userId} AND id=#{id} FOR UPDATE</select>
+ <insert id="insert">INSERT INTO bank_cards(<include refid="cardColumns"/>) VALUES(#{id},#{userId},#{accountId},#{label},#{cardType},#{suffix},#{status},#{perTransactionLimitMinor},#{dailyLimitMinor},#{onlineEnabled},#{overseasEnabled},#{version},#{createdAt})</insert>
+ <update id="update">UPDATE bank_cards SET status=#{status},per_transaction_limit_minor=#{perTransactionLimitMinor},daily_limit_minor=#{dailyLimitMinor},online_enabled=#{onlineEnabled},overseas_enabled=#{overseasEnabled},version=version+1 WHERE id=#{id} AND user_id=#{userId} AND version=#{version}</update>
+ <insert id="insertOperation">INSERT INTO card_operations(<include refid="operationColumns"/>) VALUES(#{id},#{userId},#{cardId},#{kind},#{payload},#{payloadHash},#{status},#{expectedVersion},#{createdAt},#{expiresAt},#{executedAt},#{receiptId},#{resultJson})</insert>
+ <select id="operation" resultMap="operation">SELECT <include refid="operationColumns"/> FROM card_operations WHERE user_id=#{userId} AND id=#{id}</select>
+ <select id="lockOperation" resultMap="operation">SELECT <include refid="operationColumns"/> FROM card_operations WHERE user_id=#{userId} AND id=#{id} FOR UPDATE</select>
+ <select id="history" resultMap="operation">SELECT <include refid="operationColumns"/> FROM card_operations WHERE user_id=#{userId} ORDER BY created_at DESC,id DESC LIMIT 30</select>
+ <update id="finish">UPDATE card_operations SET status=#{status},executed_at=#{executedAt},receipt_id=#{receiptId},result_json=#{resultJson} WHERE id=#{id} AND user_id=#{userId} AND status='AWAITING_CONFIRMATION'</update>
+</mapper>

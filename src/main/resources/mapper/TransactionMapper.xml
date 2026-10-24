@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.safebank.dao.TransactionMapper">
+    <select id="selectBookedDates" resultType="java.time.LocalDate">SELECT DISTINCT booked_on FROM transactions WHERE user_id=#{userId} AND booked_on IS NOT NULL ORDER BY booked_on DESC</select>
     <select id="selectActionDebit" resultMap="row">SELECT id,user_id,account_id,merchant,category,amount_minor,booked_on FROM transactions WHERE user_id=#{userId} AND id=#{id}</select>
     <resultMap id="row" type="cn.safebank.entity.TransactionEntity">
         <id column="id" property="id"/>

@@ -24,7 +24,7 @@ import java.util.*;
             s.setAttribute("csrf",UUID.randomUUID().toString());
         }
         boolean fake=environment.matchesProfiles("agent-gateway");
-        if(environment.matchesProfiles("langgraph-agent"))return new SessionVO("合成用户 / u1",(String)s.getAttribute("csrf"),environment.getProperty("bank.agent.model-mode","mock").equals("deepseek")?"LANGGRAPH_MODEL":"LANGGRAPH_MOCK",environment.getProperty("bank.agent.model-name","deepseek-v4-flash"),"LOCAL_DEMO_ONLY",simulation.enabled());
+        if(environment.matchesProfiles("langgraph-agent"))return new SessionVO("合成用户 / u1",(String)s.getAttribute("csrf"),Set.of("deepseek","openai").contains(environment.getProperty("bank.agent.model-mode","mock"))?"LANGGRAPH_MODEL":"LANGGRAPH_MOCK",environment.getProperty("bank.agent.model-name","deepseek-v4-flash"),"LOCAL_DEMO_ONLY",simulation.enabled());
         return new SessionVO("合成用户 / u1",(String)s.getAttribute("csrf"),fake?"FAKE_AGENT":agent.mode(),fake?"fake-python-protocol":agent.modelName(),"LOCAL_DEMO_ONLY",simulation.enabled());
     }
 }

@@ -11,11 +11,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class RiskPersistenceTest extends BankTestFixture {
     @Autowired ApplicationContext context;
     @Test void schemaCanRestartWithoutRepeatingMigration() throws Exception {
-        assertEquals(24,db.queryForObject("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='PUBLIC'",Integer.class));
+        assertEquals(28,db.queryForObject("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='PUBLIC'",Integer.class));
         assertTrue(context.containsBean("riskSchemaInitializer"),"risk schema startup gate is missing");
         Object initializer=context.getBean("riskSchemaInitializer");
         assertDoesNotThrow(()->initializer.getClass().getMethod("initialize").invoke(initializer));
-        assertEquals(24,db.queryForObject("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='PUBLIC'",Integer.class));
+        assertEquals(28,db.queryForObject("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='PUBLIC'",Integer.class));
     }
     @Test void incompleteSchemaIsRejected() {
         assertTrue(context.containsBean("riskSchemaInitializer"),"risk schema startup gate is missing");

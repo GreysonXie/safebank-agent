@@ -38,6 +38,9 @@ import java.util.*;
         }
         return new StatementVO(month,expense,income,internal,categories,entries,anomalies, "单笔支出达到 2000 元，仅为候选，不能推断欺诈；本人账户内部转账不计收入支出",false);
     }
+    public List<String> months(String userId){
+        return transactions.selectBookedDates(userId).stream().map(date->YearMonth.from(date).toString()).distinct().toList();
+    }
     public List<RecurringPaymentVO> recurring(String userId){
         var result=new ArrayList<RecurringPaymentVO>();
         for(var r:transactions.selectRecurring(userId)){

@@ -46,7 +46,7 @@ public class GatewayResultService {
    }
   }
   response.put("clarification",Map.of("required",state==ConversationState.NEEDS_CLARIFICATION));
-  if(environment.matchesProfiles("langgraph-agent")){response.put("mode",environment.getProperty("bank.agent.model-mode","mock").equals("deepseek")?"LANGGRAPH_MODEL":"LANGGRAPH_MOCK");response.put("agentBackend","PYTHON_LANGGRAPH");response.put("answerSource","PROGRAM_VERIFIED_LANGGRAPH");}
+  if(environment.matchesProfiles("langgraph-agent")){response.put("mode",Set.of("deepseek","openai").contains(environment.getProperty("bank.agent.model-mode","mock"))?"LANGGRAPH_MODEL":"LANGGRAPH_MOCK");response.put("agentBackend","PYTHON_LANGGRAPH");response.put("answerSource","PROGRAM_VERIFIED_LANGGRAPH");}
   var evidence=new ArrayList<EvidenceInput>();for(var row:mapper.receipts(g.getTurnId())){var data=tree(row.getResultJson());if(row.getToolName().equals("statement"))evidence.add(new EvidenceInput("gateway:"+row.getId(),"get_statement",null,data,row.getObservedAt().toInstant(),null));}
   contexts.complete(lease,new ContextCommit(next,evidence,response));
   g.setResultHash(h);g.setResultJson(encode(r));g.setOutputVersion(g.getInputVersion()+1);g.setState("ACK_PENDING");g.setReconcileFailures(0);g.setNextCheckAt(turns.now().plusSeconds(30));require(mapper.updateGateway(g));mapper.revoke(g.getUserId(),g.getTurnId());return ack(g);

@@ -10,9 +10,27 @@ def module(name):
  value=importlib.util.module_from_spec(spec);spec.loader.exec_module(value);return value
 
 class DoctorTest(unittest.TestCase):
+ def test_openai_gateway_is_checked_without_disclosing_key(self):
+  env=self.config['services']['app']['environment']
+  env.update(SAFEBANK_MODEL_MODE='openai',SAFEBANK_MODEL_API_KEY='fixture-private-key',SAFEBANK_MODEL_URL='https://gateway.example/v1')
+  checks,_=self.doctor.inspect_config(self.config)
+  self.assertTrue(all(x['ok'] for x in checks));self.assertNotIn('fixture-private-key',json.dumps(checks))
+  env['SAFEBANK_MODEL_API_KEY']=''
+  checks,_=self.doctor.inspect_config(self.config)
+  self.assertTrue(any(x['code']=='MODEL_KEY' and not x['ok'] for x in checks))
+  env.update(SAFEBANK_MODEL_API_KEY='fixture-private-key',SAFEBANK_MODEL_URL='http://gateway.example/v1')
+  checks,_=self.doctor.inspect_config(self.config)
+  self.assertTrue(any(x['code']=='MODEL_URL' and not x['ok'] for x in checks))
  def setUp(self):
   self.doctor=module('doctor')
   self.config={'services':{'mysql':{'environment':{'MYSQL_ROOT_PASSWORD':'local-secret-'+'x'*32}},'app':{'environment':{'SAFEBANK_MODEL_MODE':'mock','DEEPSEEK_API_KEY':'','SAFEBANK_MODEL_SMOKE_CAP':'20'},'ports':[{'target':8134,'published':'18134','host_ip':'127.0.0.1'}]}}}
+ def test_configurable_cumulative_cap_has_consistent_bounds(self):
+  env=self.config['services']['app']['environment']
+  for cap in (1,20,100,100000,0,-1,100001):
+   with self.subTest(cap=cap):
+    env['SAFEBANK_MODEL_SMOKE_CAP']=str(cap)
+    checks,_=self.doctor.inspect_config(self.config)
+    self.assertEqual(next(c['ok'] for c in checks if c['code']=='MODEL_CAP'),1<=cap<=100000)
  def test_mock_settings_and_custom_port_are_valid(self):
   before=copy.deepcopy(self.config);checks,port=self.doctor.inspect_config(self.config)
   self.assertTrue(all(x['ok'] for x in checks));self.assertEqual(port,18134);self.assertEqual(before,self.config)

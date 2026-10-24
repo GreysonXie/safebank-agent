@@ -21,6 +21,8 @@ class BankClient:
                     chunks.append(chunk)
                 data=json.loads(b''.join(chunks))
                 if response.status_code!=200:
+                    if path=='/internal/agent/model-budget/reserve' and isinstance(data,dict) and data.get('code') in ('MODEL_REQUEST_BUDGET_EXCEEDED','MODEL_TURN_BUDGET_EXCEEDED','MODEL_DEBUG_BUDGET_INVALID'):
+                        raise ProtocolError(data['code'])
                     if path.endswith('/validate') and isinstance(data,dict) and data.get('code')=='ANSWER_NOT_GROUNDED':
                         message=data.get('message','')
                         match=re.match(r'^(?:回答中手写了数字或金额|回答数字)〔([^〔〕\n]{1,80})〕',message) if isinstance(message,str) else None

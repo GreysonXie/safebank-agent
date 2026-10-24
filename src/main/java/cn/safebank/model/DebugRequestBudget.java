@@ -14,19 +14,23 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 /** Local debug spending guard. Reserve durably BEFORE network; failures never refund. */
 @Component public class DebugRequestBudget {
+    public static final int MAX_LIMIT=100000;
     public record BudgetSnapshot(int limit,int reserved,int remaining,boolean usageComplete,Long promptTokens,Long completionTokens,List<Map<String,Object>> calls) {}
     private static final ConcurrentHashMap<Path,ReentrantLock> JVM_LOCKS=new ConcurrentHashMap<>();
     private final ObjectMapper json=new ObjectMapper();private final Path path;private final int limit;private final boolean enabled;
     @Autowired public DebugRequestBudget(@Value("${bank.model.debug-budget.enabled:false}") boolean enabled,@Value("${bank.model.debug-budget.path:}") String path,@Value("${bank.model.debug-budget.limit:20}") int limit){
         this.enabled=enabled;this.limit=limit;
-        if(enabled&&(path.isBlank()||!Path.of(path).isAbsolute()||limit!=20))throw new IllegalStateException("Debug mode requires explicit absolute budget path and limit 20");
+        if(enabled&&(path.isBlank()||!Path.of(path).isAbsolute()||!validLimit(limit)))throw new IllegalStateException("Model budget requires an absolute path and a limit between 1 and "+MAX_LIMIT);
         this.path=enabled?Path.of(path).toAbsolutePath().normalize():null;
     }
-    public DebugRequestBudget(Path path,int limit){if(limit!=20)throw new IllegalArgumentException("Debug cap must be 20");this.path=path.toAbsolutePath().normalize();this.limit=limit;enabled=true;}
-    public int remaining(){return enabled?locked(root->limit-root.withArray("calls").size()):Integer.MAX_VALUE;}
+    public DebugRequestBudget(Path path,int limit){if(!validLimit(limit))throw new IllegalArgumentException("Model request limit must be between 1 and "+MAX_LIMIT);this.path=path.toAbsolutePath().normalize();this.limit=limit;enabled=true;}
+    private static boolean validLimit(int value){return value>=1&&value<=MAX_LIMIT;}
+    public int remaining(){return enabled?locked(root->Math.max(0,limit-root.withArray("calls").size())):Integer.MAX_VALUE;}
+    public void requireAvailable(){if(remaining()==0)throw exhausted();}
+    private BankException exhausted(){return new BankException("MODEL_REQUEST_BUDGET_EXCEEDED","项目累计模型请求已达上限（"+limit+" 次）。请调整本机模型请求上限并重启；这不是供应商账户余额，重启不会清零已用次数");}
     public String reserve(){
         if(!enabled)return null;
-        return locked(root->{var calls=root.withArray("calls");if(calls.size()>=limit)throw new BankException("MODEL_REQUEST_BUDGET_EXCEEDED","本轮调试已达20次API请求上限，未继续发送供应商请求");String id=UUID.randomUUID().toString();var call=calls.addObject();call.put("id",id);call.put("reservedAt",Instant.now().toString());call.put("success",false);call.put("finished",false);call.putNull("usage");write(root);return id;});
+        return locked(root->{var calls=root.withArray("calls");if(calls.size()>=limit)throw exhausted();String id=UUID.randomUUID().toString();var call=calls.addObject();call.put("id",id);call.put("reservedAt",Instant.now().toString());call.put("success",false);call.put("finished",false);call.putNull("usage");write(root);return id;});
     }
     public void record(String id,boolean success,JsonNode usage){
         if(id==null)return;
@@ -42,7 +46,7 @@ import java.util.function.Function;
         return locked(root->{var calls=root.withArray("calls");int turnCount=0;
             for(var c:calls){if(c.path("operationKey").asText().equals(key)){sameEffect(c,key,inputHash,turn,purpose);return c.path("id").asText();}if(c.path("javaTurnId").asText().equals(turn))turnCount++;}
             if(turnCount>=effectiveLimit)throw new BankException("MODEL_TURN_BUDGET_EXCEEDED","本轮模型调用已达用户设置的上限，已停止发送");
-            if(calls.size()>=limit)throw new BankException("MODEL_REQUEST_BUDGET_EXCEEDED","调试模型请求已达共享20次上限");
+            if(calls.size()>=limit)throw exhausted();
             String id=UUID.randomUUID().toString();var c=calls.addObject();c.put("id",id);c.put("operationKey",key);c.put("inputHash",inputHash);c.put("javaTurnId",turn);c.put("purpose",purpose);c.put("reservedAt",Instant.now().toString());c.put("success",false);c.put("finished",false);c.putNull("usage");write(root);return id;
         });
     }
@@ -60,13 +64,17 @@ import java.util.function.Function;
         if(!enabled)return new BudgetSnapshot(limit,0,Integer.MAX_VALUE,false,null,null,List.of());
         return locked(root->{var calls=root.withArray("calls");boolean complete=true;long prompt=0,completion=0;var records=new ArrayList<Map<String,Object>>();
             for(var c:calls){var usage=c.path("usage");if(!c.path("finished").asBoolean()||!usage.has("prompt_tokens")||!usage.has("completion_tokens")||!usage.has("total_tokens"))complete=false;else{prompt+=usage.path("prompt_tokens").longValue();completion+=usage.path("completion_tokens").longValue();}records.add(json.convertValue(c,new TypeReference<>(){}));}
-            return new BudgetSnapshot(limit,calls.size(),limit-calls.size(),complete,complete?prompt:null,complete?completion:null,List.copyOf(records));
+            return new BudgetSnapshot(limit,calls.size(),Math.max(0,limit-calls.size()),complete,complete?prompt:null,complete?completion:null,List.copyOf(records));
         });
     }
     private <T> T locked(Function<ObjectNode,T> work){
         var local=JVM_LOCKS.computeIfAbsent(path,p->new ReentrantLock());local.lock();
         try{Files.createDirectories(path.getParent());try(var channel=FileChannel.open(path.resolveSibling(path.getFileName()+".lock"),StandardOpenOption.CREATE,StandardOpenOption.WRITE);var lock=channel.lock()){
-            ObjectNode root;if(!Files.exists(path)){root=json.createObjectNode();root.put("limit",limit);root.putArray("calls");}else{var parsed=json.readTree(Files.readString(path));if(!parsed.isObject()||parsed.path("limit").asInt(-1)!=limit||!parsed.path("calls").isArray()||parsed.path("calls").size()>limit)throw invalid();root=(ObjectNode)parsed;var ids=new HashSet<String>();for(var c:root.withArray("calls"))if(!c.isObject()||!c.path("id").isTextual()||!ids.add(c.path("id").asText()))throw invalid();}
+            ObjectNode root;if(!Files.exists(path)){root=json.createObjectNode();root.put("limit",limit);root.putArray("calls");}else{var parsed=json.readTree(Files.readString(path));if(!parsed.isObject()||!parsed.path("limit").isIntegralNumber()||!parsed.path("limit").canConvertToInt()||!validLimit(parsed.path("limit").intValue())||!parsed.path("calls").isArray())throw invalid();root=(ObjectNode)parsed;var ids=new HashSet<String>();for(var c:root.withArray("calls"))if(!c.isObject()||!c.path("id").isTextual()||!ids.add(c.path("id").asText()))throw invalid();
+                // A configuration change updates metadata under the same lock; all
+                // reservations, including uncertain sends, keep their identity.
+                if(root.path("limit").intValue()!=limit){root.put("limit",limit);write(root);}
+            }
             return work.apply(root);
         }}catch(BankException e){throw e;}catch(Exception e){throw invalid();}finally{local.unlock();}
     }
