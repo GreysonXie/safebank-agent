@@ -12,25 +12,23 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
-/** Local debug spending guard. Reserve durably BEFORE network; failures never refund. */
+/** Durable usage ledger. Project calls are unlimited; per-turn and idempotency guards remain. */
 @Component public class DebugRequestBudget {
-    public static final int MAX_LIMIT=100000;
     public record BudgetSnapshot(int limit,int reserved,int remaining,boolean usageComplete,Long promptTokens,Long completionTokens,List<Map<String,Object>> calls) {}
     private static final ConcurrentHashMap<Path,ReentrantLock> JVM_LOCKS=new ConcurrentHashMap<>();
-    private final ObjectMapper json=new ObjectMapper();private final Path path;private final int limit;private final boolean enabled;
-    @Autowired public DebugRequestBudget(@Value("${bank.model.debug-budget.enabled:false}") boolean enabled,@Value("${bank.model.debug-budget.path:}") String path,@Value("${bank.model.debug-budget.limit:20}") int limit){
-        this.enabled=enabled;this.limit=limit;
-        if(enabled&&(path.isBlank()||!Path.of(path).isAbsolute()||!validLimit(limit)))throw new IllegalStateException("Model budget requires an absolute path and a limit between 1 and "+MAX_LIMIT);
+    private final ObjectMapper json=new ObjectMapper();private final Path path;private final boolean enabled;
+    @Autowired public DebugRequestBudget(@Value("${bank.model.debug-budget.enabled:false}") boolean enabled,@Value("${bank.model.debug-budget.path:}") String path){
+        this.enabled=enabled;
+        if(enabled&&(path.isBlank()||!Path.of(path).isAbsolute()))throw new IllegalStateException("Model usage ledger requires an absolute path");
         this.path=enabled?Path.of(path).toAbsolutePath().normalize():null;
     }
-    public DebugRequestBudget(Path path,int limit){if(!validLimit(limit))throw new IllegalArgumentException("Model request limit must be between 1 and "+MAX_LIMIT);this.path=path.toAbsolutePath().normalize();this.limit=limit;enabled=true;}
-    private static boolean validLimit(int value){return value>=1&&value<=MAX_LIMIT;}
-    public int remaining(){return enabled?locked(root->Math.max(0,limit-root.withArray("calls").size())):Integer.MAX_VALUE;}
-    public void requireAvailable(){if(remaining()==0)throw exhausted();}
-    private BankException exhausted(){return new BankException("MODEL_REQUEST_BUDGET_EXCEEDED","项目累计模型请求已达上限（"+limit+" 次）。请调整本机模型请求上限并重启；这不是供应商账户余额，重启不会清零已用次数");}
+    /** Historical limit argument is ignored so existing ledgers and integrations remain readable. */
+    public DebugRequestBudget(Path path,int ignoredLimit){this(true,path.toAbsolutePath().normalize().toString());}
+    public int remaining(){return Integer.MAX_VALUE;}
+    public void requireAvailable(){}
     public String reserve(){
         if(!enabled)return null;
-        return locked(root->{var calls=root.withArray("calls");if(calls.size()>=limit)throw exhausted();String id=UUID.randomUUID().toString();var call=calls.addObject();call.put("id",id);call.put("reservedAt",Instant.now().toString());call.put("success",false);call.put("finished",false);call.putNull("usage");write(root);return id;});
+        return locked(root->{var calls=root.withArray("calls");String id=UUID.randomUUID().toString();var call=calls.addObject();call.put("id",id);call.put("reservedAt",Instant.now().toString());call.put("success",false);call.put("finished",false);call.putNull("usage");write(root);return id;});
     }
     public void record(String id,boolean success,JsonNode usage){
         if(id==null)return;
@@ -46,7 +44,7 @@ import java.util.function.Function;
         return locked(root->{var calls=root.withArray("calls");int turnCount=0;
             for(var c:calls){if(c.path("operationKey").asText().equals(key)){sameEffect(c,key,inputHash,turn,purpose);return c.path("id").asText();}if(c.path("javaTurnId").asText().equals(turn))turnCount++;}
             if(turnCount>=effectiveLimit)throw new BankException("MODEL_TURN_BUDGET_EXCEEDED","本轮模型调用已达用户设置的上限，已停止发送");
-            if(calls.size()>=limit)throw exhausted();
+
             String id=UUID.randomUUID().toString();var c=calls.addObject();c.put("id",id);c.put("operationKey",key);c.put("inputHash",inputHash);c.put("javaTurnId",turn);c.put("purpose",purpose);c.put("reservedAt",Instant.now().toString());c.put("success",false);c.put("finished",false);c.putNull("usage");write(root);return id;
         });
     }
@@ -58,22 +56,30 @@ import java.util.function.Function;
             match.put("success",success);match.put("finished",true);match.put("finishedAt",Instant.now().toString());match.set("usage",normalized);write(root);return null;
         });
     }
+    /** A managed proxy send can claim a reservation once, including across process restarts. */
+    public void claimEffect(String id,String key,String inputHash,String turn,String purpose){
+        effectIdentity(key,inputHash,turn,purpose);if(!enabled||id==null)throw invalid();
+        locked(root->{for(var node:root.withArray("calls"))if(id.equals(node.path("id").asText())){
+            sameEffect(node,key,inputHash,turn,purpose);
+            if(node.path("providerStarted").asBoolean()||node.path("finished").asBoolean())throw new BankException("MODEL_REQUEST_UNCERTAIN","原模型发送已开始，请核对原请求，不能重复发送");
+            ((ObjectNode)node).put("providerStarted",true);write(root);return null;
+        }throw invalid();});
+    }
     private static void effectIdentity(String key,String h,String turn,String purpose){if(key==null||!key.matches("[a-f0-9]{64}")||h==null||!h.matches("[a-f0-9]{64}")||turn==null||!turn.matches("[A-Za-z0-9_-]{1,80}")||!Set.of("plan","draft","repair").contains(purpose))throw invalid();}
     private static void sameEffect(JsonNode c,String key,String h,String turn,String purpose){if(!c.path("operationKey").asText().equals(key)||!c.path("inputHash").asText().equals(h)||!c.path("javaTurnId").asText().equals(turn)||!c.path("purpose").asText().equals(purpose))throw invalid();}
     public BudgetSnapshot snapshot(){
-        if(!enabled)return new BudgetSnapshot(limit,0,Integer.MAX_VALUE,false,null,null,List.of());
+        if(!enabled)return new BudgetSnapshot(Integer.MAX_VALUE,0,Integer.MAX_VALUE,false,null,null,List.of());
         return locked(root->{var calls=root.withArray("calls");boolean complete=true;long prompt=0,completion=0;var records=new ArrayList<Map<String,Object>>();
             for(var c:calls){var usage=c.path("usage");if(!c.path("finished").asBoolean()||!usage.has("prompt_tokens")||!usage.has("completion_tokens")||!usage.has("total_tokens"))complete=false;else{prompt+=usage.path("prompt_tokens").longValue();completion+=usage.path("completion_tokens").longValue();}records.add(json.convertValue(c,new TypeReference<>(){}));}
-            return new BudgetSnapshot(limit,calls.size(),Math.max(0,limit-calls.size()),complete,complete?prompt:null,complete?completion:null,List.copyOf(records));
+            return new BudgetSnapshot(Integer.MAX_VALUE,calls.size(),Integer.MAX_VALUE,complete,complete?prompt:null,complete?completion:null,List.copyOf(records));
         });
     }
     private <T> T locked(Function<ObjectNode,T> work){
         var local=JVM_LOCKS.computeIfAbsent(path,p->new ReentrantLock());local.lock();
         try{Files.createDirectories(path.getParent());try(var channel=FileChannel.open(path.resolveSibling(path.getFileName()+".lock"),StandardOpenOption.CREATE,StandardOpenOption.WRITE);var lock=channel.lock()){
-            ObjectNode root;if(!Files.exists(path)){root=json.createObjectNode();root.put("limit",limit);root.putArray("calls");}else{var parsed=json.readTree(Files.readString(path));if(!parsed.isObject()||!parsed.path("limit").isIntegralNumber()||!parsed.path("limit").canConvertToInt()||!validLimit(parsed.path("limit").intValue())||!parsed.path("calls").isArray())throw invalid();root=(ObjectNode)parsed;var ids=new HashSet<String>();for(var c:root.withArray("calls"))if(!c.isObject()||!c.path("id").isTextual()||!ids.add(c.path("id").asText()))throw invalid();
-                // A configuration change updates metadata under the same lock; all
-                // reservations, including uncertain sends, keep their identity.
-                if(root.path("limit").intValue()!=limit){root.put("limit",limit);write(root);}
+            ObjectNode root;if(!Files.exists(path)){root=json.createObjectNode();root.put("unlimited",true);root.putArray("calls");}else{var parsed=json.readTree(Files.readString(path));if(!parsed.isObject()||!parsed.path("calls").isArray())throw invalid();root=(ObjectNode)parsed;var ids=new HashSet<String>();for(var c:root.withArray("calls"))if(!c.isObject()||!c.path("id").isTextual()||!ids.add(c.path("id").asText()))throw invalid();
+                // Preserve old reservations while retiring their historical cap metadata.
+                if(root.has("limit")||!root.path("unlimited").asBoolean()){root.remove("limit");root.put("unlimited",true);write(root);}
             }
             return work.apply(root);
         }}catch(BankException e){throw e;}catch(Exception e){throw invalid();}finally{local.unlock();}

@@ -100,7 +100,7 @@ answer_contract.prepared_preview=true表示Java已经生成了本轮待核对操
 PLAN += '''
 储蓄联动新增分支：只有客户明确要撤销选定月付代扣，并将本任务核验节省额定时转存，且明确接受仅按成功项继续时，输出{"kind":"savings_task","taskPlan":{"schemaVersion":1,"goal":"用户目标","savingsPolicy":"verified_success_subset","nodes":[...]}}。不要在此分支输出tools。
 缺任何服务、付款账户、目标收款人、首次日期、结束日期或部分成功策略，先用原clarification格式只追问缺失项。客户只问影响、想一次性转账或要求全成功再存时，不创建此任务，不猜日期。不接受对话中的验证码、身份或授权。
-图固定包含：m类型mandate_lookup与a类型account_query，params为空dependsOn为空；1至4个r类型mandate_revoke，params仅merchantQuery，dependsOn为[m]；s类型compute_savings，params为空dependsOn列出所有r；t类型schedule_create，params仅sourceQuery、recipientQuery、firstDate、endDate、dayOfMonth，dependsOn为[s,a]。dayOfMonth必须整数1至28。总节点不超过8。禁止金额、userId、授权、状态或actionId。可选analysisMonth只代表用户指定的账单分析月份，不由首次委托日期推断。
+图固定包含：m类型mandate_lookup与a类型account_query，params为空dependsOn为空；1至4个r类型mandate_revoke，params仅merchantQuery，dependsOn为[m]；s类型compute_savings，params为空dependsOn列出所有r；t类型schedule_create，params仅sourceQuery、recipientQuery、firstDate、endDate、dayOfMonth，dependsOn为[s,a]。dayOfMonth必须整数1至31（短月取月末）。总节点不超过8。禁止金额、userId、授权、状态或actionId。可选analysisMonth只代表用户指定的账单分析月份，不由首次委托日期推断。
 requested_analysis_month非空时，是客户已明确的账单月份；savings_task的taskPlan必须保留相同analysisMonth，包括澄清后补充账户和日期时。SAVINGS_ANALYSIS_MONTH_REQUIRED表示缺失或错用了该月，请补回明确月份，不用首次委托月份替代，不静默交由Java默认当前月。
 首次补参按付款账户、收款目标、首次日期、结束日期、月度日期、部分成功策略逐项核对已有信息；只问缺失项，但不能遗漏未说明的付款账户。客户只说“把省下的钱存起来”不等于指定付款账户。问题措辞围绕客户需求自然组织，不机械列出已给出的参数。
 INVALID_TASK_PLAN表示前稿有限图结构或参数不合法。逐一检查schema、依赖及各参数：不能用空字符串、默认账户或“待指定”占位。客户没有指定付款账户时，输出clarification且tools为空，只追问付款账户；已经明确的目标、日期、服务和策略不要再问。每月转存日也必须来自客户明确输入，未给出时须追问，不由首次日期之外的上下文猜测。

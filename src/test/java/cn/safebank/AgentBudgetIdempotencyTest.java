@@ -17,14 +17,15 @@ class AgentBudgetIdempotencyTest {
   assertThrows(BankException.class,()->b.reserveEffect(key(1),key(3),"turn-one","plan"));
   assertThrows(BankException.class,()->b.reserveEffect(key(1),key(2),"turn-other","plan"));
  }
- @Test void sixthEffectInSameTurnIsRejectedButReplayStillWorksAtCap() {
+ @Test void sixthEffectInSameTurnIsRejectedButCumulativeUsageIsUnlimited() {
   var b=new DebugRequestBudget(temp.resolve("budget.json"),20);
   String first=b.reserveEffect(key(1),key(9),"turn","plan");
   for(int i=2;i<=5;i++)b.reserveEffect(key(i),key(9),"turn","draft");
   assertEquals("MODEL_TURN_BUDGET_EXCEEDED",assertThrows(BankException.class,()->b.reserveEffect(key(6),key(9),"turn","draft")).code);
   for(int i=0;i<15;i++)b.reserve();
   assertEquals(first,b.reserveEffect(key(1),key(9),"turn","plan"));
-  assertThrows(BankException.class,()->b.reserveEffect(key(7),key(9),"other","plan"));
+  assertNotNull(b.reserveEffect(key(7),key(9),"other","plan"));
+  assertEquals(21,b.snapshot().reserved());
  }
  @Test void recordBoundToOriginalTupleIsImmutable() throws Exception {
   var b=new DebugRequestBudget(temp.resolve("budget.json"),20);

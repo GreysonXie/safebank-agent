@@ -9,5 +9,7 @@
 
     <select id="select" resultMap="row">SELECT schedule_id,due_date,action_id FROM occurrences WHERE schedule_id=#{scheduleId} AND due_date=#{dueDate}</select>
     <select id="selectOwnedByAction" resultMap="row">SELECT o.schedule_id,o.due_date,o.action_id FROM occurrences o JOIN schedules s ON s.id=o.schedule_id WHERE s.user_id=#{userId} AND o.action_id=#{actionId}</select>
+    <select id="selectByUser" resultMap="row">SELECT o.schedule_id,o.due_date,o.action_id FROM occurrences o JOIN schedules s ON s.id=o.schedule_id WHERE s.user_id=#{userId} ORDER BY o.due_date DESC,o.action_id</select>
+    <select id="selectInMonth" resultMap="row">SELECT schedule_id,due_date,action_id FROM occurrences WHERE schedule_id=#{scheduleId} AND due_date BETWEEN #{first} AND #{last} ORDER BY due_date LIMIT 1</select>
     <insert id="insert">INSERT INTO occurrences(schedule_id,due_date,action_id) VALUES(#{scheduleId},#{dueDate},#{actionId})</insert>
 </mapper>

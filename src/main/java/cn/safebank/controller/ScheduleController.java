@@ -23,4 +23,6 @@ import java.util.*;
     @PostMapping("/schedules/preview") public ActionVO preview(HttpSession s,@Valid @RequestBody SchedulePreviewRequestDTO r) {
         return actions.previewSchedule(user(s),r);
     }
+    @PostMapping("/schedules/{id}/preview") public ActionVO manage(HttpSession s,@PathVariable String id,@Valid @RequestBody ScheduleManageRequestDTO r){return actions.previewScheduleManagement(user(s),id,r);}
+    @GetMapping("/schedules/transfers") public List<ScheduleTransferVO> transfers(HttpSession s){return schedules.transfers(user(s));}
 }

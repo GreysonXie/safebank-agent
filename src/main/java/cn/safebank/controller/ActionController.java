@@ -20,6 +20,7 @@ import java.util.*;
     @PostMapping("/transfers/preview") public ActionVO preview(HttpSession s,@Valid @RequestBody TransferPreviewRequestDTO r) {
         return actions.previewTransfer(user(s),r);
     }
+    @GetMapping("/actions") public List<ActionVO> list(HttpSession s){return actions.list(user(s));}
     @PostMapping("/actions/{id}/authorize") public ActionVO authorize(HttpSession s,@PathVariable String id,@Valid @RequestBody AuthorizationRequestDTO r) {
         return actions.authorize(user(s),id,r);
     }

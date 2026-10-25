@@ -10,6 +10,7 @@ from .effects import Effects
 from .graph import build, result
 from .answers import GroundingRejection
 from .safety import requests_rendered_credentials
+from .models import ManagedModel,MockModel
 
 class Runtime:
     def __init__(self, store, checkpoint_config, bank, model):
@@ -37,14 +38,22 @@ class Runtime:
     def lease(self,state):
         if not self.current or self.current.run_id!=state['request']['turnId']:raise ProtocolError('RUN_MISMATCH')
         return self.current
+    def selected_adapter(self,state):
+        if not hasattr(self.bank,'model_configuration'):return self.adapter
+        if getattr(self,'turn_adapter',None) is None:
+            config=self.bank.model_configuration(self.token(state))
+            self.turn_adapter=(ManagedModel(self.bank,self.token(state),config['revision']) if config['enabled'] else MockModel()) if config['managed'] else self.adapter
+        return self.turn_adapter
     def model(self,state,node,sequence,payload):
         lease=self.lease(state);reservation={}
+        adapter=self.selected_adapter(state);paid=adapter.mode in ('deepseek','openai','managed')
+        effect_payload={**payload,'configuration_revision':adapter.revision} if adapter.mode=='managed' else payload
         def reserve(key,h):
-            self.adapter.check_can_send()
+            adapter.check_can_send()
             r=self.bank.reserve({'operationKey':key,'inputHash':h,'javaTurnId':lease.run_id,'purpose':node},self.token(state));reservation.update(r,operationKey=key,inputHash=h,javaTurnId=lease.run_id,purpose=node)
             return r['reservationId']
-        saved=self.effects.call(lease,node,sequence,'model',payload,lambda key:self.adapter.complete(payload),reserve if self.adapter.mode in ('deepseek','openai') else None)
-        if self.adapter.mode in ('deepseek','openai'):
+        saved=self.effects.call(lease,node,sequence,'model',effect_payload,lambda key:adapter.complete(payload,reservation) if adapter.mode=='managed' else adapter.complete(payload),reserve if paid else None)
+        if paid:
             # Reload original reservation even when the effect was already SUCCEEDED.
             from .contracts import digest
             key=digest([lease.run_id,node,sequence,'model'])
@@ -79,7 +88,7 @@ class Runtime:
         with self.writer:
             try:lease=self.store.claim(run_id,self.owner)
             except ProtocolError:return
-            self.current=lease;done=threading.Event()
+            self.current=lease;self.turn_adapter=None;done=threading.Event()
             def beat():
                 while not done.wait(10):
                     try:self.store.heartbeat(lease)
@@ -126,4 +135,4 @@ class Runtime:
                     else:self.store.pause(lease,code)
                 except ProtocolError:pass
             finally:
-                done.set();heartbeat.join(1);self.current=None
+                done.set();heartbeat.join(1);self.current=None;self.turn_adapter=None

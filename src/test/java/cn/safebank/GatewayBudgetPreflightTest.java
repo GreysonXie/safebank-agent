@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 
 class GatewayBudgetPreflightTest {
  @TempDir Path temp;
- @Test void exhaustedQuotaRollsBackNewPaidTurnWhileReplayAndMockRemainAvailable(){
+ @Test void oldCumulativeCapDoesNotBlockNewTurnsOrReplay(){
   var contexts=mock(ContextService.class);var mapper=mock(AgentGatewayMapper.class);
   var manager=mock(PlatformTransactionManager.class);var status=new SimpleTransactionStatus();
   when(manager.getTransaction(any())).thenReturn(status);
@@ -34,8 +34,9 @@ class GatewayBudgetPreflightTest {
   var request=new ChatRequestDTO("账单",null,"cid","rid",1L);
   when(contexts.begin("u1",request)).thenReturn(new TurnStart(new TurnLease("u1","cid","tid",1,"rid"),null,false));
   var expiry=clock.instant().plusSeconds(600);
-  assertEquals("MODEL_REQUEST_BUDGET_EXCEEDED",assertThrows(BankException.class,()->service.begin("u1",request,expiry)).code);
-  verify(manager).rollback(status);verifyNoInteractions(mapper);
+  when(mapper.insertGateway(any())).thenReturn(1);
+  assertNotNull(service.begin("u1",request,expiry).lease());
+  verify(manager).commit(status);verify(manager,never()).rollback(any());
   var replay=new TurnStart(null,Map.of("text","原回答"),false);when(contexts.begin("u1",request)).thenReturn(replay);
   assertSame(replay,service.begin("u1",request,expiry));
   var paused=new TurnStart(null,null,true);when(contexts.begin("u1",request)).thenReturn(paused);
@@ -43,7 +44,7 @@ class GatewayBudgetPreflightTest {
   env.setProperty("bank.agent.model-mode","mock");
   var mockTurn=new TurnStart(new TurnLease("u1","cid","tid",1,"rid"),null,false);when(contexts.begin("u1",request)).thenReturn(mockTurn);
   when(mapper.insertGateway(any())).thenReturn(1);
-  assertSame(mockTurn,service.begin("u1",request,expiry));verify(mapper).insertGateway(any());
+  assertSame(mockTurn,service.begin("u1",request,expiry));verify(mapper,times(2)).insertGateway(any());
   assertEquals(1,budget.snapshot().reserved());
  }
 }

@@ -8,7 +8,7 @@ public final class ContextCodec {
     public static JsonNode decodeSlot(SlotName name,JsonNode value){
         boolean valid=switch(name){
             case AMOUNT_MINOR->value.isIntegralNumber()&&value.canConvertToLong()&&value.longValue()>0&&value.longValue()<=1000000;
-            case DAY_OF_MONTH->value.isIntegralNumber()&&value.intValue()>=1&&value.intValue()<=28;
+            case DAY_OF_MONTH->value.isIntegralNumber()&&value.intValue()>=1&&value.intValue()<=31;
             case PRIMARY_MONTH,COMPARISON_MONTH->month(value);
             case FIRST_DATE,END_DATE->date(value);
             case RECIPIENT_CANDIDATES,MANDATE_CANDIDATES,SELECTED_MANDATE_IDS,EXCLUDED_MANDATE_IDS,MISSING_SLOTS->value.isArray()&&value.size()<=10&&java.util.stream.StreamSupport.stream(value.spliterator(),false).allMatch(v->v.isTextual()&&v.asText().matches("[A-Za-z0-9_-]{1,80}"));

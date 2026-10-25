@@ -101,9 +101,8 @@ def main():
     store=Store(config.database)
     from .schema import verify
     verify(store)
-    cap=int(os.environ['SAFEBANK_MODEL_SMOKE_CAP']) if os.getenv('SAFEBANK_MODEL_SMOKE_CAP') else None
     model_type={'deepseek':DeepSeek,'openai':OpenAICompatible}.get(config.model_mode)
-    model=model_type(config.model_key,config.model_name,config.model_url,max_sends=cap) if model_type else MockModel()
+    model=model_type(config.model_key,config.model_name,config.model_url,max_sends=None) if model_type else MockModel()
     runtime=Runtime(store,config.database,BankClient(config.bank_url,config.service_key),model)
     server=AgentServer(('127.0.0.1',config.port),runtime,config.service_key)
     # Scan bounded expired runs; grant loss is reported to Java for renewal.

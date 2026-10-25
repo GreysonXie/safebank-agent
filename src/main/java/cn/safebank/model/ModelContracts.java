@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 public final class ModelContracts {
     private ModelContracts() {}
-    public record ModelRequest(List<Map<String,Object>> messages, List<Object> tools) {}
+    public record ModelRequest(List<Map<String,Object>> messages, List<Object> tools,String userId) {
+        public ModelRequest(List<Map<String,Object>> messages,List<Object> tools){this(messages,tools,"u1");}
+    }
     /** Fixed categories only: never expose arbitrary provider strings in logs or API responses. */
     public enum FinishReason {
         STOP, TOOL_CALLS, LENGTH, CONTENT_FILTER, INSUFFICIENT_SYSTEM_RESOURCE, ABORTED, UNKNOWN;

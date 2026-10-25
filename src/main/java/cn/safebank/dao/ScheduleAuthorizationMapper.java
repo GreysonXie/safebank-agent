@@ -8,4 +8,5 @@ import java.util.List;
     List<ScheduleAuthorizationEntity> selectByUser(@Param("userId") String userId);
     int insert(ScheduleAuthorizationEntity row);
     int update(ScheduleAuthorizationEntity row);
+    int replace(ScheduleAuthorizationEntity row);
 }

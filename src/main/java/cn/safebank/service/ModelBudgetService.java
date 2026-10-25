@@ -11,10 +11,11 @@ import java.util.Set;
 public class ModelBudgetService {
     private final DebugRequestBudget budget;
     private final Environment environment;
+    @org.springframework.beans.factory.annotation.Autowired(required=false) private ModelConfigurationService settings;
     public ModelBudgetService(DebugRequestBudget budget,Environment environment){this.budget=budget;this.environment=environment;}
-    public ModelBudgetVO summary(){
+    public ModelBudgetVO summary(String user){
         var snapshot=budget.snapshot();
-        boolean applies=Set.of("deepseek","openai").contains(environment.getProperty("bank.agent.model-mode","mock"));
-        return new ModelBudgetVO(applies,snapshot.limit(),snapshot.reserved(),snapshot.remaining());
+        boolean applies=settings!=null?settings.connection(user).configured():Set.of("deepseek","openai").contains(environment.getProperty("bank.agent.model-mode","mock"));
+        return new ModelBudgetVO(applies,snapshot.limit(),snapshot.reserved(),snapshot.remaining(),true);
     }
 }

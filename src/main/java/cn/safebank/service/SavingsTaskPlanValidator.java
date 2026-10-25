@@ -35,7 +35,7 @@ import java.util.*;
    var params=node.get("params");require(fields(params).equals(PARAMETERS.get(kind)));
    for(String field:PARAMETERS.get(kind)){
     var arg=params.get(field);
-    if(field.equals("dayOfMonth"))require(arg.isIntegralNumber()&&arg.canConvertToInt()&&arg.intValue()>=1&&arg.intValue()<=28);
+    if(field.equals("dayOfMonth"))require(arg.isIntegralNumber()&&arg.canConvertToInt()&&arg.intValue()>=1&&arg.intValue()<=31);
     else {String value=text(arg,100);if(field.endsWith("Date"))require(value.matches("20[0-9]{2}-[0-9]{2}-[0-9]{2}"));}
    }
    var dependencies=node.get("dependsOn");require(dependencies!=null&&dependencies.isArray());var deps=new ArrayList<String>();

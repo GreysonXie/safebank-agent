@@ -46,8 +46,36 @@ import java.util.*;
                     var r=(RevokeParametersVO)p;var m=mandates.lockOwned(userId,r.mandateId()); if(m==null)throw new BankException("NOT_FOUND","代扣不存在或不属于当前用户"); if(!"ACTIVE".equals(m.getStatus()))throw new BankException("ALREADY_REVOKED","该代扣已被其他动作撤销，本动作没有新增节省"); require(mandates.revoke(userId,r.mandateId()));agentReceipts.ifAvailable(receipts->receipts.invalidateUser(userId));
                 }
                 case SCHEDULE->{
-                    var r=(ScheduleParametersVO)p;validation.validate(userId,r.sourceId(),r.recipientId(),r.amountMinor()); var row=new ScheduleEntity();row.setId(receipt);row.setUserId(userId);row.setSourceId(r.sourceId());row.setRecipientId(r.recipientId());row.setAmountMinor(r.amountMinor());row.setDayOfMonth(r.dayOfMonth());row.setFirstDate(LocalDate.parse(r.firstDate()));row.setEndDate(LocalDate.parse(r.endDate()));row.setStatus("ACTIVE");require(schedules.insert(row));var sourceGrant=gate.started(userId,id);
+                    var r=(ScheduleParametersVO)p;if(LocalDate.parse(r.firstDate()).isBefore(SimulationClock.businessDate(clock)))throw new BankException("VALIDATION_ERROR","首次日期已过期，请重新生成计划预览");validation.validate(userId,r.sourceId(),r.recipientId(),r.amountMinor()); var row=new ScheduleEntity();row.setId(receipt);row.setUserId(userId);row.setSourceId(r.sourceId());row.setRecipientId(r.recipientId());row.setAmountMinor(r.amountMinor());row.setDayOfMonth(r.dayOfMonth());row.setFirstDate(LocalDate.parse(r.firstDate()));row.setEndDate(LocalDate.parse(r.endDate()));row.setStatus("ACTIVE");require(schedules.insert(row));var sourceGrant=gate.started(userId,id);
                     scopeService.registerScope(userId,receipt,sourceGrant.getId(),new ScheduleScope(r.sourceId(),r.recipientId(),r.amountMinor(),"CNY",row.getFirstDate(),row.getEndDate(),r.dayOfMonth(),r.timezone(),"MONTHLY",RiskPolicyService.VERSION,cn.safebank.common.RiskTypes.RiskLevel.YELLOW));
+                }
+                case ACTIVATE_MANDATE->{
+                    var r=(MandateActivationParametersVO)p;
+                    if(mandates.selectByUser(userId).stream().anyMatch(m->"ACTIVE".equals(m.getStatus())&&r.merchant().equalsIgnoreCase(m.getMerchant())))throw new BankException("VALIDATION_ERROR","该服务已经有有效代扣授权");
+                    if(LocalDate.parse(r.renewalDate()).isBefore(SimulationClock.businessDate(clock)))throw new BankException("VALIDATION_ERROR","扣费日期已过期，请重新生成预览");
+                    if(r.reactivation()){
+                        var m=mandates.lockOwned(userId,r.mandateId());
+                        if(m==null||!"REVOKED".equals(m.getStatus())||!r.merchant().equals(m.getMerchant())||r.chargeAmountMinor()!=m.getAmountMinor()||!r.billingInterval().equals(m.getBillingInterval()))throw new BankException("VALIDATION_ERROR","原代扣服务已变化，请重新核对");
+                        require(mandates.activate(userId,r.mandateId(),LocalDate.parse(r.renewalDate())));
+                    }else{
+                        var row=new MandateEntity();row.setId(r.mandateId());row.setUserId(userId);row.setMerchant(r.merchant());row.setAmountMinor(r.chargeAmountMinor());row.setRenewalDate(LocalDate.parse(r.renewalDate()));row.setStatus("ACTIVE");row.setContractStatus("UNKNOWN");row.setBillingInterval(r.billingInterval());require(mandates.insert(row));
+                    }
+                    agentReceipts.ifAvailable(receipts->receipts.invalidateUser(userId));
+                }
+                case MANAGE_SCHEDULE->{
+                    var r=(ScheduleManagementParametersVO)p;var row=schedules.selectOwnedForUpdate(userId,r.scheduleId());
+                    if(row==null||!codec.hash(userId,ActionKind.MANAGE_SCHEDULE,ScheduleRules.snapshot(row)).equals(r.expectedStateHash()))throw new BankException("VALIDATION_ERROR","计划已被修改，请刷新并重新确认");
+                    if("EDIT".equals(r.operation())){
+                        validation.validate(userId,r.sourceId(),r.recipientId(),r.amountMinor());
+                        if(LocalDate.parse(r.firstDate()).isBefore(SimulationClock.businessDate(clock)))throw new BankException("VALIDATION_ERROR","新的首次日期已过期，请重新核对");
+                        row.setSourceId(r.sourceId());row.setRecipientId(r.recipientId());row.setAmountMinor(r.amountMinor());row.setFirstDate(LocalDate.parse(r.firstDate()));row.setEndDate(LocalDate.parse(r.endDate()));row.setDayOfMonth(r.dayOfMonth());
+                    }else row.setStatus(switch(r.operation()){case "PAUSE"->"PAUSED";case "RESUME"->"ACTIVE";case "CANCEL"->"CANCELLED";default->throw new BankException("VALIDATION_ERROR","无效计划操作");});
+                    scopeService.invalidateUnsubmitted(userId,row.getId());
+                    require(schedules.update(row));
+                    if("ACTIVE".equals(row.getStatus())){
+                        var sourceGrant=gate.started(userId,id);
+                        scopeService.registerScope(userId,row.getId(),sourceGrant.getId(),new ScheduleScope(row.getSourceId(),row.getRecipientId(),row.getAmountMinor(),"CNY",row.getFirstDate(),row.getEndDate(),row.getDayOfMonth(),"Asia/Shanghai","MONTHLY",RiskPolicyService.VERSION,cn.safebank.common.RiskTypes.RiskLevel.YELLOW));
+                    }else scopeService.suspend(userId,row.getId());
                 }
             }
             actions.updateState(userId,id,ActionStatus.VERIFIED_SUCCESS,receipt,a.getErrorCode());audit.record(userId,id,"EXECUTED");gate.completeAccepted(userId,id,new cn.safebank.bank.BankObservation(id,cn.safebank.bank.BankObservation.BankState.VERIFIED_SUCCESS,receipt,null,clock.instant()));return actions.status(userId,id);

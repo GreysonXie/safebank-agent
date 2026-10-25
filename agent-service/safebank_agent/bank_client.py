@@ -9,18 +9,22 @@ class BankClient:
     def __init__(self,url,key):
         self.url=url;self.key=key
         self.http=httpx.Client(timeout=3,follow_redirects=False)
-    def call(self,path,body,token):
+    def call(self,path,body,token,deadline=3):
         started=time.monotonic()
         try:
-            with self.http.stream('POST',self.url+path,json=body,headers={'Authorization':'Bearer '+self.key,'X-Agent-Grant':token}) as response:
+            with self.http.stream('POST',self.url+path,json=body,headers={'Authorization':'Bearer '+self.key,'X-Agent-Grant':token},timeout=deadline) as response:
                 if response.status_code>=500:raise ProtocolError('BANK_CALLBACK_UNAVAILABLE')
                 chunks=[];size=0
                 for chunk in response.iter_bytes():
                     size+=len(chunk)
-                    if size>262144 or time.monotonic()-started>3:raise ProtocolError('BANK_CALLBACK_LIMIT')
+                    if size>262144 or time.monotonic()-started>deadline:raise ProtocolError('BANK_CALLBACK_LIMIT')
                     chunks.append(chunk)
                 data=json.loads(b''.join(chunks))
                 if response.status_code!=200:
+                    if path=='/internal/agent/model/complete':
+                        code=data.get('code') if isinstance(data,dict) else None
+                        if code in ('MODEL_CONFIGURATION_CHANGED','MODEL_REQUEST_UNCERTAIN','MODEL_UNAVAILABLE','MODEL_API_ERROR','MODEL_RESPONSE_INVALID'):
+                            raise ProtocolError(code)
                     if path=='/internal/agent/model-budget/reserve' and isinstance(data,dict) and data.get('code') in ('MODEL_REQUEST_BUDGET_EXCEEDED','MODEL_TURN_BUDGET_EXCEEDED','MODEL_DEBUG_BUDGET_INVALID'):
                         raise ProtocolError(data['code'])
                     if path.endswith('/validate') and isinstance(data,dict) and data.get('code')=='ANSWER_NOT_GROUNDED':
@@ -42,3 +46,5 @@ class BankClient:
     def validate(self,body,token):return self.call('/internal/agent/answers/validate',body,token)
     def reserve(self,body,token):return self.call('/internal/agent/model-budget/reserve',body,token)
     def record(self,body,token):return self.call('/internal/agent/model-budget/record',body,token)
+    def model_configuration(self,token):return self.call('/internal/agent/model/configuration',{},token)
+    def model_complete(self,body,token):return self.call('/internal/agent/model/complete',body,token,90)

@@ -23,4 +23,5 @@ import java.util.*;
     @PostMapping("/mandates/preview") public ActionVO preview(HttpSession s,@Valid @RequestBody MandatePreviewRequestDTO r) {
         return actions.previewRevoke(user(s),r);
     }
+    @PostMapping("/mandates/activate/preview") public ActionVO activate(HttpSession s,@Valid @RequestBody MandateActivationRequestDTO r){return actions.previewMandateActivation(user(s),r);}
 }

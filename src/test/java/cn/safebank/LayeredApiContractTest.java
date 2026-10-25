@@ -1,5 +1,7 @@
 package cn.safebank;
 import cn.safebank.agent.BankToolGateway;
+import cn.safebank.common.*;
+import cn.safebank.vo.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import java.time.OffsetDateTime;
 
 @SpringBootTest(properties={"spring.datasource.url=jdbc:h2:mem:layered-contract;DB_CLOSE_DELAY=-1","bank.model.api-key="})
 @AutoConfigureMockMvc
@@ -51,5 +54,18 @@ class LayeredApiContractTest extends BankTestFixture {
         assertEquals(Set.of("id","version","state","request","estimatedSavingMinor","partial","steps","pendingAction","analysis"),fields(workflow));
         assertEquals(Set.of("key","kind","status","actionId","inputVersion","savingMinor","errorCode"),fields(workflow.path("steps").get(0)));
         assertFalse(workflow.path("pendingAction").has("parameters"));
+    }
+
+    @Test void scheduleTransferHistoryKeepsScheduleAndActionFieldsFlat() throws Exception {
+        var action=new ActionVO("action-1","u1",ActionKind.TRANSFER,"hash",ActionStatus.VERIFIED_SUCCESS,
+            OffsetDateTime.parse("2026-10-20T00:00:00Z"),"receipt-1",null,
+            new TransferParametersVO("checking","travel-recipient","旅行目标",5000,"CNY",0L,"schedule-1","2026-10-20"));
+        var view=json.valueToTree(new ScheduleTransferVO("schedule-1",java.time.LocalDate.of(2026,10,20),action));
+        assertEquals("schedule-1",view.path("scheduleId").asText());
+        assertEquals("2026-10-20",view.path("dueDate").asText());
+        assertEquals("action-1",view.path("id").asText());
+        assertEquals("VERIFIED_SUCCESS",view.path("status").asText());
+        assertEquals(5000,view.path("amount_minor").asLong());
+        assertFalse(view.has("action"));
     }
 }

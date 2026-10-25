@@ -45,31 +45,7 @@ class DeepSeek:
                     if size>65536:raise ProtocolError('MODEL_RESPONSE_TOO_LARGE')
                     chunks.append(chunk)
                 reply=json.loads(b''.join(chunks))
-            choices=reply.get('choices')
-            choice=choices[0] if isinstance(choices,list) and choices and isinstance(choices[0],dict) else {}
-            message=choice.get('message')
-            raw=message.get('content') if isinstance(message,dict) else None
-            result={'content':None,'id':reply.get('id'),'model':reply.get('model'),'usage':reply.get('usage'),
-                    'raw_content':raw if isinstance(raw,str) else None,'finish_reason':choice.get('finish_reason')}
-            # Receiving a complete HTTP envelope is distinct from validating its
-            # generated answer. Persist the envelope and usage before rejecting it.
-            if not choice or not isinstance(raw,str):result['response_error']='MODEL_RESPONSE_INVALID'
-            elif choice.get('finish_reason')!='stop':result['response_error']='MODEL_INCOMPLETE'
-            else:
-                try:
-                    content=json.loads(raw)
-                    pending=[(content,0)]
-                    while pending:
-                        value,depth=pending.pop()
-                        if depth>32:raise ValueError('Content nesting exceeds protocol envelope')
-                        if isinstance(value,dict):pending.extend((item,depth+1) for item in value.values())
-                        elif isinstance(value,list):pending.extend((item,depth+1) for item in value)
-                    # Test the same persistence encoding before adding parsed
-                    # content: non-finite numbers/surrogates must not lose raw usage.
-                    canonical(content).encode('utf-8')
-                    result['content']=content
-                except (ValueError,RecursionError):result['response_error']='MODEL_CONTENT_NOT_JSON'
-            return result
+            return decode_completion(reply)
         except ProtocolError:raise
         except Exception as error:
             # Class name only: exception text can include credentials or request data.
@@ -77,12 +53,43 @@ class DeepSeek:
             raise ProtocolError('MODEL_TRANSPORT_OR_FORMAT_FAILED') from None
 
 class OpenAICompatible(DeepSeek):
-    """Chat Completions gateway; retain effect receipts and paid-call limits."""
+    """Chat Completions gateway; retain effect receipts and per-turn protection."""
     mode='openai'
     def request_body(self,payload):
         body=super().request_body(payload)
         body.pop('thinking')
         return body
+
+def decode_completion(reply):
+    choices=reply.get('choices')
+    choice=choices[0] if isinstance(choices,list) and choices and isinstance(choices[0],dict) else {}
+    message=choice.get('message')
+    raw=message.get('content') if isinstance(message,dict) else None
+    result={'content':None,'id':reply.get('id'),'model':reply.get('model'),'usage':reply.get('usage'),
+            'raw_content':raw if isinstance(raw,str) else None,'finish_reason':choice.get('finish_reason')}
+    if not choice or not isinstance(raw,str):result['response_error']='MODEL_RESPONSE_INVALID'
+    elif choice.get('finish_reason')!='stop':result['response_error']='MODEL_INCOMPLETE'
+    else:
+        try:
+            content=json.loads(raw);pending=[(content,0)]
+            while pending:
+                value,depth=pending.pop()
+                if depth>32:raise ValueError('Content nesting exceeds protocol envelope')
+                if isinstance(value,dict):pending.extend((item,depth+1) for item in value.values())
+                elif isinstance(value,list):pending.extend((item,depth+1) for item in value)
+            canonical(content).encode('utf-8');result['content']=content
+        except (ValueError,RecursionError):result['response_error']='MODEL_CONTENT_NOT_JSON'
+    return result
+
+class ManagedModel:
+    """The Java service holds credentials; Python retains only a revision."""
+    mode='managed'
+    def __init__(self,bank,token,revision):
+        self.bank=bank;self.token=token;self.revision=revision
+    def check_can_send(self):pass
+    def complete(self,payload,reservation):
+        reply=self.bank.model_complete({'revision':self.revision,'payload':payload,**reservation},self.token)
+        return decode_completion(reply)
 
 class MockModel:
     """Finite offline fixtures, explicitly labelled; not evidence of model quality."""

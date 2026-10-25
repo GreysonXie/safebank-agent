@@ -22,9 +22,9 @@ class ModelBudgetViewTest {
   var session=new MockHttpSession();
   assertEquals("SESSION_REQUIRED",assertThrows(BankException.class,()->controller.read(session)).code);
   session.setAttribute("user","u1");var view=controller.read(session);
-  assertTrue(view.applies());assertEquals(1,view.used());assertEquals(99,view.remaining());
+  assertTrue(view.applies());assertEquals(1,view.used());assertTrue(view.unlimited());assertEquals(Integer.MAX_VALUE,view.remaining());
   var json=new ObjectMapper().valueToTree(view);var fields=new java.util.HashSet<String>();json.fieldNames().forEachRemaining(fields::add);
-  assertEquals(Set.of("applies","used","remaining","limit"),fields);
+  assertEquals(Set.of("applies","used","remaining","limit","unlimited"),fields);
   env.setProperty("bank.agent.model-mode","mock");assertFalse(controller.read(session).applies());
  }
 }

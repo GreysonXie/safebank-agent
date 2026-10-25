@@ -19,4 +19,5 @@
     <select id="selectByUser" resultMap="row">SELECT <include refid="columns"/> FROM schedule_authorizations WHERE user_id=#{userId} ORDER BY schedule_id</select>
     <insert id="insert">INSERT INTO schedule_authorizations(schedule_id,user_id,source_authorization_id,scope_json,scope_hash,policy_version,maximum_risk_level,status,created_at,expires_at) VALUES(#{scheduleId},#{userId},#{sourceAuthorizationId},#{scopeJson},#{scopeHash},#{policyVersion},#{maximumRiskLevel},#{status},#{createdAt},#{expiresAt})</insert>
     <update id="update">UPDATE schedule_authorizations SET maximum_risk_level=#{maximumRiskLevel},status=#{status},expires_at=#{expiresAt} WHERE schedule_id=#{scheduleId} AND user_id=#{userId}</update>
+    <update id="replace">UPDATE schedule_authorizations SET source_authorization_id=#{sourceAuthorizationId},scope_json=#{scopeJson},scope_hash=#{scopeHash},policy_version=#{policyVersion},maximum_risk_level=#{maximumRiskLevel},status=#{status},created_at=#{createdAt},expires_at=#{expiresAt} WHERE schedule_id=#{scheduleId} AND user_id=#{userId}</update>
 </mapper>

@@ -19,9 +19,6 @@ def inspect_config(config):
    endpoint.port
   except (ValueError,TypeError):valid_url=False
   checks.append(check('MODEL_URL',valid_url,'OpenAI-compatible mode needs an HTTPS endpoint without credentials, query or fragment.'))
- try:valid_cap=1<=int(env.get('SAFEBANK_MODEL_SMOKE_CAP',''))<=100000
- except (TypeError,ValueError):valid_cap=False
- checks.append(check('MODEL_CAP',valid_cap,'Model request cap must be between 1 and 100000; it is not a money budget.'))
  ports=app.get('ports',[]);port=None;private=False
  if len(ports)==1 and isinstance(ports[0],dict):
   item=ports[0]

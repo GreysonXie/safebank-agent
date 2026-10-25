@@ -26,6 +26,8 @@ import java.util.HexFormat;
                 case REVOKE->json.readValue(payload,RevokeParametersVO.class);
                 case QUERY_MANDATES->json.readValue(payload,QueryParametersVO.class);
                 case SCHEDULE->json.readValue(payload,ScheduleParametersVO.class);
+                case ACTIVATE_MANDATE->json.readValue(payload,MandateActivationParametersVO.class);
+                case MANAGE_SCHEDULE->json.readValue(payload,ScheduleManagementParametersVO.class);
             }
             ;
         }

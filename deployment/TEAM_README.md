@@ -56,12 +56,13 @@ Windows可在项目目录运行`notepad .env`，修改以下配置后保存；�
 SAFEBANK_MODEL_MODE=deepseek
 DEEPSEEK_API_KEY=填写你自己的密钥
 SAFEBANK_MODEL_NAME=deepseek-flash
-SAFEBANK_MODEL_SMOKE_CAP=20
 ```
 
-运行`docker compose up -d --force-recreate app`。**`SAFEBANK_MODEL_SMOKE_CAP` 是项目累计模型请求上限，默认 20 次，可设 1–100000**，不是对话轮数或人民币额度。一轮通常 2 次，重写可能再加 1 次；已预留的失败或结果未知调用也计数。用量账本保存在运行卷中，重启、更换密钥和新建对话都不会清零。调整上限时保留原调用记录；降到低于已用次数会阻止新调用，仍可核对原请求和回执。本仓库没有作者密钥或免费模型额度。
+运行`docker compose up -d --force-recreate app`。也可以直接在页面的「模型管理」选择供应商，填写 API 基础地址、密钥和模型 ID，获取接口模型列表、检测后保存应用。页面配置按用户加密保存到运行卷，留空仅在供应商和地址相同时保留原密钥；关闭模型可切回离线演示。检测会发送一次实际请求，供应商可能计费。
 
-页面显示累计已用、上限和剩余次数。耗尽时会说明限制原因，未发送的问题保留在输入框；处理中达到限制的原请求会保留供核对。可点击“新建对话”离开暂停的旧对话，再从“已保留的对话”返回，不会自动重发。切换入口保存在当前浏览器标签页的 sessionStorage，关闭标签页后不提供跨标签恢复；银行确认项和回执仍保存在服务端。额度摘要只返回汇总数字，不公开内部调用标识。
+项目累计模型调用次数已取消上限，历史用量继续保留；单轮调用保护、重复请求复用和逐动作确认仍生效。供应商自身的余额、限流与模型权限由供应商决定。页面只显示汇总用量，不公开内部调用标识。
+
+可点击“新建对话”离开暂停的旧对话，再从“已保留的对话”返回，不会自动重发。切换入口保存在当前浏览器标签页的 sessionStorage，关闭标签页后不提供跨标签恢复；银行确认项和回执仍保存在服务端。
 
 模型只能查询、准备预览，聊天确认不能代替逐动作授权。页面显示mock时不要把结果当作真实模型生成。
 
@@ -74,12 +75,11 @@ SAFEBANK_MODEL_MODE=openai
 SAFEBANK_MODEL_URL=https://your-gateway.example/v1
 SAFEBANK_MODEL_API_KEY=填写你自己的中转密钥
 SAFEBANK_MODEL_NAME=填写服务商实际提供的模型ID
-SAFEBANK_MODEL_SMOKE_CAP=20
 ```
 
 地址填写到 `/v1`（以服务商为准），程序追加 `/chat/completions`，使用 Bearer 密钥认证与 JSON 回答格式，不发送 DeepSeek 专用的 `thinking` 参数。只接受 HTTPS 地址。模型 ID 必须来自中转站提供的列表；中转站的命名不证明上游模型身份。
 
-修改后执行 `docker compose up --build -d --wait --wait-timeout 300`。页面会显示实际配置的模型名和 `LANGGRAPH_MODEL` 模式。只读查询也会消耗中转账户额度；保留原有请求次数限制和逐动作授权机制。`deployment/smoke.py` 仍只用于 mock，拒绝真实模型，避免日常启动意外消耗额度。
+修改后执行 `docker compose up --build -d --wait --wait-timeout 300`。页面会显示实际配置的模型名和 `LANGGRAPH_MODEL` 模式。只读查询也会消耗中转账户额度；保留单轮调用保护和逐动作授权机制，项目累计不限次数。`deployment/smoke.py` 仍只用于 mock，拒绝真实模型，避免日常启动意外消耗额度。
 
 ## 试用三场景
 

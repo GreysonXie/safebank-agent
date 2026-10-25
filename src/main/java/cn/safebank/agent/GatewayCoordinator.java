@@ -64,7 +64,7 @@ public class GatewayCoordinator {
     }
     static String reviewMessage(String code){
         if("MODEL_REQUEST_BUDGET_EXCEEDED".equals(code))
-            return "项目累计模型请求额度已用完，请调整本机请求上限并重启。原轮次已保留，不会自动重发；这不是模型账户余额不足";
+            return "该历史轮次曾触发旧版累计限制；当前项目已取消累计上限。请核对原轮次后新建对话，不会自动重发";
         if("MODEL_TURN_BUDGET_EXCEEDED".equals(code))
             return "本轮模型请求次数已达上限，已停止调用；原轮次已保留，请核对已有查询和操作预览";
         if("MODEL_DEBUG_BUDGET_INVALID".equals(code))

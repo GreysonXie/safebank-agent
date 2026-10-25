@@ -17,4 +17,6 @@
 
     <select id="lockOwned" resultMap="row">SELECT id,user_id,merchant,amount_minor,renewal_date,status,contract_status,billing_interval FROM mandates WHERE id=#{id} AND user_id=#{userId} FOR UPDATE</select>
     <update id="revoke">UPDATE mandates SET status='REVOKED' WHERE id=#{id} AND user_id=#{userId} AND status='ACTIVE'</update>
+    <insert id="insert">INSERT INTO mandates(id,user_id,merchant,amount_minor,renewal_date,status,contract_status,billing_interval) VALUES(#{id},#{userId},#{merchant},#{amountMinor},#{renewalDate},#{status},#{contractStatus},#{billingInterval})</insert>
+    <update id="activate">UPDATE mandates SET status='ACTIVE',renewal_date=#{renewalDate} WHERE id=#{id} AND user_id=#{userId} AND status='REVOKED'</update>
 </mapper>

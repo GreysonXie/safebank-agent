@@ -8,4 +8,6 @@ import java.util.List;
     MandateEntity selectOwned(@Param("userId") String userId,@Param("id") String id);
     MandateEntity lockOwned(@Param("userId") String userId,@Param("id") String id);
     int revoke(@Param("userId") String userId,@Param("id") String id);
+    int insert(MandateEntity row);
+    int activate(@Param("userId") String userId,@Param("id") String id,@Param("renewalDate") java.time.LocalDate renewalDate);
 }

@@ -13,6 +13,6 @@ public class ModelBudgetController {
     public ModelBudgetController(ModelBudgetService budgets){this.budgets=budgets;}
     @GetMapping("/api/model-budget") public ModelBudgetVO read(HttpSession session){
         if(session.getAttribute("user")==null)throw new BankException("SESSION_REQUIRED","请先建立会话");
-        return budgets.summary();
+        return budgets.summary(session.getAttribute("user").toString());
     }
 }

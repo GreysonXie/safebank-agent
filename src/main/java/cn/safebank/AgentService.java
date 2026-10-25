@@ -130,12 +130,12 @@ public class AgentService {
         var trace=new ArrayList<String>();var evidence=new ArrayList<BankReplyComposer.Evidence>();Object latest=Map.of();int calls=0;long started=System.nanoTime();
         if(refreshMandates)trace.add("list_mandates / 刷新对话中的授权状态");
         rounds: for(int round=0;round<6;round++){
-            if(!modelClient.hasRemaining(2)){trace.add("MODEL_REQUEST_BUDGET_EXCEEDED / 余量不足以生成并审核，停止模型请求");break;}
+            if(!modelClient.hasRemaining(2)){trace.add("MODEL_TURN_BUDGET_EXCEEDED / 本轮余量不足以生成并审核，停止模型请求");break;}
             if(Duration.ofNanos(System.nanoTime()-started).toSeconds()>90)throw new BankException("AGENT_BUDGET_EXCEEDED","任务处理时间已到上限，未继续操作");
             var requestMessages=new ArrayList<>(messages);
             if(context!=null)requestMessages.addAll(1,context.messages());
             requestMessages.add(1,Map.of("role","system","content",grounding.modelContext(text)));
-            var modelReply=modelClient.complete(new ModelRequest(requestMessages,context==null?definitions():context.definitions(definitions())));
+            var modelReply=modelClient.complete(new ModelRequest(requestMessages,context==null?definitions():context.definitions(definitions()),user));
             if(!modelReply.completed()){
                 trace.add("MODEL_RESPONSE_INCOMPLETE / finish_reason="+modelReply.finishReason().name()+" / 本次输出未完整结束，停止模型请求");
                 break;
@@ -242,7 +242,7 @@ public class AgentService {
         }
     }
     private String str(JsonNode n,String field){if(!n.path(field).isTextual()||n.path(field).asText().isBlank())throw new BankException("VALIDATION_ERROR","缺少参数 "+field);return n.path(field).asText();}
-    private boolean providerFailure(BankException failure){return failure.code.startsWith("MODEL_")&&!failure.code.equals("MODEL_REQUEST_BUDGET_EXCEEDED");}
+    private boolean providerFailure(BankException failure){return failure.code.startsWith("MODEL_")&&!failure.code.equals("MODEL_TURN_BUDGET_EXCEEDED");}
     private Object tool(String user,String name,JsonNode a) { var context=activeContext.get();return context==null?tools.execute(user,name,a):context.dispatch(name,UUID.randomUUID().toString(),a,()->tools.execute(user,name,a)); }
     @SuppressWarnings("unchecked") private Map<String,Object> actionObject(Object value) { return json.convertValue(value,Map.class); }
     private List<Object> definitions(){var tools=new ArrayList<Object>();
@@ -262,12 +262,12 @@ public class AgentService {
         definition(tools,"list_transfer_schedules","读取本人定时任务",Map.of());
         definition(tools,"preview_transfer","预览转账，不执行，等待用户确认",Map.of("source_id","string","recipient_id","string","amount_minor","integer"));
         definition(tools,"preview_revoke","预览撤销指定银行侧代扣，不取消商户合同",Map.of("mandate_id","string"));
-        definition(tools,"preview_schedule","预览固定金额月度转账，最长一年，首次日期需匹配1至28日",Map.of("source_id","string","recipient_id","string","amount_minor","integer","first_date","string","end_date","string","day_of_month","integer"));
+        definition(tools,"preview_schedule","预览固定金额月度转账，最长一年，首次日期需匹配1至31（短月取月末）日",Map.of("source_id","string","recipient_id","string","amount_minor","integer","first_date","string","end_date","string","day_of_month","integer"));
         definition(tools,"get_workflow","读取本人持久化联合任务；此工具不会自动执行",Map.of("workflow_id","string"));
         var properties=new LinkedHashMap<String,Object>();
         for(String field:List.of("month","source_id","recipient_id","first_date","end_date"))properties.put(field,Map.of("type","string"));
         properties.put("mandate_ids",Map.of("type","array","items",Map.of("type","string"),"minItems",1,"maxItems",10));
-        properties.put("day_of_month",Map.of("type","integer","minimum",1,"maximum",28));properties.put("only_confirmed_savings",Map.of("type","boolean","const",true));
+        properties.put("day_of_month",Map.of("type","integer","minimum",1,"maximum",31));properties.put("only_confirmed_savings",Map.of("type","boolean","const",true));
         tools.add(Map.of("type","function","function",Map.of("name","start_savings_workflow","description","只有用户明确选择代扣、储蓄对象和日期后才创建账单分析→逐项撤销代扣→已核验预计节省储蓄任务；不推断不常使用，不自动授权。缺参先澄清。","parameters",Map.of("type","object","properties",properties,"required",new ArrayList<>(properties.keySet()),"additionalProperties",false))));
         return tools;
     }

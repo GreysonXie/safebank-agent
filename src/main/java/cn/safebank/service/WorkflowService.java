@@ -79,7 +79,7 @@ import java.util.*;
         catch(Exception e){
             throw invalid("请填写合法的首次和结束日期");
         }
-        if(r.dayOfMonth()<1||r.dayOfMonth()>28||first.getDayOfMonth()!=r.dayOfMonth()||end.isBefore(first)||end.isAfter(first.plusYears(1))||first.isBefore(LocalDate.now(clock.withZone(ZoneId.of("Asia/Shanghai")))))throw invalid("首次日期须为今天或未来、匹配每月1—28日，计划最长一年");
+        if(r.dayOfMonth()<1||r.dayOfMonth()>31||!cn.safebank.common.ScheduleRules.isDue(first,r.dayOfMonth())||end.isBefore(first)||end.isAfter(first.plusYears(1))||first.isBefore(LocalDate.now(clock.withZone(ZoneId.of("Asia/Shanghai")))))throw invalid("首次日期须为今天或未来、匹配每月1—31日（短月取月末），计划最长一年");
         for(String id:r.mandateIds()){
             var m=mandates.owned(user,id);
             if(!"MONTHLY".equals(m.getBillingInterval()))throw invalid("仅支持已知月度扣费；不能把未知周期推算为月度节省");

@@ -21,7 +21,7 @@ public final class SavingsTaskFactProjector {
  }
  private static boolean hasScheduledTransfer(JsonNode request){
   for(String field:List.of("sourceId","recipientId","firstDate","endDate"))if(!request.path(field).isTextual()||request.path(field).asText().isBlank())return false;
-  var day=request.path("dayOfMonth");return day.isIntegralNumber()&&day.canConvertToInt()&&day.intValue()>=1&&day.intValue()<=28;
+  var day=request.path("dayOfMonth");return day.isIntegralNumber()&&day.canConvertToInt()&&day.intValue()>=1&&day.intValue()<=31;
  }
  public static Map<String,Object> project(JsonNode receipt,boolean preparation){
   if(receipt==null||!receipt.isObject()||receipt.has("code"))return Map.of();

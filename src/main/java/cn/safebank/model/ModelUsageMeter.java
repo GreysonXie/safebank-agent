@@ -29,7 +29,7 @@ public final class ModelUsageMeter implements ModelClient {
     }
     public ModelReply complete(ModelRequest request){
         var ledger=current.get();
-        if(!hasRemaining())throw new BankException("MODEL_REQUEST_BUDGET_EXCEEDED","已到模型请求上限，未继续调用供应商");
+        if(!hasRemaining())throw new BankException("MODEL_TURN_BUDGET_EXCEEDED","本轮请求次数已达上限，未继续调用供应商");
         var entry=new LinkedHashMap<String,Object>();
         boolean review=json.valueToTree(request.tools()).path(0).path("function").path("name").asText().equals("review_business_answer");
         entry.put("kind",review?"review":"generation");entry.put("success",false);ledger.calls().add(entry);

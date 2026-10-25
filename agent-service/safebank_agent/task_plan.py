@@ -33,7 +33,7 @@ def validate_task_plan(value):
         require(isinstance(kind,str) and kind in PARAMS and isinstance(params,dict) and set(params)==PARAMS[kind])
         require(isinstance(deps,list) and all(isinstance(d,str) for d in deps) and len(set(deps))==len(deps))
         for field,arg in params.items():
-            if field=='dayOfMonth':require(type(arg) is int and 1<=arg<=28)
+            if field=='dayOfMonth':require(type(arg) is int and 1<=arg<=31)
             else:
                 require(isinstance(arg,str) and 1<=len(arg.strip())<=100)
                 if field.endswith('Date'):require(re.fullmatch(r'20\d{2}-\d{2}-\d{2}',arg))
