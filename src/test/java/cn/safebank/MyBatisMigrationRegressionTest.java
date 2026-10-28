@@ -9,8 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -46,13 +48,13 @@ class MyBatisMigrationRegressionTest extends BankTestFixture {
         var schedule=actions.previewSchedule("u1",new SchedulePreviewRequestDTO("checking","travel-recipient",50000,"2026-11-20","2027-10-20",20));
         bank.authorize("u1",schedule.id(),schedule.payloadHash());bank.submit("u1",schedule.id());
         db.update("UPDATE accounts SET balance_minor=0 WHERE id='checking'");
-        var coordinatedReads=spy(actions);var bothReadAuthorized=new CyclicBarrier(2);
+        var coordinatedReads=spy(actions);var bothReady=new CyclicBarrier(2);var initialReads=new AtomicInteger();
         doAnswer(invocation->{
             ActionVO current=(ActionVO)invocation.callRealMethod();
-            // prepare() also reads status inside the schedule lock, before occurrence insertion.
-            // Synchronize only the post-rollback failure reads outside that transaction.
-            if(current.status()==ActionStatus.AUTHORIZED&&db.queryForObject("SELECT COUNT(*) FROM occurrences",Integer.class)>0)
-                bothReadAuthorized.await(10,TimeUnit.SECONDS);
+            // Coordinate both workers before either authorizes or submits the occurrence.
+            // prepare() also reads status while holding the user lock; never wait there.
+            if(!TransactionSynchronizationManager.isActualTransactionActive()&&initialReads.getAndIncrement()<2)
+                bothReady.await(10,TimeUnit.SECONDS);
             return current;
         }).when(coordinatedReads).status(eq("u1"),anyString());
         var first=new ScheduleService(scheduleMapper,occurrenceMapper,coordinatedReads,context.getBean(cn.safebank.service.ActionExecutionService.class),context.getBean(cn.safebank.service.RiskUserLockService.class),context.getBean(cn.safebank.service.ScheduleAuthorizationService.class),context.getBean(java.time.Clock.class));
