@@ -4,6 +4,7 @@
 .tools
 .m2
 target
+node_modules
 data
 .env
 .env.*

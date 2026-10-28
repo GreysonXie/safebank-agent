@@ -88,7 +88,7 @@
    const row=node('button',undefined,'spend-category');row.type='button';row.title='筛选 '+category+' 的交易';
    const top=node('span',undefined,'spend-category-top');top.append(node('span',category),node('strong',money(value)));
    const track=node('span',undefined,'spend-track'),bar=node('span',undefined,'spend-bar');
-   bar.style.width=(value/data.expense_minor*100)+'%';bar.style.background=['#3a5ecf','#758ae1','#92b7dd','#45a99d','#e9ab69','#bb93ce'][index%6];
+   bar.style.width=(value/data.expense_minor*100)+'%';bar.style.background=['#4fc3ed','#6d8aff','#45c6b0','#e6b872','#a699ef','#8eafc6'][index%6];
    track.append(bar);row.append(top,track,node('small',(value/data.expense_minor*100).toFixed(1)+'%'));
    row.onclick=()=>{$('tx-category').value=category;page=1;filterTransactions();$('transaction-panel').scrollIntoView({block:'start',behavior:'smooth'});};return row;
   }));
