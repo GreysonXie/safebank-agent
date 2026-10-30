@@ -11,10 +11,10 @@ from .conversation import bounded_clarification_context,defers_operation,require
 
 class DeepSeek:
     mode='deepseek'
-    def __init__(self,key,model,url='https://api.deepseek.com',client=None,max_sends=None):
-        self.key=key;self.name=model;self.url=url
+    def __init__(self,key,model,url='https://api.deepseek.com',client=None,max_sends=None,vendor='deepseek'):
+        self.key=key;self.name=model;self.url=url.rstrip('/');self.vendor=vendor
         self.max_sends=max_sends;self.sends=0;self.lock=threading.Lock()
-        self.last_failure=None
+        self.last_failure=None;self.last_failure_detail=None
         self.client=client or httpx.Client(timeout=httpx.Timeout(60,connect=5,write=10,pool=5),follow_redirects=False)
     def check_can_send(self):
         with self.lock:
@@ -23,13 +23,21 @@ class DeepSeek:
         with self.lock:
             if self.max_sends is not None and self.sends>=self.max_sends:raise ProtocolError('MODEL_STAGE_CAP')
             self.sends+=1
-            self.last_failure=None
-        body={'model':self.name,'messages':payload['messages'],'max_tokens':min(payload['max_tokens'],2048),'response_format':{'type':'json_object'},'stream':False,'thinking':{'type':'disabled'}}
+            self.last_failure=None;self.last_failure_detail=None
+        body={'model':self.name,'messages':payload['messages'],'max_tokens':min(payload['max_tokens'],2048),'response_format':{'type':'json_object'},'stream':False}
+        if self.vendor=='deepseek':body['thinking']={'type':'disabled'}
         started=monotonic()
         try:
             with self.client.stream('POST',self.url+'/chat/completions',json=body,headers={'Authorization':'Bearer '+self.key}) as response:
                 if response.status_code!=200:
                     self.last_failure='HTTP_'+str(response.status_code)
+                    detail=''
+                    try:detail=response.read()[:2000].decode('utf-8','replace')
+                    except Exception:detail=''
+                    if self.key and self.key in detail:detail=detail.replace(self.key,'***')
+                    # Bounded, single-line provider diagnostics; the key is masked
+                    # and this text never enters logs or reports.
+                    self.last_failure_detail=re.sub(r'\s+',' ',detail).strip()[:400]
                     if response.status_code in ModelRequestRejected.STATUSES:
                         raise ModelRequestRejected(response.status_code)
                     raise ProtocolError('MODEL_HTTP_FAILED')
@@ -73,6 +81,63 @@ class DeepSeek:
             # Class name only: exception text can include credentials or request data.
             self.last_failure=type(error).__name__
             raise ProtocolError('MODEL_TRANSPORT_OR_FORMAT_FAILED') from None
+
+class RoutedModel:
+    """Per-turn adapter selection driven by the persisted runtime settings.
+
+    A single DeepSeek instance is reused while the key/name/url are unchanged so
+    the request cap counter persists across turns; changing the settings file
+    swaps the adapter on the next turn without restarting anything.
+    """
+
+    def __init__(self, settings, max_sends=None):
+        self.settings = settings
+        self.max_sends = max_sends
+        self._lock = threading.Lock()
+        self._deepseek = None
+        self._signature = None
+
+    def _adapter(self):
+        data = self.settings.adapter_config()
+        if data['mode'] != 'deepseek':
+            return MockModel()
+        signature = (data['apiKey'], data['modelName'], data['baseUrl'], data['vendor'])
+        with self._lock:
+            if self._deepseek is None or signature != self._signature:
+                self._deepseek = DeepSeek(data['apiKey'], data['modelName'], data['baseUrl'], max_sends=self.max_sends, vendor=data['vendor'])
+                self._signature = signature
+            return self._deepseek
+
+    @property
+    def mode(self):
+        return 'deepseek' if self.settings.adapter_config()['mode'] == 'deepseek' else 'mock'
+
+    def check_can_send(self):
+        if self.mode == 'deepseek':
+            self._adapter().check_can_send()
+
+    def complete(self, payload):
+        return self._adapter().complete(payload)
+
+
+def probe_provider(key, name, url='https://api.deepseek.com', vendor='deepseek'):
+    """One bounded send that verifies a user-supplied key; never saves it."""
+    if not key:
+        return {'ok': False, 'code': 'MODEL_KEY_REQUIRED'}
+    adapter = DeepSeek(key, name, url, max_sends=1, vendor=vendor)
+    try:
+        # JSON-output providers require an explicit json instruction; mirroring
+        # the real prompt shape keeps the probe representative.
+        adapter.complete({'messages': [
+            {'role': 'system', 'content': '请只输出 json 格式的结果。'},
+            {'role': 'user', 'content': '{"question":"ping"}'},
+        ], 'max_tokens': 64})
+        return {'ok': True}
+    except ProtocolError as error:
+        return {'ok': False, 'code': str(error), 'detail': adapter.last_failure_detail or ''}
+    except Exception:
+        return {'ok': False, 'code': 'MODEL_TRANSPORT_OR_FORMAT_FAILED'}
+
 
 class MockModel:
     """Finite offline fixtures, explicitly labelled; not evidence of model quality."""

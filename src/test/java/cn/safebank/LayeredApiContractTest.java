@@ -40,7 +40,10 @@ class LayeredApiContractTest extends BankTestFixture {
         var initial=mvc.perform(get("/api/session")).andReturn();
         var session=(MockHttpSession)initial.getRequest().getSession();
         String csrf=json.readTree(initial.getResponse().getContentAsString()).path("csrf").asText();
-        var statement=json.readTree(mvc.perform(get("/api/statement").session(session)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        var statement=json.readTree(mvc.perform(get("/api/statement?month=2026-09").session(session)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        // 不传月份时必须落在"当前业务月份"，而不是写死某个历史月份
+        var currentMonth=json.readTree(mvc.perform(get("/api/statement").session(session)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        assertEquals(java.time.YearMonth.now(java.time.ZoneId.of("Asia/Shanghai")).toString(),currentMonth.path("month").asText(),"默认月份应跟随真实业务日期");
         assertEquals(Set.of("month","expense_minor","income_minor","internal_transfer_minor","categories","transactions","anomaly_candidates","anomaly_rule","usage_data_available"),fields(statement));
         assertEquals(Set.of("id","merchant","category","amount_minor","booked_on"),fields(statement.path("transactions").get(0)));
         var preview=json.readTree(mvc.perform(post("/api/transfers/preview").session(session).header("X-CSRF-Token",csrf).contentType("application/json").content("{\"sourceId\":\"checking\",\"recipientId\":\"zhang-a\",\"amountMinor\":50000}")).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());

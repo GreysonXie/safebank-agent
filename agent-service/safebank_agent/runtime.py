@@ -19,6 +19,12 @@ class Runtime:
         self.saver=PyMySQLSaver(self.connection)
         # DDL/setup belongs to deployment migration, never restricted runtime users.
         self.graph=build(self.saver,self);self.effects=Effects(store)
+    def restart(self,prior,run_id,binding,request):
+        """陈旧/不可续的检查点：换新线程从头跑这一轮，避免历史残点永久阻塞该会话。"""
+        thread=uuid.uuid4().hex
+        self.store.rethread(run_id,binding['id'],thread)
+        config={'configurable':{'thread_id':thread},'recursion_limit':16}
+        return self.graph.invoke({'request':request,'clarification_context':[],'previous_question':prior.get('request',{}).get('text',''),'previous_plan':prior.get('plan',{}),'previous_workflow_id':prior.get('workflow_id'),'receipts':[],'answer':{},'repair':0,'validated':False},config)
     def close(self):
         if self.connection.open:self.connection.close()
     def accept(self,request):
@@ -96,11 +102,14 @@ class Runtime:
                     waiting=self.store.get(binding['waiting_run_id'])
                     interrupts=[i for task in checkpoint.tasks for i in task.interrupts]
                     if waiting['state']!='NEEDS_CLARIFICATION' or waiting['output_version']!=run['input_version'] or len(interrupts)!=1 or interrupts[0].id!=waiting['interrupt_id'] or waiting['thread_id']!=run['thread_id']:
-                        raise ProtocolError('INVALID_RESUME')
-                    output=self.graph.invoke(Command(resume=request),config)
+                        output=self.restart(checkpoint.values,run_id,binding,request)
+                    else:
+                        output=self.graph.invoke(Command(resume=request),config)
                 elif checkpoint.next:
-                    if checkpoint.values.get('request',{}).get('turnId')!=run_id:raise ProtocolError('STALE_CHECKPOINT')
-                    output=self.graph.invoke(None,config)
+                    if checkpoint.values.get('request',{}).get('turnId')!=run_id:
+                        output=self.restart(checkpoint.values,run_id,binding,request)
+                    else:
+                        output=self.graph.invoke(None,config)
                 else:
                     prior=checkpoint.values
                     output=self.graph.invoke({'request':request,'clarification_context':[],'previous_question':prior.get('request',{}).get('text',''),'previous_plan':prior.get('plan',{}),'previous_workflow_id':prior.get('workflow_id'),'receipts':[],'answer':{},'repair':0,'validated':False},config)

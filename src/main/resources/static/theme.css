@@ -121,3 +121,60 @@ pre { background: #f1f5f9; color: var(--text); }
 /* Use the horizontal logo in the supplied brand sheet without altering the image. */
 .sidebar .brand { display: block; }
 .brand-logo { display: block; width: 100%; max-width: 190px; height: auto; overflow: hidden; }
+
+/* Runtime model selection: explicit mode pill plus settings form. */
+.mode-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+}
+.mode-pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #16a34a; }
+.mode-pill.deepseek { border-color: #fcd34d; background: #fffbeb; color: #92400e; }
+.mode-pill.deepseek::before { background: #d97706; }
+.settings-panel { display: flex; flex-direction: column; gap: 14px; }
+.settings-current {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text);
+}
+.settings-form { display: grid; gap: 14px; }
+.settings-form > label { display: grid; gap: 6px; font-size: 13px; color: var(--text); }
+.settings-modes { display: grid; gap: 10px; margin: 0; padding: 12px; border: 1px solid var(--line); border-radius: 8px; }
+.settings-modes legend { padding: 0 6px; font-size: 12px; color: var(--secondary-text); }
+.mode-choice { display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
+.mode-choice input { margin-top: 3px; }
+.mode-choice strong { display: block; font-size: 14px; }
+.mode-choice small { display: block; margin-top: 2px; font-size: 11px; line-height: 1.6; color: var(--secondary-text); }
+.mode-choice:has(input:checked) { border-color: var(--primary); background: var(--selected-background); }
+.settings-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.settings-form > label[hidden] { display: none; }
+@media (max-width: 900px) {
+  header.page-header { flex-wrap: wrap; }
+  .mode-pill { order: 3; }
+}
+
+/* 页面内确认层（提案-001 / T004）：只在需要处理一笔操作时出现，关闭不取消业务动作 */
+.confirm-layer{border:1px solid var(--line,#dce3ef);border-radius:14px;padding:0;max-width:min(720px,94vw);width:min(720px,94vw);max-height:88vh;background:#fff;box-shadow:0 18px 48px rgba(15,40,60,.22)}
+.confirm-layer::backdrop{background:rgba(15,32,46,.45)}
+.confirm-layer-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line,#dce3ef);position:sticky;top:0;background:#fff;border-radius:14px 14px 0 0}
+.confirm-layer-head h2{margin:0;font-size:16px}
+.confirm-layer-head button{border:1px solid var(--line,#dce3ef);background:#f8fafc;border-radius:8px;padding:6px 12px;cursor:pointer}
+.confirm-layer-body{padding:14px 18px;overflow:auto;max-height:calc(88vh - 120px)}
+.confirm-layer>.hint{margin:0;padding:10px 18px 16px;color:var(--secondary-text,#5b6b7c)}
+.action-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px dashed var(--line,#dce3ef);border-radius:10px;padding:10px 12px;margin-bottom:8px;background:#f8fafc}
+.action-summary p{margin:0}
+.action-summary button{border:1px solid var(--line,#dce3ef);background:#fff;border-radius:8px;padding:6px 10px;cursor:pointer}
+@media (max-width:640px){.confirm-layer{width:100vw;max-width:100vw;max-height:92vh;border-radius:12px}.confirm-layer-body{max-height:calc(92vh - 130px)}}

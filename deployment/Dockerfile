@@ -1,6 +1,8 @@
 FROM maven:3.9.9-eclipse-temurin-21 AS build
 WORKDIR /build
 COPY pom.xml .
+# China-network resilience: resolve Maven Central through a domestic mirror.
+RUN mkdir -p /root/.m2 && printf '%s\n' '<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"><mirrors><mirror><id>aliyun</id><name>aliyun</name><url>https://maven.aliyun.com/repository/public</url><mirrorOf>central</mirrorOf></mirror></mirrors></settings>' > /root/.m2/settings.xml
 COPY src ./src
 RUN mvn -B -DskipTests package
 

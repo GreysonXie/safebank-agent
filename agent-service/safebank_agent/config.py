@@ -21,6 +21,8 @@ class Config:
         config = cls(json.loads(os.environ['SAFEBANK_AGENT_DB_CONFIG']), os.environ['SAFEBANK_BANK_URL'], os.environ['SAFEBANK_AGENT_SERVICE_KEY'], os.getenv('SAFEBANK_MODEL_MODE','mock'), os.getenv('SAFEBANK_MODEL_NAME','deepseek-flash'), os.getenv('SAFEBANK_MODEL_URL','https://api.deepseek.com'), os.getenv('DEEPSEEK_API_KEY',''), int(os.getenv('SAFEBANK_AGENT_PORT','8135')))
         if config.bank_url not in ('http://127.0.0.1:8134','http://127.0.0.1:8136') or len(config.service_key) < 64 or config.model_mode not in ('mock','deepseek'):
             raise ProtocolError('INVALID_CONFIGURATION')
-        if config.model_mode == 'deepseek' and (not config.model_key or config.model_url != 'https://api.deepseek.com'):
+        # A missing key no longer blocks startup: the persisted runtime settings
+        # may hold it, and the provider is only called when a key is configured.
+        if config.model_mode == 'deepseek' and not config.model_url.startswith(('http://', 'https://')):
             raise ProtocolError('INVALID_MODEL_CONFIGURATION')
         return config

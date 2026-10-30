@@ -16,10 +16,10 @@ class DoctorTest(unittest.TestCase):
  def test_mock_settings_and_custom_port_are_valid(self):
   before=copy.deepcopy(self.config);checks,port=self.doctor.inspect_config(self.config)
   self.assertTrue(all(x['ok'] for x in checks));self.assertEqual(port,18134);self.assertEqual(before,self.config)
- def test_paid_mode_missing_key_and_invalid_cap_are_reported_without_secrets(self):
+ def test_paid_mode_missing_key_is_tolerated_and_invalid_cap_is_reported_without_secrets(self):
   env=self.config['services']['app']['environment'];env.update(SAFEBANK_MODEL_MODE='deepseek',SAFEBANK_MODEL_SMOKE_CAP='not-a-number')
   checks,_=self.doctor.inspect_config(self.config);self.assertFalse(all(x['ok'] for x in checks))
-  self.assertTrue(any(x['code']=='MODEL_KEY' and not x['ok'] for x in checks));self.assertTrue(any(x['code']=='MODEL_CAP' and not x['ok'] for x in checks))
+  self.assertTrue(any(x['code']=='MODEL_KEY' and x['ok'] for x in checks));self.assertTrue(any(x['code']=='MODEL_CAP' and not x['ok'] for x in checks))
   self.assertNotIn(self.config['services']['mysql']['environment']['MYSQL_ROOT_PASSWORD'],json.dumps(checks))
  def test_public_web_or_database_port_is_rejected(self):
   self.config['services']['app']['ports'][0]['host_ip']='0.0.0.0';self.config['services']['mysql']['ports']=[{'published':'3306'}]

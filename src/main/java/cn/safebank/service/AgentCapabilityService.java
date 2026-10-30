@@ -16,12 +16,14 @@ import java.util.*;
 import static cn.safebank.service.ContextEvidenceService.*;
 @Service @Profile("agent-gateway")
 public class AgentCapabilityService {
-    public static final Set<String> SCOPES=Set.of("statement","statement_compare","recurring_analysis","account_query","mandate_receipt","transfer_preview","revoke_preview","savings_task_prepare","savings_task_status");
+    public static final Set<String> SCOPES=Set.of("statement","statement_compare","statement_year","recurring_analysis","account_query","mandate_receipt","transfer_preview","revoke_preview","savings_task_prepare","savings_task_status","wealth_products","statement_filter","wealth_history");
     @org.springframework.beans.factory.annotation.Autowired private SavingsTaskPlanService savingsTasks;
     @org.springframework.beans.factory.annotation.Autowired private SavingsTaskPlanValidator taskValidator;
     @org.springframework.beans.factory.annotation.Autowired private WorkflowService workflows;
     @org.springframework.beans.factory.annotation.Autowired private AgentPreviewService previews;
     @org.springframework.beans.factory.annotation.Autowired private RiskUserLockService riskLocks;
+    @org.springframework.beans.factory.annotation.Autowired private cn.safebank.wealth.WealthCatalog wealth;
+    @org.springframework.beans.factory.annotation.Autowired private cn.safebank.wealth.WealthHistoryCatalog wealthHistory;
     private final AgentGatewayMapper mapper;private final AgentConversationMapper conversations;private final GatewayTurnService turns;
     private final AccountService accounts;private final StatementService statements;private final ObjectMapper json;private final TransactionTemplate tx;
     private final AgentMandateReceiptService mandateReceipts;private final SecureRandom random=new SecureRandom();
@@ -51,7 +53,14 @@ public class AgentCapabilityService {
             case "mandate_receipt"->mandateReceipts.read(g.getUserId(),g.getConversationId());case "account_query"->accounts.list(g.getUserId());
             case "statement"->statements.statement(g.getUserId(),month(request.args(),"month"));
             case "statement_compare"->Map.of("primary",statements.statement(g.getUserId(),month(request.args(),"month")),"comparison",statements.statement(g.getUserId(),month(request.args(),"comparisonMonth")));
+            case "statement_year"->statements.yearStatement(g.getUserId(),year(request.args(),"year"));
+            case "statement_filter"->{var f=StatementService.parseFilterArgs(request.args());yield statements.filter(g.getUserId(),f.month(),f.category(),f.direction(),f.minAmountMinor());}
             case "recurring_analysis"->statements.recurring(g.getUserId());
+            case "wealth_products"->wealth.catalog();
+            case "wealth_history"->{var args=request.args();var product=args.path("productId").asText();
+                String display=wealth.product(product)==null?product:wealth.product(product).path("display_name").asText(product);
+                if(args.has("month")){String[] range=wealthHistory.resolveMonth(args.path("month").asText());yield wealthHistory.query(product,range[0],range[1],display);}
+                yield wealthHistory.query(product,args.path("from").asText(),args.path("to").asText(),display);}
             default->throw GatewayTurnService.denied();
         };
         var r=new AgentToolCallReceiptEntity();r.setId(UUID.randomUUID().toString());r.setTurnId(g.getTurnId());r.setConversationId(g.getConversationId());r.setUserId(g.getUserId());r.setOperationKey(request.operationKey());r.setInputHash(request.inputHash());r.setToolName(request.tool());r.setGrantId(g.getId());r.setResultJson(encode(data));r.setResultHash(hash(r.getResultJson()));r.setObservedAt(request.tool().equals("mandate_receipt")&&data instanceof Map<?,?> values&&values.containsKey("queriedAt")?Instant.parse(values.get("queriedAt").toString()).atOffset(ZoneOffset.UTC):turns.now());require(mapper.useGrant(g.getId()));require(mapper.insertReceipt(r));return view(r,false);
@@ -72,8 +81,12 @@ public class AgentCapabilityService {
                 case "transfer_preview","revoke_preview"->{if(r.getToolName().equals("transfer_preview")&&data.path("code").asText().equals("RECIPIENT_CLARIFICATION_REQUIRED")&&data.path("candidates").isArray())items.add(new BankReplyComposer.Evidence("resolve_recipient",json.convertValue(data.path("candidates"),Object.class)));if(!data.has("code"))items.add(new BankReplyComposer.Evidence(r.getToolName().equals("transfer_preview")?"agent_transfer_preview":"agent_revoke_preview",previews.facts(r.getUserId(),data)));}
                 case "mandate_receipt"->{if(!data.has("code")){mandateReceipts.requireValidSnapshot(r.getUserId(),r.getConversationId(),data);items.add(new BankReplyComposer.Evidence("list_mandates",json.convertValue(data.get("mandates"),Object.class),Map.of("queriedAt",data.path("queriedAt").asText(),"expiresAt",data.path("expiresAt").asText())));}}case "statement"->items.add(bankEvidence("get_statement",data));
                 case "statement_compare"->{items.add(bankEvidence("get_statement",data.get("primary")));items.add(bankEvidence("get_statement",data.get("comparison")));}
+                case "statement_year"->items.add(bankEvidence("get_year_statement",data));
+                case "statement_filter"->items.add(bankEvidence("get_statement_filter",data));
                 case "account_query"->items.add(bankEvidence("get_accounts",data));
                 case "recurring_analysis"->items.add(bankEvidence("detect_recurring_payments",data));
+                case "wealth_products"->items.add(bankEvidence("get_wealth_products",data));
+                case "wealth_history"->items.add(bankEvidence("get_wealth_history",data));
                 default->throw GatewayTurnService.denied();
             }
         }return items;
@@ -89,12 +102,20 @@ public class AgentCapabilityService {
     private JsonNode canonical(JsonNode value){if(value.isObject()){var n=json.createObjectNode();var names=new TreeSet<String>();value.fieldNames().forEachRemaining(names::add);for(var name:names)n.set(name,canonical(value.get(name)));return n;}if(value.isArray()){var n=json.createArrayNode();value.forEach(v->n.add(canonical(v)));return n;}return value;}
     private void checkInput(AgentToolRequestDTO r){
         if(r==null||r.operationKey()==null||!r.operationKey().matches("[a-f0-9]{64}")||r.inputHash()==null||!r.inputHash().matches("[a-f0-9]{64}")||!SCOPES.contains(r.tool())||r.args()==null||!r.args().isObject()||r.args().toString().length()>8192)throw GatewayTurnService.denied();
-        var keys=new HashSet<String>();r.args().fieldNames().forEachRemaining(keys::add);var expected=switch(r.tool()){case "statement"->Set.of("month");case "statement_compare"->Set.of("month","comparisonMonth");case "transfer_preview"->Set.of("sourceQuery","recipientQuery","amountMinor");case "revoke_preview"->Set.of("merchantQuery");case "savings_task_prepare"->Set.of("taskPlan");case "savings_task_status"->Set.of("workflowId");default->Set.<String>of();};
+        var keys=new HashSet<String>();r.args().fieldNames().forEachRemaining(keys::add);var expected=switch(r.tool()){case "statement"->Set.of("month");case "statement_compare"->Set.of("month","comparisonMonth");case "statement_year"->Set.of("year");case "statement_filter"->StatementService.StatementFilterArgs.KEYS;case "wealth_history"->(r.args().has("month")?Set.of("productId","month"):Set.of("productId","from","to"));case "transfer_preview"->Set.of("sourceQuery","recipientQuery","amountMinor");case "revoke_preview"->Set.of("merchantQuery");case "savings_task_prepare"->Set.of("taskPlan");case "savings_task_status"->Set.of("workflowId");default->Set.<String>of();};
         if(!keys.equals(expected)||!inputHash(r.tool(),r.args()).equals(r.inputHash()))throw new BankException("VALIDATION_ERROR","工具参数或输入摘要无效");
+        if(r.tool().equals("statement_year"))year(r.args(),"year");
+        if(r.tool().equals("statement_filter"))StatementService.parseFilterArgs(r.args());
+        if(r.tool().equals("wealth_history")){
+            var args=r.args();if(!args.path("productId").asText().matches("DEMO-WM-[0-9]{2}"))throw new BankException("VALIDATION_ERROR","产品编号格式无效");
+            if(args.has("month")){String month=args.path("month").asText();if(!month.matches("(?:20[0-9]{2}-)?(?:0?[1-9]|1[0-2])")&&!List.of("上月","上个月","本月","这个月","最近","近30天","最近30天","过去30天","近一个月","最近一个月","过去一个月").contains(month))throw new BankException("VALIDATION_ERROR","月份请用 YYYY-MM 或 1-12，或说上月/本月/最近");}
+            else for(String key:List.of("from","to"))if(!args.path(key).asText().matches("20[0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])"))throw new BankException("VALIDATION_ERROR","日期格式应为 YYYY-MM-DD");
+        }
         if(r.tool().equals("savings_task_status")&&(!r.args().path("workflowId").isTextual()||!r.args().path("workflowId").asText().matches("[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}")))throw new BankException("VALIDATION_ERROR","任务编号无效");
         if(AgentPreviewService.isPreview(r.tool()))for(var key:expected){var value=r.args().get(key);if(key.equals("amountMinor")){if(!value.isIntegralNumber()||!value.canConvertToLong()||value.longValue()<=0)throw new BankException("VALIDATION_ERROR","金额须为正整数分");}else if(!value.isTextual()||value.asText().isBlank()||value.asText().length()>100)throw new BankException("VALIDATION_ERROR","请提供明确的业务对象");}
     }
     private String month(JsonNode args,String name){String m=args.path(name).asText();if(!m.matches("20[0-9]{2}-(0[1-9]|1[0-2])"))throw new BankException("VALIDATION_ERROR","月份格式或范围无效");return m;}
+    private String year(JsonNode args,String name){String y=args.path(name).asText();if(!y.matches("20[0-9]{2}"))throw new BankException("VALIDATION_ERROR","年份格式或范围无效");return y;}
     private String encode(Object v){try{return json.writeValueAsString(v);}catch(Exception e){throw new IllegalStateException(e);}}
     private JsonNode tree(String s){try{return json.readTree(s);}catch(Exception e){throw new IllegalStateException(e);}}
 }

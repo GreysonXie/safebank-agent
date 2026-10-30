@@ -31,6 +31,12 @@ public class GatewayCoordinator {
     }
     private Map<String,Object> finish(String turnId,com.fasterxml.jackson.databind.JsonNode reply){
         String state=reply.path("state").asText();
+        if("INTERRUPTED".equals(turns.read(turnId).getState()))throw new BankException("AGENT_TURN_CLOSED","本轮已结束，未取得答案；请继续提出新问题");
+        if(state.equals("FAILED")){
+            String code=reply.path("errorCode").asText("AGENT_FAILED");
+            results.interrupted(turnId);
+            throw new BankException(code,failureMessage(code));
+        }
         if(state.equals("RECOVERY_REQUIRED")){
             if("PAUSED".equals(turns.read(turnId).getState())){
                 results.pause(turnId);
@@ -65,8 +71,30 @@ public class GatewayCoordinator {
     static String reviewMessage(String code){
         if(code!=null&&code.matches("MODEL_REQUEST_REJECTED_(400|401|403|404|405|413|415|422)"))
             return "模型服务明确拒绝请求，请检查模型名称、请求参数与账户配置；原轮次已保留，不会自动重发";
+        if("EFFECT_FAILED".equals(code)||"BANK_CALLBACK_REJECTED".equals(code))
+            return "这次查询没有成功（可能是网络或服务暂时不可用），未执行任何操作；可以直接换个说法再问，比如说明产品和月份";
+        if("HISTORY_QUERY_REQUIRED".equals(code))
+            return "我没能确定要查哪款产品的历史表现；请直接说产品名称或编号加月份，例如“固收90天持有 9 月的历史表现”；没有执行任何操作";
         if("MODEL_EFFECT_UNKNOWN".equals(code))
             return "模型响应结果尚未确定，原轮次已保留，请核对原请求，不要重复提交";
         return "原轮次状态需要核对，已暂停自动处理";
+    }
+    /** 预发送阶段就失败的确定性错误：把真实原因告诉客户，不再当作“需要核对”。 */
+    static String failureMessage(String code){
+        if(code!=null&&code.startsWith("MODEL_REQUEST_REJECTED_"))
+            return "真实模型服务拒绝了请求（"+code.substring("MODEL_REQUEST_REJECTED_".length())+"），常见原因是 API Key 无效、账户额度不足或模型名不可用；本轮没有执行任何操作";
+        if("EFFECT_FAILED".equals(code)||"BANK_CALLBACK_REJECTED".equals(code))
+            return "这次查询没有成功（可能是网络或服务暂时不可用），未执行任何操作；可以直接换个说法再问，比如说明产品和月份";
+        if("HISTORY_QUERY_REQUIRED".equals(code))
+            return "我没能确定要查哪款产品的历史表现；请直接说产品名称或编号加月份，例如“固收90天持有 9 月的历史表现”；没有执行任何操作";
+        if("MODEL_EFFECT_UNKNOWN".equals(code))
+            return "本次调用未取得确定结果，请核对原请求；如已有生成的任务或银行操作，以原回执为准，确认状态前请勿重复办理";
+        if("ANSWER_REPAIR_EXHAUSTED".equals(code)||"ANSWER_REPAIR_BUDGET_EXHAUSTED".equals(code))
+            return "这个问题我没能给出通过事实校验的回答（已连续重写仍未通过），所以没有交付，也没有执行任何操作；可以换个问法、指定月份或具体项目再试";
+        if("MODEL_REQUEST_BUDGET_EXCEEDED".equals(code)||"MODEL_TURN_BUDGET_EXCEEDED".equals(code))
+            return "模型调用次数达到本机上限，未发送任何请求；可在部署配置中调整上限后重试";
+        if(code!=null&&code.startsWith("MODEL_"))
+            return "本次未取得回答（"+code+"），未执行任何操作；可直接重试或检查模型设置";
+        return "本次未取得回答（"+code+"），未执行任何操作";
     }
 }

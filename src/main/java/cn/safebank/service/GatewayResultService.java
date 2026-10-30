@@ -19,6 +19,7 @@ public class GatewayResultService {
  private static final org.slf4j.Logger LOG=org.slf4j.LoggerFactory.getLogger(GatewayResultService.class);
  private final GatewayTurnService turns;private final AgentCapabilityService capabilities;private final AgentGatewayMapper mapper;private final ContextService contexts;private final ObjectMapper json;private final TransactionTemplate tx;
  @org.springframework.beans.factory.annotation.Autowired private org.springframework.core.env.Environment environment;
+ @org.springframework.beans.factory.annotation.Autowired private org.springframework.beans.factory.ObjectProvider<ModelModeResolver> modelModes;
  @org.springframework.beans.factory.annotation.Autowired private AgentPreviewService previews;
  @org.springframework.beans.factory.annotation.Autowired private RiskUserLockService riskLocks;
  public GatewayResultService(GatewayTurnService t,AgentCapabilityService c,AgentGatewayMapper m,ContextService s,ObjectMapper j,PlatformTransactionManager manager){turns=t;capabilities=c;mapper=m;contexts=s;json=j;tx=new TransactionTemplate(manager);}
@@ -26,8 +27,13 @@ public class GatewayResultService {
   if(token==null||!token.matches("[a-f0-9]{64}"))throw GatewayTurnService.denied();var identity=mapper.grant(hash(token));if(identity==null)throw GatewayTurnService.denied();
   return riskLocks.withUserLock(identity.getUserId(),()->tx.execute(status->{var grant=capabilities.authorize(token,true);if(!grant.getTurnId().equals(r.turnId()))throw GatewayTurnService.denied();var g=turns.lock(r.turnId(),true);var text=render(g,r);return Map.of("text",text,"resultHash",resultHash(r));}));
  }
- public AgentAckVO complete(AgentResultDTO r){var identity=mapper.gateway(r.turnId());if(identity==null)throw conflict();return riskLocks.withUserLock(identity.getUserId(),()->tx.execute(status->{
-  var g=turns.lock(r.turnId(),false);if(g.getInputVersion()!=r.inputVersion())throw conflict();String h=resultHash(r);
+ public AgentAckVO complete(AgentResultDTO r){var identity=mapper.gateway(r.turnId());if(identity==null)throw conflict();
+  // Resolve the model mode before opening the transaction: agent HTTP calls
+  // must run outside a bank transaction, and a silent fallback would report
+  // the wrong mode on every answer.
+  var mode=environment.matchesProfiles("langgraph-agent")?resolveMode():null;
+  return riskLocks.withUserLock(identity.getUserId(),()->tx.execute(status->{
+  var g=turns.lock(r.turnId(),false);if("INTERRUPTED".equals(g.getState()))throw new BankException("AGENT_TURN_CLOSED","本轮已结束，迟到的结果不再写入");if(g.getInputVersion()!=r.inputVersion())throw conflict();String h=resultHash(r);
   if(g.getResultHash()!=null){if(!g.getResultHash().equals(h)||g.getOutputVersion()==null)throw conflict();return ack(g);}
   g=turns.lock(r.turnId(),true);String text=render(g,r);var lease=turns.lease(g);var snapshot=contexts.snapshot(g.getUserId(),g.getConversationId());
   var state=r.answer().path("kind").asText().equals("clarification")?ConversationState.NEEDS_CLARIFICATION:ConversationState.ACTIVE;
@@ -46,11 +52,12 @@ public class GatewayResultService {
    }
   }
   response.put("clarification",Map.of("required",state==ConversationState.NEEDS_CLARIFICATION));
-  if(environment.matchesProfiles("langgraph-agent")){response.put("mode",environment.getProperty("bank.agent.model-mode","mock").equals("deepseek")?"LANGGRAPH_MODEL":"LANGGRAPH_MOCK");response.put("agentBackend","PYTHON_LANGGRAPH");response.put("answerSource","PROGRAM_VERIFIED_LANGGRAPH");}
+  if(mode!=null){response.put("mode",mode);response.put("agentBackend","PYTHON_LANGGRAPH");response.put("answerSource","PROGRAM_VERIFIED_LANGGRAPH");}
   var evidence=new ArrayList<EvidenceInput>();for(var row:mapper.receipts(g.getTurnId())){var data=tree(row.getResultJson());if(row.getToolName().equals("statement"))evidence.add(new EvidenceInput("gateway:"+row.getId(),"get_statement",null,data,row.getObservedAt().toInstant(),null));}
   contexts.complete(lease,new ContextCommit(next,evidence,response));
   g.setResultHash(h);g.setResultJson(encode(r));g.setOutputVersion(g.getInputVersion()+1);g.setState("ACK_PENDING");g.setReconcileFailures(0);g.setNextCheckAt(turns.now().plusSeconds(30));require(mapper.updateGateway(g));mapper.revoke(g.getUserId(),g.getTurnId());return ack(g);
  }));}
+ private String resolveMode(){var resolver=modelModes.getIfAvailable();return resolver!=null?resolver.mode():environment.getProperty("bank.agent.model-mode","mock").equals("deepseek")?"LANGGRAPH_MODEL":"LANGGRAPH_MOCK";}
  private String render(AgentGatewayTurnEntity g,AgentResultDTO r){
   if(r.inputVersion()!=g.getInputVersion()||r.answer()==null||!r.answer().isObject()||r.answer().toString().length()>8192||r.evidenceIds()==null||r.evidenceIds().size()>8||new HashSet<>(r.evidenceIds()).size()!=r.evidenceIds().size())throw conflict();
   var keys=new HashSet<String>();r.answer().fieldNames().forEachRemaining(keys::add);if(!keys.equals(Set.of("kind","answer")))throw conflict();
@@ -65,7 +72,16 @@ public class GatewayResultService {
  public void deferred(String turnId,boolean unavailable){tx.executeWithoutResult(s->{var g=turns.lock(turnId,false);if(Set.of("ACKED","INTERRUPTED").contains(g.getState()))return;g.setNextCheckAt(turns.now().plusSeconds(30));if(unavailable){g.setReconcileFailures(Math.min(3,g.getReconcileFailures()+1));if(g.getReconcileFailures()==3){g.setState("PAUSED");LOG.warn("Agent reconciliation paused; original turn {} requires review",turnId);}}else g.setReconcileFailures(0);require(mapper.updateGateway(g));});}
  public void noRun(String turnId){tx.executeWithoutResult(s->{var g=turns.lock(turnId,false);if(g.getOutputVersion()!=null){g.setState("PAUSED");}else{contexts.interrupt(turns.lease(g));g.setState("INTERRUPTED");}mapper.revoke(g.getUserId(),turnId);g.setNextCheckAt(turns.now().plusSeconds(30));require(mapper.updateGateway(g));});}
  public void interrupted(String turnId){noRun(turnId);}
- public void pause(String turnId){tx.executeWithoutResult(s->{var g=turns.lock(turnId,false);if(g.getState().equals("ACKED"))return;g.setState("PAUSED");g.setNextCheckAt(turns.now().plusSeconds(30));require(mapper.updateGateway(g));LOG.warn("Agent result requires review; original turn {} retained",turnId);});}
+ /** 客户主动结束一个已暂停且无已提交答案的聊天轮次：保留回执、银行动作与审计，仅终结聊天上下文并撤销后续能力。 */
+ public java.util.Map<String,Object> close(String turnId){return tx.execute(s->{var g=turns.lock(turnId,false);
+  if("INTERRUPTED".equals(g.getState())){var already=new java.util.LinkedHashMap<String,Object>();already.put("state","INTERRUPTED");already.put("hasOutput",false);already.put("closed",true);return already;}
+  if("ACKED".equals(g.getState()))throw new BankException("CONFLICT","本轮已完成，请先核对原回答，不能当作未完成轮结束");
+  if(!g.getState().equals("PAUSED"))throw new BankException("CONFLICT","本轮仍在执行或结果未定，请先核对原单再结束");
+  if(g.getOutputVersion()!=null)throw new BankException("CONFLICT","本轮已有可核验结果，请先核对原回答");
+  contexts.interrupt(turns.lease(g));g.setState("INTERRUPTED");g.setNextCheckAt(turns.now().plusSeconds(30));require(mapper.updateGateway(g));mapper.revoke(g.getUserId(),turnId);
+  LOG.warn("Agent turn {} closed by user after review",turnId);
+  var out=new java.util.LinkedHashMap<String,Object>();out.put("state","INTERRUPTED");out.put("hasOutput",false);out.put("closed",true);return out;});}
+ public void pause(String turnId){tx.executeWithoutResult(s->{var g=turns.lock(turnId,false);if(java.util.Set.of("ACKED","INTERRUPTED").contains(g.getState()))return;g.setState("PAUSED");g.setNextCheckAt(turns.now().plusSeconds(30));require(mapper.updateGateway(g));LOG.warn("Agent result requires review; original turn {} retained",turnId);});}
  private JsonNode tree(String s){try{return json.readTree(s);}catch(Exception e){throw new IllegalStateException(e);}}
  private String encode(Object o){try{return json.writeValueAsString(o);}catch(Exception e){throw new IllegalStateException(e);}}
  private static BankException conflict(){return new BankException("CONFLICT","原结果、证据或输入版本不一致，停止自动完成");}

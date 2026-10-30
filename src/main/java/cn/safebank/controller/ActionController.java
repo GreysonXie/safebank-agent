@@ -29,6 +29,7 @@ import java.util.*;
     @PostMapping("/actions/{id}/cancel") public ActionVO cancel(HttpSession s,@PathVariable String id) {
         return actions.cancel(user(s),id);
     }
+    @GetMapping("/actions/{id}/record") public cn.safebank.vo.ActionVO record(HttpSession s,@PathVariable String id) { return actions.status((String)s.getAttribute("user"),id); }
     @GetMapping("/actions/{id}") public ActionExecutionResultVO status(HttpSession s,@PathVariable String id) {
         return execution.observe(user(s),id);
     }

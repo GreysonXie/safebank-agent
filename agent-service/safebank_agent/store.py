@@ -70,6 +70,52 @@ class Store:
             c.execute('SELECT * FROM agent_thread_bindings WHERE id=%s', (binding_id,))
             return c.fetchone()
 
+    def rethread(self, run_id, binding_id, thread_id):
+        """无主可续的陈旧检查点：为该轮与绑定换新线程，避免历史残点永久阻塞会话。"""
+        with self.transaction() as c:
+            c.execute('SELECT * FROM agent_runs WHERE id=%s FOR UPDATE', (run_id,))
+            run = c.fetchone()
+            if not run:
+                raise ProtocolError('NO_RUN')
+            c.execute("UPDATE agent_runs SET thread_id=%s,updated_at=UTC_TIMESTAMP(6) WHERE id=%s", (thread_id, run_id))
+            c.execute("UPDATE agent_thread_bindings SET thread_id=%s,waiting_run_id=NULL,updated_at=UTC_TIMESTAMP(6) WHERE id=%s", (thread_id, binding_id))
+            self.event(c, run_id, 'runtime', 'THREAD_REFRESHED')
+
+    def binding_for(self, user_id, conversation_id):
+        with self.transaction() as c:
+            c.execute('SELECT * FROM agent_thread_bindings WHERE user_id=%s AND conversation_id=%s FOR UPDATE', (user_id, conversation_id))
+            return c.fetchone()
+
+    def blocking(self, binding_id):
+        """与 accept 的 ACTIVE_RUN 判定同一口径，用来定位真正占用会话的那一条 run。"""
+        with self.transaction() as c:
+            c.execute("SELECT * FROM agent_runs WHERE binding_id=%s AND state IN ('PROCESSING','RESULT_READY','RECONCILIATION_REQUIRED') ORDER BY created_at,id LIMIT 1 FOR UPDATE", (binding_id,))
+            return c.fetchone()
+
+    def abandon(self, run_id):
+        """受保护终态：只把无结果、待人工核对的 run 置为 INTERRUPTED（既有允许状态）。
+
+        幂等、保留请求/回执/错误码/银行关联；已有结果或仍在执行的一律拒绝。
+        所有 worker 写入都经过 guard()/ack() 的状态校验，终止态不会被写回。
+        """
+        with self.transaction() as c:
+            c.execute('SELECT * FROM agent_runs WHERE id=%s FOR UPDATE', (run_id,))
+            run = c.fetchone()
+            if not run:
+                raise ProtocolError('NO_RUN')
+            if run['state'] == 'INTERRUPTED':
+                return run
+            if run['state'] != 'RECONCILIATION_REQUIRED':
+                raise ProtocolError('RUN_NOT_ABANDONABLE')
+            if run['result_json']:
+                raise ProtocolError('RUN_HAS_RESULT')
+            c.execute("UPDATE agent_runs SET state='INTERRUPTED',lease_owner=NULL,lease_until=NULL,updated_at=UTC_TIMESTAMP(6) WHERE id=%s AND state='RECONCILIATION_REQUIRED'", (run_id,))
+            if c.rowcount != 1:
+                raise ProtocolError('RUN_NOT_ABANDONABLE')
+            self.event(c, run_id, 'runtime', 'RUN_INTERRUPTED_BY_REVIEW')
+            c.execute('SELECT * FROM agent_runs WHERE id=%s', (run_id,))
+            return c.fetchone()
+
     def claim(self, run_id, owner):
         with self.transaction() as c:
             c.execute("UPDATE agent_runs SET lease_owner=%s,lease_revision=lease_revision+1,lease_until=TIMESTAMPADD(SECOND,60,UTC_TIMESTAMP(6)),updated_at=UTC_TIMESTAMP(6) WHERE id=%s AND state='PROCESSING' AND (lease_until IS NULL OR lease_until<UTC_TIMESTAMP(6))", (owner, run_id))
@@ -136,10 +182,22 @@ class Store:
             return run
 
     def pause(self, lease, code):
+        """失败终结：只有“可能已发出银行调用、结果未知”时才需要人工核对。
+
+        模型调用已发出但只是答案没通过事实校验（如 ANSWER_REPAIR_EXHAUSTED），
+        没有银行写操作，记为 FAILED 并把真实原因返回客户，避免无意义的暂停占住会话。
+        """
         with self.transaction() as c:
             self.guard(c, lease)
-            c.execute("UPDATE agent_runs SET state='RECONCILIATION_REQUIRED',error_code=%s,lease_until=NULL,updated_at=UTC_TIMESTAMP(6) WHERE id=%s", (code, lease.run_id))
-            self.event(c,lease.run_id,'runtime','RUN_PAUSED')
+            c.execute("SELECT purpose,state FROM agent_effect_receipts WHERE origin_run_id=%s FOR UPDATE",(lease.run_id,))
+            rows=c.fetchall()
+            bank_unknown=any(r['purpose'] in ('tool','validate') and r['state'] in ('SENDING','UNKNOWN') for r in rows)
+            if bank_unknown:
+                c.execute("UPDATE agent_runs SET state='RECONCILIATION_REQUIRED',error_code=%s,lease_until=NULL,updated_at=UTC_TIMESTAMP(6) WHERE id=%s", (code, lease.run_id))
+                self.event(c,lease.run_id,'runtime','RUN_PAUSED')
+            else:
+                c.execute("UPDATE agent_runs SET state='FAILED',error_code=%s,lease_until=NULL,updated_at=UTC_TIMESTAMP(6) WHERE id=%s", (code, lease.run_id))
+                self.event(c,lease.run_id,'runtime','RUN_FAILED_NO_BANK_EFFECT')
 
     def defer_prepared(self,lease):
         with self.transaction() as c:

@@ -95,7 +95,7 @@ public class AgentService {
     private Map<String,Object> offline(String user,String text){
         var context=activeContext.get();
         if(context!=null&&context.snapshot().state()==cn.safebank.common.ContextTypes.ConversationState.PAUSED)return reply("已暂停本次办理。未提交资金操作；已有动作请按原编号核对。",Map.of(),List.of(),List.of("客户明确暂停"));
-        var month=Pattern.compile("20\\d{2}-(0[1-9]|1[0-2])").matcher(text);String period=month.find()?month.group():"2026-09";
+        var month=Pattern.compile("20\\d{2}-(0[1-9]|1[0-2])").matcher(text);String period=month.find()?month.group():java.time.YearMonth.from(java.time.LocalDate.now(java.time.ZoneId.of("Asia/Shanghai"))).toString();
         if(text.contains("账单")||text.contains("花费")||text.contains("支出")){var statement=tool(user,"get_statement",json.valueToTree(Map.of("month",period)));return reply("离线工具演示（未调用模型）：\n"+replies.compose(List.of(new BankReplyComposer.Evidence("get_statement",statement))),statement,List.of(),List.of("查询交易","程序汇总"));}
         if(text.contains("订阅")||text.contains("代扣")){var result=json.valueToTree(tool(user,"list_mandates",json.createObjectNode()));return previewReply(actionObject(json.convertValue(result.path("pendingAction"),Object.class)),List.of("明确查询范围","等待客户确认查询"));}
         if(text.contains("余额")||text.contains("账户")){var accounts=tool(user,"get_accounts",json.createObjectNode());return reply("离线工具演示（未调用模型）：\n"+replies.compose(List.of(new BankReplyComposer.Evidence("get_accounts",accounts))),accounts,List.of(),List.of("查询账户"));}
@@ -106,7 +106,7 @@ public class AgentService {
             long amount=new BigDecimal(transfer.group(2)).movePointRight(2).longValueExact();
             return previewReply(actionObject(tool(user,"preview_transfer",json.valueToTree(Map.of("source_id","checking","recipient_id",candidates.getFirst().get("id").toString(),"amount_minor",amount)))),List.of("收款人解析","余额/限额检查","等待用户授权"));
         }
-        return reply("当前未配置模型密钥，处于离线工具演示。可输入：分析2026-09账单、查余额、查订阅，或给张三转500元。其他业务请使用页面表单。",Map.of(),List.of(),List.of());
+        return reply("当前未配置模型密钥，处于离线工具演示。可输入：分析"+period+"账单、查余额、查订阅，或给张三转500元。其他业务请使用页面表单。",Map.of(),List.of(),List.of());
     }
     private Map<String,Object> online(String user,String text,HttpSession session){
         if(!Objects.equals(user,session.getAttribute("conversationUser"))){

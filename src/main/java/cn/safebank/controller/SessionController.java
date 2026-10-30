@@ -11,6 +11,7 @@ import java.util.*;
     private final AgentService agent;
     private final SimulationService simulation;
     @org.springframework.beans.factory.annotation.Autowired private org.springframework.core.env.Environment environment;
+    @org.springframework.beans.factory.annotation.Autowired private org.springframework.beans.factory.ObjectProvider<ModelModeResolver> modelModes;
     public SessionController(AgentService agent,SimulationService simulation) {
         this.agent=agent;
         this.simulation=simulation;
@@ -24,7 +25,12 @@ import java.util.*;
             s.setAttribute("csrf",UUID.randomUUID().toString());
         }
         boolean fake=environment.matchesProfiles("agent-gateway");
-        if(environment.matchesProfiles("langgraph-agent"))return new SessionVO("合成用户 / u1",(String)s.getAttribute("csrf"),environment.getProperty("bank.agent.model-mode","mock").equals("deepseek")?"LANGGRAPH_MODEL":"LANGGRAPH_MOCK",environment.getProperty("bank.agent.model-name","deepseek-v4-flash"),"LOCAL_DEMO_ONLY",simulation.enabled());
+        if(environment.matchesProfiles("langgraph-agent")){
+            var resolver=modelModes.getIfAvailable();
+            String mode=resolver!=null?resolver.mode():environment.getProperty("bank.agent.model-mode","mock").equals("deepseek")?"LANGGRAPH_MODEL":"LANGGRAPH_MOCK";
+            String model=resolver!=null?resolver.modelName():environment.getProperty("bank.agent.model-name","deepseek-v4-flash");
+            return new SessionVO("合成用户 / u1",(String)s.getAttribute("csrf"),mode,model,"LOCAL_DEMO_ONLY",simulation.enabled());
+        }
         return new SessionVO("合成用户 / u1",(String)s.getAttribute("csrf"),fake?"FAKE_AGENT":agent.mode(),fake?"fake-python-protocol":agent.modelName(),"LOCAL_DEMO_ONLY",simulation.enabled());
     }
 }

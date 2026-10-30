@@ -126,3 +126,8 @@ INSERT INTO transactions(id,user_id,account_id,merchant,category,amount_minor,bo
 INSERT INTO transactions(id,user_id,account_id,merchant,category,amount_minor,booked_on) VALUES('syn-0112','u1','travel','旅行住宿','旅行',-180000,'2026-07-18');
 INSERT INTO transactions(id,user_id,account_id,merchant,category,amount_minor,booked_on) VALUES('syn-0113','u1','travel','旅行车票','旅行',-86000,'2026-07-17');
 INSERT INTO transactions(id,user_id,account_id,merchant,category,amount_minor,booked_on) VALUES('syn-0114','u2','other','独立用户工资','收入',100000,'2026-09-05');
+
+-- T017 授权/展示样本批次 t017-batch1（幂等：已存在同 ID 则跳过，不覆盖客户改动）
+INSERT INTO mandates(id,user_id,merchant,amount_minor,renewal_date,status,contract_status,billing_interval) SELECT 't017-near-monthly','u1','云备份会员',2500,'2026-11-02','ACTIVE','UNKNOWN','MONTHLY' WHERE NOT EXISTS(SELECT 1 FROM mandates WHERE id='t017-near-monthly');
+INSERT INTO mandates(id,user_id,merchant,amount_minor,renewal_date,status,contract_status,billing_interval) SELECT 't017-far-quarterly','u1','企业安全季度包',30000,'2026-12-09','ACTIVE','UNKNOWN','QUARTERLY' WHERE NOT EXISTS(SELECT 1 FROM mandates WHERE id='t017-far-quarterly');
+INSERT INTO mandates(id,user_id,merchant,amount_minor,renewal_date,status,contract_status,billing_interval) SELECT 't017-unknown-cycle','u1','家庭网盘扩容',1300,NULL,'ACTIVE','UNKNOWN','UNKNOWN' WHERE NOT EXISTS(SELECT 1 FROM mandates WHERE id='t017-unknown-cycle');

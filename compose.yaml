@@ -1,4 +1,4 @@
-name: safebank-team
+﻿name: safebank-team
 services:
   mysql:
     image: mysql:8.4
@@ -26,7 +26,7 @@ services:
       SAFEBANK_MODEL_MODE: ${SAFEBANK_MODEL_MODE:-mock}
       SAFEBANK_MODEL_NAME: ${SAFEBANK_MODEL_NAME:-deepseek-flash}
       DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
-      SAFEBANK_MODEL_SMOKE_CAP: ${SAFEBANK_MODEL_SMOKE_CAP:-20}
+      SAFEBANK_MODEL_SMOKE_CAP: ${SAFEBANK_MODEL_SMOKE_CAP:-0}
     ports:
       - "127.0.0.1:${SAFEBANK_WEB_PORT:-8134}:8134"
     volumes:

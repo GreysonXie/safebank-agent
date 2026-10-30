@@ -10,10 +10,10 @@ def inspect_config(config):
  mode=env.get('SAFEBANK_MODEL_MODE');key=env.get('DEEPSEEK_API_KEY')
  checks=[check('MYSQL_PASSWORD',isinstance(password,str) and len(password)>=20 and not password.startswith('REPLACE_'),'Generate a local password with deployment/configure.py; never share .env.'),
   check('MODEL_MODE',mode in ('mock','deepseek'),'Effective model mode must be mock or deepseek.'),
-  check('MODEL_KEY',mode!='deepseek' or isinstance(key,str) and bool(key.strip()),'DeepSeek mode needs your own key; no provider connection is tested.')]
- try:valid_cap=int(env.get('SAFEBANK_MODEL_SMOKE_CAP',''))>0
+  check('MODEL_KEY',True,'The model key is optional at startup: configure or change it on the web Settings page; without a key the assistant stays in free mock mode.')]
+ try:valid_cap=int(env.get('SAFEBANK_MODEL_SMOKE_CAP',''))>=0
  except (TypeError,ValueError):valid_cap=False
- checks.append(check('MODEL_CAP',valid_cap,'Model request cap must be positive; it is not a money budget.'))
+ checks.append(check('MODEL_CAP',valid_cap,'Model request cap: 0 means unlimited; it is not a money budget.'))
  ports=app.get('ports',[]);port=None;private=False
  if len(ports)==1 and isinstance(ports[0],dict):
   item=ports[0]

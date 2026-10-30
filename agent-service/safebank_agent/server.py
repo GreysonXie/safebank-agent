@@ -50,21 +50,85 @@ class Handler(BaseHTTPRequestHandler):
         if run['output_version']:body['outputVersion']=run['output_version']
         if run['error_code']:body['errorCode']=run['error_code']
         return body
+    def read_json(self):
+        length=int(self.headers.get('Content-Length','-1'))
+        if self.headers.get('Transfer-Encoding') or not 0<length<=65536:raise ProtocolError('BODY_LIMIT')
+        raw=self.rfile.read(length)
+        if len(raw)!=length:raise ProtocolError('INCOMPLETE_BODY')
+        body=json.loads(raw)
+        if not isinstance(body,dict):raise ProtocolError('INVALID_BODY')
+        return body
     def handle_request(self):
         if not hmac.compare_digest(self.headers.get('Authorization',''),'Bearer '+self.server.key):return self.respond(403,{'code':'INTERNAL_AUTH_REQUIRED'})
+        settings=self.server.runtime.adapter.settings
+        if self.path=='/internal/agent/health' and self.command=='GET':
+            return self.respond(200,{'status':'UP','framework':'LangGraph','modelMode':self.server.runtime.adapter.mode,'keyConfigured':settings.snapshot()['keyConfigured']})
+        if self.path=='/internal/agent/model-settings':
+            if self.command=='GET':return self.respond(200,settings.snapshot())
+            if self.command!='POST':return self.respond(405,{'code':'METHOD_NOT_ALLOWED'})
+            try:
+                body=self.read_json()
+                if set(body)-{'mode','apiKey','modelName','provider','baseUrl'}:raise ProtocolError('INVALID_BODY')
+                update={}
+                if 'mode' in body:update['mode']=body.get('mode')
+                if 'apiKey' in body:update['api_key']=body.get('apiKey') or ''
+                if 'modelName' in body:update['model_name']=body.get('modelName')
+                if 'provider' in body:update['provider']=body.get('provider')
+                if 'baseUrl' in body:update['base_url']=body.get('baseUrl')
+                return self.respond(200,settings.update(**update))
+            except ProtocolError as error:return self.respond(409,{'code':str(error)})
+            except ValueError as error:return self.respond(400,{'code':str(error)})
+            except Exception:return self.respond(400,{'code':'INVALID_REQUEST'})
+        if self.path=='/internal/agent/model-settings/test':
+            if self.command!='POST':return self.respond(405,{'code':'METHOD_NOT_ALLOWED'})
+            try:
+                body=self.read_json()
+                if set(body)-{'mode','apiKey','modelName','provider','baseUrl'}:raise ProtocolError('INVALID_BODY')
+                from .model_settings import PROVIDER_PRESETS,normalize_url,valid_base_url
+                current=settings.adapter_config()
+                mode=body.get('mode') if 'mode' in body else current['mode']
+                if mode not in ('mock','deepseek'):return self.respond(400,{'code':'INVALID_MODE'})
+                provider=body.get('provider') if 'provider' in body else current['provider']
+                if provider not in PROVIDER_PRESETS:return self.respond(400,{'code':'INVALID_PROVIDER'})
+                base=body['baseUrl'] if 'baseUrl' in body else (current['baseUrl'] if provider==current['provider'] else PROVIDER_PRESETS[provider]['url'])
+                base=base.strip() if isinstance(base,str) else ''
+                if not valid_base_url(base):return self.respond(400,{'code':'INVALID_BASE_URL'})
+                key=body['apiKey'] if 'apiKey' in body else current['apiKey']
+                key=key.strip() if isinstance(key,str) else ''
+                name=body.get('modelName') if 'modelName' in body else current['modelName']
+                if not isinstance(name,str) or not re.fullmatch(r'[A-Za-z0-9._:/-]{1,64}',name):return self.respond(400,{'code':'INVALID_MODEL_NAME'})
+                if mode=='mock':return self.respond(200,{'ok':True,'mode':'mock'})
+                from .models import probe_provider
+                return self.respond(200,probe_provider(key,name,normalize_url(base),PROVIDER_PRESETS[provider]['vendor']))
+            except ProtocolError as error:return self.respond(409,{'code':str(error)})
+            except Exception:return self.respond(400,{'code':'INVALID_REQUEST'})
+        if self.path=='/internal/agent/runs/abandon':
+            if self.command!='POST':return self.respond(405,{'code':'METHOD_NOT_ALLOWED'})
+            try:
+                body=self.read_json()
+                if set(body)!={'userId','conversationId','turnId'}:raise ProtocolError('INVALID_BODY')
+                store=self.server.runtime.store
+                binding=store.binding_for(body['userId'],body['conversationId'])
+                if not binding:return self.respond(200,{'unblocked':True,'reason':'NO_BINDING'})
+                blocking=store.blocking(binding['id'])
+                if not blocking:return self.respond(200,{'unblocked':True,'reason':'NO_BLOCKING_RUN'})
+                if blocking['java_turn_id']!=body['turnId']:
+                    return self.respond(200,{'unblocked':False,'reason':'OTHER_RUN','blockingTurnId':blocking['java_turn_id'],'blockingState':blocking['state']})
+                try:run=store.abandon(blocking['id'])
+                except ProtocolError as error:
+                    return self.respond(200,{'unblocked':False,'reason':str(error),'blockingTurnId':blocking['java_turn_id'],'blockingState':blocking['state']})
+                return self.respond(200,{'unblocked':True,'reason':'ABANDONED','runId':run['id'],'state':run['state']})
+            except ProtocolError as error:return self.respond(409,{'code':str(error)})
+            except Exception:
+                import traceback;traceback.print_exc()
+                return self.respond(400,{'code':'INVALID_REQUEST'})
         match=re.fullmatch(r'/internal/agent/turns(?:/([A-Za-z0-9_-]{1,80})(/(?:ack|recover))?)?',self.path)
-        if self.path=='/internal/agent/health' and self.command=='GET':return self.respond(200,{'status':'UP','framework':'LangGraph','modelMode':self.server.runtime.adapter.mode})
         if not match:return self.respond(404,{'code':'NOT_FOUND'})
         id,suffix=match.groups()
         if self.command=='GET' and id and not suffix:return self.respond(200,self.view(id))
         if self.command!='POST':return self.respond(405,{'code':'METHOD_NOT_ALLOWED'})
         try:
-            length=int(self.headers.get('Content-Length','-1'))
-            if self.headers.get('Transfer-Encoding') or not 0<length<=65536:return self.respond(413,{'code':'BODY_LIMIT'})
-            raw=self.rfile.read(length)
-            if len(raw)!=length:raise ProtocolError('INCOMPLETE_BODY')
-            body=json.loads(raw)
-            if not isinstance(body,dict):raise ProtocolError('INVALID_BODY')
+            body=self.read_json()
             if suffix=='/ack':
                 if set(body)!={'turnId','outputVersion','resultHash'} or body['turnId']!=id:raise ProtocolError('ACK_CONFLICT')
                 self.server.runtime.store.ack(id,body['outputVersion'],body['resultHash'])
@@ -96,13 +160,17 @@ def main():
     from .store import Store
     from .runtime import Runtime
     from .bank_client import BankClient
-    from .models import DeepSeek,MockModel
+    from .models import RoutedModel
+    from .model_settings import ModelSettings
     config=Config.environment()
     store=Store(config.database)
     from .schema import verify
     verify(store)
-    cap=int(os.environ['SAFEBANK_MODEL_SMOKE_CAP']) if os.getenv('SAFEBANK_MODEL_SMOKE_CAP') else None
-    runtime=Runtime(store,config.database,BankClient(config.bank_url,config.service_key),DeepSeek(config.model_key,config.model_name,config.model_url,max_sends=cap) if config.model_mode=='deepseek' else MockModel())
+    _cap=int(os.environ['SAFEBANK_MODEL_SMOKE_CAP']) if os.getenv('SAFEBANK_MODEL_SMOKE_CAP') else None
+    # 0 表示不设共享请求上限（与 Java 侧一致）；None 交给模型层表示“不限次数”。
+    cap=_cap if (_cap is not None and _cap>0) else None
+    settings=ModelSettings()
+    runtime=Runtime(store,config.database,BankClient(config.bank_url,config.service_key),RoutedModel(settings,max_sends=cap))
     server=AgentServer(('127.0.0.1',config.port),runtime,config.service_key)
     # Scan bounded expired runs; grant loss is reported to Java for renewal.
     def scan():

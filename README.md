@@ -1,5 +1,7 @@
 # SafeBank 可信银行智能体 · 团队候选
 
+> 本版（分支 `final-2026`）相对原版 `538e9b1` 的改动见 **[CHANGES-vs-original.md](CHANGES-vs-original.md)**（一页说明：四个场景、Agent 分工、已知限制）。
+
 Java 21 / Spring Boot / MyBatis负责权限、金额和银行操作；官方Python LangGraph负责理解、规划与对话；双MySQL保存业务与Agent状态。现有三个场景为账单分析、代扣咨询/撤销预览、转账预览，储蓄任务复用逐项确认流程。用户、账户和银行均为合成演示。
 
 ## Windows首次启动
