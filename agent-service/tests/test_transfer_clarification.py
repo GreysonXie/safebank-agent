@@ -37,8 +37,11 @@ class TransferClarificationTest(unittest.TestCase):
   from safebank_agent.contracts import ProtocolError
   state=copy.deepcopy(self.state);state['request']['modelRequestLimit']=2
   with self.assertRaisesRegex(ProtocolError,'ANSWER_REPAIR_BUDGET_EXHAUSTED'):self.validate(state)
-  state=copy.deepcopy(self.state);state['repair']=1
-  with self.assertRaisesRegex(ProtocolError,'ANSWER_REPAIR_EXHAUSTED'):self.validate(state)
+  # 两次重写用完后不再重写：降级为一次可用的澄清，不执行任何操作，也不把会话堵死
+  state=copy.deepcopy(self.state);state['repair']=2
+  fallback=self.validate(state)
+  self.assertTrue(fallback['validated']);self.assertEqual(fallback['answer']['kind'],'clarification')
+  self.assertIn('没有执行任何操作',fallback['answer']['answer'])
  def test_same_notes_require_distinct_bank_labels(self):
   from safebank_agent.graph import transfer_clarification
   facts={'recipients_latest.0.note':{'display':'〔未提供备注〕','kind':'TEXT'},'recipients_latest.1.note':{'display':'〔未提供备注〕','kind':'TEXT'},'recipients_latest.0.label':{'display':'张三 TEST-3271','kind':'TEXT'},'recipients_latest.1.label':{'display':'张三 TEST-8862','kind':'TEXT'}}
