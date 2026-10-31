@@ -20,6 +20,7 @@
 
 from __future__ import annotations
 
+import os
 import sys
 from dataclasses import dataclass
 
@@ -172,7 +173,12 @@ def inspect(question, planned, business_date):
 
 
 def emit(question, planned, business_date, stream=None):
-    """写一行诊断；任何问题都静默返回 None，绝不影响本轮。"""
+    """写一行诊断；任何问题都静默返回 None，绝不影响本轮。
+
+    设 ``NLU_SHADOW=off`` 可整层关掉（只是少一行日志，不改变任何业务行为）。
+    """
+    if str(os.environ.get('NLU_SHADOW', '')).strip().lower() in ('0', 'off', 'false', 'no'):
+        return None
     try:
         line = inspect(question, planned, business_date).line()
     except Exception:  # noqa: BLE001 - 旁路诊断不允许影响主流程

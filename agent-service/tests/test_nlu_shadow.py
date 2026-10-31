@@ -152,6 +152,21 @@ class SafetyTest(unittest.TestCase):
         self.assertIsNone(shadow.emit('上个月', plan_query(start='2026-09-01', end='2026-09-30'),
                                       TODAY, stream=Broken()))
 
+    def test_switch_off_silences_the_layer(self):
+        import os
+        stream = io.StringIO()
+        previous = os.environ.get('NLU_SHADOW')
+        os.environ['NLU_SHADOW'] = 'off'
+        try:
+            self.assertIsNone(shadow.emit('上个月', plan_query(start='2026-09-01', end='2026-09-30'),
+                                          TODAY, stream=stream))
+        finally:
+            if previous is None:
+                os.environ.pop('NLU_SHADOW', None)
+            else:
+                os.environ['NLU_SHADOW'] = previous
+        self.assertEqual(stream.getvalue(), '')
+
 
 class PlanNodeHookTest(unittest.TestCase):
     """规划节点确实调用旁路比对，且诊断失败不影响本轮。"""
