@@ -71,9 +71,15 @@ class SubUnitTest(unittest.TestCase):
 
 class NotMoneyTest(unittest.TestCase):
     def test_dates_years_phones_and_counts_are_not_money(self):
-        for text in ['2026', '2026年', '9月1号', '2026-10-31', '13800001234', '第3次', '30天', '25%']:
+        for text in ['2026年', '9月1号', '2026-10-31', '13800001234', '第3次', '30天', '25%']:
             with self.subTest(text=text):
                 self.assertEqual(parse(text), [])
+
+    def test_bare_year_is_kept_but_flagged(self):
+        # 光写「2026」可能是年份也可能是金额：不能丢，也不能当作确定金额
+        amounts = parse('2026')
+        self.assertEqual(len(amounts), 1)
+        self.assertTrue(amounts[0].ambiguous)
 
     def test_fractions_and_alphanumeric_ids_are_not_money(self):
         self.assertEqual(parse('每个月把退休金十分之一存起来'), [])

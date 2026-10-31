@@ -96,7 +96,7 @@ _ISO_DATE = re.compile(r'(?P<y>\d{4})-(?P<m>\d{1,2})-(?P<d>\d{1,2})')
 _MONTH = re.compile(
     r'(?:(?P<y>\d{4})\s*年|(?P<rel>今年|去年|前年))?\s*(?P<m>' + _NUM + r')\s*月份?'
 )
-_YEAR = re.compile(r'(?P<y>\d{4})\s*年(?!\s*(?:' + _NUM + r')\s*月)')
+_YEAR = re.compile(r'(?P<y>\d{4})\s*(?:年度|整年|全年|年)(?!\s*(?:' + _NUM + r')\s*月)')
 _NEAR = re.compile(
     r'(?:近|最近|过去)\s*(?P<n>' + _NUM + r'|半|一)\s*个?\s*(?P<unit>天|日|周|星期|礼拜|月|年)'
 )

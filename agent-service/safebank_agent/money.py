@@ -34,7 +34,7 @@ _CN_UNITS = {'十': 10, '百': 100, '千': 1000}
 _CN_BIG = {'万': 10000, '亿': 100000000}
 
 # 货币单位后面不该再出现这些字，否则说明命中的不是一笔钱（日期、次数、量词等）。
-_NOT_MONEY_AFTER = r'(?![0-9零〇一二三四五六七八九十百千万亿年月日号岁个张次点周季度天晚夜小时分钟回堆些遍趟家杯份斤位%])'
+_NOT_MONEY_AFTER = r'(?![0-9零〇一二三四五六七八九十百千万亿年月日号岁个张次点周季度天晚夜小时分钟回堆些遍趟家杯份斤位整%])'
 # 前面已经贴着数字、小数点或日期分隔符时不是一笔独立的钱。
 _NOT_MONEY_BEFORE = r'(?<![\d.．/、-])'
 
@@ -72,7 +72,9 @@ _SYMBOL = re.compile(r'[¥￥]\s*(?P<main>' + _NUM_SMALL + r')(?P<big>万|亿)?'
 _BARE = re.compile(r'(?<![\d.．¥￥分之A-Za-z])' + _NUM_SMALL + _NOT_MONEY_AFTER)
 
 _PHONE_LIKE = re.compile(r'\d{11,}')
-_YEAR_LIKE = re.compile(r'(?:19|20)\d{2}')
+# 只有"汉字数字"的读数：没有十百千万亿这类单位时不当金额（一下、一共、乱七八糟、七八）
+_CN_UNIT_CHARS = re.compile(r'[十百千万亿]')
+_CN_ONLY = re.compile(r'[零〇一二三四五六七八九十百千万亿两]+')
 # 购物节名字与排名里的数字不是金额（双十一、双11、前十、前5名）
 _NOT_MONEY_WORDS = re.compile(
     r'双十一|双11|双十二|双12|十一假期|十一长假|十一期间'
@@ -215,8 +217,10 @@ def _from_big(match):
 def _from_bare(text):
     if _PHONE_LIKE.fullmatch(text):
         return None  # 手机号不是金额
-    if _YEAR_LIKE.fullmatch(text):
-        return None  # 单独的 19xx/20xx 更像年份，交给时间解析
+    if _CN_ONLY.fullmatch(text) and not _CN_UNIT_CHARS.search(text):
+        # 「一下」「一共」「一起」「乱七八糟」里的汉字数字不是钱；
+        # 「五百」「五十」「一千」这类带单位的才算。
+        return None
     yuan = cn_number(text)
     if yuan is None or yuan <= 0:
         return None
