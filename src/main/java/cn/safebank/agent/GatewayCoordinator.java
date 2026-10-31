@@ -24,10 +24,18 @@ public class GatewayCoordinator {
             try{return finish(g.getTurnId(),client.get(g.getTurnId()));}catch(HttpAgentClient.AgentTransportException e){results.deferred(g.getTurnId(),true,"AGENT_TRANSPORT_UNAVAILABLE:get");throw new BankException("AGENT_RECONCILING","正在核对原请求，未重新发送模型请求");}
         }
         String turnId=start.lease().turnId();
+        var lease=start.lease();
         try{
             String token=capabilities.issue(turnId);var reply=client.start(turns.read(turnId),token);
             return finish(turnId,reply);
         }catch(HttpAgentClient.AgentTransportException e){results.deferred(turnId,true,"AGENT_TRANSPORT_UNAVAILABLE:start");throw new BankException("AGENT_RECONCILING","服务响应未确定，保留原轮次等待核对，未重发");}
+        catch(RuntimeException error){
+            // 任何失败都必须把两条轮次置为终态：否则这一轮永远停在"处理中"，该会话之后每次提问都会被拒。
+            String code=error instanceof BankException bank?bank.code:"AGENT_FAILED";
+            try{results.failed(turnId,code);}catch(RuntimeException ignored){}
+            try{if(lease!=null)contexts.fail(lease,code);}catch(RuntimeException ignored){}
+            throw error;
+        }
     }
     private Map<String,Object> finish(String turnId,com.fasterxml.jackson.databind.JsonNode reply){
         String state=reply.path("state").asText();
