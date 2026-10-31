@@ -16,8 +16,9 @@ import java.util.*;
 import static cn.safebank.service.ContextEvidenceService.*;
 @Service @Profile("agent-gateway")
 public class AgentCapabilityService {
-    public static final Set<String> SCOPES=Set.of("statement","statement_compare","recurring_analysis","account_query","mandate_receipt","transfer_preview","revoke_preview","savings_task_prepare","savings_task_status");
+    public static final Set<String> SCOPES=Set.of("statement","statement_compare","statement_query","recurring_analysis","account_query","mandate_receipt","transfer_preview","revoke_preview","savings_task_prepare","savings_task_status");
     @org.springframework.beans.factory.annotation.Autowired private SavingsTaskPlanService savingsTasks;
+    @org.springframework.beans.factory.annotation.Autowired private StatementQueryService statementQueries;
     @org.springframework.beans.factory.annotation.Autowired private SavingsTaskPlanValidator taskValidator;
     @org.springframework.beans.factory.annotation.Autowired private WorkflowService workflows;
     @org.springframework.beans.factory.annotation.Autowired private AgentPreviewService previews;
@@ -51,6 +52,7 @@ public class AgentCapabilityService {
             case "mandate_receipt"->mandateReceipts.read(g.getUserId(),g.getConversationId());case "account_query"->accounts.list(g.getUserId());
             case "statement"->statements.statement(g.getUserId(),month(request.args(),"month"));
             case "statement_compare"->Map.of("primary",statements.statement(g.getUserId(),month(request.args(),"month")),"comparison",statements.statement(g.getUserId(),month(request.args(),"comparisonMonth")));
+            case "statement_query"->statementQueries.query(g.getUserId(),request.args());
             case "recurring_analysis"->statements.recurring(g.getUserId());
             default->throw GatewayTurnService.denied();
         };
@@ -72,6 +74,7 @@ public class AgentCapabilityService {
                 case "transfer_preview","revoke_preview"->{if(r.getToolName().equals("transfer_preview")&&data.path("code").asText().equals("RECIPIENT_CLARIFICATION_REQUIRED")&&data.path("candidates").isArray())items.add(new BankReplyComposer.Evidence("resolve_recipient",json.convertValue(data.path("candidates"),Object.class)));if(!data.has("code"))items.add(new BankReplyComposer.Evidence(r.getToolName().equals("transfer_preview")?"agent_transfer_preview":"agent_revoke_preview",previews.facts(r.getUserId(),data)));}
                 case "mandate_receipt"->{if(!data.has("code")){mandateReceipts.requireValidSnapshot(r.getUserId(),r.getConversationId(),data);items.add(new BankReplyComposer.Evidence("list_mandates",json.convertValue(data.get("mandates"),Object.class),Map.of("queriedAt",data.path("queriedAt").asText(),"expiresAt",data.path("expiresAt").asText())));}}case "statement"->items.add(bankEvidence("get_statement",data));
                 case "statement_compare"->{items.add(bankEvidence("get_statement",data.get("primary")));items.add(bankEvidence("get_statement",data.get("comparison")));}
+                case "statement_query"->items.add(bankEvidence("get_statement_query",data));
                 case "account_query"->items.add(bankEvidence("get_accounts",data));
                 case "recurring_analysis"->items.add(bankEvidence("detect_recurring_payments",data));
                 default->throw GatewayTurnService.denied();
@@ -90,7 +93,11 @@ public class AgentCapabilityService {
     private void checkInput(AgentToolRequestDTO r){
         if(r==null||r.operationKey()==null||!r.operationKey().matches("[a-f0-9]{64}")||r.inputHash()==null||!r.inputHash().matches("[a-f0-9]{64}")||!SCOPES.contains(r.tool())||r.args()==null||!r.args().isObject()||r.args().toString().length()>8192)throw GatewayTurnService.denied();
         var keys=new HashSet<String>();r.args().fieldNames().forEachRemaining(keys::add);var expected=switch(r.tool()){case "statement"->Set.of("month");case "statement_compare"->Set.of("month","comparisonMonth");case "transfer_preview"->Set.of("sourceQuery","recipientQuery","amountMinor");case "revoke_preview"->Set.of("merchantQuery");case "savings_task_prepare"->Set.of("taskPlan");case "savings_task_status"->Set.of("workflowId");default->Set.<String>of();};
-        if(!keys.equals(expected)||!inputHash(r.tool(),r.args()).equals(r.inputHash()))throw new BankException("VALIDATION_ERROR","工具参数或输入摘要无效");
+        // 通用查询的键集合是闭集但可裁剪（只有 start/end 必填）；具体类型、范围与上限由 StatementQueryService 统一校验。
+        boolean keysAccepted=r.tool().equals("statement_query")
+            ?!r.args().isEmpty()&&StatementQueryService.QUERY_KEYS.containsAll(keys)
+            :keys.equals(expected);
+        if(!keysAccepted||!inputHash(r.tool(),r.args()).equals(r.inputHash()))throw new BankException("VALIDATION_ERROR","工具参数或输入摘要无效");
         if(r.tool().equals("savings_task_status")&&(!r.args().path("workflowId").isTextual()||!r.args().path("workflowId").asText().matches("[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}")))throw new BankException("VALIDATION_ERROR","任务编号无效");
         if(AgentPreviewService.isPreview(r.tool()))for(var key:expected){var value=r.args().get(key);if(key.equals("amountMinor")){if(!value.isIntegralNumber()||!value.canConvertToLong()||value.longValue()<=0)throw new BankException("VALIDATION_ERROR","金额须为正整数分");}else if(!value.isTextual()||value.asText().isBlank()||value.asText().length()>100)throw new BankException("VALIDATION_ERROR","请提供明确的业务对象");}
     }

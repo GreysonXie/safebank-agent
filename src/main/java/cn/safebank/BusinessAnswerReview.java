@@ -42,7 +42,7 @@ final class BusinessAnswerReview {
             撤销银行授权不等于商户合同终止，不保证立即停费、退款或余额增加。现有REVOKED只能描述查询记录，不能称本轮执行结果。
             revocation_boundary：尤其检查“不会再扣”“以后不收费”“一定停止收费”；即使前句REVOKED真实，也不支持后句绝对保证。明确“不保证/不能判断”或有条件建议可通过。
             risk_boundary：金额触发的大额候选、类别明确、商户名称正常都不是风险评估证据；“风险不突出/低风险/很安全”没有依据，不能放行。
-            query_coverage：结合latest_customer_question及对话识别要比较的月份/对象，核对business_context.available_statement_months及事实来源。比较两个月必须都有账单，只有一月不能得出变化结论；缺查时issues说明调用get_statement的具体月份。
+            query_coverage：结合latest_customer_question及对话识别要比较的区间、粒度与对象，核对business_context.available_statement_ranges、available_statement_months及事实来源。比较两段必须都有记录，只有一段不能得出变化结论；数字与statement_query实际执行的区间或粒度不符、或自己按月重算趋势，都要在issues指出并说明应查的区间与粒度。
             不要让客户补银行工具可查的信息；未指定月份且上下文不明确时可问月份。维修用途、报价、使用频率、商户合同等工具没有的信息应精准询问客户，不虚构查询能力。
             允许清楚标明的假设、预算目标及条件建议，不把它们误当实绩；允许说明缺数据和提出合理核对问题。
             答复要承接最新客户限制，回答所问；客户要核对清单时不复述整份账单或无关授权名单，已选收款人后仅问尚缺参数。

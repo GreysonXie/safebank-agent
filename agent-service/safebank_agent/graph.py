@@ -96,7 +96,10 @@ def compact_facts(facts,question):
     refund_rows={key.rsplit('.',1)[0] for key,value in facts.items() if re.fullmatch(r'statement_\d{4}_\d{2}\.transactions\.\d+\.category',key) and value.get('display')=='退款'} if '退款' in requested_scope else set()
     def priority(key):
         if key.rsplit('.',1)[0] in refund_rows:return 0
-        if '.transactions.' in key:return 3 if any(x in requested_scope for x in ('逐笔','明细','退款','这笔','这条','该笔','商户','交易用途')) else 5
+        # 区间查询的总计与回显口径优先保留，避免被分桶明细挤出目录。
+        if '.totals.' in key or re.search(r'statement_(?:range|query)_.*\.query\.',key):return -1
+        if '.rows.items.' in key or '.transactions.' in key:return 3 if any(x in requested_scope for x in ('逐笔','明细','退款','这笔','这条','该笔','商户','交易用途')) else 5
+        if '.buckets.' in key:return 0
         if '.anomaly_candidates.' in key:return 0 if any(x in question for x in ('大额','核对','异常','维修')) else 2
         if 'comparison_' in key or '.analysis.' in key:return 1
         return 0
@@ -189,6 +192,42 @@ def redundant_source_question(text):
         if re.search(r'请.*(?:提供|说明|补充|确认|选择)|还需|仍需|哪个|哪一个',clause):return True
     return False
 
+STATEMENT_QUERY_KEYS={'start','end','bucket','groupBy','filter','compare','topN','rows'}
+STATEMENT_FILTER_KEYS={'direction','categories','merchants','accounts','minAmountMinor','maxAmountMinor','excludeInternal'}
+STATEMENT_BUCKETS={'day','week','month','quarter','year','none'}
+STATEMENT_DIMENSIONS={'category','merchant','account','none'}
+STATEMENT_COMPARES={'none','previous_period','same_period_last_year'}
+STATEMENT_DIRECTIONS={'全部','支出','收入'}
+STATEMENT_DATE=re.compile(r'20\d{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])')
+
+
+def statement_query_args(args):
+    """Same closed contract as the Java engine: only these keys, only these types."""
+    if not isinstance(args,dict) or not STATEMENT_QUERY_KEYS.issuperset(args):raise ProtocolError('INVALID_TOOL_SCOPE')
+    for key in ('start','end'):
+        value=args.get(key)
+        if not isinstance(value,str) or not STATEMENT_DATE.fullmatch(value):raise ProtocolError('INVALID_TOOL_SCOPE')
+    for key,allowed in (('bucket',STATEMENT_BUCKETS),('groupBy',STATEMENT_DIMENSIONS),('compare',STATEMENT_COMPARES)):
+        if key in args and args[key] not in allowed:raise ProtocolError('INVALID_TOOL_SCOPE')
+    if 'topN' in args and (type(args['topN']) is not int or not 1<=args['topN']<=20):raise ProtocolError('INVALID_TOOL_SCOPE')
+    rows=args.get('rows')
+    if rows is not None and rows is not False:
+        if not isinstance(rows,dict) or not set(rows)<={'offset','limit'} or not all(type(value) is int and value>=0 for value in rows.values()):
+            raise ProtocolError('INVALID_TOOL_SCOPE')
+    filter_value=args.get('filter')
+    if filter_value is not None:
+        if not isinstance(filter_value,dict) or not STATEMENT_FILTER_KEYS.issuperset(filter_value):raise ProtocolError('INVALID_TOOL_SCOPE')
+        if 'direction' in filter_value and filter_value['direction'] not in STATEMENT_DIRECTIONS:raise ProtocolError('INVALID_TOOL_SCOPE')
+        for key in ('categories','merchants','accounts'):
+            if key in filter_value:
+                value=filter_value[key]
+                if not isinstance(value,list) or not 1<=len(value)<=20 or not all(isinstance(item,str) and 0<len(item.strip())<=40 for item in value):
+                    raise ProtocolError('INVALID_TOOL_SCOPE')
+        for key in ('minAmountMinor','maxAmountMinor'):
+            if key in filter_value and (type(filter_value[key]) is not int or filter_value[key]<0):raise ProtocolError('INVALID_TOOL_SCOPE')
+        if 'excludeInternal' in filter_value and type(filter_value['excludeInternal']) is not bool:raise ProtocolError('INVALID_TOOL_SCOPE')
+
+
 def planning(value):
     value=protocol_metadata(value)
     if isinstance(value,dict) and value.get('kind')=='savings_task':
@@ -204,8 +243,13 @@ def planning(value):
     for item in tools:
         if not isinstance(item,dict) or set(item)!= {'tool','args'} or not isinstance(item['args'],dict):
             raise ProtocolError('INVALID_PLAN')
-        expected={'statement':{'month'},'statement_compare':{'month','comparisonMonth'},'recurring_analysis':set(),'account_query':set(),'mandate_receipt':set(),'transfer_preview':{'sourceQuery','recipientQuery','amountMinor'},'revoke_preview':{'merchantQuery'},'savings_task_status':{'workflowId'}}.get(item['tool'])
-        if expected is None or set(item['args'])!=expected:
+        expected={'statement':{'month'},'statement_compare':{'month','comparisonMonth'},'recurring_analysis':set(),'account_query':set(),'mandate_receipt':set(),'transfer_preview':{'sourceQuery','recipientQuery','amountMinor'},'revoke_preview':{'merchantQuery'},'savings_task_status':{'workflowId'},'statement_query':None}.get(item['tool'])
+        if expected is None and item['tool']!='statement_query':
+            raise ProtocolError('INVALID_TOOL_SCOPE')
+        if item['tool']=='statement_query':
+            statement_query_args(item['args'])
+            continue
+        if set(item['args'])!=expected:
             raise ProtocolError('INVALID_TOOL_SCOPE')
         for key,argument in item['args'].items():
             if item['tool'] in ('transfer_preview','revoke_preview'):
@@ -307,6 +351,11 @@ def build(saver, context):
             contract['transaction_catalog_complete']=transaction_fields.issubset(facts)
             if not contract['transaction_catalog_complete']:
                 notices.append({'code':'TRANSACTION_CATALOG_PARTIAL','message':'当前引用目录只提供部分交易字段，缺失不代表没有其他记录；不能据此列出全部退款、统计笔数或认定没有退款。按已提供记录回答，必要时说明范围限制。'})
+        bucket_fields={key for key in original if re.fullmatch(r'statement_(?:range|query)_.*\.buckets\.\d+\.metrics\.[^.]+',key)}
+        if bucket_fields:
+            contract['bucket_catalog_complete']=bucket_fields.issubset(facts)
+            if not contract['bucket_catalog_complete']:
+                notices.append({'code':'BUCKET_CATALOG_PARTIAL','message':'当前目录只包含部分分桶数值；不能声称列出全部分桶或自行补齐差额，只能说明已核验的部分，或改用更粗粒度重新查询。'})
         clarification=transfer_clarification(state,facts)
         if clarification and not state.get('safety_blocked') and not state.get('operation_deferred'):
             kinds=['clarification'];contract['allowed_kinds']=kinds;contract['transfer_clarification']=clarification
