@@ -3,6 +3,7 @@
  'use strict';
  let accounts=[],people=[],cards=[],operations=[],months=[],statement=null,editingUser=null;
  let statementRequest=0,page=1,loaded=false,profileLoaded=false;
+ let years=[],yearRequest=0;
  const pageSize=8;
  const businessMonth=()=>(window.bankBusinessDate||'').slice(0,7);
  const genderLabel={UNKNOWN:'未填写',MALE:'男',FEMALE:'女',UNDISCLOSED:'不愿透露'};
@@ -59,7 +60,7 @@
   for(const id of ['source','schedule-source','workflow-source','card-account'])options($(id),accountRows);
   fillRecipients();renderPeople();renderCards();renderCardHistory();
   if(!profileLoaded){const profile=await api('/users/profile');$('profile-name').value=profile.name;$('profile-phone').value=profile.phone;$('profile-gender').value=profile.gender;profileLoaded=true;}
-  if(!loaded||balancesChanged){await loadMonths(loaded?$('statement-month').value:undefined);loaded=true;}
+  if(!loaded||balancesChanged){await loadMonths(loaded?$('statement-month').value:undefined);loaded=true;if(!years.length)await loadYears();}
  };
  async function loadMonths(preferred){
   months=await api('/statement/months');
@@ -71,6 +72,43 @@
   if(month&&$('workflow-month'))$('workflow-month').value=month;
   window.syncStatementPrompt?.(months);
   if(months.length)await loadStatement();else{$('statement-status').textContent='暂无账单记录。';renderTransactions([]);}
+ }
+ async function loadYears(){
+  try{years=await api('/statement/years');}catch{years=[];}
+  options($('statement-year'),years.map(y=>[y,y+' 年']),'暂无年度数据');
+  const current=String((window.bankBusinessDate||'').slice(0,4));
+  if(years.includes(current))$('statement-year').value=current;
+  if(years.length)await loadYear();else{$('statement-year-status').textContent='暂无账单记录，年度汇总不可用。';$('statement-year-metrics').replaceChildren();$('statement-year-rows').replaceChildren();$('statement-year-categories').replaceChildren();}
+ }
+ async function loadYear(){
+  const selected=$('statement-year').value;if(!selected)return;
+  const request=++yearRequest;
+  $('statement-year-status').textContent='正在读取 '+selected+' 年账单…';
+  try{
+   const data=await api('/statement/year?year='+encodeURIComponent(selected));
+   if(request!==yearRequest)return;
+   const coverage=data.coverage||{};
+   $('statement-year-status').textContent=selected+' 年 · '+data.record_count+' 笔交易'+(coverage.year_in_progress?' · 本年进行中':'');
+   $('statement-year-metrics').replaceChildren(metric('年度支出',money(data.expense_minor),'expense'),metric('年度收入',money(data.income_minor),'income'),metric('净收支',money(data.income_minor-data.expense_minor)),metric('交易笔数',String(data.record_count)+' 笔'));
+   renderYearRows(data);
+   renderCategories(data,$('statement-year-categories'));
+   const scope=[coverage.first_booked_on&&coverage.last_booked_on?'记录范围 '+coverage.first_booked_on+' 至 '+coverage.last_booked_on:'该年份没有查询到交易记录',coverage.business_date?'业务日期 '+coverage.business_date:''].filter(Boolean).join(' · ');
+   $('statement-year-note').textContent=[scope,coverage.year_in_progress?'本年进行中，只统计截至业务日期的记录。':'',coverage.beyond_business_date?'存在晚于业务日期的记录，已如实计入。':'','金额口径与单月账单一致：内部转账不计收支，退款计入入账。'].filter(Boolean).join(' ');
+  }catch(error){
+   if(request!==yearRequest)return;
+   $('statement-year-status').textContent='年度账单读取失败：'+error.message;
+   $('statement-year-metrics').replaceChildren();$('statement-year-rows').replaceChildren();$('statement-year-categories').replaceChildren();
+  }
+ }
+ function renderYearRows(data){
+  $('statement-year-rows').replaceChildren(...(data.months||[]).map(row=>{
+   const tr=node('tr');tr.dataset.month=row.month;
+   const month=node('td',row.month.slice(5)+' 月');month.title=row.month;
+   tr.append(month,node('td',money(row.expense_minor),'numeric amount '+(row.expense_minor?'expense':'')),node('td',money(row.income_minor),'numeric amount '+(row.income_minor?'income':'')),node('td',row.internal_transfer_minor?money(row.internal_transfer_minor):'—','numeric'),node('td',String(row.transaction_count),'numeric'));
+   const control=node('td'),open=node('button',row.transaction_count?'查看明细':'无记录');open.type='button';open.disabled=!row.transaction_count;
+   if(row.transaction_count)open.onclick=()=>window.openStatementMonth(row.month);
+   control.append(open);tr.append(control);return tr;
+  }));
  }
  async function loadStatement(){
   const selected=$('statement-month').value;if(!selected)return;
@@ -93,17 +131,18 @@
   }catch(error){if(request!==statementRequest)return;statement=null;$('statement-status').textContent='账单读取失败：'+error.message;$('statement-metrics').replaceChildren();$('statement-categories').replaceChildren();$('statement-trend').replaceChildren();renderTransactions([]);}
   finally{if(request===statementRequest)$('transaction-panel').setAttribute('aria-busy','false');}
  }
- function renderCategories(data){
+ function renderCategories(data,target=$('statement-categories')){
   const entries=Object.entries(data.categories).sort((a,b)=>b[1]-a[1]);
-  $('statement-categories').replaceChildren(...entries.map(([category,value],index)=>{
+  const total=data.expense_minor||0;
+  target.replaceChildren(...entries.map(([category,value],index)=>{
    const row=node('button',undefined,'spend-category');row.type='button';row.title='筛选 '+category+' 的交易';
    const top=node('span',undefined,'spend-category-top');top.append(node('span',category),node('strong',money(value)));
    const track=node('span',undefined,'spend-track'),bar=node('span',undefined,'spend-bar');
-   bar.style.width=(value/data.expense_minor*100)+'%';bar.style.background=['#4fc3ed','#6d8aff','#45c6b0','#e6b872','#a699ef','#8eafc6'][index%6];
-   track.append(bar);row.append(top,track,node('small',(value/data.expense_minor*100).toFixed(1)+'%'));
+   bar.style.width=(total?value/total*100:0)+'%';bar.style.background=['#4fc3ed','#6d8aff','#45c6b0','#e6b872','#a699ef','#8eafc6'][index%6];
+   track.append(bar);row.append(top,track,node('small',(total?(value/total*100).toFixed(1):'0.0')+'%'));
    row.onclick=()=>{$('tx-category').value=category;page=1;filterTransactions();$('transaction-panel').scrollIntoView({block:'start',behavior:'smooth'});};return row;
   }));
-  if(!entries.length)$('statement-categories').append(node('p','本月暂无支出记录。','empty'));
+  if(!entries.length)target.append(node('p',target===$('statement-year-categories')?'该年份暂无支出记录。':'本月暂无支出记录。','empty'));
  }
  async function renderTrend(request){
   const periods=months.slice(0,6).reverse();
@@ -134,6 +173,25 @@
    $('tx-error').hidden=true;renderTransactions(rows);
   }catch(error){$('tx-error').textContent=error.message;$('tx-error').hidden=false;}
  }
+ /** 服务端口径核对：同一组条件下服务端合计必须与页面明细一致；只核对类别+方向+金额下限。 */
+ async function verifyFilterFacts(){
+  const box=$('tx-verify-result');box.hidden=false;
+  const month=$('statement-month').value;if(!month){box.textContent='请先选择账单月份。';return;}
+  const direction=$('tx-direction').value;
+  if(direction==='internal'){box.textContent='服务端口径只核对支出或收入；内部转账单独统计，不参与收支合计。';return;}
+  const unsupported=[$('tx-search').value.trim(),$('tx-max').value,$('tx-from').value,$('tx-to').value].filter(Boolean);
+  if(unsupported.length){box.textContent='服务端口径只支持“类别 + 收支方向 + 金额下限”；请先清空搜索、最高金额与日期区间，再核对。';return;}
+  const rawMin=$('tx-min').value.trim();
+  const min=rawMin?optionalMinor(rawMin):0;
+  const category=$('tx-category').value||'全部',expense=direction!=='income';
+  box.textContent='正在按服务端口径核对…';
+  const data=await api('/statement/filter?month='+encodeURIComponent(month)+'&category='+encodeURIComponent(category)+'&direction='+encodeURIComponent(expense?'支出':'收入')+'&minAmountMinor='+min);
+  const serverTotal=expense?data.expense_minor:data.income_minor;
+  const rows=(statement?.transactions||[]).filter(t=>t.category!=='内部转账'&&(expense?t.amount_minor<0:t.amount_minor>0)&&(category==='全部'||t.category===category)&&Math.abs(t.amount_minor)>min);
+  const pageTotal=rows.reduce((total,t)=>total+Math.abs(t.amount_minor),0);
+  const same=pageTotal===serverTotal&&rows.length===data.matched_count;
+  box.textContent='服务端核对：'+data.month+' · '+(expense?'支出 ':'收入 ')+money(serverTotal)+' · '+data.matched_count+' 笔（金额下限严格大于 '+money(data.min_amount_minor)+'）· 页面同类合计 '+money(pageTotal)+' · '+rows.length+' 笔 · '+(same?'与页面明细一致。':'与页面明细不一致，请以服务端合计为准并核对差异。')+(data.list_scope_note||'');
+ }
  function renderTransactions(rows){
   const totalPages=Math.max(1,Math.ceil(rows.length/pageSize));page=Math.min(page,totalPages);
   const incoming=rows.filter(t=>t.category!=='内部转账'&&t.amount_minor>0).reduce((a,t)=>a+t.amount_minor,0);
@@ -153,6 +211,9 @@
   $('tx-prev').disabled=page<=1;$('tx-next').disabled=page>=totalPages;
  }
  $('statement-month').onchange=loadStatement;
+ $('statement-year').onchange=loadYear;
+ $('statement-year-reload').onclick=e=>perform(e.currentTarget,loadYears);
+ $('tx-verify').onclick=e=>perform(e.currentTarget,verifyFilterFacts);
  $('month-prev').onclick=()=>{const i=months.indexOf($('statement-month').value);if(i<months.length-1){$('statement-month').value=months[i+1];loadStatement();}};
  $('month-next').onclick=()=>{const i=months.indexOf($('statement-month').value);if(i>0){$('statement-month').value=months[i-1];loadStatement();}};
  $('statement-reload').onclick=e=>perform(e.currentTarget,()=>loadMonths($('statement-month').value));
