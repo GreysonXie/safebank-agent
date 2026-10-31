@@ -56,6 +56,8 @@ CARD_KIND_WORDS=(
     ('LOCK',('锁卡','锁一下','锁定','先锁','停用')),
 )
 CONSULT_WORDS=('能不能','可不可以','有什么区别','怎么算','什么意思','是否应该','建议','为什么','影响','风险','规则')
+# 这些词说明是"查询/比较"问题，交给模型用 query 内核规划，不要被确定性快捷路由成操作预览
+QUERY_SHAPE_WORDS=('最低','最高','最多','最少','哪张','哪家','哪个','哪种','几张','几个','几笔','多少','排名','平均','合计','一共','占','相比','比较')
 HORIZON_MONTHS=re.compile(r'(?P<n>\d{1,2}|[一二三四五六七八九十两]{1,3})\s*个?\s*(?P<unit>月|年)')
 
 
@@ -128,6 +130,7 @@ def deterministic_plan(question):
     if not isinstance(question,str):return None
     text=unicodedata.normalize('NFKC',question)
     if any(word in text for word in CONSULT_WORDS):return None
+    if any(word in text for word in QUERY_SHAPE_WORDS):return None
     if not tool_requirements(text):return None
     if any(word in text for word in FINANCE_ONLY):
         return {'kind':'analysis','tools':[{'tool':'finance_recommend','args':finance_args_from_text(text)}]}
@@ -162,6 +165,8 @@ def tool_requirements(question):
     """高置信度用词要求必须落到某类工具；只是"别用别的工具硬凑"的强制项，不含参数与授权。"""
     if not isinstance(question,str):return []
     text=unicodedata.normalize('NFKC',question)
+    # 查询/比较类问题交给 query 内核自由表达，不用"必须有某个工具"来强制
+    if any(word in text for word in QUERY_SHAPE_WORDS):return []
     required=[]
     if any(word in text for word in CARD_ACTION_HINTS) and '卡' in text:
         required.append('card_preview')
@@ -548,8 +553,8 @@ def build(saver, context):
                             missing.update(field for field in fields if not isinstance(params.get(field),str) or not params[field].strip())
                         if missing:input_value['missing_task_fields']=sorted(missing)
                 if retries and required_tools and str(error) in ('TOOL_REQUIREMENT_MISSING','CLARIFICATION_NUMERIC_LITERAL','INVALID_CLARIFICATION','INVALID_TOOL_SCOPE','INVALID_PLAN'):
-                    # 两次都没落到该用的工具：给一条确定性的兜底，不让客户对着含糊澄清干等
-                    if 'card_list' in required_tools:planned={'kind':'analysis','tools':[{'tool':'card_list','args':{}}]}
+                    # 两次都没落到该用的工具：卡片类先给只读清单（比一句固定追问更有用），其余给可执行补问
+                    if 'card_list' in required_tools or 'card_preview' in required_tools:planned={'kind':'analysis','tools':[{'tool':'card_list','args':{}}]}
                     else:planned={'kind':'clarification','tools':[],'question':fallback_question.get(required_tools[0],'请补充办理这件事需要的具体对象与参数。')}
                     break
                 if retries or state['request'].get('modelRequestLimit',5)<3 or str(error) not in ('INVALID_PLAN','INVALID_TASK_PLAN','INVALID_CLARIFICATION','INVALID_MONTH','INVALID_TOOL_SCOPE','CURRENT_MANDATE_QUERY_REQUIRED','UNSAFE_TRANSFER_CONTEXT','CHAT_CREDENTIAL_COLLECTION','SAVINGS_ANALYSIS_MONTH_REQUIRED','DEFERRED_OPERATION','AMENDMENT_TARGET_REQUIRED','CLARIFICATION_NUMERIC_LITERAL','REVOKE_PREVIEW_REQUIRED','REDUNDANT_RECIPIENT_CLARIFICATION','TOOL_REQUIREMENT_MISSING'):raise

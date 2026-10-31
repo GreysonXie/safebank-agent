@@ -30,10 +30,12 @@ public class GatewayCoordinator {
             return finish(turnId,reply);
         }catch(HttpAgentClient.AgentTransportException e){results.deferred(turnId,true,"AGENT_TRANSPORT_UNAVAILABLE:start");throw new BankException("AGENT_RECONCILING","服务响应未确定，保留原轮次等待核对，未重发");}
         catch(RuntimeException error){
-            // 任何失败都必须把两条轮次置为终态：否则这一轮永远停在"处理中"，该会话之后每次提问都会被拒。
+            // 只把"确定失败"的轮次置为终态；处理中/待核对属于可恢复状态，不能在这里写死。
             String code=error instanceof BankException bank?bank.code:"AGENT_FAILED";
-            try{results.failed(turnId,code);}catch(RuntimeException ignored){}
-            try{if(lease!=null)contexts.fail(lease,code);}catch(RuntimeException ignored){}
+            if(!java.util.Set.of("CONTEXT_PROCESSING","AGENT_RECONCILING","AGENT_TURN_CLOSED","AGENT_REVIEW_REQUIRED").contains(code)){
+                try{results.failed(turnId,code);}catch(RuntimeException ignored){}
+                try{if(lease!=null)contexts.fail(lease,code);}catch(RuntimeException ignored){}
+            }
             throw error;
         }
     }
