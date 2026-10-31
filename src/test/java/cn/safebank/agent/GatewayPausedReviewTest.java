@@ -35,7 +35,7 @@ class GatewayPausedReviewTest {
   var error=assertThrows(BankException.class,()->coordinator.chat("u1",request,session));
   assertEquals("AGENT_REVIEW_REQUIRED",error.code);
   verifyNoInteractions(capabilities);verify(client,never()).recover(anyString(),anyString());
-  verify(results).pause("tid");
+  verify(results).pause(eq("tid"),anyString());
  }
  @Test void savedReplyRepairsMatchingRemoteAckWithoutStartingAnotherRun(){
   var response=Map.<String,Object>of("text","原回答");
@@ -54,7 +54,7 @@ class GatewayPausedReviewTest {
   when(results.saved("tid")).thenReturn(new AgentAckVO("tid",2L,"hash",response));
   when(client.get("tid")).thenReturn(json.createObjectNode().put("state","COMPLETED").put("outputVersion",2).put("resultHash","other"));
   assertEquals(response,coordinator.chat("u1",request,session));
-  verify(results).pause("tid");verify(results,never()).acknowledged(anyString(),anyString(),anyLong());
+  verify(results).pause(eq("tid"),anyString());verify(results,never()).acknowledged(anyString(),anyString(),anyLong());
  }
  @Test void alreadyAckedReplayDoesNotContactRemote(){
   var response=Map.<String,Object>of("text","原回答");row.setState("ACKED");
@@ -79,14 +79,14 @@ class GatewayPausedReviewTest {
   when(results.saved("tid")).thenReturn(new AgentAckVO("tid",2L,"hash",response));
   when(client.get("tid")).thenReturn(json.createObjectNode().put("state","NO_RUN"));
   assertEquals(response,coordinator.chat("u1",request,session));
-  verify(results).pause("tid");verify(results,never()).noRun(anyString());verifyNoInteractions(capabilities);
+  verify(results).pause(eq("tid"),anyString());verify(results,never()).noRun(anyString());verifyNoInteractions(capabilities);
  }
  @Test void unavailableRemoteKeepsOriginalReplyAndPauses(){
   var response=Map.<String,Object>of("text","原回答");
   when(turns.begin(eq("u1"),any(),any())).thenReturn(new TurnStart(null,response,false));
   when(results.saved("tid")).thenReturn(new AgentAckVO("tid",2L,"hash",response));
   when(client.get("tid")).thenThrow(new HttpAgentClient.AgentTransportException("AGENT_UNAVAILABLE"));
-  assertEquals(response,coordinator.chat("u1",request,session));verify(results).pause("tid");
+  assertEquals(response,coordinator.chat("u1",request,session));verify(results).pause(eq("tid"),anyString());
   verify(client,never()).ack(any());verifyNoInteractions(capabilities);
  }
 }
