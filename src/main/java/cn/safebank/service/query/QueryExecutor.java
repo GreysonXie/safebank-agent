@@ -201,7 +201,7 @@ public final class QueryExecutor {
             if (currentValue instanceof Number now && baseValue instanceof Number before) {
                 long delta = now.longValue() - before.longValue();
                 difference.put(metric, delta);
-                if ("sum".equals(metric)) difference.put("sum_minor", delta);
+                if (spec.measureField() != null && Set.of("sum", "avg", "max", "min").contains(metric)) difference.put(metric + "_minor", delta);
                 difference.put("ratio_percent", before.longValue() == 0 ? null
                     : Math.round(now.doubleValue() * 10000.0 / before.doubleValue()) / 100.0);
             } else if (currentValue instanceof String now && baseValue instanceof String) {
@@ -226,8 +226,13 @@ public final class QueryExecutor {
 
     private static Map<String, Object> aggregate(EntitySpec spec, List<Map<String, Object>> rows, List<String> metrics) {
         var result = new LinkedHashMap<String, Object>();
-        for (var metric : metrics) result.put(metric, metricValue(spec, rows, metric));
-        if (metrics.contains("sum") && spec.measureField() != null) result.put("sum_minor", result.get("sum"));
+        for (var metric : metrics) {
+            var value = metricValue(spec, rows, metric);
+            result.put(metric, value);
+            // 金额度量同时给出 *_minor：事实目录据此格式化成"元"，模型不会把"分"当元念
+            if (spec.measureField() != null && Set.of("sum", "avg", "max", "min", "median").contains(metric))
+                result.put(metric + "_minor", value);
+        }
         return result;
     }
 

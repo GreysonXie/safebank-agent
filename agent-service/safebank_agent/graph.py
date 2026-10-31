@@ -8,6 +8,7 @@ from .contracts import ProtocolError, canonical, bank_hash
 from .conversation import bounded_clarification_context,defers_operation,requires_amendment_target,requires_revoke_preview,transfer_recipient_hint
 from .prompts import PLAN, ANSWER, business_day_clause, business_day
 from .shadow import emit as emit_nlu_shadow
+from . import timex as timex_parser
 from .answers import normalize,omit_rejected_sentence,GroundingRejection,protocol_metadata,clean_display_duplicates,invalid_reference_hints,normalize_description_references
 from .safety import suspected_transfer_inducement,blocks_transfer_context,adequate_transfer_warning,requests_chat_credentials,tool_text_has_instructions
 
@@ -121,13 +122,76 @@ def card_apply_args_from_text(text):
     return args
 
 
-def deterministic_plan(question):
-    """高置信度意图直接给出工具计划：卡片与理财。
+def _query_entity(text):
+    if '账户' in text or '余额' in text:return 'accounts'
+    if '卡' in text:return 'cards'
+    if '代扣' in text or '授权' in text:return 'mandates'
+    if '周期扣费' in text or '重复扣费' in text or '订阅' in text:return 'recurring'
+    if '预览' in text or '回执' in text or '操作' in text:return 'actions'
+    return 'transactions'
+
+
+def _month_range(today):
+    first=today.replace(day=1)
+    return {'start':first.isoformat(),'end':today.isoformat()}
+
+
+def deterministic_query_plan(question, today):
+    """汇总、平均、占比、跨区间对比这四类形状直接给出查询计划。
+
+    弱模型常常不会主动填 metrics / compare，于是明明内核能算，回答却变成"我无法计算"。
+    这里只在用词高度明确时接管；其它情况仍交给模型自由表达。
+    """
+    if not isinstance(question,str):return None
+    text=unicodedata.normalize('NFKC',question)
+    entity=_query_entity(text)
+    intervals=timex_parser.find(text,today)
+    rng={'start':intervals[0].start.isoformat(),'end':intervals[0].end.isoformat()} if intervals else None
+    def plan(args):
+        return {'kind':'analysis','tools':[{'tool':'query','args':args}]}
+    # 退款占入账：本轮按类别筛退款，对照段按方向筛收入
+    if '退款' in text and ('占比' in text or '占' in text) and entity=='transactions':
+        args={'entity':'transactions','where':{'category':'退款'},'metrics':['count','sum']}
+        if rng:args['range']=rng
+        args['compare']={'where':{'direction':'收入'}}
+        return plan(args)
+    # 跨区间对比：两个时间区间 → 第二个作为对照段
+    if len(intervals)>=2 and any(word in text for word in ('比','差多少','多了','少了','多花','少花','变化')):
+        args={'entity':entity,'metrics':['count','sum'],'range':{'start':intervals[0].start.isoformat(),'end':intervals[0].end.isoformat()},
+              'compare':{'range':{'start':intervals[1].start.isoformat(),'end':intervals[1].end.isoformat()}}}
+        if entity=='transactions':args['where']={'direction':'支出'}
+        return plan(args)
+    # 卡片状态类：挂失/锁定/开关，直接按状态筛，不让模型自己发挥
+    if entity=='cards' and any(word in text for word in ('挂失','锁定','状态','停用')):
+        if '挂失' in text:args={'entity':'cards','where':{'status':'LOST'},'metrics':['count']}
+        elif '锁定' in text:args={'entity':'cards','where':{'status':'LOCKED'},'metrics':['count']}
+        else:args={'entity':'cards','metrics':['count']}
+        return plan(args)
+    # 合计 / 平均
+    wants_average='平均' in text
+    wants_total=any(word in text for word in ('合计','一共','总共','加起来','总额','总数'))
+    if wants_average or wants_total:
+        if entity=='accounts':
+            args={'entity':'accounts','metrics':['count','avg'] if wants_average else ['count','sum']}
+        else:
+            args={'entity':entity,'metrics':['count','avg','max'] if wants_average else ['count','sum']}
+            if entity=='transactions':args['where']={'direction':'支出'}
+            if '餐饮' in text:args.setdefault('where',{})['category']='餐饮'
+            if rng:args['range']=rng
+        return plan(args)
+    return None
+
+
+def deterministic_plan(question, today=None):
+    """高置信度意图直接给出工具计划：卡片、理财，以及四类查询形状。
 
     模型只负责把回执讲给客户听，不再决定"要不要查"。咨询类问题（能不能/有什么区别/有没有风险）
     交给模型自由回答，避免把咨询当办理。返回 None 表示照旧由模型规划。
     """
     if not isinstance(question,str):return None
+    if today is not None:
+        query_plan=deterministic_query_plan(question,today)
+        if query_plan is not None:return query_plan
     text=unicodedata.normalize('NFKC',question)
     if any(word in text for word in CONSULT_WORDS):return None
     if any(word in text for word in QUERY_SHAPE_WORDS):return None
@@ -506,7 +570,7 @@ def result(state):
 def build(saver, context):
     def plan(state):
         deferred=defers_operation(state['request']['text'])
-        shortcut=deterministic_plan(state['request']['text'])
+        shortcut=deterministic_plan(state['request']['text'],business_day())
         target_required=requires_amendment_target(state['request']['text'],state.get('previous_plan',{}),state.get('clarification_context',[]),state.get('previous_question',''))
         held=state.get('transfer_safety_hold',False) or suspected_transfer_inducement(state.get('previous_question','')) or suspected_transfer_inducement(state['request']['text'])
         blocked=blocks_transfer_context(state['request']['text'],held)
