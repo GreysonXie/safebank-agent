@@ -18,14 +18,16 @@ public class GatewayReconciler {
         try{var reply=client.get(id);String state=reply.path("state").asText();
             var g=mapper.gateway(id);
             if(g==null)return;
-            if(state.equals("NO_RUN")){if("PAUSED".equals(g.getState()))results.pause(id);else results.noRun(id);return;}
+            if(state.equals("NO_RUN")){if("PAUSED".equals(g.getState()))results.pause(id,"AGENT_RUN_MISSING_ALREADY_PAUSED");else results.noRun(id,"AGENT_RUN_MISSING");return;}
             if(state.equals("RESULT_READY")){var ack=results.complete(client.result(reply,id));client.ack(ack);results.acknowledged(id,ack.resultHash(),ack.outputVersion());}
             else if((state.equals("COMPLETED")||state.equals("NEEDS_CLARIFICATION"))&&g.getOutputVersion()!=null){var ack=results.saved(id);if(!reply.path("resultHash").asText().equals(ack.resultHash())||reply.path("outputVersion").asLong()!=ack.outputVersion())throw new BankException("CONFLICT","远端 ACK 不一致");results.acknowledged(id,ack.resultHash(),ack.outputVersion());}
             else if(state.equals("RECOVERY_REQUIRED")){
-                if("PAUSED".equals(g.getState()))results.pause(id);
-                else{client.recover(id,capabilities.issue(id));results.deferred(id,false);}
+                if("PAUSED".equals(g.getState()))results.pause(id,"AGENT_RECOVERY_REQUIRED");
+                else{client.recover(id,capabilities.issue(id));results.deferred(id,false,"AGENT_RECOVERY_REQUESTED");}
             }
-            else if(state.equals("PROCESSING"))results.deferred(id,false);else results.pause(id);
-        }catch(HttpAgentClient.AgentTransportException e){results.deferred(id,true);}catch(BankException e){if(e.code.equals("PERMISSION_DENIED"))results.interrupted(id);else results.pause(id);}
+            else if(state.equals("PROCESSING"))results.deferred(id,false,"AGENT_TURN_PROCESSING");
+            else{String code=reply.path("errorCode").asText("");results.pause(id,"AGENT_RESULT_"+(code.isBlank()?"UNKNOWN":code));}
+        }catch(HttpAgentClient.AgentTransportException e){results.deferred(id,true,"AGENT_TRANSPORT_UNAVAILABLE:reconcile");}
+        catch(BankException e){if(e.code.equals("PERMISSION_DENIED"))results.interrupted(id);else results.pause(id,"AGENT_RECONCILE_"+e.code);}
     }
 }

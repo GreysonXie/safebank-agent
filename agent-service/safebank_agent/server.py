@@ -52,6 +52,28 @@ class Handler(BaseHTTPRequestHandler):
         return body
     def handle_request(self):
         if not hmac.compare_digest(self.headers.get('Authorization',''),'Bearer '+self.server.key):return self.respond(403,{'code':'INTERNAL_AUTH_REQUIRED'})
+        if self.path=='/internal/agent/runs/abandon':
+            if self.command!='POST':return self.respond(405,{'code':'METHOD_NOT_ALLOWED'})
+            try:
+                length=int(self.headers.get('Content-Length','-1'))
+                if self.headers.get('Transfer-Encoding') or not 0<length<=65536:return self.respond(413,{'code':'BODY_LIMIT'})
+                raw=self.rfile.read(length)
+                if len(raw)!=length:raise ProtocolError('INCOMPLETE_BODY')
+                body=json.loads(raw)
+                if not isinstance(body,dict) or set(body)!={'userId','conversationId','turnId'}:raise ProtocolError('INVALID_BODY')
+                store=self.server.runtime.store
+                binding=store.binding_for(body['userId'],body['conversationId'])
+                if not binding:return self.respond(200,{'unblocked':True,'reason':'NO_BINDING'})
+                blocking=store.blocking(binding['id'])
+                if not blocking:return self.respond(200,{'unblocked':True,'reason':'NO_BLOCKING_RUN'})
+                if blocking['java_turn_id']!=body['turnId']:
+                    return self.respond(200,{'unblocked':False,'reason':'OTHER_RUN','blockingTurnId':blocking['java_turn_id'],'blockingState':blocking['state']})
+                try:run=store.abandon(blocking['id'])
+                except ProtocolError as error:
+                    return self.respond(200,{'unblocked':False,'reason':str(error),'blockingTurnId':blocking['java_turn_id'],'blockingState':blocking['state']})
+                return self.respond(200,{'unblocked':True,'reason':'ABANDONED','runId':run['id'],'state':run['state']})
+            except ProtocolError as error:return self.respond(409,{'code':str(error)})
+            except Exception:return self.respond(400,{'code':'INVALID_REQUEST'})
         match=re.fullmatch(r'/internal/agent/turns(?:/([A-Za-z0-9_-]{1,80})(/(?:ack|recover))?)?',self.path)
         if self.path=='/internal/agent/health' and self.command=='GET':return self.respond(200,{'status':'UP','framework':'LangGraph','modelMode':self.server.runtime.adapter.mode})
         if not match:return self.respond(404,{'code':'NOT_FOUND'})

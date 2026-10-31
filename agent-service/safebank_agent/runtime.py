@@ -22,6 +22,17 @@ class Runtime:
         self.graph=build(self.saver,self);self.effects=Effects(store)
     def close(self):
         if self.connection.open:self.connection.close()
+    def restart(self,prior,run_id,run,binding,request):
+        """陈旧/不可续的检查点：换新线程从头跑这一轮，避免历史残点永久阻塞该会话。
+
+        安全边界：只换线程绑定并重跑本轮；不改原请求、不写结果、不直接发起银行动作。
+        本轮工具调用沿用按轮次与序号生成的 operationKey，Java 侧回执按该键幂等，因此不会
+        重复创建动作或重复记账；模型发送次数仍受该轮 modelRequestLimit 约束。
+        """
+        thread=uuid.uuid4().hex
+        self.store.rethread(run_id,binding['id'],thread)
+        config={'configurable':{'thread_id':thread},'recursion_limit':16}
+        return self.graph.invoke({'request':request,'clarification_context':[],'previous_question':prior.get('request',{}).get('text',''),'previous_plan':prior.get('plan',{}),'previous_workflow_id':prior.get('workflow_id'),'receipts':[],'answer':{},'repair':0,'validated':False},config)
     def accept(self,request):
         token=request.get('grant')
         if not isinstance(token,str) or not token:raise ProtocolError('MISSING_GRANT')
@@ -108,8 +119,12 @@ class Runtime:
                         raise ProtocolError('INVALID_RESUME')
                     output=self.graph.invoke(Command(resume=request),config)
                 elif checkpoint.next:
-                    if checkpoint.values.get('request',{}).get('turnId')!=run_id:raise ProtocolError('STALE_CHECKPOINT')
-                    output=self.graph.invoke(None,config)
+                    if checkpoint.values.get('request',{}).get('turnId')!=run_id:
+                        # 陈旧检查点：换新线程从头跑本轮，避免历史残点永久阻塞会话。
+                        # 只换线程绑定，不改请求、不改结果；工具回执按轮次/序号生成 operationKey，
+                        # 因此重跑不会重复创建银行动作或重复记账。
+                        output=self.restart(checkpoint.values,run_id,run,binding,request)
+                    else:output=self.graph.invoke(None,config)
                 else:
                     prior=checkpoint.values
                     output=self.graph.invoke({'request':request,'clarification_context':[],'previous_question':prior.get('request',{}).get('text',''),'previous_plan':prior.get('plan',{}),'previous_workflow_id':prior.get('workflow_id'),'receipts':[],'answer':{},'repair':0,'validated':False},config)

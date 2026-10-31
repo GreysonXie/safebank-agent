@@ -55,6 +55,19 @@ async function handleContextFailure(error){
  if(error.code==='MODEL_REQUEST_BUDGET_EXCEEDED'){pendingChatRequest=null;contextStorageWrite('safebank.pendingChat',null);$('prompt').value=lastFailedQuestion;$('chat-retry').hidden=true;$('chat-status').textContent=error.message+'。问题已保留在输入框。';}
  else if(['CONFLICT','CONTEXT_INTERRUPTED'].includes(error.code)){pendingChatRequest=null;contextStorageWrite('safebank.pendingChat',null);await restoreBusinessContext(false);$('chat-retry').hidden=true;$('chat-status').textContent=error.message+'。请核对最新状态后再提出新问题。';}
  else if(['NOT_FOUND','CONTEXT_EXPIRED'].includes(error.code)){businessConversation=null;pendingChatRequest=null;contextStorageWrite('safebank.pendingChat',null);renderBusinessContext(null,null);$('chat-retry').hidden=true;$('chat-status').textContent='上下文已不可用，请重新提出问题；原动作仍从历史回执核对。';}
+ else if(error.code==='AGENT_REVIEW_REQUIRED'||error.code==='AGENT_RECONCILING'){offerTurnClose(error);}
+}
+/** 原请求卡在待核对时，给出“结束本次处理”的安全出口：只结束该轮，不重发、不作废已执行动作。 */
+function offerTurnClose(error){
+ const bar=$('chat-turn-close');const conversationId=businessConversation?.conversationId,requestId=pendingChatRequest?.requestId;
+ if(!conversationId||!requestId){bar.hidden=true;return;}
+ bar.hidden=false;$('chat-turn-close-note').textContent=error.message+'；如确认不再等待，可结束本次处理，原动作与回执保留。';
+ $('chat-turn-close-button').onclick=()=>perform($('chat-turn-close-button'),async()=>{
+  const outcome=await api('/conversations/'+encodeURIComponent(conversationId)+'/turns/'+encodeURIComponent(requestId)+'/close',{});
+  pendingChatRequest=null;contextStorageWrite('safebank.pendingChat',null);bar.hidden=true;$('chat-retry').hidden=true;
+  $('chat-status').textContent=outcome.state==='INTERRUPTED'?'本次处理已结束，未执行新的资金操作；已生成的操作仍需在原记录单独核对。':'本次处理未能结束：'+(outcome.reason||outcome.state||'状态未确认')+'。请核对原记录后再操作。';
+  if(outcome.agentUnblocked===false)$('chat-status').textContent+=' 助手侧占用仍未解除（'+outcome.agentReason+'），可稍后重试。';
+ });
 }
 
 function archiveActiveConversation(){

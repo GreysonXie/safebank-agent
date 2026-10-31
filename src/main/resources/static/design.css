@@ -154,6 +154,9 @@ header.page-header { padding: 1px 0 23px; margin-bottom: 0; min-height: 108px; b
 .action[data-expired=true] { background: #fafbfd; border-color: #dfe5f0; }
 .action[data-expired=true] > .status { background: #eef1f6; color: #64748b; }
 .action[data-expired=true] .action-next-step { background: #f7f8fb; border-left-color: #c3ccdd; color: #64748b; }
+.chat-turn-close { display: grid; gap: 8px; margin-top: 10px; padding: 12px 14px; border: 1px solid #e6dced; border-radius: 10px; background: #faf7fd; }
+.chat-turn-close .hint { margin: 0; font-size: 11px; color: #6f6482; }
+.chat-turn-close button { justify-self: start; font-size: 12px; min-height: 36px; }
 .action-row { display: flex; align-items: center; gap: 14px; margin-top: 10px; padding: 14px 16px; border: 1px solid #e2e8f2; border-radius: 12px; background: #fff; }
 .action-row-main { flex: 1; min-width: 0; }
 .action-row-head { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }

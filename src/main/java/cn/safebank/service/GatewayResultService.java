@@ -21,6 +21,7 @@ public class GatewayResultService {
  @org.springframework.beans.factory.annotation.Autowired private org.springframework.core.env.Environment environment;
  @org.springframework.beans.factory.annotation.Autowired private AgentPreviewService previews;
  @org.springframework.beans.factory.annotation.Autowired private RiskUserLockService riskLocks;
+ @org.springframework.beans.factory.annotation.Autowired private AuditService audit;
  public GatewayResultService(GatewayTurnService t,AgentCapabilityService c,AgentGatewayMapper m,ContextService s,ObjectMapper j,PlatformTransactionManager manager){turns=t;capabilities=c;mapper=m;contexts=s;json=j;tx=new TransactionTemplate(manager);}
  public Map<String,Object> validate(String token,AgentResultDTO r){
   if(token==null||!token.matches("[a-f0-9]{64}"))throw GatewayTurnService.denied();var identity=mapper.grant(hash(token));if(identity==null)throw GatewayTurnService.denied();
@@ -62,10 +63,29 @@ public class GatewayResultService {
  public AgentAckVO saved(String turnId){return tx.execute(s->{var g=turns.lock(turnId,false);if(g.getOutputVersion()==null)throw conflict();return ack(g);});}
  private AgentAckVO ack(AgentGatewayTurnEntity g){var row=mapper.lockTurn(g.getUserId(),g.getTurnId());if(!row.getState().equals("COMPLETED")||!Objects.equals(row.getOutputVersion(),g.getOutputVersion()))throw conflict();try{return new AgentAckVO(g.getTurnId(),g.getOutputVersion(),g.getResultHash(),json.readValue(row.getResponseJson(),new TypeReference<Map<String,Object>>(){}));}catch(java.io.IOException e){throw new IllegalStateException(e);}}
  public void acknowledged(String turnId,String resultHash,long outputVersion){tx.executeWithoutResult(s->{var g=turns.lock(turnId,false);if(!Objects.equals(g.getResultHash(),resultHash)||!Objects.equals(g.getOutputVersion(),outputVersion))throw conflict();g.setState("ACKED");g.setReconcileFailures(0);require(mapper.updateGateway(g));});}
- public void deferred(String turnId,boolean unavailable){tx.executeWithoutResult(s->{var g=turns.lock(turnId,false);if(Set.of("ACKED","INTERRUPTED").contains(g.getState()))return;g.setNextCheckAt(turns.now().plusSeconds(30));if(unavailable){g.setReconcileFailures(Math.min(3,g.getReconcileFailures()+1));if(g.getReconcileFailures()==3){g.setState("PAUSED");LOG.warn("Agent reconciliation paused; original turn {} requires review",turnId);}}else g.setReconcileFailures(0);require(mapper.updateGateway(g));});}
- public void noRun(String turnId){tx.executeWithoutResult(s->{var g=turns.lock(turnId,false);if(g.getOutputVersion()!=null){g.setState("PAUSED");}else{contexts.interrupt(turns.lease(g));g.setState("INTERRUPTED");}mapper.revoke(g.getUserId(),turnId);g.setNextCheckAt(turns.now().plusSeconds(30));require(mapper.updateGateway(g));});}
- public void interrupted(String turnId){noRun(turnId);}
- public void pause(String turnId){tx.executeWithoutResult(s->{var g=turns.lock(turnId,false);if(g.getState().equals("ACKED"))return;g.setState("PAUSED");g.setNextCheckAt(turns.now().plusSeconds(30));require(mapper.updateGateway(g));LOG.warn("Agent result requires review; original turn {} retained",turnId);});}
+ /** 受控结束：只有“已暂停且没有可核验结果”的轮次可以由用户结束；终态保留原请求与证据。 */
+ public java.util.Map<String,Object> close(String turnId){return tx.execute(s->{var g=turns.lock(turnId,false);
+  if("INTERRUPTED".equals(g.getState())){var already=new java.util.LinkedHashMap<String,Object>();already.put("state","INTERRUPTED");already.put("hasOutput",false);already.put("closed",true);return already;}
+  if("ACKED".equals(g.getState()))throw new BankException("CONFLICT","本轮已完成，请先核对原回答，不能当作未完成轮次结束");
+  if(!g.getState().equals("PAUSED"))throw new BankException("CONFLICT","本轮仍在执行或结果未定，请先核对原单再结束");
+  if(g.getOutputVersion()!=null)throw new BankException("CONFLICT","本轮已有可核验结果，请先核对原回答");
+  contexts.interrupt(turns.lease(g));g.setState("INTERRUPTED");g.setNextCheckAt(turns.now().plusSeconds(30));note(g,"AGENT_CLOSED_BY_USER","USER_CLOSED_AFTER_REVIEW");require(mapper.updateGateway(g));mapper.revoke(g.getUserId(),turnId);
+  LOG.warn("Agent turn {} closed by user after review",turnId);
+  var out=new java.util.LinkedHashMap<String,Object>();out.put("state","INTERRUPTED");out.put("hasOutput",false);out.put("closed",true);return out;});}
+ public void deferred(String turnId,boolean unavailable){deferred(turnId,unavailable,"AGENT_RESULT_PENDING");}
+ /** 失败原因不再只留 +1/−1 计数：暂停/中断时把真实原因码写入审计，供操作者核对。 */
+ public void deferred(String turnId,boolean unavailable,String reason){tx.executeWithoutResult(s->{var g=turns.lock(turnId,false);if(Set.of("ACKED","INTERRUPTED").contains(g.getState()))return;g.setNextCheckAt(turns.now().plusSeconds(30));if(unavailable){g.setReconcileFailures(Math.min(3,g.getReconcileFailures()+1));if(g.getReconcileFailures()==3){g.setState("PAUSED");note(g,"AGENT_RECONCILE_PAUSED",reason);LOG.warn("Agent reconciliation paused; original turn {} requires review ({})",turnId,reason);}}else g.setReconcileFailures(0);require(mapper.updateGateway(g));});}
+ public void noRun(String turnId){noRun(turnId,"AGENT_RUN_MISSING");}
+ public void noRun(String turnId,String reason){tx.executeWithoutResult(s->{var g=turns.lock(turnId,false);if(g.getOutputVersion()!=null){g.setState("PAUSED");note(g,"AGENT_RESULT_REVIEW",reason);}else{contexts.interrupt(turns.lease(g));g.setState("INTERRUPTED");note(g,"AGENT_INTERRUPTED",reason);}mapper.revoke(g.getUserId(),turnId);g.setNextCheckAt(turns.now().plusSeconds(30));require(mapper.updateGateway(g));});}
+ public void interrupted(String turnId){noRun(turnId,"AGENT_PERMISSION_DENIED");}
+ public void pause(String turnId){pause(turnId,"AGENT_RESULT_REVIEW");}
+ public void pause(String turnId,String reason){tx.executeWithoutResult(s->{var g=turns.lock(turnId,false);if(g.getState().equals("ACKED"))return;g.setState("PAUSED");g.setNextCheckAt(turns.now().plusSeconds(30));note(g,"AGENT_PAUSED",reason);require(mapper.updateGateway(g));LOG.warn("Agent result requires review; original turn {} retained ({})",turnId,reason);});}
+ /** 审计只记原因，不记密钥、凭证或模型正文。 */
+ private void note(AgentGatewayTurnEntity g,String event,String reason){
+  if(audit==null)return;
+  String safe=reason==null||reason.isBlank()?"UNSPECIFIED":reason.replaceAll("[^A-Za-z0-9_.:/-]","_").substring(0,Math.min(120,reason.length()));
+  try{audit.record(g.getUserId(),g.getTurnId(),event+" · "+safe);}catch(RuntimeException failure){LOG.warn("Audit write failed for turn {} ({})",g.getTurnId(),event);}
+ }
  private JsonNode tree(String s){try{return json.readTree(s);}catch(Exception e){throw new IllegalStateException(e);}}
  private String encode(Object o){try{return json.writeValueAsString(o);}catch(Exception e){throw new IllegalStateException(e);}}
  private static BankException conflict(){return new BankException("CONFLICT","原结果、证据或输入版本不一致，停止自动完成");}
