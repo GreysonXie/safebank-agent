@@ -75,6 +75,11 @@ class NotMoneyTest(unittest.TestCase):
             with self.subTest(text=text):
                 self.assertEqual(parse(text), [])
 
+    def test_fractions_and_alphanumeric_ids_are_not_money(self):
+        self.assertEqual(parse('每个月把退休金十分之一存起来'), [])
+        self.assertEqual(parse('帮我把登录密码改成abc123'), [])
+        self.assertEqual([item.minor for item in parse('R2和R3各买10万，一年期')], [10000000])
+
     def test_virtual_card_number_is_not_money(self):
         self.assertEqual(parse('卡号6222021234567890123'), [])
 

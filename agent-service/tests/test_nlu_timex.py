@@ -144,6 +144,58 @@ class UnsupportedTest(unittest.TestCase):
         self.assertEqual(find('钱都去哪了', TODAY), [])
 
 
+class MoreColloquialTest(unittest.TestCase):
+    """写语料时被真实问句逼出来的说法：再上个月、下礼拜、第N季度、YYYY-MM、上周三、上半年。"""
+
+    def test_zai_shang_ge_yue(self):
+        found = find('比再上个月呢', TODAY)
+        self.assertEqual([(item.start, item.end) for item in found],
+                         [(DAY(2026, 8, 1), DAY(2026, 8, 31))])
+
+    def test_next_week_variants(self):
+        for text in ('下礼拜', '下周', '下个星期'):
+            with self.subTest(text=text):
+                timex = first(text, TODAY)
+                self.assertEqual((timex.start, timex.end), (DAY(2026, 11, 2), DAY(2026, 11, 8)))
+
+    def test_quarter_number(self):
+        timex = first('一季度', TODAY)
+        self.assertEqual((timex.start, timex.end), (DAY(2026, 1, 1), DAY(2026, 3, 31)))
+        timex = first('第四季度', TODAY)
+        self.assertEqual((timex.start, timex.end), (DAY(2026, 10, 1), DAY(2026, 10, 31)))
+        self.assertIn('尚未结束', timex.assumption)
+
+    def test_iso_month(self):
+        timex = first('给我看看 2026-08 的账单', TODAY)
+        self.assertEqual((timex.start, timex.end, timex.bucket), (DAY(2026, 8, 1), DAY(2026, 8, 31), 'month'))
+
+    def test_weekday(self):
+        for text, expected in [('上周三', DAY(2026, 10, 21)), ('这周五', DAY(2026, 10, 30)),
+                               ('上周日', DAY(2026, 10, 25)), ('下周一', DAY(2026, 11, 2)),
+                               ('本周六', DAY(2026, 10, 31))]:
+            with self.subTest(text=text):
+                self.assertEqual(first(text, TODAY).start, expected)
+
+    def test_half_year(self):
+        timex = first('上半年花了多少', TODAY)
+        self.assertEqual((timex.start, timex.end), (DAY(2026, 1, 1), DAY(2026, 6, 30)))
+        timex = first('下半年', TODAY)
+        self.assertEqual((timex.start, timex.end), (DAY(2026, 7, 1), DAY(2026, 10, 31)))
+        self.assertIn('尚未结束', timex.assumption)
+
+    def test_month_range_with_relative_year(self):
+        found = find('从今年3月到8月呢', TODAY)
+        self.assertEqual(len(found), 1)
+        self.assertEqual((found[0].start, found[0].end), (DAY(2026, 3, 1), DAY(2026, 8, 31)))
+        found = find('去年3月到8月', TODAY)
+        self.assertEqual((found[0].start, found[0].end), (DAY(2025, 3, 1), DAY(2025, 8, 31)))
+
+    def test_vague_duration_is_flagged(self):
+        self.assertEqual(find('半年花在孩子身上多少钱', TODAY), [])
+        self.assertIn('含糊期间', unsupported('半年花在孩子身上多少钱', TODAY))
+        self.assertIn('含糊期间', unsupported('帮我把这几个月开销挤一挤', TODAY))
+
+
 class MultipleExpressionTest(unittest.TestCase):
     def test_two_expressions_in_order(self):
         found = find('上个月比上上个月多花了多少', TODAY)

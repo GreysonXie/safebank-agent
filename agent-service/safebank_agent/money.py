@@ -33,8 +33,8 @@ _CN_DIGITS = {
 _CN_UNITS = {'十': 10, '百': 100, '千': 1000}
 _CN_BIG = {'万': 10000, '亿': 100000000}
 
-# 货币单位后面不该再出现这些字，否则说明命中的不是一笔钱（日期、年龄、次数等）。
-_NOT_MONEY_AFTER = r'(?![0-9零〇一二三四五六七八九十百千万亿年月日号岁个张次点周季度天晚夜小时分钟%])'
+# 货币单位后面不该再出现这些字，否则说明命中的不是一笔钱（日期、次数、量词等）。
+_NOT_MONEY_AFTER = r'(?![0-9零〇一二三四五六七八九十百千万亿年月日号岁个张次点周季度天晚夜小时分钟回堆些遍趟家杯份斤位%])'
 # 前面已经贴着数字、小数点或日期分隔符时不是一笔独立的钱。
 _NOT_MONEY_BEFORE = r'(?<![\d.．/、-])'
 
@@ -52,7 +52,7 @@ _CURRENCY = re.compile(
 _SMALL_CURRENCY = re.compile(
     r'(?P<main>' + _NUM_SMALL + r')(?P<cur>角|毛|分)'
     r'(?P<sub>[0-9一二三四五六七八九两])?(?:分)?'
-    r'(?![\d零〇一二三四五六七八九十百千万亿元块毛角钱])'
+    r'(?![\d零〇一二三四五六七八九十百千万亿元块毛角钱之])'
 )
 # "3万5"「一千五」「一百五」：单位后面跟一个孤零零的数字，按"下一级单位"读。
 # 前后都要求不是数字字，保证整段数字正好是"X单位Y"，不会把「一千五百五」切成两段。
@@ -67,11 +67,17 @@ _BARE_BIG = re.compile(
 )
 # "¥500"「￥1500」：符号在前，单位已知，不算歧义
 _SYMBOL = re.compile(r'[¥￥]\s*(?P<main>' + _NUM_SMALL + r')(?P<big>万|亿)?')
-# "转200"「1500」：连单位都没有，按元处理但标记歧义
-_BARE = re.compile(r'(?<![\d.．¥￥])' + _NUM_SMALL + _NOT_MONEY_AFTER)
+# "转200"「1500」：连单位都没有，按元处理但标记歧义。
+# 排除紧跟在字母（abc123）、"."、"分/之"（十分之一）后面的数字：那些不是一笔钱。
+_BARE = re.compile(r'(?<![\d.．¥￥分之A-Za-z])' + _NUM_SMALL + _NOT_MONEY_AFTER)
 
 _PHONE_LIKE = re.compile(r'\d{11,}')
 _YEAR_LIKE = re.compile(r'(?:19|20)\d{2}')
+# 购物节名字与排名里的数字不是金额（双十一、双11、前十、前5名）
+_NOT_MONEY_WORDS = re.compile(
+    r'双十一|双11|双十二|双12|十一假期|十一长假|十一期间'
+    r'|(?:前|第|top|TOP|Top)\s*[一二三四五六七八九十\d]+'
+)
 _SHORTHAND_UNITS = {**_CN_BIG, **_CN_UNITS}
 # 结尾只剩单个数字的口语读法（「一千五百五」可能是 1550 也可能是 1505），不静默取一种
 _TRAILING_BARE = re.compile(r'[万千百]([0-9零〇一二三四五六七八九两])$')
@@ -236,6 +242,7 @@ def parse(text):
     source = re.sub(r'(?<=\d),(?=\d{3}(?!\d))', '', source)
     found = []
     taken = [match.span() for match in _DATE_SPAN.finditer(source)]
+    taken += [match.span() for match in _NOT_MONEY_WORDS.finditer(source)]
 
     def take(pattern, factory):
         for match in pattern.finditer(source):

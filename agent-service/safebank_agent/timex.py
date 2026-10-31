@@ -22,7 +22,7 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date, timedelta
 
 from .money import cn_number
@@ -35,8 +35,10 @@ _CONNECTOR = r'(?:到|至|~|～|—|－|-|一直到)'
 _DAY_WORDS = [('大前天', 3), ('前天', 2), ('前日', 2), ('昨天', 1), ('昨日', 1), ('今天', 0), ('今日', 0)]
 _WEEK_WORDS = [('上上个星期', -2), ('上上个礼拜', -2), ('上上星期', -2), ('上上礼拜', -2), ('上上', -2),
                ('上个星期', -1), ('上个礼拜', -1), ('上星期', -1), ('上礼拜', -1), ('上周', -1),
+               ('下个星期', 1), ('下个礼拜', 1), ('下星期', 1), ('下礼拜', 1), ('下周', 1),
                ('这个星期', 0), ('这个礼拜', 0), ('本星期', 0), ('这星期', 0), ('这礼拜', 0), ('本周', 0), ('这周', 0)]
-_MONTH_WORDS = [('上上个月', -2), ('上上月', -2), ('上个月', -1), ('上月', -1), ('前一个月', -1), ('前一月', -1),
+_MONTH_WORDS = [('再上一个月', -2), ('再上个月', -2), ('上上个月', -2), ('上上月', -2),
+                ('上个月', -1), ('上月', -1), ('前一个月', -1), ('前一月', -1),
                 ('这个月', 0), ('这月', 0), ('本月', 0), ('当月', 0),
                 ('下个月', 1), ('下月', 1), ('下一个月', 1)]
 _QUARTER_WORDS = [('上个季度', -1), ('上季度', -1), ('这个季度', 0), ('本季度', 0), ('这季度', 0)]
@@ -57,6 +59,7 @@ _UNSUPPORTED_PATTERNS = (
     (re.compile(r'发(?:了|放)?工资|工资(?:到账|到手|发放)|发薪'), '发工资'),
     (re.compile(r'最近'), '最近'),
     (re.compile(r'前段时间|上段时间|这阵子'), '前段时间'),
+    (re.compile(r'半年|几个月|这段时间|前两天|前几天|这些天|那几天'), '含糊期间'),
     (re.compile(r'账单周期'), '账单周期'),
 )
 
@@ -66,24 +69,44 @@ _FIXED_HOLIDAYS = [
     (re.compile(r'元旦|新年'), (1, 1), (1, 1), '元旦'),
 ]
 
+_QUARTER_NO = re.compile(r'第?(?P<q>[一二三四1-4])\s*季度')
+_ISO_MONTH = re.compile(r'(?P<y>\d{4})-(?P<m>0?[1-9]|1[0-2])(?![\d-])')
+_WEEKDAY = re.compile(r'(?P<which>上上|上个|上|这|本|下)\s*个?\s*(?:周|星期|礼拜)(?P<wd>[一二三四五六日天])')
+_HALF = re.compile(r'(?:(?:(?P<y>\d{4})\s*年|(?P<rel>今年|去年|前年))\s*)?(?P<which>上|下)\s*半年')
 _RANGE_MD = re.compile(
     r'(?:(?P<y1>\d{4})\s*年\s*)?(?P<m1>' + _NUM + r')\s*月\s*(?P<d1>' + _NUM + r')\s*[日号]\s*'
     + _CONNECTOR + r'\s*'
-    r'(?:(?P<y2>\d{4})\s*年\s*)?(?P<m2>' + _NUM + r')\s*月\s*(?P<d2>' + _NUM + r')\s*[日号]'
+    r'(?:(?P<y2>\d{4})\s*年\s*)?(?:月?(?P<m2>' + _NUM + r')\s*月\s*)?(?P<d2>' + _NUM + r')\s*[日号]'
+)
+# 口语里「10月8号到15号」常省略后一个月份，沿用前一个
+_RANGE_MD_SHORT = re.compile(
+    r'(?:(?P<y1>\d{4})\s*年\s*)?(?P<m1>' + _NUM + r')\s*月\s*(?P<d1>' + _NUM + r')\s*[日号]\s*'
+    + _CONNECTOR + r'\s*(?P<d2>' + _NUM + r')\s*[日号]'
 )
 _RANGE_M = re.compile(
-    r'(?:(?P<y1>\d{4})\s*年\s*)?(?P<m1>' + _NUM + r')\s*月份?\s*' + _CONNECTOR + r'\s*'
-    r'(?:(?P<y2>\d{4})\s*年\s*)?(?P<m2>' + _NUM + r')\s*月份?'
+    r'(?:(?:(?P<y1>\d{4})\s*年|(?P<rel1>今年|去年|前年))\s*)?(?P<m1>' + _NUM + r')\s*月份?\s*'
+    + _CONNECTOR + r'\s*'
+    r'(?:(?:(?P<y2>\d{4})\s*年|(?P<rel2>今年|去年|前年))\s*)?(?P<m2>' + _NUM + r')\s*月份?'
 )
 _OFFSET_DAY = re.compile(
     r'(?P<which>上上|上个|上|这|本|下)\s*个?\s*月\s*(?P<day>' + _NUM + r')\s*[日号]'
 )
 _MONTH_DAY = re.compile(r'(?:(?P<y>\d{4})\s*年\s*)?(?P<m>' + _NUM + r')\s*月\s*(?P<d>' + _NUM + r')\s*[日号]')
 _ISO_DATE = re.compile(r'(?P<y>\d{4})-(?P<m>\d{1,2})-(?P<d>\d{1,2})')
-_MONTH = re.compile(r'(?:(?P<y>\d{4})\s*年\s*)?(?P<m>' + _NUM + r')\s*月份?')
+_MONTH = re.compile(
+    r'(?:(?P<y>\d{4})\s*年|(?P<rel>今年|去年|前年))?\s*(?P<m>' + _NUM + r')\s*月份?'
+)
 _YEAR = re.compile(r'(?P<y>\d{4})\s*年(?!\s*(?:' + _NUM + r')\s*月)')
 _NEAR = re.compile(
     r'(?:近|最近|过去)\s*(?P<n>' + _NUM + r'|半|一)\s*个?\s*(?P<unit>天|日|周|星期|礼拜|月|年)'
+)
+# 客户明确说了粒度时，按他的说法给建议
+_GRAIN_WORDS = (
+    ('day', re.compile(r'每天|每日|按天|逐日|日明细')),
+    ('week', re.compile(r'每周|按周|周明细')),
+    ('month', re.compile(r'每月|按月|月明细')),
+    ('quarter', re.compile(r'每季度|按季度|季度明细')),
+    ('year', re.compile(r'每年|按年|年度明细')),
 )
 
 
@@ -137,6 +160,15 @@ def _year_for_month(month, today):
     return today.year - 1, '未写年份，按最近一个已过去的 %d 月（%d 年）理解' % (month, today.year - 1)
 
 
+def _prefix_year(numeric, relative, today):
+    """前缀年份：写死的 2025，或者口语的 今年/去年/前年。"""
+    if numeric:
+        return int(numeric)
+    if relative:
+        return today.year + {'今年': 0, '去年': -1, '前年': -2}[relative]
+    return None
+
+
 def _candidates(text, today):
     """所有候选。返回 (起点, 终点, Timex)；挑选交给 :func:`find`。"""
     found = []
@@ -163,17 +195,71 @@ def _candidates(text, today):
             start, end = end, start
         add(match, Timex(match.group(0), start, end, 'day', '日期区间'))
 
+    for match in _RANGE_MD_SHORT.finditer(text):
+        y1 = _int(match.group('y1'))
+        m1, d1, d2 = _int(match.group('m1')), _int(match.group('d1')), _int(match.group('d2'))
+        if None in (m1, d1, d2) or not 1 <= m1 <= 12:
+            continue
+        year = y1 or _year_for_month(m1, today)[0]
+        try:
+            start, end = date(year, m1, d1), date(year, m1, d2)
+        except ValueError:
+            continue
+        if start > end:
+            start, end = end, start
+        add(match, Timex(match.group(0), start, end, 'day', '日期区间'))
+
     for match in _RANGE_M.finditer(text):
         m1, m2 = _int(match.group('m1')), _int(match.group('m2'))
         if None in (m1, m2) or not (1 <= m1 <= 12 and 1 <= m2 <= 12):
             continue
-        y1, y2 = _int(match.group('y1')), _int(match.group('y2'))
-        base = y1 or _year_for_month(m2, today)[0]
+        year1 = _prefix_year(match.group('y1'), match.group('rel1'), today)
+        year2 = _prefix_year(match.group('y2'), match.group('rel2'), today)
+        base = year1 or year2 or _year_for_month(m2, today)[0]
         start = date(base, m1, 1)
-        end = _month_end(date(y2 or base, m2, 1))
+        end = _month_end(date(year2 or base, m2, 1))
         if start > end:
             start, end = end, start
         add(match, Timex(match.group(0), start, end, 'month', '月份区间'))
+
+    for match in _HALF.finditer(text):
+        year = _prefix_year(match.group('y'), match.group('rel'), today) or today.year
+        note = ''
+        if match.group('which') == '上':
+            start, end = date(year, 1, 1), date(year, 6, 30)
+        else:
+            start, end = date(year, 7, 1), date(year, 12, 31)
+            if year == today.year and end > today:
+                end = today
+                note = '下半年尚未结束，区间截至业务日期 %s' % today
+        add(match, Timex(match.group(0), start, end, 'month', match.group(0), note))
+
+    for match in _QUARTER_NO.finditer(text):
+        q = _int(match.group('q'))
+        if q is None or not 1 <= q <= 4:
+            continue
+        start = date(today.year, (q - 1) * 3 + 1, 1)
+        note = ''
+        if start > today:
+            start = date(today.year - 1, start.month, 1)
+            note = '未写年份，按最近一个已过去的第%d季度理解' % q
+        end = _quarter_end(start)
+        if end > today and start <= today:
+            end = today
+            note = note or '该季度尚未结束，区间截至业务日期 %s' % today
+        add(match, Timex(match.group(0), start, end, 'quarter', '第%d季度' % q, note))
+
+    for match in _ISO_MONTH.finditer(text):
+        y = int(match.group('y'))
+        m = int(match.group('m'))
+        start = date(y, m, 1)
+        add(match, Timex(match.group(0), start, _month_end(start), 'month', '%d年%d月' % (y, m)))
+
+    for match in _WEEKDAY.finditer(text):
+        index = {'一': 0, '二': 1, '三': 2, '四': 3, '五': 4, '六': 5, '日': 6, '天': 6}[match.group('wd')]
+        offset = {'上上': -2, '上个': -1, '上': -1, '这': 0, '本': 0, '下': 1}[match.group('which')]
+        value = _week_start(today) + timedelta(days=7 * offset + index)
+        add(match, Timex(match.group(0), value, value, 'day', match.group(0)))
 
     for match in _OFFSET_DAY.finditer(text):
         day = _int(match.group('day'))
@@ -212,7 +298,14 @@ def _candidates(text, today):
         if m is None or not 1 <= m <= 12:
             continue
         y = _int(match.group('y'))
-        year, note = (y, '') if y else _year_for_month(m, today)
+        if y:
+            year, note = y, ''
+        else:
+            prefix = _prefix_year(None, match.group('rel'), today)
+            if prefix:
+                year, note = prefix, ''
+            else:
+                year, note = _year_for_month(m, today)
         start = date(year, m, 1)
         add(match, Timex(match.group(0), start, _month_end(start), 'month', '%d年%d月' % (year, m), note))
 
@@ -231,6 +324,9 @@ def _candidates(text, today):
 
     for word, offset in _DAY_WORDS:
         for match in re.finditer(word, text):
+            # 「前两天」是含糊说法，不是「前天」+「两」
+            if word in ('前天', '前日') and text[match.end():match.end() + 1] in ('两', '几', '些'):
+                continue
             value = today - timedelta(days=offset)
             add(match, Timex(match.group(0), value, value, 'day', word))
 
@@ -320,8 +416,18 @@ def _chosen(text, today):
 
 
 def find(text, today):
-    """返回文本里所有时间表达，按出现顺序；重叠时保留更长/更具体的一个。"""
-    return [timex for _, _, timex in _chosen(text, today)]
+    """返回文本里所有时间表达，按出现顺序；重叠时保留更长/更具体的一个。
+
+    如果客户明确说了粒度（每天/按周/按月…），返回的 ``bucket`` 按他说的改；
+    这只是给调用方的建议，最终粒度仍由查询参数决定。
+    """
+    chosen = [timex for _, _, timex in _chosen(text, today)]
+    if isinstance(text, str):
+        for bucket, pattern in _GRAIN_WORDS:
+            if pattern.search(text):
+                chosen = [replace(timex, bucket=bucket) for timex in chosen]
+                break
+    return chosen
 
 
 def first(text, today):
