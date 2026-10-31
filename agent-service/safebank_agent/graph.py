@@ -96,8 +96,8 @@ def compact_facts(facts,question):
     refund_rows={key.rsplit('.',1)[0] for key,value in facts.items() if re.fullmatch(r'statement_\d{4}_\d{2}\.transactions\.\d+\.category',key) and value.get('display')=='退款'} if '退款' in requested_scope else set()
     def priority(key):
         if key.rsplit('.',1)[0] in refund_rows:return 0
-        # 区间查询的总计与回显口径优先保留，避免被分桶明细挤出目录。
-        if '.totals.' in key or re.search(r'statement_(?:range|query)_.*\.query\.',key):return -1
+        # 区间查询的总计、回显口径与对照段优先保留，避免被分桶明细挤出目录。
+        if '.totals.' in key or '.comparison.' in key or re.search(r'statement_(?:range|query)_.*\.query\.',key):return -1
         if '.rows.items.' in key or '.transactions.' in key:return 3 if any(x in requested_scope for x in ('逐笔','明细','退款','这笔','这条','该笔','商户','交易用途')) else 5
         if '.buckets.' in key:return 0
         if '.anomaly_candidates.' in key:return 0 if any(x in question for x in ('大额','核对','异常','维修')) else 2
@@ -202,8 +202,12 @@ STATEMENT_DATE=re.compile(r'20\d{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])
 
 
 def statement_query_args(args):
-    """Same closed contract as the Java engine: only these keys, only these types."""
+    """Same closed contract as the Java engine: only these keys, only these types.
+
+    模型常把可选参数写成 null 占位，null 表示“没有提供”，不当作通配或默认值。
+    """
     if not isinstance(args,dict) or not STATEMENT_QUERY_KEYS.issuperset(args):raise ProtocolError('INVALID_TOOL_SCOPE')
+    args={key:value for key,value in args.items() if value is not None}
     for key in ('start','end'):
         value=args.get(key)
         if not isinstance(value,str) or not STATEMENT_DATE.fullmatch(value):raise ProtocolError('INVALID_TOOL_SCOPE')
@@ -212,11 +216,13 @@ def statement_query_args(args):
     if 'topN' in args and (type(args['topN']) is not int or not 1<=args['topN']<=20):raise ProtocolError('INVALID_TOOL_SCOPE')
     rows=args.get('rows')
     if rows is not None and rows is not False:
+        rows={key:value for key,value in rows.items() if value is not None} if isinstance(rows,dict) else rows
         if not isinstance(rows,dict) or not set(rows)<={'offset','limit'} or not all(type(value) is int and value>=0 for value in rows.values()):
             raise ProtocolError('INVALID_TOOL_SCOPE')
     filter_value=args.get('filter')
     if filter_value is not None:
         if not isinstance(filter_value,dict) or not STATEMENT_FILTER_KEYS.issuperset(filter_value):raise ProtocolError('INVALID_TOOL_SCOPE')
+        filter_value={key:value for key,value in filter_value.items() if value is not None}
         if 'direction' in filter_value and filter_value['direction'] not in STATEMENT_DIRECTIONS:raise ProtocolError('INVALID_TOOL_SCOPE')
         for key in ('categories','merchants','accounts'):
             if key in filter_value:
@@ -226,6 +232,20 @@ def statement_query_args(args):
         for key in ('minAmountMinor','maxAmountMinor'):
             if key in filter_value and (type(filter_value[key]) is not int or filter_value[key]<0):raise ProtocolError('INVALID_TOOL_SCOPE')
         if 'excludeInternal' in filter_value and type(filter_value['excludeInternal']) is not bool:raise ProtocolError('INVALID_TOOL_SCOPE')
+
+
+PLAN_REJECTION_GUIDANCE={
+    'INVALID_TOOL_SCOPE':'工具参数不符合合同：statement_query 只接受 start/end(YYYY-MM-DD，必填)、bucket、groupBy、filter、compare、topN、rows，可选字段不要留 null 占位；只问单月才用 statement{month}；不要给未列出的字段。',
+    'INVALID_MONTH':'月份格式必须是 YYYY-MM；查一段时间请改用 statement_query 的 start/end。',
+}
+
+
+def plan_rejection_tools(value):
+    """诊断只用工具名，不记录客户文本或参数值。"""
+    tools=value.get('tools') if isinstance(value,dict) else None
+    if not isinstance(tools,list):return ''
+    names=[str(item.get('tool'))[:40] for item in tools if isinstance(item,dict)]
+    return 'tools='+','.join(names)
 
 
 def planning(value):
@@ -304,6 +324,8 @@ def build(saver, context):
                 if required_reads and not any(tool['tool'] in ('mandate_receipt','savings_task_prepare') for tool in planned['tools']):raise ProtocolError('CURRENT_MANDATE_QUERY_REQUIRED')
                 break
             except ProtocolError as error:
+                import sys as _diag_sys
+                _diag_sys.stderr.write('PLAN_REJECTED %s %s\n' % (str(error), plan_rejection_tools(value)))
                 if str(error)=='INVALID_TASK_PLAN' and isinstance(value,dict) and isinstance(value.get('taskPlan'),dict):
                     nodes=value['taskPlan'].get('nodes',[])
                     if isinstance(nodes,list):
@@ -316,7 +338,7 @@ def build(saver, context):
                             missing.update(field for field in fields if not isinstance(params.get(field),str) or not params[field].strip())
                         if missing:input_value['missing_task_fields']=sorted(missing)
                 if retries or state['request'].get('modelRequestLimit',5)<3 or str(error) not in ('INVALID_PLAN','INVALID_TASK_PLAN','INVALID_CLARIFICATION','INVALID_MONTH','INVALID_TOOL_SCOPE','CURRENT_MANDATE_QUERY_REQUIRED','UNSAFE_TRANSFER_CONTEXT','CHAT_CREDENTIAL_COLLECTION','SAVINGS_ANALYSIS_MONTH_REQUIRED','DEFERRED_OPERATION','AMENDMENT_TARGET_REQUIRED','CLARIFICATION_NUMERIC_LITERAL','REVOKE_PREVIEW_REQUIRED','REDUNDANT_RECIPIENT_CLARIFICATION'):raise
-                retries=1;input_value['validation_error']=str(error)
+                retries=1;input_value['validation_error']=str(error)+('｜'+PLAN_REJECTION_GUIDANCE[str(error)] if str(error) in PLAN_REJECTION_GUIDANCE else '')
         return {'plan':planned,'operation_deferred':deferred,'clarification_context':[] if deferred else bounded_clarification_context(state.get('clarification_context',[])),'transfer_safety_hold':held,'safety_blocked':blocked,'continuation_plan':{},'plan_repair':retries,'receipts':[],'answer':{},'repair':0,'credential_repair':False,'local_repairs':0,'validated':False,'validation_error':'','draft_error':'','reference_hints':[]}
     def tools(state):
         receipts=[]

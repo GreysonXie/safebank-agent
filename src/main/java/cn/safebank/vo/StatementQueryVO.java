@@ -57,6 +57,8 @@ public record StatementQueryVO(
         @JsonProperty("current_minor") long currentMinor,
         @JsonProperty("baseline_minor") long baselineMinor,
         @JsonProperty("difference_minor") long differenceMinor,
+        @JsonProperty("difference_magnitude_minor") long differenceMagnitudeMinor,
+        String direction,
         @JsonProperty("current_count") int currentCount,
         @JsonProperty("baseline_count") int baselineCount) {}
 

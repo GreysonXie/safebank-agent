@@ -269,6 +269,8 @@ class StatementQueryEngineTest {
         assertEquals(99999, shopping.currentMinor());
         assertEquals(0, shopping.baselineMinor());
         assertEquals(99999, shopping.differenceMinor());
+        assertEquals(99999, shopping.differenceMagnitudeMinor(), "增减幅度带正数，避免“少-560.00元”这种叠加");
+        assertEquals("增加", shopping.direction());
     }
 
     @Test void emptyBaselineIsReportedInsteadOfPretendingAChange() {
@@ -360,7 +362,7 @@ class StatementQueryEngineTest {
     @Test void notesAlwaysCarryTheSharedRules() {
         var result = engine().query("u1", args("{\"start\":\"2026-02-01\",\"end\":\"2026-02-28\",\"rows\":false}"));
         assertTrue(result.notes().stream().anyMatch(note -> note.contains("内部转账不计入收入支出")));
-        assertTrue(result.notes().stream().anyMatch(note -> note.contains("仅为候选")));
+        assertTrue(result.notes().stream().anyMatch(note -> note.contains("仅为异常候选")));
         assertTrue(result.notes().stream().anyMatch(note -> note.contains("含首尾两天")));
         assertEquals("2026-02-01", result.coverage().firstBookedOn());
         assertEquals("2026-02-11", result.coverage().lastBookedOn());

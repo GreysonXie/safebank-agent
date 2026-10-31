@@ -346,9 +346,10 @@ public class StatementQueryService {
         var compareGroups = keys.stream().map(key -> {
             var current = groups.getOrDefault(key, new Acc());
             var baseline = baseGroups.getOrDefault(key, new Acc());
+            long difference = current.amountOf(measure) - baseline.amountOf(measure);
             return new StatementQueryVO.ComparisonGroup(key, groupLabel(key, plan.groupBy(), labels),
-                current.amountOf(measure), baseline.amountOf(measure),
-                current.amountOf(measure) - baseline.amountOf(measure), current.count, baseline.count);
+                current.amountOf(measure), baseline.amountOf(measure), difference, Math.abs(difference),
+                difference < 0 ? "减少" : difference > 0 ? "增加" : "持平", current.count, baseline.count);
         }).sorted(Comparator.<StatementQueryVO.ComparisonGroup>comparingLong(group -> Math.abs(group.differenceMinor())).reversed()
             .thenComparing(StatementQueryVO.ComparisonGroup::key))
             .limit(plan.topN())
@@ -418,7 +419,7 @@ public class StatementQueryService {
         else if (plan.end().isAfter(businessDate))
             notes.add("区间末段晚于业务日期 " + businessDate + "，该部分尚未发生、不计入合计；业务日期之后的桶为 0 不是数据缺失");
         notes.add("内部转账不计入收入支出；本人账户之间互转单列为内部转账");
-        notes.add(StatementRules.ANOMALY_RULE);
+        notes.add("单笔支出达到 2000 元仅为异常候选，不能据此推断欺诈");
         if (!"全部".equals(plan.filter().direction()))
             notes.add("只统计" + plan.filter().direction() + "方向的记录（按金额正负判断）");
         if (!plan.filter().categories().isEmpty()) notes.add("类别限定：" + String.join("、", plan.filter().categories()));

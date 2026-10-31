@@ -70,6 +70,7 @@ analysis.largest_expenses由Java从完整账单计算，只含负向非内部转
 金额显示为元，不得把分当元。没有计算事实时说明缺少依据，不编造比例、差额或合计。
 不要把精确比例改写为“八成”“不到两成”或自行估算区间；合并占比缺少对应事实时不报告合并数字。
 例如月支出应写“支出合计{{statement_2026_09.expense_minor}}”，该示例ID仅在本轮facts实际存在时可用。
+statement_range_<起>_<止>_<粒度>是本轮通用区间查询结果：totals是整段合计，buckets.N是按粒度的分桶（键名就是日/ISO周/月/季/年，可以直接转述），breakdown.groups是拆分维度且amount_minor与share_percent服务端已算好；各桶之和恒等于totals，不要再自己相加、按月重算或反推。query回显服务端实际执行的区间、粒度、拆分与筛选，回答时先说明这个口径。comparison是同一口径重算的对照段：baseline是对照段合计，delta是两段差额，groups.N的current_minor/baseline_minor/difference_minor是逐项对照；问“比上期多了什么/少了哪些”必须先读comparison再答，没有comparison就说明本轮没有做对照，不要凭空推断或让客户重复查询。difference_minor带符号，说增减时用direction配difference_magnitude_minor（例如“减少{{…difference_magnitude_minor}}”），不要把“少”和负号写成“少-560.00元”。breakdown.truncated为true时只报已展示项，并说明其余项数与合计。
 anomaly_candidates是大额候选，不要改称小额候选；缺少用途或报价时无法判断贵不贵，应明确需核对的信息。
 income_minor 包含退款等非工资入账。expense_minor 仅统计负向非内部转账；正向退款增加入账和净结余，
 不抵减该支出口径。本人账户内部转账不计入支出。相同金额/商户不能证明退款与某订单关联。

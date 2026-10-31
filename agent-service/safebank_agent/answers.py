@@ -75,6 +75,8 @@ def normalize_description_references(answer,rows):
 def clean_display_duplicates(answer,facts):
     """Delete adjacent copies only; retain references for final Java validation."""
     text=re.sub(r'(?:你|您)已(?:表示|说明|确认)(?:暂|先)(?:不办理|不)(?:撤销|转账)[，,]','',answer['answer']);merchants={};owners={}
+    # 同一个金额被紧挨着说两遍是渲染残留，不是新信息（如“合计30,125.20元 30,125.20元”）。
+    text=re.sub(r'((?:[0-9][0-9,]*)(?:\.[0-9]+)?\s*(?:万元|亿元|元))(?:\s*[，,、]?\s*)\1',lambda match:match[1],text)
     for key,fact in facts.items():
         display=fact.get('display')
         if not key.endswith('.merchant') or fact.get('kind')!='TEXT' or not isinstance(display,str):continue

@@ -1,7 +1,7 @@
 import unittest
 
 from safebank_agent.contracts import ProtocolError
-from safebank_agent.graph import compact_facts, planning
+from safebank_agent.graph import compact_facts, plan_rejection_tools, planning
 
 
 class StatementQueryPlanTest(unittest.TestCase):
@@ -46,6 +46,40 @@ class StatementQueryPlanTest(unittest.TestCase):
         ):
             with self.subTest(args=args):
                 self.rejects(args)
+
+    def test_null_placeholders_mean_absent_instead_of_invalid(self):
+        self.accepts({'start': '2026-08-01', 'end': '2026-10-29', 'bucket': None, 'groupBy': None, 'compare': None,
+                      'topN': None, 'rows': None,
+                      'filter': {'direction': None, 'categories': None, 'merchants': None, 'accounts': None,
+                                 'minAmountMinor': None, 'maxAmountMinor': None, 'excludeInternal': None}})
+        self.accepts({'start': '2026-08-01', 'end': '2026-10-29', 'rows': {'offset': None, 'limit': None}})
+
+    def test_rejection_logging_carries_tool_names_only(self):
+        names = plan_rejection_tools({'kind': 'analysis', 'tools': [{'tool': 'statement', 'args': {'month': '2026-09'}}]})
+        self.assertEqual(names, 'tools=statement')
+        self.assertEqual(plan_rejection_tools({'kind': 'general'}), '')
+        self.assertEqual(plan_rejection_tools('not a plan'), '')
+
+    def test_comparison_facts_outrank_buckets_in_the_catalog(self):
+        prefix = 'statement_range_2026_07_01_2026_09_30_month'
+        facts = {
+            prefix + '.comparison.baseline.expense_minor': {'display': '11090.75元', 'number': 1109075, 'kind': 'MONEY'},
+            prefix + '.comparison.groups.0.difference_minor': {'display': '3200.00元', 'number': 320000, 'kind': 'MONEY'},
+            prefix + '.totals.expense_minor': {'display': '18224.45元', 'number': 1822445, 'kind': 'MONEY'},
+        }
+        for index in range(60):
+            for metric in ('expense_minor', 'income_minor', 'net_minor', 'internal_transfer_minor', 'transaction_count'):
+                facts['%s.buckets.%d.metrics.%s' % (prefix, index, metric)] = {'display': '9.00', 'number': 900, 'kind': 'MONEY'}
+        focused = compact_facts(facts, '这季度比上季度支出多在哪')
+        for key in (prefix + '.comparison.baseline.expense_minor', prefix + '.comparison.groups.0.difference_minor',
+                    prefix + '.totals.expense_minor'):
+            self.assertIn(key, focused, '对照段与总计不能被目录预算挤掉')
+
+    def test_adjacent_duplicate_amounts_collapse(self):
+        from safebank_agent.answers import clean_display_duplicates
+        answer = {'kind': 'analysis', 'answer': '同期支出合计30,125.20元 30,125.20元，另有其余14项。'}
+        cleaned = clean_display_duplicates(answer, {})['answer']
+        self.assertEqual(cleaned, '同期支出合计30,125.20元，另有其余14项。')
 
     def test_other_tools_keep_their_exact_argument_sets(self):
         for tool, args in (('statement', {'month': '2026-09'}), ('statement_compare', {'month': '2026-09', 'comparisonMonth': '2026-08'}),
