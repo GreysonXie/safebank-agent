@@ -62,23 +62,45 @@
   if(!profileLoaded){const profile=await api('/users/profile');$('profile-name').value=profile.name;$('profile-phone').value=profile.phone;$('profile-gender').value=profile.gender;profileLoaded=true;}
   if(!loaded||balancesChanged){await loadMonths(loaded?$('statement-month').value:undefined);loaded=true;if(!years.length)await loadYears();}
  };
+ /** 未选择月份时的空态：不加载、不显示任何月度数字。 */
+ function statementUnloaded(){
+  statement=null;page=1;
+  $('statement-metrics').replaceChildren();
+  $('statement-categories').replaceChildren();
+  $('statement-trend').replaceChildren();
+  options($('tx-category'),[['','全部类别']]);
+  $('transaction-count').textContent='';
+  $('tx-filter-summary').textContent='';
+  $('tx-page-info').textContent='';
+  $('tx-prev').disabled=true;$('tx-next').disabled=true;
+  $('month-prev').disabled=true;$('month-next').disabled=true;
+  $('transaction-rows').replaceChildren();
+  const tr=node('tr'),td=node('td','请先选择要查看的月份，再加载当月账单与明细。','empty');td.colSpan=4;tr.append(td);$('transaction-rows').append(tr);
+  $('statement-status').textContent=months.length?'请选择要查看的月份（可先看上方年度账单，或从月份的“查看明细”进入）。':'暂无历史账单记录。';
+ }
  async function loadMonths(preferred){
   months=await api('/statement/months');
   options($('statement-month'),months.map(m=>[m,m.replace('-',' 年 ')+' 月']),'暂无历史账单');
-  if(preferred&&!months.includes(preferred)){months.unshift(preferred);options($('statement-month'),months.map(m=>[m,m]));}
-  if(preferred)$('statement-month').value=preferred;
-  else{const current=businessMonth();if(current&&months.includes(current))$('statement-month').value=current;}
-  const month=$('statement-month').value;
-  if(month&&$('workflow-month'))$('workflow-month').value=month;
+  $('statement-month').insertBefore(node('option','请选择月份'),$('statement-month').firstChild);
+  $('statement-month').firstChild.value='';
+  if(preferred&&!months.includes(preferred)){months.unshift(preferred);options($('statement-month'),months.map(m=>[m,m]));$('statement-month').insertBefore(node('option','请选择月份'),$('statement-month').firstChild);$('statement-month').firstChild.value='';}
+  // 只有客户明确指定或自己选择月份时才加载；打开页面不自动读某个月。
+  $('statement-month').value=preferred||'';
+  if($('workflow-month')&&!$('workflow-month').value)$('workflow-month').value=businessMonth()||months[0]||'';
   window.syncStatementPrompt?.(months);
-  if(months.length)await loadStatement();else{$('statement-status').textContent='暂无账单记录。';renderTransactions([]);}
+  if(preferred)await loadStatement();else statementUnloaded();
  }
  async function loadYears(){
   try{years=await api('/statement/years');}catch{years=[];}
-  options($('statement-year'),years.map(y=>[y,y+' 年']),'暂无年度数据');
-  const current=String((window.bankBusinessDate||'').slice(0,4));
-  if(years.includes(current))$('statement-year').value=current;
-  if(years.length)await loadYear();else{$('statement-year-status').textContent='暂无账单记录，年度汇总不可用。';$('statement-year-metrics').replaceChildren();$('statement-year-rows').replaceChildren();$('statement-year-categories').replaceChildren();}
+  // 有数据的年份 + 最近五年都给出来（没有数据的年份可选但会如实显示"无记录"）。
+  const current=Number((window.bankBusinessDate||'').slice(0,4))||new Date().getFullYear();
+  const available=new Set(years.map(Number).filter(y=>y>0));
+  const oldest=Math.min(current-4,...[...available].filter(y=>y<=current));
+  const rows=[];for(let y=current;y>=oldest;y--)rows.push([String(y),y+' 年'+(available.has(y)?'':'（无记录）')]);
+  options($('statement-year'),rows,'暂无年度数据');
+  const preferred=available.has(current)?current:(available.size?Math.max(...available):current);
+  if(rows.some(r=>r[0]===String(preferred)))$('statement-year').value=String(preferred);
+  if(rows.length)await loadYear();else{$('statement-year-status').textContent='暂无账单记录，年度汇总不可用。';$('statement-year-metrics').replaceChildren();$('statement-year-rows').replaceChildren();$('statement-year-categories').replaceChildren();}
  }
  async function loadYear(){
   const selected=$('statement-year').value;if(!selected)return;
@@ -88,7 +110,7 @@
    const data=await api('/statement/year?year='+encodeURIComponent(selected));
    if(request!==yearRequest)return;
    const coverage=data.coverage||{};
-   $('statement-year-status').textContent=selected+' 年 · '+data.record_count+' 笔交易'+(coverage.year_in_progress?' · 本年进行中':'');
+   $('statement-year-status').textContent=selected+' 年 · '+(data.record_count?data.record_count+' 笔交易'+(coverage.year_in_progress?' · 本年进行中':''):'没有查询到交易记录');
    $('statement-year-metrics').replaceChildren(metric('年度支出',money(data.expense_minor),'expense'),metric('年度收入',money(data.income_minor),'income'),metric('净收支',money(data.income_minor-data.expense_minor)),metric('交易笔数',String(data.record_count)+' 笔'));
    renderYearRows(data);
    renderCategories(data,$('statement-year-categories'));
@@ -111,7 +133,7 @@
   }));
  }
  async function loadStatement(){
-  const selected=$('statement-month').value;if(!selected)return;
+  const selected=$('statement-month').value;if(!selected){statementUnloaded();return;}
   const request=++statementRequest;
   $('statement-status').textContent='正在读取 '+selected+' 账单…';$('transaction-panel').setAttribute('aria-busy','true');
   try{
@@ -214,7 +236,7 @@
  $('statement-year').onchange=loadYear;
  $('statement-year-reload').onclick=e=>perform(e.currentTarget,loadYears);
  $('tx-verify').onclick=e=>perform(e.currentTarget,verifyFilterFacts);
- $('month-prev').onclick=()=>{const i=months.indexOf($('statement-month').value);if(i<months.length-1){$('statement-month').value=months[i+1];loadStatement();}};
+ $('month-prev').onclick=()=>{const i=months.indexOf($('statement-month').value);const next=i<0?months[0]:months[i+1];if(next){$('statement-month').value=next;loadStatement();}};
  $('month-next').onclick=()=>{const i=months.indexOf($('statement-month').value);if(i>0){$('statement-month').value=months[i-1];loadStatement();}};
  $('statement-reload').onclick=e=>perform(e.currentTarget,()=>loadMonths($('statement-month').value));
  $('transaction-filters').onsubmit=e=>{e.preventDefault();page=1;filterTransactions();};
