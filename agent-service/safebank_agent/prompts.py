@@ -130,15 +130,23 @@ ANSWER += '\n同名候选应优先使用candidate_distinction_refs中可区分�
 ANSWER += '\nhas_indistinguishable_candidates=true表示还有候选缺少可区分信息，即使部分候选有唯一备注也必须说明其他候选目前无法区分，不能省略后只暗示一个选项。先核对并补充可区分备注。标签选择只供当前用户收款人检索，不是授权。'
 
 
+def business_day(today=None):
+    """当前业务日期（Asia/Shanghai）。
+
+    时间换算与旁路比对共用这一处时钟：口径只有一份，避免两处各自读一次系统时间。
+    """
+    from datetime import date, datetime
+    from zoneinfo import ZoneInfo
+    return today if isinstance(today, date) else datetime.now(ZoneInfo('Asia/Shanghai')).date()
+
+
 def business_day_clause(today=None):
     """真实日期口径。
 
     模型只有知道“今天”才能把“本月/上个月/最近三个月”换算成账单工具要求的明确月份，
     否则会退回到写死的历史月份或直接补问。这里只用真实时钟，不保存任何日期常量。
     """
-    from datetime import date, datetime
-    from zoneinfo import ZoneInfo
-    day = today if isinstance(today, date) else datetime.now(ZoneInfo('Asia/Shanghai')).date()
+    day = business_day(today)
     first = day.replace(day=1)
     prior = first.replace(year=first.year - 1, month=12) if first.month == 1 else first.replace(month=first.month - 1)
     month = f'{day.year:04d}-{day.month:02d}'

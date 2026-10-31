@@ -6,7 +6,8 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.types import interrupt
 from .contracts import ProtocolError, canonical, bank_hash
 from .conversation import bounded_clarification_context,defers_operation,requires_amendment_target,requires_revoke_preview,transfer_recipient_hint
-from .prompts import PLAN, ANSWER, business_day_clause
+from .prompts import PLAN, ANSWER, business_day_clause, business_day
+from .shadow import emit as emit_nlu_shadow
 from .answers import normalize,omit_rejected_sentence,GroundingRejection,protocol_metadata,clean_display_duplicates,invalid_reference_hints,normalize_description_references
 from .safety import suspected_transfer_inducement,blocks_transfer_context,adequate_transfer_warning,requests_chat_credentials,tool_text_has_instructions
 
@@ -339,6 +340,8 @@ def build(saver, context):
                         if missing:input_value['missing_task_fields']=sorted(missing)
                 if retries or state['request'].get('modelRequestLimit',5)<3 or str(error) not in ('INVALID_PLAN','INVALID_TASK_PLAN','INVALID_CLARIFICATION','INVALID_MONTH','INVALID_TOOL_SCOPE','CURRENT_MANDATE_QUERY_REQUIRED','UNSAFE_TRANSFER_CONTEXT','CHAT_CREDENTIAL_COLLECTION','SAVINGS_ANALYSIS_MONTH_REQUIRED','DEFERRED_OPERATION','AMENDMENT_TARGET_REQUIRED','CLARIFICATION_NUMERIC_LITERAL','REVOKE_PREVIEW_REQUIRED','REDUNDANT_RECIPIENT_CLARIFICATION'):raise
                 retries=1;input_value['validation_error']=str(error)+('｜'+PLAN_REJECTION_GUIDANCE[str(error)] if str(error) in PLAN_REJECTION_GUIDANCE else '')
+        try:emit_nlu_shadow(state['request']['text'],planned,business_day())
+        except Exception:pass
         return {'plan':planned,'operation_deferred':deferred,'clarification_context':[] if deferred else bounded_clarification_context(state.get('clarification_context',[])),'transfer_safety_hold':held,'safety_blocked':blocked,'continuation_plan':{},'plan_repair':retries,'receipts':[],'answer':{},'repair':0,'credential_repair':False,'local_repairs':0,'validated':False,'validation_error':'','draft_error':'','reference_hints':[]}
     def tools(state):
         receipts=[]
