@@ -49,7 +49,7 @@ function syncCardOperation(){
 async function restoreBusinessContext(showHistory=false){
  if(!businessConversation?.conversationId){renderBusinessContext(null,null);return;}
  try{const view=await api('/conversations/'+encodeURIComponent(businessConversation.conversationId));renderBusinessContext(view,null);syncStatementFollow();
-  if(showHistory){for(const turn of view.displayHistory||[]){if(turn.user)message(turn.user,'user');if(turn.assistant)message(turn.assistant);}}
+  if(showHistory){resetTranscript();for(const turn of view.displayHistory||[]){if(turn.user)message(turn.user,'user');if(turn.assistant)message(turn.assistant);}}
  }catch(error){if(['NOT_FOUND','CONTEXT_EXPIRED'].includes(error.code)){businessConversation=null;pendingChatRequest=null;contextStorageWrite('safebank.pendingChat',null);renderBusinessContext(null,null);$('chat-status').textContent='原对话不可用或已过期。新问题会建立上下文，已有银行动作请从历史回执核对。';}else throw error;}
 }
 async function initializeBusinessContext(user){
@@ -58,7 +58,7 @@ async function initializeBusinessContext(user){
  savedConversations=contextStorageRead('safebank.savedConversations')||[];
  $('context-new').onclick=()=>perform($('context-new'),startNewBusinessConversation);renderSavedConversations();
  contextStorageWrite('safebank.contextUser',user);businessConversation=contextStorageRead('safebank.context');pendingChatRequest=contextStorageRead('safebank.pendingChat');
- $('context-reset').onclick=()=>perform($('context-reset'),async()=>{if(!businessConversation)return;const view=await api('/conversations/'+encodeURIComponent(businessConversation.conversationId)+'/context/reset',{expectedContextVersion:businessConversation.version});renderBusinessContext(view,null);pendingChatRequest=null;contextStorageWrite('safebank.pendingChat',null);$('messages').replaceChildren();message('对话草案已清空。原银行确认项仍需单独取消，已执行动作和回执保留。');$('chat-retry').hidden=true;});
+ $('context-reset').onclick=()=>perform($('context-reset'),async()=>{if(!businessConversation)return;const view=await api('/conversations/'+encodeURIComponent(businessConversation.conversationId)+'/context/reset',{expectedContextVersion:businessConversation.version});renderBusinessContext(view,null);pendingChatRequest=null;contextStorageWrite('safebank.pendingChat',null);$('messages').replaceChildren();resetTranscript();message('对话草案已清空。原银行确认项仍需单独取消，已执行动作和回执保留。');$('chat-retry').hidden=true;});
  await restoreBusinessContext(true);
  if(pendingChatRequest){lastFailedQuestion=pendingChatRequest.text;$('chat-retry').hidden=false;$('chat-status').textContent='上次请求尚未收到完整回答。可恢复原请求，不会自动重发。';}
 }

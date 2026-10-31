@@ -76,12 +76,22 @@ function renderWorkflows(){
   box.append(controls);return box;
  }));
 }
-function message(text,role='assistant'){const n=node('div',undefined,'bubble '+role);n.append(node('small',role==='user'?'你的需求':'SafeBank'),node('div',text));$('messages').append(n);$('messages').scrollTop=$('messages').scrollHeight;}
+function mirrorTranscript(source){
+ const mirror=$('chat-transcript');if(!mirror||!source)return;
+ const empty=mirror.querySelector('.transcript-empty');if(empty)empty.remove();
+ mirror.append(source.cloneNode(true));mirror.scrollTop=mirror.scrollHeight;
+}
+function resetTranscript(){
+ $('messages').replaceChildren();
+ const mirror=$('chat-transcript');
+ if(mirror)mirror.replaceChildren(node('p','还没有对话内容。在右侧输入框描述你的需求，这里会同步显示完整对话。','hint transcript-empty'));
+}
+function message(text,role='assistant'){const n=node('div',undefined,'bubble '+role);n.append(node('small',role==='user'?'你的需求':'SafeBank'),node('div',text));$('messages').append(n);$('messages').scrollTop=$('messages').scrollHeight;mirrorTranscript(n);}
 function showEvidenceTrace(trace){
  const names={get_statement:'查询账单',get_accounts:'查询余额',list_mandates:'查询银行代扣',detect_recurring_payments:'查询重复扣费候选',resolve_recipient:'核对收款人',calculate_business_metric:'计算业务数据',answer_customer:'根据问题组织回答',get_action_status:'核对银行动作状态',list_transfer_schedules:'查询定时计划',preview_transfer:'生成转账确认卡',preview_revoke:'生成代扣撤销确认卡',preview_schedule:'生成计划确认卡',start_savings_workflow:'创建逐项授权任务',get_workflow:'查询任务进度'};
  const details=node('details',undefined,'bubble assistant');details.append(node('summary','查看本轮查询依据'));const list=node('ul');
  for(const entry of trace){const tool=entry.split(' / ')[0];list.append(node('li',entry.includes('ANSWER_NOT_GROUNDED')?'核对并修正回答依据':names[tool]||'检查业务参数'));}
- details.append(list);$('messages').append(details);$('messages').scrollTop=$('messages').scrollHeight;
+ details.append(list);$('messages').append(details);$('messages').scrollTop=$('messages').scrollHeight;mirrorTranscript(details);
 }
 function dataContent(data){
  const box=node('section',undefined,'result-block');
