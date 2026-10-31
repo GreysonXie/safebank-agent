@@ -16,3 +16,5 @@ __pycache__/
 .team-local/
 node_modules/
 *.zip
+!agent-service/tests/data/
+!agent-service/tests/data/**
