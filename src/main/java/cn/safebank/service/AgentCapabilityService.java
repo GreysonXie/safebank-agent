@@ -16,7 +16,14 @@ import java.util.*;
 import static cn.safebank.service.ContextEvidenceService.*;
 @Service @Profile("agent-gateway")
 public class AgentCapabilityService {
-    public static final Set<String> SCOPES=Set.of("statement","statement_compare","statement_query","recurring_analysis","account_query","mandate_receipt","transfer_preview","revoke_preview","savings_task_prepare","savings_task_status");
+    public static final Set<String> SCOPES=Set.of("statement","statement_compare","statement_query","recurring_analysis","account_query","mandate_receipt","transfer_preview","revoke_preview","savings_task_prepare","savings_task_status","card_list","card_history","card_preview","finance_recommend");
+    /** 卡片预览可接受的参数键（闭集，可裁剪）：模型只能给语义查询词，卡号与账户由服务端解析。 */
+    public static final Set<String> CARD_PREVIEW_KEYS=Set.of("kind","cardQuery","accountQuery","label","cardType",
+        "perTransactionLimitMinor","dailyLimitMinor","onlineEnabled","overseasEnabled");
+    public static final Set<String> FINANCE_KEYS=Set.of("riskPreference","purpose","liquidity","amountMinor",
+        "horizonMonths","capitalProtection");
+    @org.springframework.beans.factory.annotation.Autowired private AgentCardService cardTools;
+    @org.springframework.beans.factory.annotation.Autowired private AgentFinanceService financeTools;
     @org.springframework.beans.factory.annotation.Autowired private SavingsTaskPlanService savingsTasks;
     @org.springframework.beans.factory.annotation.Autowired private StatementQueryService statementQueries;
     @org.springframework.beans.factory.annotation.Autowired private SavingsTaskPlanValidator taskValidator;
@@ -44,11 +51,15 @@ public class AgentCapabilityService {
         var old=mapper.receipt(g.getTurnId(),request.operationKey());
         if(old!=null){if(!old.getInputHash().equals(request.inputHash())||!old.getToolName().equals(request.tool()))throw new BankException("CONFLICT","相同工具操作编号的输入不同");return view(old,true);}
         if(mapper.receipts(g.getTurnId()).size()>=8)throw new BankException("TOOL_QUOTA_EXCEEDED","本轮只读工具额度已用完");
-        if(Set.of("savings_task_prepare","transfer_preview","revoke_preview").contains(request.tool())&&mapper.receipts(g.getTurnId()).stream().anyMatch(r->Set.of("savings_task_prepare","transfer_preview","revoke_preview").contains(r.getToolName())))throw new BankException("PREVIEW_LIMIT","每轮最多准备一个操作或任务");
+        if(Set.of("savings_task_prepare","transfer_preview","revoke_preview","card_preview").contains(request.tool())&&mapper.receipts(g.getTurnId()).stream().anyMatch(r->Set.of("savings_task_prepare","transfer_preview","revoke_preview","card_preview").contains(r.getToolName())))throw new BankException("PREVIEW_LIMIT","每轮最多准备一个操作或任务");
         Object data=switch(request.tool()){
             case "savings_task_prepare"->savingsTasks.prepare(g.getUserId(),g.getConversationId(),g.getTurnId(),request.operationKey(),taskValidator.validate(request.args().get("taskPlan")));
             case "savings_task_status"->workflows.get(g.getUserId(),UUID.fromString(request.args().path("workflowId").asText()));
             case "transfer_preview","revoke_preview"->previews.prepare(g.getUserId(),g.getConversationId(),g.getTurnId(),request.operationKey(),request.tool(),request.args());
+            case "card_list"->cardTools.list(g.getUserId());
+            case "card_history"->cardTools.history(g.getUserId());
+            case "card_preview"->cardTools.preview(g.getUserId(),request.args());
+            case "finance_recommend"->financeTools.recommend(request.args());
             case "mandate_receipt"->mandateReceipts.read(g.getUserId(),g.getConversationId());case "account_query"->accounts.list(g.getUserId());
             case "statement"->statements.statement(g.getUserId(),month(request.args(),"month"));
             case "statement_compare"->Map.of("primary",statements.statement(g.getUserId(),month(request.args(),"month")),"comparison",statements.statement(g.getUserId(),month(request.args(),"comparisonMonth")));
@@ -77,6 +88,10 @@ public class AgentCapabilityService {
                 case "statement_query"->items.add(bankEvidence("get_statement_query",data));
                 case "account_query"->items.add(bankEvidence("get_accounts",data));
                 case "recurring_analysis"->items.add(bankEvidence("detect_recurring_payments",data));
+                case "card_list"->items.add(new BankReplyComposer.Evidence("agent_card_list",cardTools.listFacts(json.convertValue(data,new com.fasterxml.jackson.core.type.TypeReference<List<cn.safebank.vo.BankCardVO>>(){}))));
+                case "card_history"->items.add(new BankReplyComposer.Evidence("agent_card_history",cardTools.historyFacts(json.convertValue(data,new com.fasterxml.jackson.core.type.TypeReference<List<cn.safebank.vo.CardOperationVO>>(){}))));
+                case "card_preview"->{if(!data.has("code"))items.add(new BankReplyComposer.Evidence("agent_card_operation",cardTools.operationFacts(json.convertValue(data.path("pendingCardOperation"),cn.safebank.vo.CardOperationVO.class))));}
+                case "finance_recommend"->{if(!data.has("code"))items.add(new BankReplyComposer.Evidence("agent_finance_recommendation",financeTools.facts(json.convertValue(data.path("financeRecommendation"),cn.safebank.vo.FinanceRecommendationVO.class))));}
                 default->throw GatewayTurnService.denied();
             }
         }return items;
@@ -92,11 +107,16 @@ public class AgentCapabilityService {
     private JsonNode canonical(JsonNode value){if(value.isObject()){var n=json.createObjectNode();var names=new TreeSet<String>();value.fieldNames().forEachRemaining(names::add);for(var name:names)n.set(name,canonical(value.get(name)));return n;}if(value.isArray()){var n=json.createArrayNode();value.forEach(v->n.add(canonical(v)));return n;}return value;}
     private void checkInput(AgentToolRequestDTO r){
         if(r==null||r.operationKey()==null||!r.operationKey().matches("[a-f0-9]{64}")||r.inputHash()==null||!r.inputHash().matches("[a-f0-9]{64}")||!SCOPES.contains(r.tool())||r.args()==null||!r.args().isObject()||r.args().toString().length()>8192)throw GatewayTurnService.denied();
-        var keys=new HashSet<String>();r.args().fieldNames().forEachRemaining(keys::add);var expected=switch(r.tool()){case "statement"->Set.of("month");case "statement_compare"->Set.of("month","comparisonMonth");case "transfer_preview"->Set.of("sourceQuery","recipientQuery","amountMinor");case "revoke_preview"->Set.of("merchantQuery");case "savings_task_prepare"->Set.of("taskPlan");case "savings_task_status"->Set.of("workflowId");default->Set.<String>of();};
+        var keys=new HashSet<String>();r.args().fieldNames().forEachRemaining(keys::add);var expected=switch(r.tool()){case "statement"->Set.of("month");case "statement_compare"->Set.of("month","comparisonMonth");case "transfer_preview"->Set.of("sourceQuery","recipientQuery","amountMinor");case "revoke_preview"->Set.of("merchantQuery");case "savings_task_prepare"->Set.of("taskPlan");case "savings_task_status"->Set.of("workflowId");case "finance_recommend"->FINANCE_KEYS;default->Set.<String>of();};
         // 通用查询的键集合是闭集但可裁剪（只有 start/end 必填）；具体类型、范围与上限由 StatementQueryService 统一校验。
         boolean keysAccepted=r.tool().equals("statement_query")
             ?!r.args().isEmpty()&&StatementQueryService.QUERY_KEYS.containsAll(keys)
-            :keys.equals(expected);
+            :r.tool().equals("card_preview")
+                ?!r.args().isEmpty()&&CARD_PREVIEW_KEYS.containsAll(keys)
+                :r.tool().equals("finance_recommend")
+                    // 偏好可以分次补齐：缺哪几项由 AgentFinanceService 返回，避免一次少填就整轮失败
+                    ?!r.args().isEmpty()&&FINANCE_KEYS.containsAll(keys)
+                    :keys.equals(expected);
         if(!keysAccepted||!inputHash(r.tool(),r.args()).equals(r.inputHash()))throw new BankException("VALIDATION_ERROR","工具参数或输入摘要无效");
         if(r.tool().equals("savings_task_status")&&(!r.args().path("workflowId").isTextual()||!r.args().path("workflowId").asText().matches("[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}")))throw new BankException("VALIDATION_ERROR","任务编号无效");
         if(AgentPreviewService.isPreview(r.tool()))for(var key:expected){var value=r.args().get(key);if(key.equals("amountMinor")){if(!value.isIntegralNumber()||!value.canConvertToLong()||value.longValue()<=0)throw new BankException("VALIDATION_ERROR","金额须为正整数分");}else if(!value.isTextual()||value.asText().isBlank()||value.asText().length()>100)throw new BankException("VALIDATION_ERROR","请提供明确的业务对象");}

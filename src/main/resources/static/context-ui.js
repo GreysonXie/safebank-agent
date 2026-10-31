@@ -34,12 +34,17 @@ function renderBusinessContext(view,clarification){
 function acceptContextAnswer(response){
  if(response.context)renderBusinessContext(response.context,response.clarification);
  pendingChatRequest=null;contextStorageWrite('safebank.pendingChat',null);
- syncStatementFollow();
+ syncStatementFollow();syncCardOperation();
 }
 /** 账单侧栏跟随本轮对话口径；失败不影响对话本身，也不在无浏览器环境下报错。 */
 function syncStatementFollow(){
  if(typeof window==='undefined'||typeof window.statementFollow!=='function')return;
  window.statementFollow().catch(()=>{});
+}
+/** 对话生成卡片预览后，直接打开卡片页的待确认预览；失败静默，不影响对话。 */
+function syncCardOperation(){
+ if(typeof window==='undefined'||typeof window.cardOperationPending!=='function')return;
+ window.cardOperationPending().catch(()=>{});
 }
 async function restoreBusinessContext(showHistory=false){
  if(!businessConversation?.conversationId){renderBusinessContext(null,null);return;}

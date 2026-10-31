@@ -47,9 +47,128 @@ def transaction_rows(facts):
         selected.append(row)
     return selected
 
+CARD_KIND_WORDS=(
+    ('APPLY',('申请','开一张','办一张','新卡','虚拟卡')),
+    ('REPORT_LOST',('挂失','丢了','丢失','不见了')),
+    ('UNLOCK',('解锁','解挂','解除锁定')),
+    ('UPDATE_LIMITS',('限额','额度','单笔上限','每日上限')),
+    ('UPDATE_CONTROLS',('境外','线上交易','开关','刷不了')),
+    ('LOCK',('锁卡','锁一下','锁定','先锁','停用')),
+)
+CONSULT_WORDS=('能不能','可不可以','有什么区别','怎么算','什么意思','是否应该','建议','为什么','影响','风险','规则')
+HORIZON_MONTHS=re.compile(r'(?P<n>\d{1,2}|[一二三四五六七八九十两]{1,3})\s*个?\s*(?P<unit>月|年)')
+
+
+def _horizon_months(text):
+    match=HORIZON_MONTHS.search(text)
+    if not match:return None
+    from .money import cn_number
+    number=cn_number(match.group('n'))
+    if number is None or number!=int(number) or number<=0:return None
+    months=int(number)*(12 if match.group('unit')=='年' else 1)
+    return months if 1<=months<=120 else None
+
+
+def finance_args_from_text(text):
+    """从客户原话推出理财偏好；推不出的字段不填，由 Java 返回缺项后追问，不替客户假设。"""
+    args={}
+    if any(word in text for word in ('保本','别亏','不能亏','不亏')):args['capitalProtection']=True
+    if any(word in text for word in ('稳','保守','保本','别亏','低风险')):args['riskPreference']='CONSERVATIVE'
+    elif any(word in text for word in ('平衡','稳健')):args['riskPreference']='BALANCED'
+    elif any(word in text for word in ('成长','高收益','积极','激进')):args['riskPreference']='GROWTH'
+    if any(word in text for word in ('备用金','急用','随时用','随时取','日常用')):
+        args['purpose']='RESERVE';args['liquidity']='IMMEDIATE'
+    elif any(word in text for word in ('长期','几年','养老')):
+        args['purpose']='GROWTH';args['liquidity']='LOCKABLE'
+    elif any(word in text for word in ('计划','攒','买房','买车','旅行','学费')):
+        args['purpose']='PLANNED';args['liquidity']='FLEXIBLE'
+    from .money import first as first_amount
+    amount=first_amount(text)
+    if amount is not None:args['amountMinor']=amount.minor
+    horizon=_horizon_months(text)
+    if horizon is not None:args['horizonMonths']=horizon
+    return args
+
+
+APPLY_LABEL=re.compile(r'(?:叫做|名字叫|取名|叫)\s*([A-Za-z0-9\u4e00-\u9fff]{1,12})')
+APPLY_PER=re.compile(r'单笔[^0-9一二三四五六七八九十百千万两]{0,4}(?P<n>[0-9]+|[一二三四五六七八九十百千万两]+)')
+APPLY_DAILY=re.compile(r'(?:每日|每天|日限)[^0-9一二三四五六七八九十百千万两]{0,4}(?P<n>[0-9]+|[一二三四五六七八九十百千万两]+)')
+
+
+def _yuan_minor(value):
+    from .money import cn_number
+    if not value:return None
+    number=cn_number(value)
+    if number is None or number<=0:return None
+    return int(number*100)
+
+
+def card_apply_args_from_text(text):
+    """申请卡片时从原话取名称、限额与开关；缺的项不填，由 Java 返回缺项后追问。"""
+    from .money import Amount
+    args={'kind':'APPLY'}
+    if '虚拟' in text:args['cardType']='VIRTUAL'
+    label=APPLY_LABEL.search(text)
+    if label:args['label']=label.group(1)
+    per=_yuan_minor(APPLY_PER.search(text).group('n')) if APPLY_PER.search(text) else None
+    daily=_yuan_minor(APPLY_DAILY.search(text).group('n')) if APPLY_DAILY.search(text) else None
+    if per:args['perTransactionLimitMinor']=per
+    if daily:args['dailyLimitMinor']=daily
+    if '线上' in text:args['onlineEnabled']=not any(word in text.split('线上',1)[1][:6] for word in ('关闭','关掉','停用','不允许'))
+    if '境外' in text:args['overseasEnabled']=not any(word in text.split('境外',1)[1][:6] for word in ('关闭','关掉','停用','不允许'))
+    return args
+
+
+def deterministic_plan(question):
+    """高置信度意图直接给出工具计划：卡片与理财。
+
+    模型只负责把回执讲给客户听，不再决定"要不要查"。咨询类问题（能不能/有什么区别/有没有风险）
+    交给模型自由回答，避免把咨询当办理。返回 None 表示照旧由模型规划。
+    """
+    if not isinstance(question,str):return None
+    text=unicodedata.normalize('NFKC',question)
+    if any(word in text for word in CONSULT_WORDS):return None
+    if not tool_requirements(text):return None
+    if any(word in text for word in FINANCE_ONLY):
+        return {'kind':'analysis','tools':[{'tool':'finance_recommend','args':finance_args_from_text(text)}]}
+    for kind,words in CARD_KIND_WORDS:
+        if any(word in text for word in words):
+            if kind=='APPLY':return {'kind':'analysis','tools':[{'tool':'card_preview','args':card_apply_args_from_text(text)}]}
+            return {'kind':'analysis','tools':[{'tool':'card_preview','args':{'kind':kind}}]}
+    return {'kind':'analysis','tools':[{'tool':'card_list','args':{}}]}
+
+
 def scope_question(question):
     """Exclude explicit presentation bans only from catalog scope detection."""
     return re.sub(r'(?:别|不要|无需|不用)(?:主动|再|额外|顺带)?(?:讲|说|提及|提|列出|列|展示|介绍|补充)[^，,。；;！？!?\n]{0,80}', '',question)
+
+CARD_HINTS=('银行卡','卡片','信用卡','限额','额度','挂失','锁卡','锁一下','锁起来','解锁','虚拟卡','刷不了','套卡')
+FINANCE_HINTS=('理财','闲钱','利息','收益','基金','定期存','存单','稳不稳','保本','别亏','亏不亏','资产配置','攒点','攒钱')
+
+def suggested_tools(question):
+    """按用词给规划器一个工具建议。只是提示，最终仍由模型决定，不构成路由或授权。"""
+    if not isinstance(question,str):return []
+    text=unicodedata.normalize('NFKC',question)
+    hints=[]
+    if any(word in text for word in CARD_HINTS):hints.extend(['card_list','card_history','card_preview'])
+    elif '卡' in text and any(word in text for word in ('几张','什么卡','哪张','状态')):hints.extend(['card_list','card_preview'])
+    if any(word in text for word in FINANCE_HINTS):hints.append('finance_recommend')
+    return hints
+
+CARD_ACTION_HINTS=('锁','挂失','解挂','解锁','限额','额度','开关','申请','办一张','开一张','虚拟卡','停用','丢了','丢失','不见了')
+FINANCE_ONLY=('理财','闲钱','利息','收益','基金','存单','稳不稳','保本','别亏','亏不亏','资产配置')
+
+def tool_requirements(question):
+    """高置信度用词要求必须落到某类工具；只是"别用别的工具硬凑"的强制项，不含参数与授权。"""
+    if not isinstance(question,str):return []
+    text=unicodedata.normalize('NFKC',question)
+    required=[]
+    if any(word in text for word in CARD_ACTION_HINTS) and '卡' in text:
+        required.append('card_preview')
+    elif any(word in text for word in CARD_HINTS) or ('卡' in text and any(word in text for word in ('什么卡','几张','哪些','多少张','卡号','卡列表','哪张','卡的状态','我的卡'))):
+        required.append('card_list')
+    if any(word in text for word in FINANCE_ONLY):required.append('finance_recommend')
+    return required
 
 def requires_mandate_receipt(question):
     """Read requirement for explicit current service data, never an authorization."""
@@ -235,9 +354,44 @@ def statement_query_args(args):
         if 'excludeInternal' in filter_value and type(filter_value['excludeInternal']) is not bool:raise ProtocolError('INVALID_TOOL_SCOPE')
 
 
+CARD_KINDS={'APPLY','UPDATE_LIMITS','UPDATE_CONTROLS','LOCK','UNLOCK','REPORT_LOST'}
+CARD_PREVIEW_KEYS={'kind','cardQuery','accountQuery','label','cardType','perTransactionLimitMinor',
+                   'dailyLimitMinor','onlineEnabled','overseasEnabled'}
+FINANCE_KEYS={'riskPreference','purpose','liquidity','amountMinor','horizonMonths','capitalProtection'}
+FINANCE_ENUMS={'riskPreference':{'CONSERVATIVE','BALANCED','GROWTH'},
+               'purpose':{'RESERVE','PLANNED','GROWTH'},
+               'liquidity':{'IMMEDIATE','FLEXIBLE','LOCKABLE'}}
+
+
+def card_preview_args(args):
+    """卡片预览的闭集契约：只给语义查询词与参数值，卡号与账户ID由Java解析。"""
+    if not isinstance(args,dict) or not args or not CARD_PREVIEW_KEYS.issuperset(args):raise ProtocolError('INVALID_TOOL_SCOPE')
+    args={key:value for key,value in args.items() if value is not None}
+    if args.get('kind') not in CARD_KINDS:raise ProtocolError('INVALID_TOOL_SCOPE')
+    for key in ('cardQuery','accountQuery','label','cardType'):
+        if key in args and (not isinstance(args[key],str) or not 0<len(args[key].strip())<=40):raise ProtocolError('INVALID_TOOL_SCOPE')
+    for key in ('perTransactionLimitMinor','dailyLimitMinor'):
+        if key in args and (type(args[key]) is not int or not 0<args[key]<=10000000):raise ProtocolError('INVALID_TOOL_SCOPE')
+    for key in ('onlineEnabled','overseasEnabled'):
+        if key in args and type(args[key]) is not bool:raise ProtocolError('INVALID_TOOL_SCOPE')
+
+
+def finance_args(args):
+    """理财筛选的闭集契约；缺项允许，由Java返回缺哪几项，规划器据此补问。"""
+    if not isinstance(args,dict) or not FINANCE_KEYS.issuperset(args):raise ProtocolError('INVALID_TOOL_SCOPE')
+    args={key:value for key,value in args.items() if value is not None}
+    if not args:raise ProtocolError('INVALID_TOOL_SCOPE')
+    for key,allowed in FINANCE_ENUMS.items():
+        if key in args and args[key] not in allowed:raise ProtocolError('INVALID_TOOL_SCOPE')
+    if 'amountMinor' in args and (type(args['amountMinor']) is not int or not 100<=args['amountMinor']<=10000000000):raise ProtocolError('INVALID_TOOL_SCOPE')
+    if 'horizonMonths' in args and (type(args['horizonMonths']) is not int or not 1<=args['horizonMonths']<=120):raise ProtocolError('INVALID_TOOL_SCOPE')
+    if 'capitalProtection' in args and type(args['capitalProtection']) is not bool:raise ProtocolError('INVALID_TOOL_SCOPE')
+
+
 PLAN_REJECTION_GUIDANCE={
-    'INVALID_TOOL_SCOPE':'工具参数不符合合同：statement_query 只接受 start/end(YYYY-MM-DD，必填)、bucket、groupBy、filter、compare、topN、rows，可选字段不要留 null 占位；只问单月才用 statement{month}；不要给未列出的字段。',
+    'INVALID_TOOL_SCOPE':'工具参数不符合合同：statement_query 只接受 start/end(YYYY-MM-DD，必填)、bucket、groupBy、filter、compare、topN、rows，可选字段不要留 null 占位；只问单月才用 statement{month}；card_preview 只接受 kind/cardQuery/accountQuery/label/cardType/perTransactionLimitMinor/dailyLimitMinor/onlineEnabled/overseasEnabled；finance_recommend 只接受 riskPreference/purpose/liquidity/amountMinor/horizonMonths/capitalProtection；不要给未列出的字段。',
     'INVALID_MONTH':'月份格式必须是 YYYY-MM；查一段时间请改用 statement_query 的 start/end。',
+    'TOOL_REQUIREMENT_MISSING':'客户的用词明确属于某类能力，本轮必须调用 tool_requirements 列出的工具：卡片问题用 card_list / card_history / card_preview，理财问题用 finance_recommend。不要改用 transfer_preview 或账单工具，也不要只回一句澄清；参数不全就先调用工具，由 Java 返回缺项后再追问。',
 }
 
 
@@ -264,11 +418,17 @@ def planning(value):
     for item in tools:
         if not isinstance(item,dict) or set(item)!= {'tool','args'} or not isinstance(item['args'],dict):
             raise ProtocolError('INVALID_PLAN')
-        expected={'statement':{'month'},'statement_compare':{'month','comparisonMonth'},'recurring_analysis':set(),'account_query':set(),'mandate_receipt':set(),'transfer_preview':{'sourceQuery','recipientQuery','amountMinor'},'revoke_preview':{'merchantQuery'},'savings_task_status':{'workflowId'},'statement_query':None}.get(item['tool'])
-        if expected is None and item['tool']!='statement_query':
+        expected={'statement':{'month'},'statement_compare':{'month','comparisonMonth'},'recurring_analysis':set(),'account_query':set(),'mandate_receipt':set(),'transfer_preview':{'sourceQuery','recipientQuery','amountMinor'},'revoke_preview':{'merchantQuery'},'savings_task_status':{'workflowId'},'statement_query':None,'card_list':set(),'card_history':set(),'card_preview':None,'finance_recommend':None}.get(item['tool'])
+        if expected is None and item['tool'] not in ('statement_query','card_preview','finance_recommend'):
             raise ProtocolError('INVALID_TOOL_SCOPE')
         if item['tool']=='statement_query':
             statement_query_args(item['args'])
+            continue
+        if item['tool']=='card_preview':
+            card_preview_args(item['args'])
+            continue
+        if item['tool']=='finance_recommend':
+            finance_args(item['args'])
             continue
         if set(item['args'])!=expected:
             raise ProtocolError('INVALID_TOOL_SCOPE')
@@ -280,7 +440,7 @@ def planning(value):
             elif item['tool']=='savings_task_status':
                 if not isinstance(argument,str) or not re.fullmatch(r'[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}',argument):raise ProtocolError('INVALID_TOOL_SCOPE')
             elif not isinstance(argument,str) or not re.fullmatch(r'20\d{2}-(0[1-9]|1[0-2])',argument):raise ProtocolError('INVALID_MONTH')
-    if sum(item['tool'] in ('transfer_preview','revoke_preview') for item in tools)>1:raise ProtocolError('INVALID_TOOL_SCOPE')
+    if sum(item['tool'] in ('transfer_preview','revoke_preview','card_preview') for item in tools)>1:raise ProtocolError('INVALID_TOOL_SCOPE')
     if value['kind']=='clarification' and (tools or not isinstance(value.get('question'),str) or not 1<=len(value['question'])<=1000):
         raise ProtocolError('INVALID_CLARIFICATION')
     if value['kind']=='general' and tools:raise ProtocolError('INVALID_PLAN')
@@ -292,6 +452,7 @@ def result(state):
 def build(saver, context):
     def plan(state):
         deferred=defers_operation(state['request']['text'])
+        shortcut=deterministic_plan(state['request']['text'])
         target_required=requires_amendment_target(state['request']['text'],state.get('previous_plan',{}),state.get('clarification_context',[]),state.get('previous_question',''))
         held=state.get('transfer_safety_hold',False) or suspected_transfer_inducement(state.get('previous_question','')) or suspected_transfer_inducement(state['request']['text'])
         blocked=blocks_transfer_context(state['request']['text'],held)
@@ -306,14 +467,23 @@ def build(saver, context):
         input_value={'question':state['request']['text'],'previous_question':state.get('previous_question',''),'clarification_context':bounded_clarification_context(state.get('clarification_context',[])),'operation_deferred':deferred,'amendment_target_required':target_required,'previous_plan':state.get('previous_plan',{}),'previous_workflow_id':state.get('previous_workflow_id'),'requested_analysis_month':month,'read_requirements':required_reads,'safety_requirements':requirements,'validation_error':''}
         retries=0
         input_value['preview_requirements']=['revoke_preview'] if not blocked and requires_revoke_preview(state['request']['text']) else []
+        input_value['suggested_tools']=suggested_tools(state['request']['text'])
+        required_tools=tool_requirements(state['request']['text'])
+        input_value['tool_requirements']=required_tools
+        fallback_question={'card_preview':'请说明要办理哪张卡的哪项操作：锁卡、解锁、挂失、调整交易限额，还是开启或关闭线上、境外交易？',
+                           'card_list':'请说明要查询哪张卡，或说明卡片名称、卡号后四位。',
+                           'finance_recommend':'请补充：可投入金额、资金用途（备用金、计划支出还是长期配置）、多久不用这笔钱、能接受多大波动（保守、平衡还是成长），以及是否必须保本。'}
         input_value['recipient_hint']=None if held else transfer_recipient_hint(state['request']['text'],state.get('previous_plan',{}),state.get('clarification_context',[]),state.get('previous_question',''))
-        while True:
+        while shortcut is None:
             payload={'messages':[{'role':'system','content':PLAN+business_day_clause()},{'role':'user','content':canonical(input_value)}], 'max_tokens':1200}
             value=context.model(state,'plan',retries,payload)['content']
             try:
                 planned=planning(value)
                 if deferred and (planned['kind']!='general' or planned['tools']):raise ProtocolError('DEFERRED_OPERATION')
                 if target_required and not blocked and planned['kind']!='clarification':raise ProtocolError('AMENDMENT_TARGET_REQUIRED')
+                if required_tools and not blocked and \
+                    not any(tool['tool'] in required_tools for tool in planned['tools']):
+                    raise ProtocolError('TOOL_REQUIREMENT_MISSING')
                 if input_value['preview_requirements'] and planned['kind']!='clarification' and not any(tool['tool']=='revoke_preview' for tool in planned['tools']):raise ProtocolError('REVOKE_PREVIEW_REQUIRED')
                 if input_value.get('missing_task_fields') and planned['kind']!='clarification':raise ProtocolError('TASK_PARAMETERS_REQUIRED')
                 if month and any(tool['tool']=='savings_task_prepare' and tool['args']['taskPlan'].get('analysisMonth')!=month for tool in planned['tools']):raise ProtocolError('SAVINGS_ANALYSIS_MONTH_REQUIRED')
@@ -338,8 +508,14 @@ def build(saver, context):
                             if not isinstance(params,dict):continue
                             missing.update(field for field in fields if not isinstance(params.get(field),str) or not params[field].strip())
                         if missing:input_value['missing_task_fields']=sorted(missing)
-                if retries or state['request'].get('modelRequestLimit',5)<3 or str(error) not in ('INVALID_PLAN','INVALID_TASK_PLAN','INVALID_CLARIFICATION','INVALID_MONTH','INVALID_TOOL_SCOPE','CURRENT_MANDATE_QUERY_REQUIRED','UNSAFE_TRANSFER_CONTEXT','CHAT_CREDENTIAL_COLLECTION','SAVINGS_ANALYSIS_MONTH_REQUIRED','DEFERRED_OPERATION','AMENDMENT_TARGET_REQUIRED','CLARIFICATION_NUMERIC_LITERAL','REVOKE_PREVIEW_REQUIRED','REDUNDANT_RECIPIENT_CLARIFICATION'):raise
+                if retries and required_tools and str(error) in ('TOOL_REQUIREMENT_MISSING','CLARIFICATION_NUMERIC_LITERAL','INVALID_CLARIFICATION','INVALID_TOOL_SCOPE','INVALID_PLAN'):
+                    # 两次都没落到该用的工具：给一条确定性的兜底，不让客户对着含糊澄清干等
+                    if 'card_list' in required_tools:planned={'kind':'analysis','tools':[{'tool':'card_list','args':{}}]}
+                    else:planned={'kind':'clarification','tools':[],'question':fallback_question.get(required_tools[0],'请补充办理这件事需要的具体对象与参数。')}
+                    break
+                if retries or state['request'].get('modelRequestLimit',5)<3 or str(error) not in ('INVALID_PLAN','INVALID_TASK_PLAN','INVALID_CLARIFICATION','INVALID_MONTH','INVALID_TOOL_SCOPE','CURRENT_MANDATE_QUERY_REQUIRED','UNSAFE_TRANSFER_CONTEXT','CHAT_CREDENTIAL_COLLECTION','SAVINGS_ANALYSIS_MONTH_REQUIRED','DEFERRED_OPERATION','AMENDMENT_TARGET_REQUIRED','CLARIFICATION_NUMERIC_LITERAL','REVOKE_PREVIEW_REQUIRED','REDUNDANT_RECIPIENT_CLARIFICATION','TOOL_REQUIREMENT_MISSING'):raise
                 retries=1;input_value['validation_error']=str(error)+('｜'+PLAN_REJECTION_GUIDANCE[str(error)] if str(error) in PLAN_REJECTION_GUIDANCE else '')
+        if shortcut is not None:planned=shortcut
         try:emit_nlu_shadow(state['request']['text'],planned,business_day())
         except Exception:pass
         return {'plan':planned,'operation_deferred':deferred,'clarification_context':[] if deferred else bounded_clarification_context(state.get('clarification_context',[])),'transfer_safety_hold':held,'safety_blocked':blocked,'continuation_plan':{},'plan_repair':retries,'receipts':[],'answer':{},'repair':0,'credential_repair':False,'local_repairs':0,'validated':False,'validation_error':'','draft_error':'','reference_hints':[]}

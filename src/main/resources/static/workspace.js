@@ -396,6 +396,18 @@
   const query=node('button','查询原操作状态');query.type='button';query.onclick=()=>perform(query,async()=>{showCardOperation(await api('/cards/operations/'+operation.id),false);await refresh();});controls.append(query);box.append(controls);
   if(scroll)$('card-preview-panel').scrollIntoView({block:'center',behavior:'smooth'});
  }
+ /** 对话驱动的卡片预览：读取本会话最近一次卡片预览回执，切到卡片页并打开待确认面板。 */
+ window.cardOperationPending=async()=>{
+  const conversationId=businessConversation&&businessConversation.conversationId;
+  if(!conversationId)return false;
+  const payload=await api('/conversations/'+encodeURIComponent(conversationId)+'/card-operation');
+  if(!payload||!payload.found||!payload.operation)return false;
+  await refresh();
+  showCardOperation(payload.operation,false);
+  if(typeof selectView==='function')selectView('cards');
+  $('card-preview-panel').scrollIntoView({block:'center',behavior:'smooth'});
+  return true;
+ };
  function renderCardHistory(){
   $('card-history').replaceChildren(...operations.map(o=>{
    const item=node('div',undefined,'card-history-item'),description=node('div');description.append(node('strong',cardKind[o.kind]),node('small',new Date(o.createdAt).toLocaleString('zh-CN')+' · '+({COMPLETED:'已完成',CANCELLED:'已取消',AWAITING_CONFIRMATION:new Date(o.expiresAt)<new Date()?'已过期':'待确认'}[o.status]),'hint'));
