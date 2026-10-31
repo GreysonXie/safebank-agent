@@ -88,10 +88,10 @@ public class AgentCapabilityService {
                 case "statement_query"->items.add(bankEvidence("get_statement_query",data));
                 case "account_query"->items.add(bankEvidence("get_accounts",data));
                 case "recurring_analysis"->items.add(bankEvidence("detect_recurring_payments",data));
-                case "card_list"->items.add(new BankReplyComposer.Evidence("agent_card_list",cardTools.listFacts(json.convertValue(data,new com.fasterxml.jackson.core.type.TypeReference<List<cn.safebank.vo.BankCardVO>>(){}))));
-                case "card_history"->items.add(new BankReplyComposer.Evidence("agent_card_history",cardTools.historyFacts(json.convertValue(data,new com.fasterxml.jackson.core.type.TypeReference<List<cn.safebank.vo.CardOperationVO>>(){}))));
-                case "card_preview"->{if(!data.has("code"))items.add(new BankReplyComposer.Evidence("agent_card_operation",cardTools.operationFacts(json.convertValue(data.path("pendingCardOperation"),cn.safebank.vo.CardOperationVO.class))));}
-                case "finance_recommend"->{if(!data.has("code"))items.add(new BankReplyComposer.Evidence("agent_finance_recommendation",financeTools.facts(json.convertValue(data.path("financeRecommendation"),cn.safebank.vo.FinanceRecommendationVO.class))));}
+                case "card_list"->items.add(new BankReplyComposer.Evidence("agent_card_list",cardTools.listFacts(data)));
+                case "card_history"->items.add(new BankReplyComposer.Evidence("agent_card_history",cardTools.historyFacts(data)));
+                case "card_preview"->{if(!data.has("code"))items.add(new BankReplyComposer.Evidence("agent_card_operation",cardTools.operationFacts(data.path("pendingCardOperation"))));}
+                case "finance_recommend"->{if(!data.has("code"))items.add(new BankReplyComposer.Evidence("agent_finance_recommendation",financeTools.facts(data.path("financeRecommendation"))));}
                 default->throw GatewayTurnService.denied();
             }
         }return items;

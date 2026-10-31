@@ -123,67 +123,81 @@ public class AgentCardService {
         return new Lookup(all.stream().filter(c->strip(c.label()).contains(wanted)).toList());
     }
 
-    public Map<String,Object> listFacts(List<BankCardVO> rows){
+    /** 事实目录按接口 JSON 直接构建：不依赖 record 反序列化，避免编译参数差异导致事实为空。 */
+    public Map<String,Object> listFacts(com.fasterxml.jackson.databind.JsonNode rows){
         var items=new ArrayList<Map<String,Object>>();
-        for(var c:rows){
+        if(rows.isArray())for(var c:rows){
             var item=new LinkedHashMap<String,Object>();
-            item.put("label",c.label());
-            item.put("masked_number",c.maskedNumber());
-            item.put("card_type",c.cardType());
-            item.put("status",c.status());
-            item.put("account_label",c.accountLabel());
-            item.put("per_transaction_limit_minor",c.perTransactionLimitMinor());
-            item.put("daily_limit_minor",c.dailyLimitMinor());
-            item.put("online_enabled",c.onlineEnabled()?"允许":"关闭");
-            item.put("overseas_enabled",c.overseasEnabled()?"允许":"关闭");
-            item.put("account_balance_minor",c.balanceMinor());
+            item.put("label",c.path("label").asText());
+            item.put("masked_number",c.path("maskedNumber").asText());
+            item.put("card_type","VIRTUAL".equals(c.path("cardType").asText())?"虚拟卡":"储蓄卡");
+            item.put("status",statusLabel(c.path("status").asText()));
+            item.put("account_label",c.path("accountLabel").asText());
+            item.put("per_transaction_limit_minor",c.path("perTransactionLimitMinor").asLong());
+            item.put("daily_limit_minor",c.path("dailyLimitMinor").asLong());
+            item.put("online_enabled",c.path("onlineEnabled").asBoolean()?"允许":"关闭");
+            item.put("overseas_enabled",c.path("overseasEnabled").asBoolean()?"允许":"关闭");
+            item.put("account_balance_minor",c.path("balanceMinor").asLong());
             items.add(Map.copyOf(item));
         }
-        return Map.of("count",rows.size(),"items",List.copyOf(items));
+        return Map.of("count",items.size(),"items",List.copyOf(items));
     }
 
-    public Map<String,Object> historyFacts(List<CardOperationVO> rows){
+    public Map<String,Object> historyFacts(com.fasterxml.jackson.databind.JsonNode rows){
         var items=new ArrayList<Map<String,Object>>();
-        for(var op:rows.stream().limit(10).toList()){
+        if(rows.isArray())for(var op:rows){
             var item=new LinkedHashMap<String,Object>();
-            item.put("kind_label",KIND_LABEL.getOrDefault(op.kind(),op.kind()));
-            item.put("status_label",STATUS_LABEL.getOrDefault(op.status(),op.status()));
-            item.put("created_at",String.valueOf(op.createdAt()));
-            if(op.card()!=null)item.put("card_masked_number",op.card().maskedNumber());
-            if(op.receiptId()!=null)item.put("receipt_id",op.receiptId());
-            items.add(Map.copyOf(item));
+            item.put("kind_label",KIND_LABEL.getOrDefault(op.path("kind").asText(),op.path("kind").asText()));
+            item.put("status_label",STATUS_LABEL.getOrDefault(op.path("status").asText(),op.path("status").asText()));
+            String created=op.path("createdAt").asText("");
+            if(!created.isBlank())item.put("created_at",created);
+            var card=op.path("card");
+            if(card.isObject())item.put("card_masked_number",card.path("maskedNumber").asText());
+            String receipt=op.path("receiptId").asText("");
+            if(!receipt.isBlank())item.put("receipt_id",receipt);
+            if(items.size()<10)items.add(Map.copyOf(item));
         }
-        return Map.of("count",rows.size(),"items",List.copyOf(items));
+        return Map.of("count",items.size(),"items",List.copyOf(items));
     }
 
-    /** 预览事实：把"待确认"和"不可恢复"写进事实，避免正文把预览说成已执行。 */
-    public Map<String,Object> operationFacts(CardOperationVO op){
+    /** 预览事实：把"待确认"与"不可恢复"写进事实，避免正文把预览说成已执行。 */
+    public Map<String,Object> operationFacts(com.fasterxml.jackson.databind.JsonNode op){
         var item=new LinkedHashMap<String,Object>();
-        item.put("operation_id",op.id());
-        item.put("kind_label",KIND_LABEL.getOrDefault(op.kind(),op.kind()));
-        item.put("status_label",STATUS_LABEL.getOrDefault(op.status(),op.status()));
-        item.put("kind_scope",KIND_SCOPE.getOrDefault(op.kind(),""));
+        String kind=op.path("kind").asText();
+        item.put("operation_id",op.path("id").asText());
+        item.put("kind_label",KIND_LABEL.getOrDefault(kind,kind));
+        item.put("status_label",STATUS_LABEL.getOrDefault(op.path("status").asText(),op.path("status").asText()));
+        item.put("kind_scope",KIND_SCOPE.getOrDefault(kind,""));
         item.put("confirm_location","我的卡片 → 操作预览");
         item.put("valid_minutes",10);
-        var request=op.request();
-        if(request!=null){
-            if(request.cardId()!=null&&op.card()!=null){
-                item.put("card_label",op.card().label());
-                item.put("card_masked_number",op.card().maskedNumber());
-            }
-            if(request.label()!=null)item.put("card_label",request.label());
-            if(request.accountId()!=null&&op.card()!=null)item.put("account_label",op.card().accountLabel());
-            if(request.perTransactionLimitMinor()!=null){
-                item.put("per_transaction_limit_minor",request.perTransactionLimitMinor());
-                item.put("daily_limit_minor",request.dailyLimitMinor());
-            }
-            if(request.onlineEnabled()!=null){
-                item.put("online_enabled",request.onlineEnabled()?"允许":"关闭");
-                item.put("overseas_enabled",Boolean.TRUE.equals(request.overseasEnabled())?"允许":"关闭");
-            }
+        var request=op.path("request");
+        var card=op.path("card");
+        if(card.isObject()){
+            item.put("card_masked_number",card.path("maskedNumber").asText());
+            if(!card.path("label").asText("").isBlank())item.put("card_label",card.path("label").asText());
+            if(!card.path("accountLabel").asText("").isBlank())item.put("account_label",card.path("accountLabel").asText());
+        }
+        if(!request.path("label").asText("").isBlank())item.put("card_label",request.path("label").asText());
+        if(request.hasNonNull("perTransactionLimitMinor")){
+            item.put("per_transaction_limit_minor",request.path("perTransactionLimitMinor").asLong());
+            item.put("daily_limit_minor",request.path("dailyLimitMinor").asLong());
+        }
+        if(request.hasNonNull("onlineEnabled")){
+            item.put("online_enabled",request.path("onlineEnabled").asBoolean()?"允许":"关闭");
+            item.put("overseas_enabled",request.path("overseasEnabled").asBoolean()?"允许":"关闭");
         }
         return Map.copyOf(item);
     }
+
+    private static String statusLabel(String status){
+        return switch(status){
+            case "ACTIVE"->"使用中";
+            case "LOCKED"->"已临时锁定";
+            case "LOST"->"已挂失";
+            default->status;
+        };
+    }
+
 
     private static String text(JsonNode args,String name){
         var value=args.path(name);

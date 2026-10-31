@@ -45,19 +45,18 @@ public class AgentFinanceService {
         }
     }
 
-    /** 事实目录沿用接口字段（candidates[].product.*）；金额单位为分，收益与回撤只是同区间事实比较。 */
-    public Map<String,Object> facts(FinanceRecommendationVO vo){
+    /** 事实目录按接口 JSON 直接取值：不依赖 record 反序列化；金额单位为分。 */
+    public Map<String,Object> facts(com.fasterxml.jackson.databind.JsonNode vo){
         var result=new LinkedHashMap<String,Object>();
-        result.put("mode",vo.mode());
-        result.put("source",vo.source());
-        result.put("summary",vo.summary());
-        result.put("disclosure",vo.disclosure());
-        result.put("evaluated_count",vo.evaluatedCount());
-        result.put("catalog_version",vo.catalogVersion());
-        result.put("candidates",vo.candidates());
-        result.put("exclusions",vo.exclusions());
-        result.put("rules",vo.rules());
-        result.put("preferences",vo.preferences());
+        result.put("mode",vo.path("mode").asText());
+        result.put("source",vo.path("source").asText());
+        result.put("summary",vo.path("summary").asText());
+        result.put("disclosure",vo.path("disclosure").asText());
+        result.put("evaluated_count",vo.path("evaluatedCount").asInt());
+        result.put("catalog_version",vo.path("catalogVersion").asText());
+        result.put("candidates",vo.path("candidates"));
+        result.put("exclusions",vo.path("exclusions"));
+        result.put("rules",vo.path("rules"));
         return Map.copyOf(result);
     }
 

@@ -197,6 +197,48 @@ class MockModel:
                     if prefix+'.plan_scope.steps_scope' in facts:answer+='{{'+prefix+'.plan_scope.steps_scope}}。'
                     if prefix+'.plan_scope.names_scope' in facts:answer+='{{'+prefix+'.plan_scope.names_scope}}。'
                     answer+='计划范围和步骤记录不能替代银行执行回执，也不保证未来到账。'
+            elif any(k.startswith('cards_latest.') for k in facts):
+                answer='您名下共有'+facts.get('cards_latest.count',{}).get('display','0')+'张卡片。'
+                items=sorted({k.split('.')[1] for k in facts if re.fullmatch(r'cards_latest\.items\.\d+\..*',k)},key=int)
+                for index in items:
+                    prefix='cards_latest.items.'+index+'.'
+                    parts=['{{'+prefix+'label}}','{{'+prefix+'masked_number}}']
+                    for field,label in (('status','状态'),('per_transaction_limit_minor','单笔限额'),('daily_limit_minor','每日限额'),('online_enabled','线上交易'),('overseas_enabled','境外交易')):
+                        if prefix+field in facts:parts.append(label+'{{'+prefix+field+'}}')
+                    answer+='、'.join(parts)+'。'
+                answer+='卡片信息仅供核对；锁卡、挂失、调整限额会先生成待确认预览，须在卡片页确认后才生效。'
+            elif 'pending_card_operation.operation_id' in facts:
+                answer='{{pending_card_operation.kind_label}}的预览已生成，状态为{{pending_card_operation.status_label}}。'
+                for field,label in (('card_label','卡片'),('card_masked_number','卡号'),('per_transaction_limit_minor','单笔限额'),('daily_limit_minor','每日限额'),('online_enabled','线上交易'),('overseas_enabled','境外交易')):
+                    if 'pending_card_operation.'+field in facts:answer+=label+'为{{pending_card_operation.'+field+'}}。'
+                if 'pending_card_operation.kind_scope' in facts:answer+='{{pending_card_operation.kind_scope}}。'
+                answer+='尚未执行，需要在{{pending_card_operation.confirm_location}}勾选确认后才会生效。'
+            elif any(k.startswith('card_operations_latest.') for k in facts):
+                answer='最近的卡片操作记录共'+facts.get('card_operations_latest.count',{}).get('display','0')+'条。'
+                items=sorted({k.split('.')[1] for k in facts if re.fullmatch(r'card_operations_latest\.items\.\d+\..*',k)},key=int)
+                for index in items[:3]:
+                    prefix='card_operations_latest.items.'+index+'.'
+                    parts=[p for p in ('{{'+prefix+'kind_label}}','{{'+prefix+'status_label}}') if prefix+p.strip('{}').startswith('kind_label') or prefix+'status_label' in facts]
+                    if prefix+'status_label' in facts:answer+='{{'+prefix+'kind_label}}（{{'+prefix+'status_label}}）。'
+                    elif prefix+'kind_label' in facts:answer+='{{'+prefix+'kind_label}}。'
+                answer+='历史记录只反映当时提交的操作，当前状态请以卡片页为准。'
+            elif any(k.startswith('finance_recommendation.') for k in facts):
+                answer='{{finance_recommendation.summary}}'
+                indexes=sorted({k.split('.')[1] for k in facts if re.fullmatch(r'finance_recommendation\.candidates\.\d+\..*',k)},key=int)
+                for index in indexes[:3]:
+                    prefix='finance_recommendation.candidates.'+index+'.product.'
+                    if prefix+'name' not in facts:continue
+                    answer+='方向{{'+prefix+'name}}'
+                    for field,label in (('riskLevel','波动层级'),('minimumAmountMinor','起投金额（分）'),('minimumHorizonMonths','建议最短期限（月）')):
+                        if prefix+field in facts:answer+='，'+label+'{{'+prefix+field+'}}'
+                    answer+='。'
+                if 'finance_recommendation.disclosure' in facts:answer+='{{finance_recommendation.disclosure}}'
+            elif context.get('tool_notices') and any(n.get('code')=='CARD_PARAMETERS_REQUIRED' for n in context['tool_notices'] if isinstance(n,dict)):
+                answer='要办理这项卡片操作还缺参数：请说明是哪张卡（卡名或卡号后四位）；调整限额需要单笔与每日限额，调整开关需要线上与境外两项。补齐后我再生成待确认预览。'
+            elif context.get('tool_notices') and any(n.get('code')=='CARD_CLARIFICATION_REQUIRED' for n in context['tool_notices'] if isinstance(n,dict)):
+                answer='没有唯一匹配的卡片，请告诉我卡片名称或卡号后四位，我再生成待确认预览。'
+            elif context.get('tool_notices') and any(n.get('code')=='FINANCE_PREFERENCES_REQUIRED' for n in context['tool_notices'] if isinstance(n,dict)):
+                answer='要按偏好筛选理财方向，请补充：资金用途（备用金、计划支出还是长期配置）、是否需要随时取用、是否必须保本。筛选结果只是示例方向的匹配，不是申购建议，也不保本或保证收益。'
             elif 'preview_transfer.amount_minor' in facts:
                 answer='待确认收款对象{{preview_transfer.recipient_label}}，金额{{preview_transfer.amount_minor}}。尚未执行转账，请核对操作卡并明确确认。'
             elif 'preview_revoke.merchant' in facts:
