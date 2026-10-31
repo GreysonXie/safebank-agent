@@ -4,9 +4,12 @@ safety_requirements含SUSPECTED_TRANSFER_INDUCEMENT时，当前问题或同会�
 safety_requirements仅含TRANSFER_SAFETY_HOLD时，允许本人账单等只读查询或一般解释，但同会话不能再规划transfer_preview；把查询和转账拼在一句话也不能绕过。按当前具体安全要求处理UNSAFE_TRANSFER_CONTEXT，不借此禁止普通只读查询。
 仅返回 JSON：kind=analysis/general/clarification，tools=[{tool,args}]，clarification 时 question 为具体补参问题。
 允许工具：statement_query args={start:"YYYY-MM-DD",end:"YYYY-MM-DD",bucket:"day|week|month|quarter|year|none",groupBy:"category|merchant|account|none",filter:{direction:"全部|支出|收入",categories:[],merchants:[],accounts:[],minAmountMinor,maxAmountMinor,excludeInternal},compare:"none|previous_period|same_period_last_year",topN,rows:{offset,limit}或false}；statement args={month:"YYYY-MM"}；statement_compare args={month,comparisonMonth}；
-recurring_analysis args={}；account_query args={}；mandate_receipt args={}；transfer_preview args={sourceQuery,recipientQuery,amountMinor}；revoke_preview args={merchantQuery}；card_list args={}；card_history args={}；card_preview args={kind:"APPLY|UPDATE_LIMITS|UPDATE_CONTROLS|LOCK|UNLOCK|REPORT_LOST",cardQuery,accountQuery,label,cardType,perTransactionLimitMinor,dailyLimitMinor,onlineEnabled,overseasEnabled}；finance_recommend args={riskPreference:"CONSERVATIVE|BALANCED|GROWTH",purpose:"RESERVE|PLANNED|GROWTH",liquidity:"IMMEDIATE|FLEXIBLE|LOCKABLE",amountMinor,horizonMonths,capitalProtection}；query args={entity:"transactions|accounts|mandates|cards|recurring|actions",range:{start,end},where:{字段:值或{from,to}/{min,max}或数组},groupBy:字段,metrics:["count","sum","avg","max","min","latest","earliest"],orderBy:{field,direction:"asc|desc"},limit:1-50}。每轮至多四项且最多一个预览，不得添加其他字段或工具。
+recurring_analysis args={}；account_query args={}；mandate_receipt args={}；transfer_preview args={sourceQuery,recipientQuery,amountMinor}；revoke_preview args={merchantQuery}；card_list args={}；card_history args={}；card_preview args={kind:"APPLY|UPDATE_LIMITS|UPDATE_CONTROLS|LOCK|UNLOCK|REPORT_LOST",cardQuery,accountQuery,label,cardType,perTransactionLimitMinor,dailyLimitMinor,onlineEnabled,overseasEnabled}；finance_recommend args={riskPreference:"CONSERVATIVE|BALANCED|GROWTH",purpose:"RESERVE|PLANNED|GROWTH",liquidity:"IMMEDIATE|FLEXIBLE|LOCKABLE",amountMinor,horizonMonths,capitalProtection}；query args={entity:"transactions|accounts|mandates|cards|recurring|actions",range:{start,end},where:{字段:值或{from,to}/{min,max}或数组或{not:值}},groupBy:字段,metrics:["count","sum","avg","max","min","latest","earliest"],orderBy:{field,direction:"asc|desc"},limit:1-50,compare:{range:{start,end},where}}。每轮至多四项且最多一个预览，不得添加其他字段或工具。
 query 是**所有只读问题的通用查询**：只要问题能用"过滤 + 分组 + 排序 + 度量 + 取几条"表达，就用 query，不要因为拿不到预置工具就回澄清或说做不到。实体与可查字段见 businessContext.query_engine.entities，字段必须取自该实体的 fields；不支持的字段会返回可执行提示，按提示换字段重试。"最贵/最便宜/最大/最近/第一笔"用 orderBy + limit 或 metrics 里的 max/min/latest/earliest。
-问"哪个商户/哪一类/哪个账户/哪个月花得最多、排名、前几名"时，必须用 groupBy + metrics:["sum","count"] + orderBy（按金额）给出**分组结果**，不要只给单笔最大的一笔。
+问"哪个商户/哪一类/哪个账户/哪个月花得最多、排名、前几名"时，必须用 groupBy + metrics:["sum","count"] + orderBy（按金额）给出**分组结果**，不要只给单笔最大的一笔。"按分类"用 groupBy:"classification"（交易流水用 "category"），"按商户"用 "merchant"，不要说成同一个。
+问"合计/一共多少/平均/每天/每月"时，必须用 metrics 里的 sum/avg 或 groupBy + sum；不要自己心算后再报数，也不要因为"事实里没有合计数"就拒绝——服务端会算。
+问"除了…之外/不含…/去掉…"时，用 where 里的 {"字段":{"not":值}}；不要把它当成"只看这个"，也不要过滤后 0 条就放弃。
+问"和另一个区间/另一个口径比、差多少、多了还是少了、占多少比例"时，用 compare:{range:{...}} 或 compare:{where:{...}} 让服务端算：compare 会返回 current_totals、baseline_totals、difference 和 ratio_percent。不要自己拿两次结果相减或相除。
 一段时间内的支出、趋势、排行、对比，或要求按日、按周、按季、按分类/商户/账户拆分时用statement_query：start、end必填且含首尾两天，bucket决定分桶粒度；"上个月、近三个月、今年、这两个月"要按business日期解析成具体起止日期再传，不要自己按月重算，也不要把一次区间查询拆成多次单月查询。区间对比优先用compare=previous_period或same_period_last_year，不要自己拿两段数字相减。仅当月账单或明确只问某月时继续用statement。
 只有客户明确要求办理转账或撤销时才生成预览；“能否取消”“取消有什么影响”“是否应该取消”是咨询，不生成预览。模糊的不用某服务先询问是否要生成撤销预览。
 preview_requirements包含revoke_preview时，本轮明确要求准备撤销预览。不能只读mandate_receipt后声称已生成卡；应在同一计划包含revoke_preview，服务缺失才补问。REVOKE_PREVIEW_REQUIRED表示上一稿漏了预览。此要求不是执行授权，也不能覆盖诈骗风险拦截。
@@ -156,6 +159,13 @@ ANSWER += '''
 ANSWER += '''
 单笔问题的回答口径：事实里若有逐笔记录（事实前缀 query_result 的 items.*，或 statement_* .transactions.* 的 .rows.items.*），就直接给出那一笔的金额、商户与日期，并说明这是按逐笔记录比较得到；不要再说"本轮没有提供单笔明细"。只有事实里确实没有逐笔记录时，才说明需要按笔查询。
 口径与边界：引用 query_result 的数字时必须同时说明 basis 里的口径（筛选范围、匹配条数、金额单位），引用比例要说明分母。unsupported 里列出的字段是**已知边界**，直接用一句话说明这项查不到以及能查什么；除此之外的问题都应当用事实回答，不要泛泛拒绝。'''
+
+
+ANSWER += '''
+金额与口径纪律：事实里的金额字段以 _minor 结尾时，display 已经是"元"，直接引用 display；如果没有 display 只有数字，必须换算成元再说，绝不能把"分"当成"元"念。引用 query_result 时同时说明 basis；有 comparison 时，差值引 difference、比例引 ratio_percent，并说明对照段是什么区间/口径。
+上下文纪律：只回答本轮问题，不复述上一轮的边界说明或其他话题；本轮没有的事实不要拿上一轮的数字补。
+概念区分：周期扣费候选（recurring）是历史重复消费的推断，代扣授权（mandates）是银行侧当前授权，两者不能互相代替。
+代扣前置：查询代扣授权需要先确认查询范围。如果本轮因此拿不到数据，直接说明"我可以现在就帮你发起代扣查询确认"，并在确认后按原问题重查；不要让客户自己去别的页面找入口（界面上会有确认按钮）。'''
 
 
 def business_day(today=None):

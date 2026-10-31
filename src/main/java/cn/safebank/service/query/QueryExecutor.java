@@ -16,7 +16,7 @@ import java.util.*;
  * 越界一律给出**可执行**的说明（缺哪个字段、可查哪些字段），不用"无法回答"糊过去。</p>
  */
 public final class QueryExecutor {
-    public static final Set<String> KEYS = Set.of("entity", "range", "where", "groupBy", "metrics", "orderBy", "limit");
+    public static final Set<String> KEYS = Set.of("entity", "range", "where", "groupBy", "metrics", "orderBy", "limit", "compare");
     private static final Set<String> METRIC_NAMES = Set.of("count", "sum", "avg", "max", "min", "latest", "earliest");
     private static final int MAX_LIMIT = 50;
     private static final int DEFAULT_LIMIT = 10;
@@ -61,6 +61,8 @@ public final class QueryExecutor {
             result.put("items", ordered.stream().limit(limit).map(row -> project(spec, row)).toList());
         }
         result.put("basis", basis(spec, matched.size(), groupBy != null));
+        var comparison = comparison(spec, rows, args, metrics, matched, start, end);
+        if (comparison != null) result.put("comparison", comparison);
         var coverage = new LinkedHashMap<String, Object>();
         if (start != null) coverage.put("start", start.toString());
         if (end != null) coverage.put("end", end.toString());
@@ -123,6 +125,8 @@ public final class QueryExecutor {
     }
 
     private static boolean accept(EntitySpec.Field field, Object value, JsonNode condition) {
+        if (condition.isObject() && condition.has("not")) return !accept(field, value, condition.get("not"));
+        if (condition.isObject() && condition.has("ne")) return !accept(field, value, condition.get("ne"));
         if (condition.isArray()) {
             for (var item : condition) if (equal(field, value, item)) return true;
             return false;
@@ -167,6 +171,55 @@ public final class QueryExecutor {
             }
             default -> { return lower ? Objects.toString(value, "").compareTo(bound.asText("")) >= 0 : Objects.toString(value, "").compareTo(bound.asText("")) <= 0; }
         }
+    }
+
+    /**
+     * 跨区间/跨口径对照：把同一实体按另一段区间（或另一组条件）再算一遍，给出差值与占比，
+     * 让"这个季度比上个季度多花多少""退款占入账多少"这类问题由服务端算，而不是让模型手算。
+     */
+    private static Map<String, Object> comparison(EntitySpec spec, List<Map<String, Object>> rows, JsonNode args,
+                                                  List<String> metrics, List<Map<String, Object>> current,
+                                                  LocalDate start, LocalDate end) {
+        var compare = args.path("compare");
+        if (compare == null || compare.isMissingNode() || compare.isNull()) return null;
+        if (!compare.isObject()) throw invalid("compare 必须是对象，例如 {\"range\":{\"start\":\"2026-07-01\",\"end\":\"2026-09-30\"}}");
+        LocalDate baseStart = date(compare.path("range").path("start"));
+        LocalDate baseEnd = date(compare.path("range").path("end"));
+        JsonNode baseWhere = compare.has("where") && compare.path("where").isObject() ? compare.path("where") : args.path("where");
+        var baseMatched = new ArrayList<Map<String, Object>>();
+        for (var row : rows) {
+            if (!inRange(spec, row, baseStart, baseEnd)) continue;
+            if (!matches(spec, row, baseWhere)) continue;
+            baseMatched.add(row);
+        }
+        var currentTotals = aggregate(spec, current, metrics);
+        var baseTotals = aggregate(spec, baseMatched, metrics);
+        var difference = new LinkedHashMap<String, Object>();
+        for (var metric : metrics) {
+            var currentValue = currentTotals.get(metric);
+            var baseValue = baseTotals.get(metric);
+            if (currentValue instanceof Number now && baseValue instanceof Number before) {
+                long delta = now.longValue() - before.longValue();
+                difference.put(metric, delta);
+                if ("sum".equals(metric)) difference.put("sum_minor", delta);
+                difference.put("ratio_percent", before.longValue() == 0 ? null
+                    : Math.round(now.doubleValue() * 10000.0 / before.doubleValue()) / 100.0);
+            } else if (currentValue instanceof String now && baseValue instanceof String) {
+                difference.put(metric, now);
+            }
+        }
+        var result = new LinkedHashMap<String, Object>();
+        result.put("current_matched", current.size());
+        result.put("baseline_matched", baseMatched.size());
+        result.put("current_totals", currentTotals);
+        result.put("baseline_totals", baseTotals);
+        result.put("difference", difference);
+        var range = new LinkedHashMap<String, Object>();
+        if (baseStart != null) range.put("start", baseStart.toString());
+        if (baseEnd != null) range.put("end", baseEnd.toString());
+        result.put("baseline_range", range);
+        result.put("basis_compare", "对照段用同一实体、同一度量、给定区间/条件重新计算；difference = 本轮 - 对照；ratio_percent = 本轮 / 对照 × 100。");
+        return result;
     }
 
     // ---------------------------------------------------------------- 聚合

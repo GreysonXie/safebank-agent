@@ -371,7 +371,7 @@ FINANCE_ENUMS={'riskPreference':{'CONSERVATIVE','BALANCED','GROWTH'},
                'liquidity':{'IMMEDIATE','FLEXIBLE','LOCKABLE'}}
 
 
-QUERY_KEYS={'entity','range','where','groupBy','metrics','orderBy','limit'}
+QUERY_KEYS={'entity','range','where','groupBy','metrics','orderBy','limit','compare'}
 QUERY_ENTITIES={'transactions','accounts','mandates','cards','recurring','actions'}
 QUERY_METRICS={'count','sum','avg','max','min','latest','earliest'}
 
@@ -402,6 +402,16 @@ def query_args(args):
         if order.get('direction') not in (None,'asc','desc'):raise ProtocolError('INVALID_TOOL_SCOPE')
     limit=args.get('limit')
     if limit is not None and (type(limit) is not int or not 1<=limit<=50):raise ProtocolError('INVALID_TOOL_SCOPE')
+    compare=args.get('compare')
+    if compare is not None:
+        if not isinstance(compare,dict) or not set(compare)<={'range','where'}:raise ProtocolError('INVALID_TOOL_SCOPE')
+        base_range=compare.get('range')
+        if base_range is not None:
+            if not isinstance(base_range,dict) or not set(base_range)<={'start','end'}:raise ProtocolError('INVALID_TOOL_SCOPE')
+            for key in ('start','end'):
+                value=base_range.get(key)
+                if value is not None and (not isinstance(value,str) or not STATEMENT_DATE.fullmatch(value)):raise ProtocolError('INVALID_TOOL_SCOPE')
+        if compare.get('where') is not None and not isinstance(compare.get('where'),dict):raise ProtocolError('INVALID_TOOL_SCOPE')
 
 
 def card_preview_args(args):

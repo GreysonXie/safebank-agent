@@ -76,7 +76,22 @@ public class QueryEngine {
         }
         LocalDate start = date(args.path("range").path("start"));
         LocalDate end = date(args.path("range").path("end"));
-        return QueryExecutor.run(spec, rows(entity, user, conversationId, start, end), args);
+        // 对照段可能落在另一个区间：一次加载覆盖两段，避免二次查询
+        LocalDate baseStart = date(args.path("compare").path("range").path("start"));
+        LocalDate baseEnd = date(args.path("compare").path("range").path("end"));
+        return QueryExecutor.run(spec, rows(entity, user, conversationId, earlier(start, baseStart), later(end, baseEnd)), args);
+    }
+
+    private static LocalDate earlier(LocalDate left, LocalDate right) {
+        if (left == null) return right;
+        if (right == null) return left;
+        return left.isBefore(right) ? left : right;
+    }
+
+    private static LocalDate later(LocalDate left, LocalDate right) {
+        if (left == null) return right;
+        if (right == null) return left;
+        return left.isAfter(right) ? left : right;
     }
 
     // ---------------------------------------------------------------- 数据源

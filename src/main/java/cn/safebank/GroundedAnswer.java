@@ -241,7 +241,7 @@ public final class GroundedAnswer {
             +"也可以直接写正常文字，但其中的数字、比例和日期必须与目录一致；新计算调用计算工具。不要向客户展示ID。按当前问题挑选事实，不要每次重述全部账单。"
             +"新预算或减少目标可提出，但在数值所在分句明确说明是假设/预算/目标，不能当作已经发生的银行事实。"
             +"余额、授权及操作状态必须重新查询；历史账单可以用于接续追问。事实目录："
-            +json.writeValueAsString(factCatalog())+"。查询范围及业务能力边界："+json.writeValueAsString(businessContext()); }
+            +json.writeValueAsString(factCatalog())+"。查询范围及业务能力边界："+json.writeValueAsString(businessContext("")); }
         catch(Exception e) { throw new IllegalStateException(e); }
     }
     public Map<String,Fact> factCatalog(){return facts.entrySet().stream().filter(e->!e.getKey().matches("e\\d+\\..*"))
@@ -289,10 +289,10 @@ public final class GroundedAnswer {
                 +"analysis已有结余、分类、大额统计；新增运算用calculate_business_metric。预算/假设需明确标注。"
                 +"comparison.statement_新月_vs_旧月默认以较早月份为基数；反向比较需用计算工具并明确基数，source注明方向。"
                 +"余额、授权、动作状态重新查询，历史账单可接续。退款和购物是否对应原订单缺少关联字段，不能因金额/商户相似就确认对应。"
-                +"事实目录："+json.writeValueAsString(modelCatalog(question))+"；查询能力与口径："+json.writeValueAsString(businessContext());
+                +"事实目录："+json.writeValueAsString(modelCatalog(question))+"；查询能力与口径："+json.writeValueAsString(businessContext(question));
         }catch(Exception e){throw new IllegalStateException(e);}
     }
-    public Map<String,Object> businessContext() {
+    public Map<String,Object> businessContext(String question) {
         var months=new TreeSet<String>();var tools=new LinkedHashSet<String>();var ranges=new TreeSet<String>();
         for(var item:evidence){
             tools.add(item.tool());
@@ -329,7 +329,7 @@ public final class GroundedAnswer {
                 "fact_keys","事实前缀 finance_recommendation：summary/disclosure/candidates.N.product.*、candidates.N.reasons、exclusions、rules；金额单位为分"));
         context.put("unsupported_actions",List.of("信用卡账单与还款","分期与额度提升审批","境外用卡临时额度","代订商品或代付第三方订单","补卡邮寄与物流进度","投诉工单与人工接管进度","修改登录密码或账号信息"));
         context.put("query_engine",Map.of(
-                "entities",cn.safebank.service.query.QueryEngine.entityCatalog(),
+                "entities",relevantCatalog(question),
                 "keys",List.copyOf(cn.safebank.service.query.QueryExecutor.KEYS),
                 "fact_prefix","query_result",
                 "rules","只读问题优先翻译成 query：entity 选实体，range 给区间，where 过滤，groupBy 分组，metrics 选度量（count/sum/avg/max/min/latest/earliest），orderBy 排序，limit 取数量。字段必须来自该实体的 fields；不支持的字段会返回可执行提示，按提示换字段，不要说无法回答。"
@@ -339,6 +339,32 @@ public final class GroundedAnswer {
                 "UNKNOWN","收费周期未知，不计入确定月度节省",
                 "QUARTERLY","季度收费折算月均仅作预算参考，不是每月实际扣款"));
         return context;
+    }
+
+    /**
+     * 只给本轮问题相关的实体目录：否则六个实体的全量字段会把提示词撑大，让每轮变慢。
+     * 判断不出相关实体时退回全量，宁可慢一点也不漏能力。
+     */
+    private static Map<String,Object> relevantCatalog(String question) {
+        var catalog = cn.safebank.service.query.QueryEngine.entityCatalog();
+        String text = Objects.toString(question, "");
+        var chosen = new java.util.LinkedHashSet<String>();
+        if (containsAny(text, "卡", "卡片", "限额", "挂失", "锁卡", "虚拟卡")) chosen.add("cards");
+        if (containsAny(text, "代扣", "授权", "订阅", "续费", "收费周期")) chosen.add("mandates");
+        if (containsAny(text, "账户", "余额")) chosen.add("accounts");
+        if (containsAny(text, "周期扣费", "重复扣费", "每月都扣", "固定扣费")) chosen.add("recurring");
+        if (containsAny(text, "预览", "回执", "待确认", "操作记录")) chosen.add("actions");
+        if (chosen.isEmpty() || containsAny(text, "交易", "账单", "流水", "支出", "收入", "花", "退款", "消费", "商户", "分类"))
+            chosen.add("transactions");
+        if (chosen.isEmpty()) return catalog;
+        var subset = new java.util.LinkedHashMap<String, Object>();
+        for (var key : chosen) if (catalog.containsKey(key)) subset.put(key, catalog.get(key));
+        return subset.isEmpty() ? catalog : subset;
+    }
+
+    private static boolean containsAny(String text, String... words) {
+        for (var word : words) if (text.contains(word)) return true;
+        return false;
     }
     public Map<String,Object> calculate(JsonNode args) {
         String operation=args.path("operation").asText();

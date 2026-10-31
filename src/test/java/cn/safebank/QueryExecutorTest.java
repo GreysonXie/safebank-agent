@@ -153,6 +153,34 @@ class QueryExecutorTest {
     }
 
     @Test
+    void excludes_with_not_condition() {
+        var result = run("""
+            {"entity":"transactions","where":{"direction":"支出","category":{"not":"餐饮"}},
+             "orderBy":{"field":"amount_minor","direction":"desc"},"limit":3}
+            """);
+        var items = (List<?>) result.get("items");
+        assertEquals(1, items.size());
+        assertEquals("地铁", ((Map<?, ?>) items.get(0)).get("merchant"));
+    }
+
+    @Test
+    void compares_against_another_range_and_reports_difference_and_ratio() {
+        var result = run("""
+            {"entity":"transactions","range":{"start":"2026-09-01","end":"2026-09-30"},
+             "where":{"direction":"支出"},"metrics":["count","sum"],
+             "compare":{"range":{"start":"2026-09-01","end":"2026-09-03"}}}
+            """);
+        var comparison = (Map<?, ?>) result.get("comparison");
+        assertNotNull(comparison);
+        assertEquals(3, ((Number) comparison.get("current_matched")).intValue());
+        // 对照段 09-01~09-03 只有 1 笔支出（老张面馆 4,280 分）
+        assertEquals(1, ((Number) comparison.get("baseline_matched")).intValue());
+        var difference = (Map<?, ?>) comparison.get("difference");
+        assertEquals(12_600L, ((Number) difference.get("sum_minor")).longValue());
+        assertNotNull(difference.get("ratio_percent"));
+    }
+
+    @Test
     void null_placeholders_are_treated_as_absent() {
         var result = run("""
             {"entity":"transactions","range":null,"where":null,"metrics":null}

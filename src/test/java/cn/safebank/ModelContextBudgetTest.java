@@ -38,7 +38,7 @@ class ModelContextBudgetTest {
             assertEquals("ANSWER_NOT_GROUNDED",assertThrows(BankException.class,()->facts.render(json.valueToTree(Map.of("answer",claim,"kind","general")))).code,claim);
         for(String safe:List.of("这笔退款可能对应那笔购物，但还需订单关联凭证。","不能确认这笔退款对应上月那笔消费。","这笔退款是否对应那笔购物？","上月购物和本月退款分别记录，不能确认是同一订单。"))
             assertEquals(safe,facts.render(json.valueToTree(Map.of("answer",safe,"kind","general"))).text());
-        assertEquals(false,((Map<?,?>)facts.businessContext().get("capabilities")).get("transaction_refund_linkage"));
+        assertEquals(false,((Map<?,?>)facts.businessContext("").get("capabilities")).get("transaction_refund_linkage"));
     }
     @Test void comparisonCalculationAndHypothesisRetainProvenanceInCompactViews() {
         var facts=facts();facts.addEvidence(new BankReplyComposer.Evidence("get_statement",Map.of("month","2026-08","expense_minor",300000,"income_minor",850000)));

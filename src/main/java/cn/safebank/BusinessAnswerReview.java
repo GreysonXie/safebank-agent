@@ -59,7 +59,7 @@ final class BusinessAnswerReview {
         try{
             String latestQuestion=history.stream().filter(m->"user".equals(m.get("role"))).map(m->Objects.toString(m.get("content"),"")).reduce((before,last)->last).orElse("");
             String input=json.writeValueAsString(Map.of("conversation",history,"latest_customer_question",latestQuestion,
-                "business_context",facts.businessContext(),"verified_fact_catalog",facts.modelReviewCatalog(),"candidate",answer));
+                "business_context",facts.businessContext(""),"verified_fact_catalog",facts.modelReviewCatalog(),"candidate",answer));
             var modelReply=model.complete(new ModelRequest(List.of(Map.of("role","system","content",system),Map.of("role","user","content",input)),List.of(Map.of("type","function","function",function))));
             if(!modelReply.completed())throw contractInvalid("语义审核未完整结束；finish_reason="+modelReply.finishReason().name(),result);
             JsonNode reply=modelReply.message();
