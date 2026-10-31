@@ -59,13 +59,41 @@ class ModelConfigurationTest {
         Files.copy(file,other,StandardCopyOption.REPLACE_EXISTING);
         assertEquals("MODEL_SETTINGS_UNAVAILABLE",assertThrows(BankException.class,()->service().connection("u2")).code);
     }
-    @Test void blankKeyIsKeptOnlyForIdenticalNormalizedProviderAndAddress(){
-        var s=service();s.save("u1",request("https://example.test/v1","synthetic-secret","a"));
+    @Test void blankKeyIsKeptWhileTheDestinationHostIsUnchangedAndOnlyTheTailIsShown(){
+        var s=service();
+        var first=s.save("u1",request("https://example.test/v1","synthetic-secret","a"));
+        assertTrue(first.hasApiKey());assertEquals("…cret",first.apiKeyHint(),"只回末四位");
+        // 同一主机：换路径、换模型名、换供应商标签都沿用已保存密钥，不需要重新粘贴
         s.save("u1",request("https://example.test/v1/chat/completions","","b"));
         assertEquals("synthetic-secret",s.connection("u1").apiKey());
+        s.save("u1",new ModelSettingsRequestDTO("openai","https://example.test/v1","","b",true,false));
+        assertEquals("synthetic-secret",s.connection("u1").apiKey());
+        // 换主机：不得把旧密钥发到别的目的地
         assertThrows(BankException.class,()->s.save("u1",request("https://other.test/v1","","b")));
-        assertThrows(BankException.class,()->s.save("u1",new ModelSettingsRequestDTO("openai","https://example.test/v1","","b",true,false)));
+        // 明确清除密钥
         assertThrows(BankException.class,()->s.save("u1",new ModelSettingsRequestDTO("custom","https://example.test/v1","","b",true,true)));
+        var view=s.settings("u1");
+        assertFalse(json.valueToTree(view).toString().contains("synthetic-secret"),"视图里不能出现明文密钥");
+        assertEquals("…cret",view.apiKeyHint());
+    }
+    @Test void shortKeysNeverLeakTheirTail(){
+        var s=service();
+        var view=s.save("u1",request("https://example.test/v1","abc1234","a"));
+        assertEquals("…",view.apiKeyHint(),"不足 8 位时连尾号也不回");
+        assertFalse(json.valueToTree(view).toString().contains("abc1234"));
+    }
+    @Test void connectivityTestReportsWhichKeyItUsed() throws Exception {
+        String base=start();var s=service();
+        s.save("u1",request(base,"synthetic-test-key","gpt-test"));
+        // 留空测试：沿用已保存密钥，不需要重新粘贴（本地服务会校验 Authorization 头）
+        var reused=s.test("u1",request(base,"","gpt-test"));
+        assertEquals(Boolean.TRUE,reused.get("valid"));
+        assertEquals("saved",reused.get("keySource"));
+        assertEquals("…-key",reused.get("keyHint"));
+        assertEquals("127.0.0.1",reused.get("host"));
+        // 填写新密钥：使用本次输入
+        var typed=s.test("u1",request(base,"synthetic-test-key","gpt-test"));
+        assertEquals("input",typed.get("keySource"));
     }
     @Test void discoversDeduplicatedLiveModelsAndOnlyMarksExactTestedConfigurationVerified() throws Exception {
         String base=start();var s=service();var r=request(base,"synthetic-test-key","gpt-test");

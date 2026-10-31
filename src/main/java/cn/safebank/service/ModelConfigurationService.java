@@ -39,7 +39,7 @@ public class ModelConfigurationService {
         new ModelProviderVO("openai","OpenAI","openai","https://api.openai.com/v1",List.of("gpt-6.1","gpt-6","gpt-5.6")),
         new ModelProviderVO("custom","自定义兼容接口","custom","",List.of())) ;}
     public synchronized ModelConnection connection(String user){return saved(user).connection();}
-    public synchronized ModelSettingsVO settings(String user){var s=saved(user);var c=s.connection();return new ModelSettingsVO(c.provider(),c.baseUrl(),c.model(),!c.apiKey().isBlank(),c.enabled(),s.verifiedAt()!=null,s.verifiedAt(),c.revision(),s.source());}
+    public synchronized ModelSettingsVO settings(String user){var s=saved(user);var c=s.connection();return new ModelSettingsVO(c.provider(),c.baseUrl(),c.model(),!c.apiKey().isBlank(),masked(c.apiKey()),c.enabled(),s.verifiedAt()!=null,s.verifiedAt(),c.revision(),s.source());}
     public synchronized ModelSettingsVO save(String user,ModelSettingsRequestDTO request){
         var c=candidate(user,request,true);String verified=successfulTests.get(fingerprint(c));
         var value=new Saved(new ModelConnection(c.provider(),c.baseUrl(),c.apiKey(),c.model(),c.enabled(),UUID.randomUUID().toString()),verified,"local");
@@ -52,21 +52,36 @@ public class ModelConfigurationService {
         var ids=new TreeSet<String>();for(var row:rows){var id=row.path("id");if(id.isTextual()&&!id.asText().isBlank()&&id.asText().length()<=200)ids.add(id.asText());if(ids.size()>=1000)break;}return List.copyOf(ids);
     }
     public Map<String,Object> test(String user,ModelSettingsRequestDTO request){
-        ModelConnection c;synchronized(this){c=candidate(user,request,true);}
+        ModelConnection c;String keySource;synchronized(this){c=candidate(user,request,true);keySource=(request.apiKey()==null||request.apiKey().isBlank())?"saved":"input";}
         long start=System.nanoTime();var result=http.request(c,"/chat/completions",http.body(c,List.of(Map.of("role","user","content","Reply with the word OK.")),List.of(),512,false));
         var message=result.path("choices").path(0).path("message");
         if(!message.isObject()||message.path("content").asText("").isBlank()||!"stop".equals(result.path("choices").path(0).path("finish_reason").asText()))throw new BankException("MODEL_RESPONSE_INVALID","接口已响应，但没有完整的文本回复；请检查是否为对话模型");
         synchronized(this){successfulTests.put(fingerprint(c),clock.instant().toString());}
-        return Map.of("valid",true,"model",c.model(),"latencyMs",(System.nanoTime()-start)/1000000,"message","连接检测通过，可保存并应用。检测不代表所有工具能力均受支持。");
+        var out=new LinkedHashMap<String,Object>();
+        out.put("valid",true);out.put("model",c.model());out.put("baseUrl",c.baseUrl());out.put("host",host(c.baseUrl()));
+        out.put("keySource",keySource);out.put("keyHint",masked(c.apiKey()));out.put("latencyMs",(System.nanoTime()-start)/1000000);
+        out.put("message","连接检测通过，可保存并应用。检测不代表所有工具能力均受支持。");
+        return out;
     }
     private ModelConnection candidate(String user,ModelSettingsRequestDTO r,boolean requireModel){
         if(providers().stream().noneMatch(p->p.id().equals(r.provider())))throw new BankException("VALIDATION_ERROR","请选择支持的供应商或自定义接口");
         String base=CompatibleModelHttp.normalizeBase(r.baseUrl()),model=r.model()==null?"":r.model().strip();
         if(requireModel&&(model.isBlank()||model.length()>200)||model.chars().anyMatch(Character::isISOControl))throw new BankException("VALIDATION_ERROR","请填写有效的模型 ID");
         var old=saved(user).connection();String key=r.apiKey()==null?"":r.apiKey().strip();
-        if(key.isBlank()&&!r.clearApiKey()&&old.provider().equals(r.provider())&&old.baseUrl().equals(base))key=old.apiKey();
-        if(key.isBlank()||key.length()>4096||key.chars().anyMatch(Character::isISOControl))throw new BankException("MODEL_NOT_CONFIGURED","请填写有效的 API Key；切换供应商或地址后需重新填写");
+        // 留空即沿用已保存密钥：只要目标主机没变（换模型名、换供应商标签、换路径都不算换目的地）。
+        // 只有真正换了主机地址时才要求重新填写，避免把 A 家的密钥发给 B 家。
+        if(key.isBlank()&&!r.clearApiKey()&&!old.apiKey().isBlank()&&host(old.baseUrl()).equals(host(base)))key=old.apiKey();
+        if(key.isBlank())throw new BankException("MODEL_NOT_CONFIGURED","请填写有效的 API Key；更换接口主机地址后需要重新填写");
+        if(key.length()>4096||key.chars().anyMatch(Character::isISOControl))throw new BankException("MODEL_NOT_CONFIGURED","请填写有效的 API Key");
         return new ModelConnection(r.provider(),base,key,model,r.enabled()==null||r.enabled(),"draft");
+    }
+    /** 密钥只回末四位：不足 8 位时连尾号也不给，避免短密钥被还原。 */
+    static String masked(String key){
+        if(key==null||key.isBlank())return "";
+        return key.length()>=8?"…"+key.substring(key.length()-4):"…";
+    }
+    static String host(String baseUrl){
+        try{var uri=java.net.URI.create(baseUrl);return uri.getHost()==null?"":uri.getHost().toLowerCase(java.util.Locale.ROOT);}catch(RuntimeException invalid){return "";}
     }
     private Saved saved(String user){return cache.computeIfAbsent(user,id->{
         Path file=file(id);if(Files.exists(file))try{var r=json.readTree(Files.readString(file));String key=decrypt(id,r.path("secret").asText());return new Saved(new ModelConnection(r.path("provider").asText(),CompatibleModelHttp.normalizeBase(r.path("baseUrl").asText()),key,r.path("model").asText(),r.path("enabled").asBoolean(),r.path("revision").asText()),r.path("verifiedAt").isTextual()?r.path("verifiedAt").asText():null,"local");}catch(Exception e){throw storageError();}
