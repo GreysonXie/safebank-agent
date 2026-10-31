@@ -185,10 +185,23 @@ class Store:
             return run
 
     def pause(self, lease, code):
+        """失败终结：只有"可能已发出银行调用、结果未知"时才需要人工核对。
+
+        模型调用已发出但只是答案没通过事实校验（如 ANSWER_REPAIR_EXHAUSTED），或模型发送本身
+        结果不确定、而银行侧没有任何写操作时，记为 FAILED 并把真实原因返回客户：这类轮次没有
+        资金后果，没有必要用"暂停"占住整个会话，让客户连新问题都问不了。
+        """
         with self.transaction() as c:
             self.guard(c, lease)
-            c.execute("UPDATE agent_runs SET state='RECONCILIATION_REQUIRED',error_code=%s,lease_until=NULL,updated_at=UTC_TIMESTAMP(6) WHERE id=%s", (code, lease.run_id))
-            self.event(c,lease.run_id,'runtime','RUN_PAUSED')
+            c.execute("SELECT purpose,state FROM agent_effect_receipts WHERE origin_run_id=%s FOR UPDATE",(lease.run_id,))
+            rows=c.fetchall()
+            bank_unknown=any(r['purpose'] in ('tool','validate') and r['state'] in ('SENDING','UNKNOWN') for r in rows)
+            if bank_unknown:
+                c.execute("UPDATE agent_runs SET state='RECONCILIATION_REQUIRED',error_code=%s,lease_until=NULL,updated_at=UTC_TIMESTAMP(6) WHERE id=%s", (code, lease.run_id))
+                self.event(c,lease.run_id,'runtime','RUN_PAUSED')
+            else:
+                c.execute("UPDATE agent_runs SET state='FAILED',error_code=%s,lease_until=NULL,updated_at=UTC_TIMESTAMP(6) WHERE id=%s", (code, lease.run_id))
+                self.event(c,lease.run_id,'runtime','RUN_FAILED_NO_BANK_EFFECT')
 
     def defer_prepared(self,lease):
         with self.transaction() as c:

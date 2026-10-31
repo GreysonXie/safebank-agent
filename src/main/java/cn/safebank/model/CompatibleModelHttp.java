@@ -54,7 +54,11 @@ public class CompatibleModelHttp {
             if(body==null)request.GET();else request.POST(HttpRequest.BodyPublishers.ofString(json.writeValueAsString(body)));
             pending=http.sendAsync(request.build(),info->new LimitedBody());
             var response=pending.get(timeout.toMillis(),TimeUnit.MILLISECONDS);
-            if(response.statusCode()!=200){String reason=switch(response.statusCode()){case 401,403->"密钥无效或无调用权限";case 404->"地址或模型不存在";case 429->"供应商限流或余额不足";default->"服务未接受请求";};throw new BankException("MODEL_API_ERROR",reason+"（HTTP "+response.statusCode()+"）");}
+            if(response.statusCode()!=200){
+                // 提供方状态码只用于给出人可读原因，不对外暴露提供方原文；错误码统一收敛为 MODEL_API_ERROR。
+                String reason=switch(response.statusCode()){case 400,413,415,422->"请求参数或格式未被接受";case 401,403->"密钥无效或无调用权限";case 404->"地址或模型不存在";case 405->"接口路径不被支持";case 429->"供应商限流或余额不足";default->"服务未接受请求";};
+                throw new BankException("MODEL_API_ERROR",reason+"（HTTP "+response.statusCode()+"）");
+            }
             JsonNode result;
             try{result=json.readTree(response.body());}catch(Exception e){throw new BankException("MODEL_RESPONSE_INVALID","模型服务未返回有效 JSON 对象");}
             if(result==null||!result.isObject())throw new BankException("MODEL_RESPONSE_INVALID","模型服务未返回有效 JSON 对象");return result;

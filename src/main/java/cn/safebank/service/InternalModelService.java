@@ -11,6 +11,7 @@ import java.util.*;
 
 @Service @Profile("langgraph-agent")
 public class InternalModelService {
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties(ignoreUnknown=true)
     public record Request(String revision,JsonNode payload,String reservationId,String operationKey,String inputHash,String javaTurnId,String purpose) {}
     private final ModelConfigurationService settings;private final CompatibleModelHttp http;private final AgentCapabilityService capabilities;private final DebugRequestBudget usage;private final TransactionTemplate tx;
     public InternalModelService(ModelConfigurationService s,CompatibleModelHttp h,AgentCapabilityService c,DebugRequestBudget u,PlatformTransactionManager manager){settings=s;http=h;capabilities=c;usage=u;tx=new TransactionTemplate(manager);}

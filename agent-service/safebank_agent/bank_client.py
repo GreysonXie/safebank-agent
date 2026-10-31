@@ -1,7 +1,7 @@
 import json
 import time
 import httpx
-from .contracts import ProtocolError
+from .contracts import ModelRequestRejected, ProtocolError
 from .answers import GroundingRejection
 import re
 
@@ -27,7 +27,16 @@ class BankClient:
                 if response.status_code!=200:
                     if path=='/internal/agent/model/complete':
                         code=data.get('code') if isinstance(data,dict) else None
+                        if isinstance(code,str) and code.startswith('MODEL_REQUEST_REJECTED_'):
+                            # 提供方明确拒绝（鉴权失败、模型不存在、参数非法）：这是确定结果，
+                            # 不能当成"发送结果未知"，否则客户只会看到"结果尚未确定"而查不到真实原因。
+                            status=code.rsplit('_',1)[-1]
+                            if status.isdigit() and int(status) in ModelRequestRejected.STATUSES:
+                                raise ModelRequestRejected(int(status))
                         if code in ('MODEL_CONFIGURATION_CHANGED','MODEL_REQUEST_UNCERTAIN','MODEL_UNAVAILABLE','MODEL_API_ERROR','MODEL_RESPONSE_INVALID'):
+                            raise ProtocolError(code)
+                        if isinstance(code,str) and re.fullmatch(r'MODEL_[A-Z0-9_]{1,60}',code):
+                            # 其它模型类错误码按真实原因上报，不折叠成通用的回调拒绝。
                             raise ProtocolError(code)
                     if path=='/internal/agent/model-budget/reserve' and isinstance(data,dict) and data.get('code') in ('MODEL_REQUEST_BUDGET_EXCEEDED','MODEL_TURN_BUDGET_EXCEEDED','MODEL_DEBUG_BUDGET_INVALID'):
                         raise ProtocolError(data['code'])
@@ -44,6 +53,11 @@ class BankClient:
                         raise GroundingRejection(match.group(1) if match else None,reason)
                     code=data.get('code') if isinstance(data,dict) else None
                     if code in BUSINESS_REJECTIONS:return data
+                    if path=='/internal/agent/model/complete':
+                        # 模型调用失败必须带可定位原因（状态码 + 服务端错误码/响应摘要），不能只说"回调被拒"。
+                        detail=code if isinstance(code,str) and code else json.dumps(data,ensure_ascii=False,default=str)
+                        hint='_'.join(part for part in (str(response.status_code),detail[:120]) if part)
+                        raise ProtocolError('MODEL_CALLBACK_REJECTED_'+re.sub(r'[^A-Za-z0-9_]+','_',hint)[:80])
                     raise ProtocolError('BANK_CALLBACK_REJECTED')
                 return data
         except ProtocolError:raise

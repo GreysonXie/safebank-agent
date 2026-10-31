@@ -31,6 +31,13 @@ public class GatewayCoordinator {
     }
     private Map<String,Object> finish(String turnId,com.fasterxml.jackson.databind.JsonNode reply){
         String state=reply.path("state").asText();
+        if("INTERRUPTED".equals(turns.read(turnId).getState()))throw new BankException("AGENT_TURN_CLOSED","本轮已结束，未取得答案；可以直接提出新问题");
+        if(state.equals("FAILED")){
+            // 本轮失败但银行侧没有任何写操作：把真实原因告诉客户并结束该轮，不用"暂停"占住会话。
+            String code=reply.path("errorCode").asText("AGENT_FAILED");
+            results.failed(turnId,code);
+            throw new BankException(code,failureMessage(code));
+        }
         if(state.equals("RECOVERY_REQUIRED")){
             if("PAUSED".equals(turns.read(turnId).getState())){
                 results.pause(turnId,"AGENT_RECOVERY_REQUIRED");
@@ -63,6 +70,26 @@ public class GatewayCoordinator {
             results.acknowledged(id,ack.resultHash(),ack.outputVersion());
         }catch(HttpAgentClient.AgentTransportException error){results.pause(id,"AGENT_RECEIPT_TRANSPORT_UNAVAILABLE");}
         catch(BankException error){results.pause(id,"AGENT_RECEIPT_REVIEW_FAILED:"+error.code);}
+    }
+    /** 失败终结口径：本轮已确定失败且没有任何银行写操作，直接说明原因并让客户继续提问。 */
+    static String failureMessage(String code){
+        if("MODEL_REQUEST_REJECTED_401".equals(code)||"MODEL_REQUEST_REJECTED_403".equals(code))
+            return "真实模型服务拒绝了本次请求（"+code.substring("MODEL_REQUEST_REJECTED_".length())+" 鉴权失败）：当前保存的 API Key 无效或已失效。请到「模型管理」重新填写有效的 API Key 并点「检测连接」，本轮没有执行任何操作";
+        if(code!=null&&code.startsWith("MODEL_REQUEST_REJECTED_"))
+            return "真实模型服务拒绝了请求（"+code.substring("MODEL_REQUEST_REJECTED_".length())+"），常见原因是模型名不可用或请求参数不合法；本轮没有执行任何操作";
+        if("EFFECT_FAILED".equals(code)||"BANK_CALLBACK_REJECTED".equals(code))
+            return "这次查询没有成功（可能是网络或服务暂时不可用），没有执行任何操作；可以直接换个说法再问，比如说明月份或具体项目";
+        if("MODEL_EFFECT_UNKNOWN".equals(code)||"MODEL_SEND_UNCERTAIN".equals(code))
+            return "本次没有拿到模型响应（可能是模型密钥/额度/模型名配置有误，或网络中断），未执行任何银行操作；可到「模型管理」点「检测连接」核对配置后再问，如已有任务或银行操作以原回执为准";
+        if("ANSWER_REPAIR_EXHAUSTED".equals(code)||"ANSWER_REPAIR_BUDGET_EXHAUSTED".equals(code))
+            return "这个问题没能给出通过事实校验的回答（已重写仍不合格），所以没有交付，也没有执行任何操作；可以指定月份或换一种问法再试";
+        if("EFFECT_CONFLICT".equals(code))
+            return "本轮与历史记录的快照不一致，已按未完成处理，没有执行任何操作；可以直接重新提问";
+        if("MODEL_REQUEST_BUDGET_EXCEEDED".equals(code)||"MODEL_TURN_BUDGET_EXCEEDED".equals(code))
+            return "模型调用次数达到本机上限，未发送任何请求；可在模型设置中确认配置后重试";
+        if(code!=null&&code.startsWith("MODEL_"))
+            return "本次未取得回答（"+code+"），未执行任何操作；可直接重试或检查模型设置";
+        return "本次未取得回答（"+(code==null||code.isBlank()?"AGENT_FAILED":code)+"），未执行任何操作；可以直接重新提问";
     }
     /** 让失败原因可见：已知原因给业务口径说明，未知原因附真实错误码，不笼统写“需要核对”。 */
     static String reviewMessage(String code){

@@ -115,6 +115,42 @@ class GatewayFailureReasonTest {
         assertDoesNotThrow(()->service.pause("turn-1","AGENT_RESULT_UNKNOWN"),"审计不可用不能反过来打断轮次处理");
     }
 
+    @Test void failedTurnEndsTerminallyAndKeepsTheRealReason(){
+        var service=service("PROCESSING",null);
+        service.failed("turn-1","MODEL_EFFECT_UNKNOWN");
+        assertEquals("INTERRUPTED",row.getState(),"没有银行写操作的失败必须终结本轮，不能占住会话");
+        assertEquals(1,auditEvents.size());
+        assertTrue(auditEvents.getFirst().getEvent().startsWith("AGENT_FAILED · "));
+        assertTrue(auditEvents.getFirst().getEvent().contains("MODEL_EFFECT_UNKNOWN"));
+    }
+
+    @Test void failedTurnWithCommittedResultStaysForReview(){
+        var service=service("PROCESSING",2L);
+        service.failed("turn-1","MODEL_EFFECT_UNKNOWN");
+        assertEquals("PAUSED",row.getState(),"已有结果时不能直接终结");
+        assertTrue(auditEvents.getFirst().getEvent().startsWith("AGENT_RESULT_REVIEW · "));
+    }
+
+    @Test void failureMessagesTellTheCustomerWhatHappenedAndThatNothingRan(){
+        String network=GatewayCoordinator.failureMessage("MODEL_EFFECT_UNKNOWN");
+        assertTrue(network.contains("未执行任何银行操作"),network);
+        assertTrue(network.contains("检测连接"),network);
+        String repaired=GatewayCoordinator.failureMessage("ANSWER_REPAIR_EXHAUSTED");
+        assertTrue(repaired.contains("没有交付"),repaired);
+        assertTrue(repaired.contains("没有执行任何操作"),repaired);
+        String rejected=GatewayCoordinator.failureMessage("MODEL_REQUEST_REJECTED_401");
+        assertTrue(rejected.contains("401"),"要带上真实状态码："+rejected);
+        String conflict=GatewayCoordinator.failureMessage("EFFECT_CONFLICT");
+        assertTrue(conflict.contains("快照不一致"),conflict);
+        String unknown=GatewayCoordinator.failureMessage("SOMETHING_NEW");
+        assertTrue(unknown.contains("SOMETHING_NEW"),"未知原因也要回传："+unknown);
+        for(String code:List.of("MODEL_EFFECT_UNKNOWN","ANSWER_REPAIR_EXHAUSTED","MODEL_REQUEST_REJECTED_401","EFFECT_CONFLICT","SOMETHING_NEW")){
+            String message=GatewayCoordinator.failureMessage(code);
+            assertFalse(message.contains("已完成"),"失败口径不得声称完成："+code);
+            assertFalse(message.contains("转账成功"),"失败口径不得声称资金动作成功："+code);
+        }
+    }
+
     @Test void reviewMessagesNameTheCauseInsteadOfAGenericNotice(){
         assertTrue(GatewayCoordinator.reviewMessage("ANSWER_REPAIR_EXHAUSTED").contains("没有执行任何资金操作"));
         assertTrue(GatewayCoordinator.reviewMessage("BANK_CALLBACK_REJECTED").contains("银行侧明确拒绝"));

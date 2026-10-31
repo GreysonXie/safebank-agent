@@ -20,6 +20,7 @@ public class GatewayReconciler {
             if(g==null)return;
             if(state.equals("NO_RUN")){if("PAUSED".equals(g.getState()))results.pause(id,"AGENT_RUN_MISSING_ALREADY_PAUSED");else results.noRun(id,"AGENT_RUN_MISSING");return;}
             if(state.equals("RESULT_READY")){var ack=results.complete(client.result(reply,id));client.ack(ack);results.acknowledged(id,ack.resultHash(),ack.outputVersion());}
+            else if(state.equals("FAILED")){String code=reply.path("errorCode").asText("AGENT_FAILED");results.failed(id,code);}
             else if((state.equals("COMPLETED")||state.equals("NEEDS_CLARIFICATION"))&&g.getOutputVersion()!=null){var ack=results.saved(id);if(!reply.path("resultHash").asText().equals(ack.resultHash())||reply.path("outputVersion").asLong()!=ack.outputVersion())throw new BankException("CONFLICT","远端 ACK 不一致");results.acknowledged(id,ack.resultHash(),ack.outputVersion());}
             else if(state.equals("RECOVERY_REQUIRED")){
                 if("PAUSED".equals(g.getState()))results.pause(id,"AGENT_RECOVERY_REQUIRED");

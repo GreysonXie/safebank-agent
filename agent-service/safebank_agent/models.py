@@ -84,11 +84,16 @@ def decode_completion(reply):
 class ManagedModel:
     """The Java service holds credentials; Python retains only a revision."""
     mode='managed'
+    # 只发送 Java 侧 Request 记录声明的字段：预算预留的返回可能带 remaining/used 等附加信息，
+    # 原样回传会被 Java 的严格绑定拒绝（"Unrecognized field"），真实模型因此根本发不出去。
+    REQUEST_KEYS=('reservationId','operationKey','inputHash','javaTurnId','purpose')
     def __init__(self,bank,token,revision):
         self.bank=bank;self.token=token;self.revision=revision
     def check_can_send(self):pass
     def complete(self,payload,reservation):
-        reply=self.bank.model_complete({'revision':self.revision,'payload':payload,**reservation},self.token)
+        body={key:reservation[key] for key in self.REQUEST_KEYS if key in reservation}
+        body['revision']=self.revision;body['payload']=payload
+        reply=self.bank.model_complete(body,self.token)
         return decode_completion(reply)
 
 class MockModel:

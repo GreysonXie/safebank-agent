@@ -1,5 +1,6 @@
 """Durable network effect journal, independent of graph checkpoint writes."""
 import json
+import re
 from .contracts import ProtocolError, ModelRequestRejected, canonical, digest
 
 
@@ -59,7 +60,9 @@ class Effects:
                 self.store.guard(c, lease)
                 c.execute("UPDATE agent_effect_receipts SET state=%s,updated_at=UTC_TIMESTAMP(6) WHERE operation_key=%s", ('UNKNOWN' if purpose == 'model' and not rejected else 'FAILED', key))
                 if reservation:
-                    c.execute("UPDATE agent_model_requests SET state=%s,error_code=%s,finished_at=UTC_TIMESTAMP(6) WHERE reservation_id=%s", ('FAILED' if rejected else 'UNKNOWN', str(error) if rejected else 'MODEL_SEND_UNCERTAIN', reservation))
+                    # 记录真实原因码（只留协议码，不留异常文本），便于事后区分超时与内容错误。
+                    reason=re.sub(r'[^A-Z0-9_]+','_',str(error))[:64] or 'MODEL_SEND_UNCERTAIN'
+                    c.execute("UPDATE agent_model_requests SET state=%s,error_code=%s,finished_at=UTC_TIMESTAMP(6) WHERE reservation_id=%s", ('FAILED' if rejected else 'UNKNOWN', str(error) if rejected else reason, reservation))
             if rejected:
                 raise error from None
             raise ProtocolError('MODEL_EFFECT_UNKNOWN' if purpose == 'model' else 'EFFECT_FAILED') from None
