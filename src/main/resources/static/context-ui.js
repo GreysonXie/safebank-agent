@@ -34,7 +34,26 @@ function renderBusinessContext(view,clarification){
 function acceptContextAnswer(response){
  if(response.context)renderBusinessContext(response.context,response.clarification);
  pendingChatRequest=null;contextStorageWrite('safebank.pendingChat',null);
- syncStatementFollow();syncCardOperation();
+ syncStatementFollow();syncCardOperation();offerMandateQuery(response.text||'');
+}
+/** 回答里提示"要去确认代扣查询范围"时，直接在对话里给一个按钮，一步确认后按原问题重查。 */
+function offerMandateQuery(text){
+ if(!text||!text.includes('代扣'))return;
+ if(!(text.includes('查询范围')||text.includes('确认查询')||text.includes('查询确认')))return;
+ if(typeof document==='undefined')return;
+ const messages=$('messages');if(!messages||messages.querySelector('.mandate-query-offer'))return;
+ const box=node('div',undefined,'bubble assistant mandate-query-offer');
+ box.append(node('small','下一步'));
+ box.append(node('div','我可以直接发起一次代扣查询确认，确认后按你原来的问题重新查一遍。'));
+ const button=node('button','确认查询代扣并重新查询');button.type='button';
+ button.onclick=()=>perform(button,async()=>{
+  await createMandateQueryIntent();
+  box.replaceChildren(node('small','下一步'),node('div','代扣查询范围已确认，正在按原问题重新查询。'));
+  const question=lastAskedQuestion||$('prompt').value.trim();
+  if(question)await sendQuestion(question);
+ });
+ box.append(button);messages.append(box);messages.scrollTop=messages.scrollHeight;
+ mirrorTranscript(box);
 }
 /** 账单侧栏跟随本轮对话口径；失败不影响对话本身，也不在无浏览器环境下报错。 */
 function syncStatementFollow(){

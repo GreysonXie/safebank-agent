@@ -93,7 +93,7 @@ public final class GroundedAnswer {
         if(item.tool().equals("get_statement")&&item.data() instanceof Map<?,?> map)return "statement_"+map.get("month").toString().replace("-","_");
         if(item.tool().equals("get_statement_query"))return rangePrefix(item.data());
         return switch(item.tool()){case "agent_savings_task"->"savings_task";case "agent_savings_task_status"->"savings_task_status";case "agent_transfer_preview"->"preview_transfer";case "agent_revoke_preview"->"preview_revoke";case "list_mandates"->"mandates_latest";case "get_accounts"->"accounts_latest";
-            case "agent_card_list"->"cards_latest";case "agent_card_history"->"card_operations_latest";case "agent_card_operation"->"pending_card_operation";case "agent_finance_recommendation"->"finance_recommendation";
+            case "agent_card_list"->"cards_latest";case "agent_card_history"->"card_operations_latest";case "agent_card_operation"->"pending_card_operation";case "agent_finance_recommendation"->"finance_recommendation";case "agent_query"->"query_result";
             case "detect_recurring_payments"->"recurring_latest";case "resolve_recipient"->"recipients_latest";case "list_transfer_schedules"->"schedules_latest";default->item.tool();};
     }
     /** 区间查询的事实前缀由服务端回显的区间与粒度决定：同一区间结果稳定，不同区间互不覆盖。 */
@@ -108,7 +108,7 @@ public final class GroundedAnswer {
     public static boolean cacheable(BankReplyComposer.Evidence item) {
         return Set.of("get_statement","get_statement_query","get_accounts","list_mandates","detect_recurring_payments",
             "resolve_recipient","list_transfer_schedules","agent_transfer_preview","agent_revoke_preview","agent_savings_task","agent_savings_task_status",
-            "agent_card_list","agent_card_history","agent_card_operation","agent_finance_recommendation").contains(item.tool());
+            "agent_card_list","agent_card_history","agent_card_operation","agent_finance_recommendation","agent_query").contains(item.tool());
     }
     /** Full read data stays in bank evidence; the model receives it once in the fact catalog. */
     public Object modelToolResult(String tool,Object result) {
@@ -302,8 +302,11 @@ public final class GroundedAnswer {
                 if(query.has("start"))ranges.add(query.path("start").asText()+"~"+query.path("end").asText()+"@"+query.path("bucket").asText());
             }
         }
-        return Map.of("available_statement_months",List.copyOf(months),"available_statement_ranges",List.copyOf(ranges),"available_read_tools",List.copyOf(tools),
-            "statement_query",Map.of(
+        var context=new java.util.LinkedHashMap<String,Object>();
+        context.put("available_statement_months",List.copyOf(months));
+        context.put("available_statement_ranges",List.copyOf(ranges));
+        context.put("available_read_tools",List.copyOf(tools));
+        context.put("statement_query",Map.of(
                 "buckets",List.copyOf(StatementQueryService.BUCKETS),
                 "bucket_limits",StatementQueryService.BUCKET_LIMIT,
                 "group_by",List.copyOf(StatementQueryService.DIMENSIONS),
@@ -311,24 +314,31 @@ public final class GroundedAnswer {
                 "max_span_years",StatementQueryService.MAX_SPAN_YEARS,
                 "max_rows",StatementQueryService.MAX_LIMIT,
                 "metrics","每桶含 expense_minor/income_minor/net_minor/internal_transfer_minor/transaction_count，各桶之和恒等于 totals",
-                "notes","notes 是服务端口径说明；引用任何数字都必须来自事实目录"),
-            "capabilities",Map.of("service_usage",false,"payment_channel",false,"merchant_contract_status",false,"risk_assessment",false,"transaction_refund_linkage",false,"card_operation_execution",false,"finance_purchase",false),
-            "accounting_rules",Map.of("income_includes_refunds",true,"refund_reduces_expense",false,"internal_transfers_included",false),
-            "card_rules",Map.of(
+                "notes","notes 是服务端口径说明；引用任何数字都必须来自事实目录"));
+        context.put("capabilities",Map.of("service_usage",false,"payment_channel",false,"merchant_contract_status",false,"risk_assessment",false,"transaction_refund_linkage",false,"card_operation_execution",false,"finance_purchase",false));
+        context.put("accounting_rules",Map.of("income_includes_refunds",true,"refund_reduces_expense",false,"internal_transfers_included",false));
+        context.put("card_rules",Map.of(
                 "preview_only","卡片操作在本系统只生成预览；客户必须在「我的卡片 → 操作预览」勾选确认后才会生效，聊天里不能说已完成",
                 "report_lost_irreversible","挂失后此卡永久停用、不可解挂；关联账户余额保留，可申请新卡",
                 "lock_vs_lost","临时锁定可解锁；挂失不可恢复；已挂失卡片不能再锁卡或改限额",
-                "demo_scope","卡片、限额与开关均为本地合成演示，未接入真实消费网络"),
-            "finance_rules",Map.of(
+                "demo_scope","卡片、限额与开关均为本地合成演示，未接入真实消费网络"));
+        context.put("finance_rules",Map.of(
                 "scope","只按客户偏好筛选示例方向；不做申购、不代下单、不预测收益",
                 "no_guarantee","不得说保本或稳赚；本金保障偏好只筛选标注保障的方向，保障范围与条件仍须核实",
                 "not_risk_assessment","筛选结果不等于正式风险测评",
-                "fact_keys","事实前缀 finance_recommendation：summary/disclosure/candidates.N.product.*、candidates.N.reasons、exclusions、rules；金额单位为分"),
-            "unsupported_actions",List.of("信用卡账单与还款","分期与额度提升审批","境外用卡临时额度","代订商品或代付第三方订单","补卡邮寄与物流进度","投诉工单与人工接管进度","修改登录密码或账号信息"),
-            "mandate_rules",Map.of("REVOKED","仅表示查询时该银行授权已撤销；不能保证商户不再收费、合同终止、退款或其他扣款通道停止",
+                "fact_keys","事实前缀 finance_recommendation：summary/disclosure/candidates.N.product.*、candidates.N.reasons、exclusions、rules；金额单位为分"));
+        context.put("unsupported_actions",List.of("信用卡账单与还款","分期与额度提升审批","境外用卡临时额度","代订商品或代付第三方订单","补卡邮寄与物流进度","投诉工单与人工接管进度","修改登录密码或账号信息"));
+        context.put("query_engine",Map.of(
+                "entities",cn.safebank.service.query.QueryEngine.entityCatalog(),
+                "keys",List.copyOf(cn.safebank.service.query.QueryExecutor.KEYS),
+                "fact_prefix","query_result",
+                "rules","只读问题优先翻译成 query：entity 选实体，range 给区间，where 过滤，groupBy 分组，metrics 选度量（count/sum/avg/max/min/latest/earliest），orderBy 排序，limit 取数量。字段必须来自该实体的 fields；不支持的字段会返回可执行提示，按提示换字段，不要说无法回答。"
+                    +"金额单位为分；basis 是本次口径，引用比例必须说明分母。写操作（转账/撤销/挂失/申购）不走 query，仍要先生成待确认预览。"));
+        context.put("mandate_rules",Map.of("REVOKED","仅表示查询时该银行授权已撤销；不能保证商户不再收费、合同终止、退款或其他扣款通道停止",
                 "MONTHLY","明确月付且ACTIVE可用于已知月付预算；不等于已实现节省",
                 "UNKNOWN","收费周期未知，不计入确定月度节省",
                 "QUARTERLY","季度收费折算月均仅作预算参考，不是每月实际扣款"));
+        return context;
     }
     public Map<String,Object> calculate(JsonNode args) {
         String operation=args.path("operation").asText();

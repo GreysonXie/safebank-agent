@@ -1,5 +1,5 @@
 let csrf='',sessionRequest=null,faultsEnabled=false,workflows=[],currentAgentMode='',currentModelName='';
-let chatBusy=false,lastFailedQuestion='',appReady=false;
+let chatBusy=false,lastFailedQuestion='',appReady=false,lastAskedQuestion='';
 const actionCards=new Map(),verificationProofs=new Map(),actionRows=new Map();
 let openActionId=null;
 const accountLabels=new Map();
@@ -213,6 +213,7 @@ async function pollOriginalChat(text){
  }
 }
 async function sendQuestion(text){
+ lastAskedQuestion=text;
  if(!appReady){notify('正在恢复业务会话，请稍候。');return;}if(chatBusy||conversationSwitchBusy||!text)return;
  if(pendingChatRequest&&pendingChatRequest.text!==text){
   lastFailedQuestion=pendingChatRequest.text;

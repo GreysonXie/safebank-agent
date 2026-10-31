@@ -16,7 +16,7 @@ import java.util.*;
 import static cn.safebank.service.ContextEvidenceService.*;
 @Service @Profile("agent-gateway")
 public class AgentCapabilityService {
-    public static final Set<String> SCOPES=Set.of("statement","statement_compare","statement_query","recurring_analysis","account_query","mandate_receipt","transfer_preview","revoke_preview","savings_task_prepare","savings_task_status","card_list","card_history","card_preview","finance_recommend");
+    public static final Set<String> SCOPES=Set.of("statement","statement_compare","statement_query","recurring_analysis","account_query","mandate_receipt","transfer_preview","revoke_preview","savings_task_prepare","savings_task_status","card_list","card_history","card_preview","finance_recommend","query");
     /** 卡片预览可接受的参数键（闭集，可裁剪）：模型只能给语义查询词，卡号与账户由服务端解析。 */
     public static final Set<String> CARD_PREVIEW_KEYS=Set.of("kind","cardQuery","accountQuery","label","cardType",
         "perTransactionLimitMinor","dailyLimitMinor","onlineEnabled","overseasEnabled");
@@ -24,6 +24,7 @@ public class AgentCapabilityService {
         "horizonMonths","capitalProtection");
     @org.springframework.beans.factory.annotation.Autowired private AgentCardService cardTools;
     @org.springframework.beans.factory.annotation.Autowired private AgentFinanceService financeTools;
+    @org.springframework.beans.factory.annotation.Autowired private cn.safebank.service.query.QueryEngine queryEngine;
     @org.springframework.beans.factory.annotation.Autowired private SavingsTaskPlanService savingsTasks;
     @org.springframework.beans.factory.annotation.Autowired private StatementQueryService statementQueries;
     @org.springframework.beans.factory.annotation.Autowired private SavingsTaskPlanValidator taskValidator;
@@ -60,6 +61,7 @@ public class AgentCapabilityService {
             case "card_history"->cardTools.history(g.getUserId());
             case "card_preview"->cardTools.preview(g.getUserId(),request.args());
             case "finance_recommend"->financeTools.recommend(request.args());
+            case "query"->queryEngine.execute(g.getUserId(),g.getConversationId(),request.args());
             case "mandate_receipt"->mandateReceipts.read(g.getUserId(),g.getConversationId());case "account_query"->accounts.list(g.getUserId());
             case "statement"->statements.statement(g.getUserId(),month(request.args(),"month"));
             case "statement_compare"->Map.of("primary",statements.statement(g.getUserId(),month(request.args(),"month")),"comparison",statements.statement(g.getUserId(),month(request.args(),"comparisonMonth")));
@@ -92,6 +94,7 @@ public class AgentCapabilityService {
                 case "card_history"->items.add(new BankReplyComposer.Evidence("agent_card_history",cardTools.historyFacts(data)));
                 case "card_preview"->{if(!data.has("code"))items.add(new BankReplyComposer.Evidence("agent_card_operation",cardTools.operationFacts(data.path("pendingCardOperation"))));}
                 case "finance_recommend"->{if(!data.has("code"))items.add(new BankReplyComposer.Evidence("agent_finance_recommendation",financeTools.facts(data.path("financeRecommendation"))));}
+                case "query"->{if(!data.has("code"))items.add(bankEvidence("agent_query",data));}
                 default->throw GatewayTurnService.denied();
             }
         }return items;
@@ -111,6 +114,9 @@ public class AgentCapabilityService {
         // 通用查询的键集合是闭集但可裁剪（只有 start/end 必填）；具体类型、范围与上限由 StatementQueryService 统一校验。
         boolean keysAccepted=r.tool().equals("statement_query")
             ?!r.args().isEmpty()&&StatementQueryService.QUERY_KEYS.containsAll(keys)
+            :r.tool().equals("query")
+                // 查询语言是闭集：entity 必填，其余可裁剪，字段/度量由 QueryExecutor 按实体声明校验
+                ?r.args().path("entity").isTextual()&&cn.safebank.service.query.QueryExecutor.KEYS.containsAll(keys)
             :r.tool().equals("card_preview")
                 ?!r.args().isEmpty()&&CARD_PREVIEW_KEYS.containsAll(keys)
                 :r.tool().equals("finance_recommend")

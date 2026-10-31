@@ -218,7 +218,10 @@ def compact_facts(facts,question):
         if key.rsplit('.',1)[0] in refund_rows:return 0
         # 区间查询的总计、回显口径与对照段优先保留，避免被分桶明细挤出目录。
         if '.totals.' in key or '.comparison.' in key or re.search(r'statement_(?:range|query)_.*\.query\.',key):return -1
-        if '.rows.items.' in key or '.transactions.' in key:return 3 if any(x in requested_scope for x in ('逐笔','明细','退款','这笔','这条','该笔','商户','交易用途')) else 5
+        if '.rows.items.' in key or '.transactions.' in key:
+            detail_words=('逐笔','明细','退款','这笔','这条','该笔','商户','交易用途',
+                          '最贵','最便宜','最大','最小','最高','最低','单笔','一笔','哪一笔','哪笔','最近一笔','最后一笔')
+            return 3 if any(x in requested_scope for x in detail_words) else 5
         if '.buckets.' in key:return 0
         if '.anomaly_candidates.' in key:return 0 if any(x in question for x in ('大额','核对','异常','维修')) else 2
         if 'comparison_' in key or '.analysis.' in key:return 1
@@ -363,6 +366,39 @@ FINANCE_ENUMS={'riskPreference':{'CONSERVATIVE','BALANCED','GROWTH'},
                'liquidity':{'IMMEDIATE','FLEXIBLE','LOCKABLE'}}
 
 
+QUERY_KEYS={'entity','range','where','groupBy','metrics','orderBy','limit'}
+QUERY_ENTITIES={'transactions','accounts','mandates','cards','recurring','actions'}
+QUERY_METRICS={'count','sum','avg','max','min','latest','earliest'}
+
+
+def query_args(args):
+    """查询语言的闭集契约：实体必填，其余可选；字段级校验由服务端实体声明负责。"""
+    if not isinstance(args,dict) or not args or not QUERY_KEYS.issuperset(args):raise ProtocolError('INVALID_TOOL_SCOPE')
+    args={key:value for key,value in args.items() if value is not None}
+    if args.get('entity') not in QUERY_ENTITIES:raise ProtocolError('INVALID_TOOL_SCOPE')
+    rng=args.get('range')
+    if rng is not None:
+        if not isinstance(rng,dict) or not set(rng)<={'start','end'}:raise ProtocolError('INVALID_TOOL_SCOPE')
+        for key in ('start','end'):
+            value=rng.get(key)
+            if value is not None and (not isinstance(value,str) or not STATEMENT_DATE.fullmatch(value)):raise ProtocolError('INVALID_TOOL_SCOPE')
+    where=args.get('where')
+    if where is not None and not isinstance(where,dict):raise ProtocolError('INVALID_TOOL_SCOPE')
+    group=args.get('groupBy')
+    if group is not None and (not isinstance(group,str) or not group.strip()):raise ProtocolError('INVALID_TOOL_SCOPE')
+    metrics=args.get('metrics')
+    if metrics is not None:
+        if not isinstance(metrics,list) or not metrics or not all(item in QUERY_METRICS for item in metrics):
+            raise ProtocolError('INVALID_TOOL_SCOPE')
+    order=args.get('orderBy')
+    if order is not None:
+        if not isinstance(order,dict) or not set(order)<={'field','direction'}:raise ProtocolError('INVALID_TOOL_SCOPE')
+        if not isinstance(order.get('field'),str) or not order['field'].strip():raise ProtocolError('INVALID_TOOL_SCOPE')
+        if order.get('direction') not in (None,'asc','desc'):raise ProtocolError('INVALID_TOOL_SCOPE')
+    limit=args.get('limit')
+    if limit is not None and (type(limit) is not int or not 1<=limit<=50):raise ProtocolError('INVALID_TOOL_SCOPE')
+
+
 def card_preview_args(args):
     """卡片预览的闭集契约：只给语义查询词与参数值，卡号与账户ID由Java解析。"""
     if not isinstance(args,dict) or not args or not CARD_PREVIEW_KEYS.issuperset(args):raise ProtocolError('INVALID_TOOL_SCOPE')
@@ -418,9 +454,12 @@ def planning(value):
     for item in tools:
         if not isinstance(item,dict) or set(item)!= {'tool','args'} or not isinstance(item['args'],dict):
             raise ProtocolError('INVALID_PLAN')
-        expected={'statement':{'month'},'statement_compare':{'month','comparisonMonth'},'recurring_analysis':set(),'account_query':set(),'mandate_receipt':set(),'transfer_preview':{'sourceQuery','recipientQuery','amountMinor'},'revoke_preview':{'merchantQuery'},'savings_task_status':{'workflowId'},'statement_query':None,'card_list':set(),'card_history':set(),'card_preview':None,'finance_recommend':None}.get(item['tool'])
-        if expected is None and item['tool'] not in ('statement_query','card_preview','finance_recommend'):
+        expected={'statement':{'month'},'statement_compare':{'month','comparisonMonth'},'recurring_analysis':set(),'account_query':set(),'mandate_receipt':set(),'transfer_preview':{'sourceQuery','recipientQuery','amountMinor'},'revoke_preview':{'merchantQuery'},'savings_task_status':{'workflowId'},'statement_query':None,'card_list':set(),'card_history':set(),'card_preview':None,'finance_recommend':None,'query':None}.get(item['tool'])
+        if expected is None and item['tool'] not in ('statement_query','card_preview','finance_recommend','query'):
             raise ProtocolError('INVALID_TOOL_SCOPE')
+        if item['tool']=='query':
+            query_args(item['args'])
+            continue
         if item['tool']=='statement_query':
             statement_query_args(item['args'])
             continue

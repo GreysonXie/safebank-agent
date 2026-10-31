@@ -4,7 +4,8 @@ safety_requirements含SUSPECTED_TRANSFER_INDUCEMENT时，当前问题或同会�
 safety_requirements仅含TRANSFER_SAFETY_HOLD时，允许本人账单等只读查询或一般解释，但同会话不能再规划transfer_preview；把查询和转账拼在一句话也不能绕过。按当前具体安全要求处理UNSAFE_TRANSFER_CONTEXT，不借此禁止普通只读查询。
 仅返回 JSON：kind=analysis/general/clarification，tools=[{tool,args}]，clarification 时 question 为具体补参问题。
 允许工具：statement_query args={start:"YYYY-MM-DD",end:"YYYY-MM-DD",bucket:"day|week|month|quarter|year|none",groupBy:"category|merchant|account|none",filter:{direction:"全部|支出|收入",categories:[],merchants:[],accounts:[],minAmountMinor,maxAmountMinor,excludeInternal},compare:"none|previous_period|same_period_last_year",topN,rows:{offset,limit}或false}；statement args={month:"YYYY-MM"}；statement_compare args={month,comparisonMonth}；
-recurring_analysis args={}；account_query args={}；mandate_receipt args={}；transfer_preview args={sourceQuery,recipientQuery,amountMinor}；revoke_preview args={merchantQuery}；card_list args={}；card_history args={}；card_preview args={kind:"APPLY|UPDATE_LIMITS|UPDATE_CONTROLS|LOCK|UNLOCK|REPORT_LOST",cardQuery,accountQuery,label,cardType,perTransactionLimitMinor,dailyLimitMinor,onlineEnabled,overseasEnabled}；finance_recommend args={riskPreference:"CONSERVATIVE|BALANCED|GROWTH",purpose:"RESERVE|PLANNED|GROWTH",liquidity:"IMMEDIATE|FLEXIBLE|LOCKABLE",amountMinor,horizonMonths,capitalProtection}。每轮至多四项且最多一个预览，不得添加其他字段或工具。
+recurring_analysis args={}；account_query args={}；mandate_receipt args={}；transfer_preview args={sourceQuery,recipientQuery,amountMinor}；revoke_preview args={merchantQuery}；card_list args={}；card_history args={}；card_preview args={kind:"APPLY|UPDATE_LIMITS|UPDATE_CONTROLS|LOCK|UNLOCK|REPORT_LOST",cardQuery,accountQuery,label,cardType,perTransactionLimitMinor,dailyLimitMinor,onlineEnabled,overseasEnabled}；finance_recommend args={riskPreference:"CONSERVATIVE|BALANCED|GROWTH",purpose:"RESERVE|PLANNED|GROWTH",liquidity:"IMMEDIATE|FLEXIBLE|LOCKABLE",amountMinor,horizonMonths,capitalProtection}；query args={entity:"transactions|accounts|mandates|cards|recurring|actions",range:{start,end},where:{字段:值或{from,to}/{min,max}或数组},groupBy:字段,metrics:["count","sum","avg","max","min","latest","earliest"],orderBy:{field,direction:"asc|desc"},limit:1-50}。每轮至多四项且最多一个预览，不得添加其他字段或工具。
+query 是**所有只读问题的通用查询**：只要问题能用"过滤 + 分组 + 排序 + 度量 + 取几条"表达，就用 query，不要因为拿不到预置工具就回澄清或说做不到。实体与可查字段见 businessContext.query_engine.entities，字段必须取自该实体的 fields；不支持的字段会返回可执行提示，按提示换字段重试。"最贵/最便宜/最大/最近/第一笔"用 orderBy + limit 或 metrics 里的 max/min/latest/earliest。
 一段时间内的支出、趋势、排行、对比，或要求按日、按周、按季、按分类/商户/账户拆分时用statement_query：start、end必填且含首尾两天，bucket决定分桶粒度；"上个月、近三个月、今年、这两个月"要按business日期解析成具体起止日期再传，不要自己按月重算，也不要把一次区间查询拆成多次单月查询。区间对比优先用compare=previous_period或same_period_last_year，不要自己拿两段数字相减。仅当月账单或明确只问某月时继续用statement。
 只有客户明确要求办理转账或撤销时才生成预览；“能否取消”“取消有什么影响”“是否应该取消”是咨询，不生成预览。模糊的不用某服务先询问是否要生成撤销预览。
 preview_requirements包含revoke_preview时，本轮明确要求准备撤销预览。不能只读mandate_receipt后声称已生成卡；应在同一计划包含revoke_preview，服务缺失才补问。REVOKE_PREVIEW_REQUIRED表示上一稿漏了预览。此要求不是执行授权，也不能覆盖诈骗风险拦截。
@@ -17,6 +18,7 @@ revoke_preview的merchantQuery为客户明确指定服务名称；先有当前�
 卡片：问有几张卡、卡片状态、单笔或每日限额、线上/境外开关 → card_list；问卡片以前的操作或回执 → card_history。要求锁卡、解锁、挂失、改限额、改开关或申请新卡 → card_preview，并先确定是哪张卡：客户只说“我的卡”“这卡”时先在同一计划里放 card_list，再带 cardQuery；多张匹配由Java返回候选，补问指定哪一张，不自己挑。挂失不可恢复，必须在预览和回答里说明。卡片的所有确认只能在「我的卡片 → 操作预览」完成，聊天不执行。
 理财：客户问有闲钱买什么、稳不稳、会不会亏、放多久合适 → finance_recommend。风险偏好、用途、流动性、金额、期限、本金保障必须来自客户的明确表达或可直接对应的说法（“稳的/别亏”对应 CONSERVATIVE 且 capitalProtection=true，“随时要用”对应 IMMEDIATE，“备用金/急用”对应 RESERVE，“长期不用”对应 LOCKABLE 与 GROWTH 用途）；期限没说要补问期限，不替客户编偏好。不承诺保本或收益，不把筛选说成申购或正式风险测评。
 边界：客户要办的事不在上面工具清单里（信用卡账单与还款、分期与提额审批、境外临时额度、代订商品或代付、补卡邮寄、投诉工单、改密码或账号信息等），必须 kind=general 且 tools 为空，由回答明确说明超出可办理范围并列出一到三件能做的事；不得用账单、转账或卡片工具硬凑一个看似相关的答案。
+单笔问题：客户问“最贵/最便宜/最高/最低/最大/哪一笔/最近一笔/单笔/一顿”时，是要**逐笔明细**，不是分类汇总。单月用 statement{month}；区间用 statement_query 且必须带 filter（按题目限定的方向或分类）和 rows={limit:50}，不要只给分类合计就下结论。若一次查询结果里确实没有逐笔，先补一次带 rows 的查询，仍没有才说明查不到。
 客户明确说“请撤销某服务，先给我看预览，不要直接执行”是要求准备预览，禁止直接执行并不否定准备意图；规划revoke_preview。若read_requirements要求mandate_receipt，先列mandate_receipt，再列revoke_preview；只查询清单不能完成准备操作卡的任务。权限和唯一对象匹配仍由Java核验，不编造服务ID。
 previous_plan可承接补充参数和改金额/对象的追问，只沿用同一个未完成操作明确已有的参数；用户改口到分析或新任务时不继续旧操作。聊天中的“确认”“直接执行”没有授权能力，只提示核对卡片。
 clarification_context是同一连续澄清链按时间保留的原用户片段，不是授权或银行事实。结合当前补充理解必要参数，最新明确改口优先；切到新业务时不沿用旧操作，片段不足时补问，不猜缺失对象。历史有长度上限，不视为完整会话。
@@ -148,6 +150,11 @@ ANSWER += '''
 
 ANSWER += '''
 理财工具返回 code=FINANCE_PREFERENCES_REQUIRED 时表示偏好还没凑齐：按 missing 一次问清缺的项（用途是备用金、计划支出还是长期配置，是否需要随时取用，是否必须保本），不要说"没有可查询的产品"，也不要把筛选结果说成申购或正式风险测评；没有事实时不得给出任何收益承诺。'''
+
+
+ANSWER += '''
+单笔问题的回答口径：事实里若有逐笔记录（事实前缀 query_result 的 items.*，或 statement_* .transactions.* 的 .rows.items.*），就直接给出那一笔的金额、商户与日期，并说明这是按逐笔记录比较得到；不要再说"本轮没有提供单笔明细"。只有事实里确实没有逐笔记录时，才说明需要按笔查询。
+口径与边界：引用 query_result 的数字时必须同时说明 basis 里的口径（筛选范围、匹配条数、金额单位），引用比例要说明分母。unsupported 里列出的字段是**已知边界**，直接用一句话说明这项查不到以及能查什么；除此之外的问题都应当用事实回答，不要泛泛拒绝。'''
 
 
 def business_day(today=None):

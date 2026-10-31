@@ -6,7 +6,7 @@
 
 import unittest
 
-from safebank_agent.graph import ProtocolError, card_preview_args, finance_args, planning, suggested_tools
+from safebank_agent.graph import ProtocolError, card_preview_args, finance_args, planning, query_args, suggested_tools
 
 
 def plan(tools):
@@ -86,6 +86,47 @@ class FinanceToolTest(unittest.TestCase):
     def test_extra_argument_is_rejected(self):
         with self.assertRaises(ProtocolError):
             finance_args({'amountMinor': 100000, 'riskLevel': 2})
+
+
+class QueryToolTest(unittest.TestCase):
+    """通用查询语言：一套参数覆盖六个实体，字段级校验交给服务端声明。"""
+
+    def test_full_query_is_accepted(self):
+        args = {'entity': 'transactions',
+                'range': {'start': '2026-09-01', 'end': '2026-09-30'},
+                'where': {'category': '餐饮', 'direction': '支出'},
+                'metrics': ['count', 'max'], 'orderBy': {'field': 'amount_minor', 'direction': 'desc'},
+                'limit': 1}
+        self.assertEqual(plan([{'tool': 'query', 'args': args}])['tools'][0]['tool'], 'query')
+
+    def test_every_entity_is_accepted(self):
+        for entity in ('transactions', 'accounts', 'mandates', 'cards', 'recurring', 'actions'):
+            with self.subTest(entity=entity):
+                self.assertEqual(query_args({'entity': entity}), None)
+
+    def test_group_by_and_metrics(self):
+        query_args({'entity': 'transactions', 'groupBy': 'merchant', 'metrics': ['count', 'sum']})
+        query_args({'entity': 'cards', 'where': {'status': 'ACTIVE'}, 'orderBy': {'field': 'per_transaction_limit_minor', 'direction': 'asc'}, 'limit': 1})
+
+    def test_unknown_entity_is_rejected(self):
+        for args in ({'entity': 'loans'}, {'entity': ''}, {}):
+            with self.subTest(args=args):
+                with self.assertRaises(ProtocolError):
+                    query_args(args)
+
+    def test_unknown_keys_and_bad_types_are_rejected(self):
+        for args in ({'entity': 'cards', 'sql': 'select 1'},
+                     {'entity': 'cards', 'range': {'start': '2026/09/01'}},
+                     {'entity': 'cards', 'metrics': ['sum_squared']},
+                     {'entity': 'cards', 'limit': 999},
+                     {'entity': 'cards', 'orderBy': {'field': 'label', 'direction': 'up'}},
+                     {'entity': 'cards', 'groupBy': ''}):
+            with self.subTest(args=args):
+                with self.assertRaises(ProtocolError):
+                    query_args(args)
+
+    def test_null_placeholders_are_treated_as_absent(self):
+        query_args({'entity': 'accounts', 'range': None, 'where': None, 'limit': None})
 
 
 class MixedPlanTest(unittest.TestCase):
