@@ -58,6 +58,7 @@
 <update id="useGrant">UPDATE agent_service_grants SET calls_used=calls_used+1 WHERE id=#{id} AND state='ACTIVE' AND calls_used&lt;call_limit</update>
 <select id="receipt" resultMap="AgentToolCallReceiptEntity">SELECT <include refid="AgentToolCallReceiptEntityColumns"/> FROM agent_tool_call_receipts WHERE turn_id=#{turnId} AND operation_key=#{key} FOR UPDATE</select>
 <select id="receipts" resultMap="AgentToolCallReceiptEntity">SELECT <include refid="AgentToolCallReceiptEntityColumns"/> FROM agent_tool_call_receipts WHERE turn_id=#{turnId} ORDER BY observed_at,id FOR UPDATE</select>
+<select id="latestReceiptByTool" resultMap="AgentToolCallReceiptEntity">SELECT <include refid="AgentToolCallReceiptEntityColumns"/> FROM agent_tool_call_receipts WHERE user_id=#{userId} AND conversation_id=#{conversationId} AND tool_name=#{toolName} ORDER BY observed_at DESC,id DESC LIMIT 1</select>
 <select id="due" resultMap="AgentGatewayTurnEntity">SELECT <include refid="AgentGatewayTurnEntityColumns"/> FROM agent_gateway_turns WHERE state IN ('PENDING','ACK_PENDING','PAUSED') AND next_check_at&lt;=#{now} ORDER BY next_check_at,turn_id LIMIT 100</select>
 <select id="lockGateway" resultMap="AgentGatewayTurnEntity">SELECT <include refid="AgentGatewayTurnEntityColumns"/> FROM agent_gateway_turns WHERE turn_id=#{turnId} FOR UPDATE</select>
 <select id="grantCurrent" resultMap="AgentServiceGrantEntity">SELECT <include refid="AgentServiceGrantEntityColumns"/> FROM agent_service_grants WHERE token_hash=#{tokenHash} FOR UPDATE</select>

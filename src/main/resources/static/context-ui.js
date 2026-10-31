@@ -34,10 +34,16 @@ function renderBusinessContext(view,clarification){
 function acceptContextAnswer(response){
  if(response.context)renderBusinessContext(response.context,response.clarification);
  pendingChatRequest=null;contextStorageWrite('safebank.pendingChat',null);
+ syncStatementFollow();
+}
+/** 账单侧栏跟随本轮对话口径；失败不影响对话本身，也不在无浏览器环境下报错。 */
+function syncStatementFollow(){
+ if(typeof window==='undefined'||typeof window.statementFollow!=='function')return;
+ window.statementFollow().catch(()=>{});
 }
 async function restoreBusinessContext(showHistory=false){
  if(!businessConversation?.conversationId){renderBusinessContext(null,null);return;}
- try{const view=await api('/conversations/'+encodeURIComponent(businessConversation.conversationId));renderBusinessContext(view,null);
+ try{const view=await api('/conversations/'+encodeURIComponent(businessConversation.conversationId));renderBusinessContext(view,null);syncStatementFollow();
   if(showHistory){for(const turn of view.displayHistory||[]){if(turn.user)message(turn.user,'user');if(turn.assistant)message(turn.assistant);}}
  }catch(error){if(['NOT_FOUND','CONTEXT_EXPIRED'].includes(error.code)){businessConversation=null;pendingChatRequest=null;contextStorageWrite('safebank.pendingChat',null);renderBusinessContext(null,null);$('chat-status').textContent='原对话不可用或已过期。新问题会建立上下文，已有银行动作请从历史回执核对。';}else throw error;}
 }

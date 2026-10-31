@@ -179,6 +179,74 @@
   }));
  }
  window.openStatementMonth=async month=>{selectView('statement');if(!months.includes(month))await loadMonths(month);else{$('statement-month').value=month;await loadStatement();}$('transaction-panel').scrollIntoView({block:'start',behavior:'smooth'});};
+ // 对话口径跟随：只读回执快照，不发起新查询；没有区间查询时保持默认月度/年度视图。
+ const followUnits={day:'按日',week:'按周',month:'按月',quarter:'按季',year:'按年',none:'整段合计'};
+ const followDims={category:'按分类',merchant:'按商户',account:'按账户',none:'不拆分'};
+ let followOriginal=null;
+ function followArgs(query){
+  const filterValue=query.filter||{},filter={direction:filterValue.direction||'全部'};
+  for(const [from,to] of [['categories','categories'],['merchants','merchants'],['accounts','accounts']])if((filterValue[from]||[]).length)filter[to]=[...filterValue[from]];
+  if(filterValue.min_amount_minor!=null)filter.minAmountMinor=filterValue.min_amount_minor;
+  if(filterValue.max_amount_minor!=null)filter.maxAmountMinor=filterValue.max_amount_minor;
+  if(filterValue.exclude_internal)filter.excludeInternal=true;
+  return {start:query.start,end:query.end,bucket:query.bucket,groupBy:query.group_by,compare:query.compare,topN:query.top_n,filter,rows:{offset:0,limit:20}};
+ }
+ function followScope(query){
+  const filterValue=query.filter||{},parts=['统计区间 '+query.start+' 至 '+query.end,followUnits[query.bucket]||query.bucket];
+  if(query.group_by&&query.group_by!=='none')parts.push(followDims[query.group_by]||query.group_by);
+  if(filterValue.direction&&filterValue.direction!=='全部')parts.push('只看'+filterValue.direction);
+  if((filterValue.categories||[]).length)parts.push('类别 '+filterValue.categories.join('、'));
+  if((filterValue.merchants||[]).length)parts.push('商户 '+filterValue.merchants.join('、'));
+  if((filterValue.accounts||[]).length)parts.push('账户 '+filterValue.accounts.join('、'));
+  if(query.compare==='previous_period')parts.push('对比上一段');
+  if(query.compare==='same_period_last_year')parts.push('对比去年同期');
+  return parts.join(' · ');
+ }
+ async function narrowFollow(query,bucket){
+  const data=await api('/statement/query',followArgs(Object.assign({},query,{start:bucket.start,end:bucket.end,bucket:'none'})));
+  $('statement-follow-back').hidden=false;
+  renderFollow(data);
+ }
+ function renderFollow(data){
+  const query=data.query||{},totals=data.totals||{};
+  if(!query.start)return false;
+  $('statement-follow').hidden=false;
+  $('statement-follow-query').textContent=followScope(query)+(data.observedAt?' · 回执快照 '+String(data.observedAt).replace('T',' ').slice(0,16):'');
+  $('statement-follow-metrics').replaceChildren(
+   metric('区间支出',money(totals.expense_minor||0),'expense'),
+   metric('区间收入',money(totals.income_minor||0),'income'),
+   metric('净收支',money((totals.income_minor||0)-(totals.expense_minor||0))),
+   metric('内部转账',money(totals.internal_transfer_minor||0)),
+   metric('交易笔数',String(totals.transaction_count||0)+' 笔'));
+  $('statement-follow-buckets').replaceChildren(...(data.buckets||[]).map(bucket=>{
+   const row=node('tr'),open=node('button','查看');open.type='button';
+   open.onclick=()=>perform(open,()=>narrowFollow(query,bucket));
+   const cell=node('td');cell.append(open);
+   row.append(node('td',bucket.key),node('td',money(bucket.metrics.expense_minor),'numeric'),
+    node('td',money(bucket.metrics.income_minor),'numeric'),node('td',String(bucket.metrics.transaction_count),'numeric'),cell);
+   return row;
+  }));
+  const groups=(data.breakdown&&data.breakdown.groups)||[],base=groups.reduce((sum,group)=>sum+(group.amount_minor||0),0)||1;
+  $('statement-follow-groups').replaceChildren(...(groups.length?groups.map((group,index)=>{
+   const item=node('div','','spend-category'),top=node('span','','spend-category-top');
+   top.append(node('span',group.label),node('strong',money(group.amount_minor)));
+   const track=node('span','','spend-track'),bar=node('span','','spend-bar');
+   bar.style.width=Math.max(1,group.amount_minor/base*100)+'%';bar.style.background=['#4fc3ed','#6d8aff','#45c6b0','#e6b872','#a699ef','#8eafc6'][index%6];
+   track.append(bar);item.append(top,track,node('small',(group.share_percent||0).toFixed(1)+'%'));return item;
+  }):[node('p','该口径下没有可拆分的支出记录。','empty')]));
+  $('statement-follow-note').textContent=(data.notes||[]).join('；');
+  return true;
+ }
+ window.statementFollow=async()=>{
+  const conversationId=businessConversation&&businessConversation.conversationId;
+  if(!conversationId){followOriginal=null;$('statement-follow').hidden=true;return;}
+  const payload=await api('/conversations/'+encodeURIComponent(conversationId)+'/statement-query');
+  if(!payload||!payload.found||!payload.result){followOriginal=null;$('statement-follow').hidden=true;return;}
+  followOriginal=Object.assign({},payload.result,{observedAt:payload.observedAt||null});
+  $('statement-follow-back').hidden=true;renderFollow(followOriginal);
+ };
+ $('statement-follow-back').onclick=()=>{if(followOriginal){$('statement-follow-back').hidden=true;renderFollow(followOriginal);}};
+ $('statement-follow-close').onclick=()=>{$('statement-follow').hidden=true;};
  function filterTransactions(){
   if(!statement)return;
   try{

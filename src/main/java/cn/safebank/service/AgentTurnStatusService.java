@@ -14,7 +14,34 @@ public class AgentTurnStatusService {
  private final GatewayTurnService turns;
  private final GatewayResultService results;
  private final HttpAgentClient client;
- public AgentTurnStatusService(GatewayTurnService turns,GatewayResultService results,HttpAgentClient client){this.turns=turns;this.results=results;this.client=client;}
+ private final cn.safebank.dao.AgentGatewayMapper receipts;
+ private final com.fasterxml.jackson.databind.ObjectMapper json;
+ public AgentTurnStatusService(GatewayTurnService turns,GatewayResultService results,HttpAgentClient client,
+                               cn.safebank.dao.AgentGatewayMapper receipts,com.fasterxml.jackson.databind.ObjectMapper json){
+  this.turns=turns;this.results=results;this.client=client;this.receipts=receipts;this.json=json;
+ }
+ /**
+  * 侧栏跟随对话口径：读取该用户该会话最近一次 statement_query 回执里的口径与结果快照。
+  * 只读回执，不发起新查询、不写库；没有该工具时 found=false，界面保持默认月度/年度视图。
+  */
+ public Map<String,Object> statementQuery(String user,String conversationId){
+  if(user==null||conversationId==null||!conversationId.matches("[A-Za-z0-9_-]{1,80}"))
+   throw new BankException("VALIDATION_ERROR","缺少有效的对话编号");
+  var out=new LinkedHashMap<String,Object>();
+  var receipt=receipts.latestReceiptByTool(user,conversationId,"statement_query");
+  if(receipt==null||receipt.getResultJson()==null){out.put("found",false);return out;}
+  try{
+   var result=json.readTree(receipt.getResultJson());
+   if(!result.has("query")){out.put("found",false);return out;}
+   out.put("found",true);
+   out.put("query",result.get("query"));
+   out.put("result",result);
+   out.put("observedAt",receipt.getObservedAt()==null?null:receipt.getObservedAt().toInstant().toString());
+  }catch(java.io.IOException broken){
+   out.put("found",false);out.put("broken",true);
+  }
+  return out;
+ }
  public AgentTurnStatusVO status(String user,String id){
   if(user==null||id==null||!id.matches("[A-Za-z0-9_-]{1,80}"))throw missing();
   var row=turns.read(id);

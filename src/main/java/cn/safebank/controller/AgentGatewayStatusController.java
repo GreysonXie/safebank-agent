@@ -11,5 +11,7 @@ public class AgentGatewayStatusController {
     @GetMapping("/api/agent/turns/{id}") public AgentTurnStatusVO status(HttpSession session,@PathVariable String id){return status.status((String)session.getAttribute("user"),id);}
     /** 原请求恢复面板：读取原轮次状态，必要时受控结束（不会自动重发）。 */
     @GetMapping("/api/conversations/{conversationId}/turns/{requestId}") public java.util.Map<String,Object> resolve(HttpSession session,@PathVariable String conversationId,@PathVariable String requestId){return status.resolve((String)session.getAttribute("user"),conversationId,requestId);}
+    /** 侧栏跟随对话口径：该会话最近一次通用账单查询的回执快照（只读，不发起新查询）。 */
+    @GetMapping("/api/conversations/{conversationId}/statement-query") public java.util.Map<String,Object> statementQuery(HttpSession session,@PathVariable String conversationId){return status.statementQuery((String)session.getAttribute("user"),conversationId);}
     @PostMapping("/api/conversations/{conversationId}/turns/{requestId}/close") public java.util.Map<String,Object> close(HttpSession session,@PathVariable String conversationId,@PathVariable String requestId){return status.close((String)session.getAttribute("user"),conversationId,requestId);}
 }
