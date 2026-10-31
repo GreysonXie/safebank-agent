@@ -1,6 +1,7 @@
 let csrf='',sessionRequest=null,faultsEnabled=false,workflows=[],currentAgentMode='',currentModelName='';
 let chatBusy=false,lastFailedQuestion='',appReady=false;
-const actionCards=new Map(),verificationProofs=new Map();
+const actionCards=new Map(),verificationProofs=new Map(),actionRows=new Map();
+let openActionId=null;
 const accountLabels=new Map();
 const recipientLabel=id=>window.workspaceRecipientLabel?.(id)||id;
 let confirmedMandates=null;
@@ -101,14 +102,47 @@ function dataContent(data){
 function showData(data,results){$('tool-result').replaceChildren();if(results&&results.length){for(const result of results)$('tool-result').append(dataContent(result.data));}else if(data&&Object.keys(data).length)$('tool-result').append(dataContent(data));}
 function receiptMessage(r){if(r.status!=='VERIFIED_SUCCESS')return (statusLabel[r.status]||r.status)+'。请以查单结果为准，勿重新创建相同动作。';if(r.kind==='QUERY_MANDATES')return Array.isArray(r.data)?'本次代扣查询已完成；查询没有转账或记账。':'这是原查询回执，重新查询需再次确认范围。';if(r.kind==='ACTIVATE_MANDATE')return '银行侧代扣授权已开启。本次未扣款，商户服务与合同需另行确认。';if(r.kind==='MANAGE_SCHEDULE')return ({EDIT:'储蓄规则已更新，后续执行按新授权；原转账记录已保留。',PAUSE:'储蓄计划已暂停。',RESUME:'储蓄计划已恢复，按后续计划日执行，不补扣历史期次。',CANCEL:'储蓄计划已终止。已受理或完成的转账仍以原回执为准。'}[r.operation]||'储蓄计划管理已完成。');return r.kind==='SCHEDULE'?'定时计划已登记，尚未发生转账。':r.kind==='REVOKE'?'银行侧代扣已撤销，商户合同状态未知，余额没有因此增加。':'转账已完成，并核验双边账务分录。';}
 async function resumeAssociated(actionId){for(const w of workflows)if(w.steps.some(step=>step.actionId===actionId)&&!['CANCELLED','VERIFIED_SUCCESS','PARTIAL_SUCCESS'].includes(w.state))await api('/workflows/'+w.id+'/resume',{version:w.version});}
+/** 预览过期后不再可办：服务端授权/提交会以 AUTH_EXPIRED 拒绝，界面不能把它继续当成可确认项。 */
+function actionExpired(action){return !!action.expires_at&&new Date(action.expires_at).getTime()<=Date.now()&&!['VERIFIED_SUCCESS','VERIFIED_FAILED','CANCELLED'].includes(action.status);}
+function actionTitle(a){return {TRANSFER:'转账操作',REVOKE:'撤销银行侧代扣',SCHEDULE:'创建定时转账',QUERY_MANDATES:'查询本人银行代扣',ACTIVATE_MANDATE:'开启银行侧代扣',MANAGE_SCHEDULE:({EDIT:'修改储蓄计划',PAUSE:'暂停储蓄计划',RESUME:'恢复储蓄计划',CANCEL:'终止储蓄计划'}[a.operation]||'管理储蓄计划')}[a.kind]||a.kind;}
+function actionMeta(a){
+ const parts=[];if(a.amount_minor!==undefined)parts.push(money(a.amount_minor));if(a.charge_amount_minor!==undefined)parts.push('单期 '+money(a.charge_amount_minor));
+ if(a.recipient_label||a.recipient_id)parts.push(a.recipient_label||recipientLabel(a.recipient_id));if(a.merchant)parts.push(a.merchant);
+ if(a.first_date)parts.push('首次 '+a.first_date);if(a.renewal_date)parts.push('约定扣费 '+a.renewal_date);
+ return parts.join(' · ')||a.id;
+}
+/** 列表只放摘要行；完整核对卡在弹窗里打开，避免待办与业务内容混排。 */
+function renderActionRow(a,expired,archived){
+ const row=node('article',undefined,'action-row');row.dataset.actionId=a.id;row.dataset.status=a.status;row.dataset.title=actionTitle(a);
+ if(expired)row.dataset.expired='true';
+ const main=node('div',undefined,'action-row-main'),head=node('div',undefined,'action-row-head');
+ head.append(node('strong',actionTitle(a)),node('span',expired?'预览已过期 · 未执行':statusLabel[a.status]||a.status,'status'));
+ main.append(head,node('p',actionMeta(a),'action-row-meta'),node('small',a.id,'action-row-id'));
+ const open=node('button',expired?'查看记录':archived?'查看回执':'处理','primary');open.type='button';
+ open.setAttribute('aria-label',(expired?'查看已过期预览 ':'处理操作 ')+actionTitle(a));open.onclick=()=>openActionDialog(a.id);row.append(main,open);
+ return row;
+}
+function openActionDialog(id){
+ const card=actionCards.get(id);if(!card)return;
+ const row=actionRows.get(id),dialog=$('action-dialog');if(!dialog)return;
+ $('action-dialog-title').textContent=(row?.dataset.title?row.dataset.title+' · ':'')+'核对并确认';
+ $('action-dialog-note').textContent=card.dataset.expired==='true'?'该预览已过期，未执行任何操作；请按当前业务状态重新生成预览。':'聊天中的确认不会执行操作；在这里勾选并确认后才会提交。';
+ $('action-dialog-body').replaceChildren(card);openActionId=id;
+ if(dialog.showModal&&!dialog.open)dialog.showModal();else dialog.setAttribute('open','');
+}
+function closeActionDialog(){const dialog=$('action-dialog');if(!dialog)return;openActionId=null;$('action-dialog-body').replaceChildren();if(dialog.open&&dialog.close)dialog.close();else dialog.removeAttribute('open');}
 function updateActionHistory(){
- const count=$('history-actions').children.length;$('action-history').hidden=count===0;$('action-history-summary').textContent='历史记录 · 已完成或已取消（'+count+' 条）';
- if(!$('actions').querySelector('.action')&&!$('actions').querySelector('.empty'))$('actions').append(node('p','暂无待处理操作。生成预览后，可在这里核对并确认。','empty'));
+ const history=$('history-actions').children.length,expired=$('expired-actions').children.length;
+ $('action-history').hidden=history===0;$('action-history-summary').textContent='历史记录 · 已完成或已取消（'+history+' 条）';
+ $('action-expired').hidden=expired===0;$('action-expired-summary').textContent='已过期预览 · 不可再确认（'+expired+' 条）';
+ if(!$('actions').querySelector('.action-row')&&!$('actions').querySelector('.empty'))$('actions').append(node('p','暂无待处理操作。生成预览后，可在这里核对并确认。','empty'));
+ if(!expired)$('expired-actions').replaceChildren();
 }
 function showAction(a){
  const box=node('article',undefined,'action');box.dataset.actionId=a.id;box.dataset.status=a.status;
- box.append(node('h3',{TRANSFER:'转账操作',REVOKE:'撤销银行侧代扣',SCHEDULE:'创建定时转账',QUERY_MANDATES:'查询本人银行代扣',ACTIVATE_MANDATE:'开启银行侧代扣',MANAGE_SCHEDULE:({EDIT:'修改储蓄计划',PAUSE:'暂停储蓄计划',RESUME:'恢复储蓄计划',CANCEL:'终止储蓄计划'}[a.operation]||'管理储蓄计划')}[a.kind]||a.kind),node('span',statusLabel[a.status]||a.status,'status'));
- const nextStep=a.status==='AWAITING_AUTH'?'请先核对以下信息，再勾选确认。聊天中的确认不会执行操作。':a.status==='AUTHORIZED'?'授权已记录，尚未提交。请核对最新状态后继续。':a.status==='CANCELLED'?'本操作已取消。':a.status==='VERIFIED_SUCCESS'?receiptMessage(a):a.status==='VERIFIED_FAILED'?'本操作未完成，请展开详情查看原因。':'请先查询原操作的最新状态，勿重复创建相同操作。';
+ const expired=actionExpired(a);if(expired)box.dataset.expired='true';
+ box.append(node('h3',actionTitle(a)),node('span',expired?'预览已过期 · 未执行':statusLabel[a.status]||a.status,'status'));
+ const nextStep=expired?(a.status==='AUTHORIZED'?'授权已过期，尚未提交，本次不会执行。请按当前业务状态重新生成预览。':'预览已过期，未执行任何操作。请按当前业务状态重新生成预览。'):a.status==='AWAITING_AUTH'?'请先核对以下信息，再勾选确认。聊天中的确认不会执行操作。':a.status==='AUTHORIZED'?'授权已记录，尚未提交。请核对最新状态后继续。':a.status==='CANCELLED'?'本操作已取消。':a.status==='VERIFIED_SUCCESS'?receiptMessage(a):a.status==='VERIFIED_FAILED'?'本操作未完成，请展开详情查看原因。':'请先查询原操作的最新状态，勿重复创建相同操作。';
  const next=node('p',nextStep,'action-next-step');next.setAttribute('role','status');box.append(next);
  const dl=node('dl');const details=[];
  if(a.source_id)details.push(['来源账户',accountLabels.get(a.source_id)||a.source_id]);if(a.recipient_id)details.push(['收款对象',a.recipient_label||recipientLabel(a.recipient_id)]);if(a.amount_minor!==undefined)details.push(['金额',money(a.amount_minor)]);if(a.charge_amount_minor!==undefined)details.push(['单期金额',money(a.charge_amount_minor)]);if(a.fee_minor!==undefined)details.push(['手续费',money(a.fee_minor)]);if(a.first_date)details.push(['首次日期',a.first_date],['结束日期',a.end_date],['执行规则','每月 '+a.day_of_month+' 日（短月按月末） · '+a.timezone]);if(a.billing_interval)details.push(['收费周期',billingLabel(a.billing_interval)]);if(a.renewal_date)details.push(['下次约定扣费',a.renewal_date]);if(a.merchant)details.push(['代扣商户',a.merchant],['影响',a.scope]);for(const[k,v]of details)dl.append(node('dt',k),node('dd',v));box.append(dl);
@@ -116,7 +150,7 @@ function showAction(a){
  const controls=node('div',undefined,'controls');
  const security=a.security;
  if(security&&!['VERIFIED_SUCCESS','VERIFIED_FAILED','CANCELLED'].includes(a.status)){const labels={GREEN:'核对查询范围',YELLOW:'需确认本次操作',RED:'需额外身份验证'};const risk=node('div',undefined,'risk-level risk-'+security.riskLevel.toLowerCase());risk.append(node('strong',labels[security.riskLevel]||security.riskLevel),node('p',security.riskLevel==='RED'?'本次预计日累计 '+money(security.projectedMinor)+'，超过 '+money(100000)+'，需补充验证。':'核对本次操作范围、对象与参数后确认。'));if(security.verificationMode==='LOCAL_DEMO_ONLY')risk.append(node('small','本地合成验证演示'));box.append(risk);}
- if(a.status==='AWAITING_AUTH'||a.status==='AUTHORIZED'){
+ if(!expired&&(a.status==='AWAITING_AUTH'||a.status==='AUTHORIZED')){
   const storedProof=verificationProofs.get(a.id);if(storedProof&&storedProof.decisionId!==security?.decisionId)verificationProofs.delete(a.id);
   const label=node('label',undefined,'verification');const checkbox=node('input');checkbox.type='checkbox';label.append(checkbox,node('span','我已核对本次参数，并明确确认操作'));box.append(label);
   const confirm=node('button',a.kind==='QUERY_MANDATES'?'确认并查询':'确认并执行','primary');confirm.disabled=true;
@@ -139,15 +173,22 @@ function showAction(a){
  }
 
  const check=node('button','查询最新状态');check.onclick=()=>perform(check,async()=>{const r=await api('/actions/'+a.id);showAction(r);message(receiptMessage(r));await resumeAssociated(a.id);await refresh();});if(['UNKNOWN','PENDING','AUTHORIZED'].includes(a.status))controls.append(check);else technical.append(check);box.append(controls);
- if(faultsEnabled&&['AWAITING_AUTH','AUTHORIZED'].includes(a.status)){
+ if(!expired&&faultsEnabled&&['AWAITING_AUTH','AUTHORIZED'].includes(a.status)){
   const panel=node('details',undefined,'fault-controls');panel.append(node('summary','实验故障设置（仅当前动作）'));const select=node('select');for(const [id,label]of [['NONE','正常'],['BEFORE_SUBMIT_FAILURE','银行明确拒绝'],['AFTER_COMMIT_RESPONSE_LOST','执行后丢失回执'],['PENDING_THEN_SUCCESS','先受理后完成']]){const option=node('option',label);option.value=id;select.append(option);}const label=node('label','提交故障');label.append(select);const lookup=node('input');lookup.type='checkbox';const lookupLabel=node('label',undefined,'workflow-choice');lookupLabel.append(lookup,node('span','同时模拟查单不可用'));const save=node('button','应用故障设置');save.onclick=()=>perform(save,async()=>{await api('/simulation/faults',{actionId:a.id,submitMode:select.value,lookupMode:lookup.checked?'LOOKUP_UNAVAILABLE':'NONE'});notify('该动作的实验故障已配置');});panel.append(label,lookupLabel,save);box.append(panel);
  }
 
  const archived=['VERIFIED_SUCCESS','VERIFIED_FAILED','CANCELLED'].includes(a.status);actionCards.get(a.id)?.remove();
- if(!archived)$('actions').querySelector('.empty')?.remove();
- $(archived?'history-actions':'actions').prepend(box);actionCards.set(a.id,box);updateActionHistory();window.bankUI?.filterActions();
+ const bucket=archived?'history-actions':expired?'expired-actions':'actions';
+ if(!archived&&!expired)$('actions').querySelector('.empty')?.remove();
+ actionRows.get(a.id)?.remove();actionCards.set(a.id,box);
+ const row=renderActionRow(a,expired,archived);actionRows.set(a.id,row);$(bucket).prepend(row);
+ if(openActionId===a.id)$('action-dialog-body').replaceChildren(box);
+ updateActionHistory();window.bankUI?.filterActions();
 }
 async function restoreActions(){const rows=await api('/actions');for(const row of [...rows].reverse())showAction(row);}
+$('action-dialog-close').onclick=()=>closeActionDialog();
+$('action-dialog').addEventListener('close',()=>{openActionId=null;$('action-dialog-body').replaceChildren();});
+$('action-dialog').addEventListener('click',event=>{if(event.target===$('action-dialog'))closeActionDialog();});
 $('workflow-form').onsubmit=e=>{e.preventDefault();perform(e.submitter,async()=>{const mandateIds=[...$('workflow-mandates').querySelectorAll('input:checked')].map(n=>n.value);if(!mandateIds.length)throw Error('请明确选定至少一项月度代扣');await api('/workflows',{month:$('workflow-month').value,mandateIds,sourceId:$('workflow-source').value,recipientId:$('workflow-recipient').value,firstDate:$('workflow-first').value,endDate:$('workflow-end').value,dayOfMonth:Number($('workflow-day').value),onlyConfirmedSavings:true});await refresh();const pending=workflows.find(w=>w.pendingAction)?.pendingAction;if(pending)window.bankUI?.revealAction(pending.id);});};
 async function pollOriginalChat(text){
  if(!pendingChatRequest&&!businessConversation?.conversationId&&['LANGGRAPH_MOCK','LANGGRAPH_MODEL','FAKE_AGENT'].includes(currentAgentMode))renderBusinessContext(await api('/conversations',{}),null);
@@ -188,7 +229,7 @@ async function sendQuestion(text){
 $('chat-form').onsubmit=event=>{event.preventDefault();sendQuestion($('prompt').value.trim());};
 $('chat-retry').onclick=()=>sendQuestion(lastFailedQuestion);
 $('prompt').addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing&&event.keyCode!==229){event.preventDefault();$('chat-form').requestSubmit($('chat-form').querySelector('button[type="submit"]'));}});
-const views={finance:['金融推荐','从资金用途出发，筛选方向并比较金融事实。'],users:['用户管理','统一维护联系人、储蓄目标与关联账户资料。'],cards:['卡片管理','从申请到限额与挂失，每一步都有明确确认。'],chat:['对话助手','从你的问题开始，结合业务数据继续追问。'],statement:['账单分析','先看清账单，再决定下一步。'],mandates:['代扣管理','核对授权与扣费周期，撤销前逐项确认。'],savings:['储蓄任务','把已确认的计划拆成可核验的步骤。'],models:['模型管理','选择供应商、管理模型与检测连接。'],tools:['常用工具','填写对象与金额，先生成操作预览。'],audit:['实验与审计','查看合成银行记录与模拟验证结果。']};
+const views={finance:['金融推荐','从资金用途出发，筛选方向并比较金融事实。'],users:['用户管理','统一维护联系人、储蓄目标与关联账户资料。'],cards:['卡片管理','从申请到限额与挂失，每一步都有明确确认。'],chat:['对话助手','从你的问题开始，结合业务数据继续追问。'],statement:['账单分析','先看清账单，再决定下一步。'],mandates:['代扣管理','核对授权与扣费周期，撤销前逐项确认。'],savings:['储蓄任务','把已确认的计划拆成可核验的步骤。'],actions:['操作确认台','核对预览、逐项确认并查看回执；其他页面不再混排待办。'],models:['模型管理','选择供应商、管理模型与检测连接。'],tools:['常用工具','填写对象与金额，先生成操作预览。'],audit:['实验与审计','查看合成银行记录与模拟验证结果。']};
 function selectView(key){if(!views[key])return;document.querySelectorAll('.view').forEach(el=>el.hidden=el.id!=='view-'+key);document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view===key?'page':'false'));$('view-title').textContent=views[key][0];$('view-subtitle').textContent=views[key][1];}
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>selectView(b.dataset.view));const requestedView=new URLSearchParams(location.search).get('view');selectView(Object.hasOwn(views,requestedView)?requestedView:'statement');
 $('accounts-toggle').onclick=()=>{const panel=$('accounts-panel');panel.hidden=!panel.hidden;$('accounts-toggle').setAttribute('aria-expanded',String(!panel.hidden));};

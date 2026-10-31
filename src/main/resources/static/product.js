@@ -2,6 +2,7 @@
 (() => {
  let schedules=[],transfers=[],editing=null,reactivating=null,page=1,actionTab='pending';
  const planStates={ACTIVE:'进行中',PAUSED:'已暂停',CANCELLED:'已终止',EXPIRED:'已到期'};
+ const expiredLimit=12;
  const today=()=>window.bankBusinessDate||new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Shanghai'}).format(new Date());
  const iso=d=>[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
  function due(year,month,day){return new Date(year,month,Math.min(day,new Date(year,month+1,0).getDate()),12);}
@@ -10,18 +11,27 @@
  function metric(label,value,note){const el=node('div',undefined,'metric');el.append(node('span',label),node('strong',value));if(note)el.append(node('small',note));return el;}
  function status(text,state){return node('span',text,'state-pill state-'+state.toLowerCase());}
  function button(label,fn,cls){const b=node('button',label,cls);b.type='button';b.onclick=()=>perform(b,fn);return b;}
- function revealAction(id){$('action-search').value='';actionTab=actionCards.get(id)?.parentElement?.id==='history-actions'?'history':'pending';filterActions();$('action-center').scrollIntoView({block:'start',behavior:'smooth'});const card=actionCards.get(id);if(card){card.tabIndex=-1;card.focus({preventScroll:true});}}
+ function revealAction(id){$('action-search').value='';const parent=actionRows.get(id)?.parentElement?.id;actionTab=parent==='history-actions'?'history':parent==='expired-actions'?'expired':'pending';filterActions();selectView('actions');$('action-center').scrollIntoView({block:'start',behavior:'smooth'});openActionDialog(id);const card=actionCards.get(id);if(card){card.tabIndex=-1;card.focus({preventScroll:true});}}
  function showPreview(a){showAction(a);revealAction(a.id);}
+ function syncPendingBadge(count){
+  const badge=$('nav-pending-count');if(!badge)return;
+  badge.textContent=String(count);badge.hidden=count===0;
+ }
  function filterActions(){
-  const pending=[...$('actions').querySelectorAll('.action')],history=[...$('history-actions').querySelectorAll('.action')];
-  $('pending-count').textContent=pending.length;$('receipt-count').textContent=history.length;
-  $('actions').hidden=actionTab!=='pending';$('action-history').hidden=actionTab!=='history';$('action-history').open=true;
-  document.querySelectorAll('[data-action-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.actionTab===actionTab)));
+  const pending=[...$('actions').querySelectorAll('.action-row')],expired=[...$('expired-actions').querySelectorAll('.action-row')],history=[...$('history-actions').querySelectorAll('.action-row')];
+  const expiredShown=expired.slice(0,expiredLimit);
+  $('pending-count').textContent=pending.length;$('expired-count').textContent=expired.length;$('receipt-count').textContent=history.length;syncPendingBadge(pending.length);
+  $('action-expired-summary').textContent='已过期预览 · 不可再确认（'+expired.length+' 条'+(expired.length>expiredLimit?'，仅显示最近 '+expiredLimit+' 条':'')+'）';
+  $('actions').hidden=actionTab!=='pending';$('action-expired').hidden=!expired.length||actionTab!=='expired';$('action-history').hidden=actionTab!=='history';$('action-history').open=true;
+  document.querySelectorAll('[data-action-tab]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.actionTab===actionTab));b.disabled=b.dataset.actionTab==='expired'&&!expired.length;});
+  const visible=actionTab==='expired'?expiredShown:actionTab==='history'?history:pending;
   const query=$('action-search').value.trim().toLowerCase();let count=0;
-  for(const card of [...pending,...history]){card.hidden=!card.textContent.toLowerCase().includes(query);if(!card.hidden&&(actionTab==='pending'?pending:history).includes(card))count++;}
-  $('action-filter-empty').hidden=count>0||(!query&&actionTab==='pending'&&!pending.length);
-  $('action-filter-empty').textContent=query?'没有匹配的操作。':'暂无历史回执。';
-  $('action-center-help').textContent=actionTab==='history'?'查看已完成、失败或取消的原操作回执。':'先核对对象与金额，再勾选确认。处理中或待核实的操作请查询原状态。';
+  for(const row of expired)row.hidden=!expiredShown.includes(row)||!row.textContent.toLowerCase().includes(query);
+  for(const row of [...pending,...history])row.hidden=!row.textContent.toLowerCase().includes(query);
+  for(const row of visible)if(!row.hidden)count++;
+  $('action-filter-empty').hidden=count>0||(!query&&!visible.length&&!(actionTab==='pending'&&!pending.length));
+  $('action-filter-empty').textContent=query?'没有匹配的操作。':actionTab==='expired'?'没有已过期的预览。':'暂无历史回执。';
+  $('action-center-help').textContent=actionTab==='history'?'查看已完成、失败或取消的原操作回执。':actionTab==='expired'?'预览已过期，未执行任何操作；请回到对应业务页按当前状态重新生成。':'先核对对象与金额，再勾选确认。处理中或待核实的操作请查询原状态。';
  }
  function renderMandates(rows){
   const root=$('mandates');root.replaceChildren();
