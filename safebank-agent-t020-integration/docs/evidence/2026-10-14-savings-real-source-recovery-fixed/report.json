@@ -1,0 +1,244 @@
+{
+  "scope": "Actual production LangGraph plan node, no bank tool/draft/execution calls",
+  "maximumRequests": 4,
+  "maximumCumulativeCny": "5.50",
+  "priorUpperCny": "4.944020",
+  "cases": [
+    {
+      "id": "missing_source_only",
+      "batch": 4,
+      "question": "撤销音乐服务和视频服务，把核验节省存旅游基金，每月20日，2026-11-20首次，2027-10-20最后，分析2026-09账单；接受只按已核验成功部分继续，未知先等待查单。",
+      "attempts": [
+        {
+          "sequence": 0,
+          "input": {
+            "previous_plan": {},
+            "previous_question": "",
+            "previous_workflow_id": null,
+            "question": "撤销音乐服务和视频服务，把核验节省存旅游基金，每月20日，2026-11-20首次，2027-10-20最后，分析2026-09账单；接受只按已核验成功部分继续，未知先等待查单。",
+            "read_requirements": [],
+            "requested_analysis_month": "2026-09",
+            "safety_requirements": [],
+            "validation_error": ""
+          },
+          "state": "RECEIVED",
+          "provider": {
+            "content": {
+              "kind": "clarification",
+              "tools": [],
+              "question": "为了设置每月转存，请告诉我从哪个付款账户转出这笔节省的钱。"
+            },
+            "id": "59e7cab0-2f60-4ca9-83d0-d9935e4a0a78",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 2300,
+              "completion_tokens": 39,
+              "total_tokens": 2339,
+              "prompt_tokens_details": {
+                "cached_tokens": 1792
+              },
+              "prompt_cache_hit_tokens": 1792,
+              "prompt_cache_miss_tokens": 508
+            },
+            "raw_content": "{\n  \"kind\": \"clarification\",\n  \"tools\": [],\n  \"question\": \"为了设置每月转存，请告诉我从哪个付款账户转出这笔节省的钱。\"\n}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "compiled": {
+        "kind": "clarification",
+        "tools": [],
+        "question": "为了设置每月转存，请告诉我从哪个付款账户转出这笔节省的钱。"
+      },
+      "manualReviewRequired": "Verify source-account question, all missing fields and no redundant questions",
+      "passed": true
+    },
+    {
+      "id": "source_only_followup",
+      "batch": 4,
+      "question": "用日常账户就行，其他按刚才说的。",
+      "attempts": [
+        {
+          "sequence": 0,
+          "input": {
+            "previous_plan": {
+              "kind": "clarification",
+              "question": "为了设置每月转存，请告诉我从哪个付款账户转出这笔节省的钱。",
+              "tools": []
+            },
+            "previous_question": "撤销音乐服务和视频服务，把核验节省存旅游基金，每月20日，2026-11-20首次，2027-10-20最后，分析2026-09账单；接受只按已核验成功部分继续，未知先等待查单。",
+            "previous_workflow_id": null,
+            "question": "用日常账户就行，其他按刚才说的。",
+            "read_requirements": [],
+            "requested_analysis_month": "2026-09",
+            "safety_requirements": [],
+            "validation_error": ""
+          },
+          "state": "RECEIVED",
+          "provider": {
+            "content": {
+              "kind": "savings_task",
+              "taskPlan": {
+                "schemaVersion": 1,
+                "goal": "撤销音乐服务和视频服务，将核验节省额按月转存到旅游基金",
+                "savingsPolicy": "verified_success_subset",
+                "analysisMonth": "2026-09",
+                "nodes": [
+                  {
+                    "id": "m",
+                    "type": "mandate_lookup",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "a",
+                    "type": "account_query",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "r1",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "音乐服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "r2",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "视频服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "s",
+                    "type": "compute_savings",
+                    "params": {},
+                    "dependsOn": [
+                      "r1",
+                      "r2"
+                    ]
+                  },
+                  {
+                    "id": "t",
+                    "type": "schedule_create",
+                    "params": {
+                      "sourceQuery": "日常账户",
+                      "recipientQuery": "旅游基金",
+                      "firstDate": "2026-11-20",
+                      "endDate": "2027-10-20",
+                      "dayOfMonth": 20
+                    },
+                    "dependsOn": [
+                      "s",
+                      "a"
+                    ]
+                  }
+                ]
+              }
+            },
+            "id": "04495cc1-314b-4614-ad76-1d365b836bc7",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 2339,
+              "completion_tokens": 248,
+              "total_tokens": 2587,
+              "prompt_tokens_details": {
+                "cached_tokens": 2176
+              },
+              "prompt_cache_hit_tokens": 2176,
+              "prompt_cache_miss_tokens": 163
+            },
+            "raw_content": "{\"kind\":\"savings_task\",\"taskPlan\":{\"schemaVersion\":1,\"goal\":\"撤销音乐服务和视频服务，将核验节省额按月转存到旅游基金\",\"savingsPolicy\":\"verified_success_subset\",\"analysisMonth\":\"2026-09\",\"nodes\":[{\"id\":\"m\",\"type\":\"mandate_lookup\",\"params\":{},\"dependsOn\":[]},{\"id\":\"a\",\"type\":\"account_query\",\"params\":{},\"dependsOn\":[]},{\"id\":\"r1\",\"type\":\"mandate_revoke\",\"params\":{\"merchantQuery\":\"音乐服务\"},\"dependsOn\":[\"m\"]},{\"id\":\"r2\",\"type\":\"mandate_revoke\",\"params\":{\"merchantQuery\":\"视频服务\"},\"dependsOn\":[\"m\"]},{\"id\":\"s\",\"type\":\"compute_savings\",\"params\":{},\"dependsOn\":[\"r1\",\"r2\"]},{\"id\":\"t\",\"type\":\"schedule_create\",\"params\":{\"sourceQuery\":\"日常账户\",\"recipientQuery\":\"旅游基金\",\"firstDate\":\"2026-11-20\",\"endDate\":\"2027-10-20\",\"dayOfMonth\":20},\"dependsOn\":[\"s\",\"a\"]}]}}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "compiled": {
+        "kind": "analysis",
+        "tools": [
+          {
+            "tool": "savings_task_prepare",
+            "args": {
+              "taskPlan": {
+                "schemaVersion": 1,
+                "goal": "撤销音乐服务和视频服务，将核验节省额按月转存到旅游基金",
+                "savingsPolicy": "verified_success_subset",
+                "analysisMonth": "2026-09",
+                "nodes": [
+                  {
+                    "id": "m",
+                    "type": "mandate_lookup",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "a",
+                    "type": "account_query",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "r1",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "音乐服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "r2",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "视频服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "s",
+                    "type": "compute_savings",
+                    "params": {},
+                    "dependsOn": [
+                      "r1",
+                      "r2"
+                    ]
+                  },
+                  {
+                    "id": "t",
+                    "type": "schedule_create",
+                    "params": {
+                      "sourceQuery": "日常账户",
+                      "recipientQuery": "旅游基金",
+                      "firstDate": "2026-11-20",
+                      "endDate": "2027-10-20",
+                      "dayOfMonth": 20
+                    },
+                    "dependsOn": [
+                      "s",
+                      "a"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "passed": true
+    }
+  ],
+  "modelSends": 2,
+  "cumulativeUpperCny": "4.966020",
+  "batchUpperCny": "0.022000",
+  "previousLedgerUnchanged": true
+}

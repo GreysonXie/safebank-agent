@@ -1,0 +1,16 @@
+{
+  "state": "RECONCILIATION_REQUIRED",
+  "errorCode": "MODEL_EFFECT_UNKNOWN",
+  "providerSends": 1,
+  "toolCalls": 0,
+  "javaValidations": 0,
+  "pythonHttp": true,
+  "bankModelMode": "deepseek",
+  "accepted": false,
+  "completionUnknown": true,
+  "retried": false,
+  "cumulativeReservedCny": "5.394952",
+  "requestReservedCny": "0.072768",
+  "usageReceived": false,
+  "scope": "Post-fix real full chain attempt stopped before first tool: model effect unknown, no complete provider response; not evidence of business-answer regression success or failure"
+}

@@ -1,0 +1,30 @@
+{
+  "red": {
+    "tests": 8,
+    "failures": 2,
+    "errors": 2
+  },
+  "green": {
+    "tests": 24,
+    "failures": 0,
+    "errors": 0
+  },
+  "recoveryRegression": {
+    "tests": 17,
+    "failures": 0,
+    "errors": 0
+  },
+  "providerCallsInOfflineTests": 0,
+  "originalRealDraftStillUnknown": true,
+  "realAnswerAcceptancePassed": false,
+  "reviewBoundaryRed": {
+    "tests": 1,
+    "subcaseErrors": 3
+  },
+  "finalBoundaryGreen": {
+    "tests": 9,
+    "failures": 0,
+    "errors": 0
+  },
+  "relatedChecksAfterReview": 42
+}

@@ -1,0 +1,123 @@
+/* Red/blue workspace theme. Layout and business behavior remain in styles.css. */
+:root {
+  --primary: #3a5ecf;
+  --primary-hover: #2948ae;
+  --brand-red: #d80c18;
+  --heading-blue: #1a4f99;
+  --text: #0f172a;
+  --secondary-text: #526173;
+  --page-background: #f5f7fa;
+  --surface: #fff;
+  --selected-background: #edf2ff;
+  --line: #e2e8f0;
+  --green: var(--primary);
+  color: var(--text);
+  background: var(--page-background);
+}
+.sidebar { background: var(--surface); }
+.brand { color: var(--heading-blue); }
+.brand small, .sidebar-note, .page-header p, .hint, .panel-heading span,
+.empty, .bubble small, footer, label, summary, .action dt, .mandate small,
+.workflow-form legend, .composer-hint, #chat-status, .chat-panel #model-info {
+  color: var(--secondary-text);
+}
+.mark {
+  position: relative;
+  background: transparent;
+  color: var(--primary);
+  font-size: 42px;
+  font-style: italic;
+  font-weight: 900;
+  border-radius: 0;
+}
+.mark::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 5px;
+  background: var(--brand-red);
+  top: 3px;
+  right: 1px;
+  transform: skewX(-18deg);
+}
+.sidebar nav button { color: var(--text); border-radius: 8px; }
+.sidebar nav button[aria-current="page"] {
+  color: var(--primary);
+  background: var(--selected-background);
+  border-left-color: var(--brand-red);
+}
+.sidebar nav button svg { width: 22px; height: 22px; flex-shrink: 0; }
+button { color: var(--heading-blue); border-color: var(--line); }
+button:hover { background: var(--selected-background); }
+button.primary { background: var(--primary); border-color: var(--primary); }
+button.primary:hover { background: var(--primary-hover); }
+button:focus-visible, summary:focus-visible, a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+textarea, input, select {
+  color: var(--text);
+  border-color: var(--line);
+  background: var(--surface);
+}
+textarea:focus, input:focus, select:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.panel { background: var(--surface); border-color: var(--line); }
+header.page-header { background: var(--surface); padding: 20px 22px; margin-bottom: 16px; border-radius: 10px; border: 1px solid var(--line); }
+.page-header h1 { color: var(--text); }
+.bubble { background: #f1f5f9; }
+.bubble.user { background: var(--selected-background); }
+.statement-total, .statement-total:first-child, .account { background: #f3f6ff; }
+.statement-total strong, .statement-total:first-child strong, .result-total { color: var(--text); }
+.account:first-child { background: var(--heading-blue); color: white; }
+.category-bar { background: var(--primary); }
+.category-track { background: #edf1f9; }
+.suggestions button { border-radius: 8px; min-height: 44px; }
+.badge { color: var(--secondary-text); background: #f1f5f9; }
+.status { color: var(--heading-blue); background: var(--selected-background); }
+.action, .mandate { border-color: var(--line); }
+#notification { background: var(--heading-blue); }
+pre { background: #f1f5f9; color: var(--text); }
+.reveal-once { animation: reveal-note 260ms ease-out both; }
+@keyframes reveal-note {
+  from { opacity: .65; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@media (max-width: 900px) {
+  .sidebar nav button[aria-current="page"] { border-bottom-color: var(--brand-red); }
+  .sidebar nav button svg { display: none; }
+  header.page-header { padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-once { animation: none; }
+  * { scroll-behavior: auto !important; }
+}
+
+/* Tiered confirmation: text labels complement red/blue status colors. */
+.risk-level { margin: 16px 0; padding: 14px; border: 1px solid #cbdcf7; border-radius: 12px; background: #f1f6ff; }
+.risk-level p { margin: 8px 0; }
+.risk-red { border-color: #e9b7bd; background: #fff5f5; color: #8e2635; }
+.risk-verification { display: grid; gap: 10px; margin: 16px 0; }
+.risk-verification label { display: grid; gap: 6px; }
+.risk-error { color: #a22237; background: #fff0f2; padding: 12px; border-radius: 10px; overflow-wrap: anywhere; }
+.risk-error:focus { outline: 2px solid #245dba; outline-offset: 3px; }
+.risk-level,.risk-verification { min-width: 0; overflow-wrap: anywhere; }
+.action-history{border-top:1px solid var(--line,#dce3ef);margin-top:16px;padding-top:8px}
+.action-history>summary{min-height:44px;padding:12px 4px;cursor:pointer;color:var(--blue,#245dba)}
+.action-history .action{padding:14px;margin-top:12px}
+
+/* State text remains explicit; color is supplementary. */
+.action-next-step{font-size:13px;line-height:1.7;padding:10px 12px;background:#f5f8fd;border-left:3px solid #b5c7e8;border-radius:4px;color:#334155;margin:12px 0}
+.action-technical{margin:12px 0;font-size:12px}.action-technical dl{margin-top:12px}
+.action[data-status="AWAITING_AUTH"]>.status{background:#fff3d6;color:#785000}
+.action[data-status="AUTHORIZED"]>.status{background:#e9edff;color:#354b9a}
+.action[data-status="VERIFIED_SUCCESS"]>.status{background:#e5f5ee;color:#176345}
+.action[data-status="CANCELLED"]>.status{background:#eef1f5;color:#475569}
+.action[data-status="UNKNOWN"]>.status,.action[data-status="PENDING"]>.status{background:#fff3d6;color:#785000}
+.action[data-status="VERIFIED_FAILED"]>.status{background:#ffe8e8;color:#9c3030}
+
+/* Use the horizontal logo in the supplied brand sheet without altering the image. */
+.sidebar .brand { display: block; }
+.brand-logo { display: block; width: 100%; max-width: 190px; height: auto; overflow: hidden; }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.AgentConversationMapper">
+    <resultMap id="row" type="cn.safebank.entity.AgentConversationEntity">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="version" property="version"/>
+        <result column="intent" property="intent"/>
+        <result column="state" property="state"/>
+        <result column="proposal_json" property="proposalJson"/>
+        <result column="display_history_json" property="displayHistoryJson"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="expires_at" property="expiresAt"/>
+    </resultMap>
+    <sql id="columns">id,user_id,version,intent,state,proposal_json,display_history_json,created_at,updated_at,expires_at</sql>
+    <select id="selectOwned" resultMap="row">SELECT <include refid="columns"/> FROM agent_conversations WHERE user_id=#{userId} AND id=#{id}</select>
+    <select id="selectOwnedForUpdate" resultMap="row">SELECT <include refid="columns"/> FROM agent_conversations WHERE user_id=#{userId} AND id=#{id} FOR UPDATE</select>
+    <update id="updateIfVersion">UPDATE agent_conversations SET version=#{next.version},intent=#{next.intent},state=#{next.state},proposal_json=#{next.proposalJson},display_history_json=#{next.displayHistoryJson},updated_at=#{next.updatedAt},expires_at=#{next.expiresAt} WHERE user_id=#{userId} AND id=#{id} AND version=#{expectedVersion}</update>
+    <insert id="insert">INSERT INTO agent_conversations(<include refid="columns"/>) VALUES(#{id},#{userId},#{version},#{intent},#{state},#{proposalJson},#{displayHistoryJson},#{createdAt},#{updatedAt},#{expiresAt})</insert>
+</mapper>

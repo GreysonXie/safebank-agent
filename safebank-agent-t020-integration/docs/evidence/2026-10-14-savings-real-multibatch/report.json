@@ -1,0 +1,1069 @@
+{
+  "scope": "Actual production LangGraph plan node, no bank tool/draft/execution calls",
+  "maximumRequests": 12,
+  "maximumCumulativeCny": "5.50",
+  "priorUpperCny": "4.824664",
+  "cases": [
+    {
+      "id": "T02_missing",
+      "batch": 1,
+      "question": "我想撤销音乐服务和视频服务的银行代扣，把实际省下的钱按月存起来，帮我安排。",
+      "attempts": [
+        {
+          "sequence": 0,
+          "input": {
+            "previous_plan": {},
+            "previous_question": "",
+            "previous_workflow_id": null,
+            "question": "我想撤销音乐服务和视频服务的银行代扣，把实际省下的钱按月存起来，帮我安排。",
+            "read_requirements": [],
+            "requested_analysis_month": null,
+            "safety_requirements": [],
+            "validation_error": ""
+          },
+          "state": "RECEIVED",
+          "provider": {
+            "content": {
+              "kind": "clarification",
+              "tools": [],
+              "question": "为了安排这件事，还需要您补充：从哪个付款账户转出、存给谁，以及首次日期和结束日期；另外，如果部分撤销成功、部分失败，是否只按成功撤销的服务继续存？"
+            },
+            "id": "26d6b050-372f-4e1b-ae73-a2105eafcfa0",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 2092,
+              "completion_tokens": 58,
+              "total_tokens": 2150,
+              "prompt_tokens_details": {
+                "cached_tokens": 1536
+              },
+              "prompt_cache_hit_tokens": 1536,
+              "prompt_cache_miss_tokens": 556
+            },
+            "raw_content": "{\"kind\":\"clarification\",\"tools\":[],\"question\":\"为了安排这件事，还需要您补充：从哪个付款账户转出、存给谁，以及首次日期和结束日期；另外，如果部分撤销成功、部分失败，是否只按成功撤销的服务继续存？\"}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "compiled": {
+        "kind": "clarification",
+        "tools": [],
+        "question": "为了安排这件事，还需要您补充：从哪个付款账户转出、存给谁，以及首次日期和结束日期；另外，如果部分撤销成功、部分失败，是否只按成功撤销的服务继续存？"
+      },
+      "manualReviewRequired": "Verify source-account question, all missing fields and no redundant questions",
+      "passed": true
+    },
+    {
+      "id": "T02_followup",
+      "batch": 1,
+      "question": "从日常账户存到旅游基金，每月20日，2026-11-20开始，2027-10-20结束，核对2026-09账单。只按已核验成功的部分继续，未知先等待查单。",
+      "attempts": [
+        {
+          "sequence": 0,
+          "input": {
+            "previous_plan": {
+              "kind": "clarification",
+              "question": "为了安排这件事，还需要您补充：从哪个付款账户转出、存给谁，以及首次日期和结束日期；另外，如果部分撤销成功、部分失败，是否只按成功撤销的服务继续存？",
+              "tools": []
+            },
+            "previous_question": "我想撤销音乐服务和视频服务的银行代扣，把实际省下的钱按月存起来，帮我安排。",
+            "previous_workflow_id": null,
+            "question": "从日常账户存到旅游基金，每月20日，2026-11-20开始，2027-10-20结束，核对2026-09账单。只按已核验成功的部分继续，未知先等待查单。",
+            "read_requirements": [],
+            "requested_analysis_month": "2026-09",
+            "safety_requirements": [],
+            "validation_error": ""
+          },
+          "state": "RECEIVED",
+          "provider": {
+            "content": {
+              "kind": "savings_task",
+              "taskPlan": {
+                "schemaVersion": 1,
+                "goal": "撤销音乐服务和视频服务的银行代扣，将核验节省额按月从日常账户转存到旅游基金，仅按撤销成功项继续",
+                "savingsPolicy": "verified_success_subset",
+                "analysisMonth": "2026-09",
+                "nodes": [
+                  {
+                    "id": "m",
+                    "type": "mandate_lookup",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "r1",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "音乐服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "r2",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "视频服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "s",
+                    "type": "compute_savings",
+                    "params": {},
+                    "dependsOn": [
+                      "r1",
+                      "r2"
+                    ]
+                  },
+                  {
+                    "id": "a",
+                    "type": "account_query",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "t",
+                    "type": "schedule_create",
+                    "params": {
+                      "sourceQuery": "日常账户",
+                      "recipientQuery": "旅游基金",
+                      "firstDate": "2026-11-20",
+                      "endDate": "2027-10-20",
+                      "dayOfMonth": 20
+                    },
+                    "dependsOn": [
+                      "s",
+                      "a"
+                    ]
+                  }
+                ]
+              }
+            },
+            "id": "a86cae0a-249b-4e52-b8da-290626dddbc1",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 2201,
+              "completion_tokens": 261,
+              "total_tokens": 2462,
+              "prompt_tokens_details": {
+                "cached_tokens": 1792
+              },
+              "prompt_cache_hit_tokens": 1792,
+              "prompt_cache_miss_tokens": 409
+            },
+            "raw_content": "{\"kind\":\"savings_task\",\"taskPlan\":{\"schemaVersion\":1,\"goal\":\"撤销音乐服务和视频服务的银行代扣，将核验节省额按月从日常账户转存到旅游基金，仅按撤销成功项继续\",\"savingsPolicy\":\"verified_success_subset\",\"analysisMonth\":\"2026-09\",\"nodes\":[{\"id\":\"m\",\"type\":\"mandate_lookup\",\"params\":{},\"dependsOn\":[]},{\"id\":\"r1\",\"type\":\"mandate_revoke\",\"params\":{\"merchantQuery\":\"音乐服务\"},\"dependsOn\":[\"m\"]},{\"id\":\"r2\",\"type\":\"mandate_revoke\",\"params\":{\"merchantQuery\":\"视频服务\"},\"dependsOn\":[\"m\"]},{\"id\":\"s\",\"type\":\"compute_savings\",\"params\":{},\"dependsOn\":[\"r1\",\"r2\"]},{\"id\":\"a\",\"type\":\"account_query\",\"params\":{},\"dependsOn\":[]},{\"id\":\"t\",\"type\":\"schedule_create\",\"params\":{\"sourceQuery\":\"日常账户\",\"recipientQuery\":\"旅游基金\",\"firstDate\":\"2026-11-20\",\"endDate\":\"2027-10-20\",\"dayOfMonth\":20},\"dependsOn\":[\"s\",\"a\"]}]}}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "compiled": {
+        "kind": "analysis",
+        "tools": [
+          {
+            "tool": "savings_task_prepare",
+            "args": {
+              "taskPlan": {
+                "schemaVersion": 1,
+                "goal": "撤销音乐服务和视频服务的银行代扣，将核验节省额按月从日常账户转存到旅游基金，仅按撤销成功项继续",
+                "savingsPolicy": "verified_success_subset",
+                "analysisMonth": "2026-09",
+                "nodes": [
+                  {
+                    "id": "m",
+                    "type": "mandate_lookup",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "r1",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "音乐服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "r2",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "视频服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "s",
+                    "type": "compute_savings",
+                    "params": {},
+                    "dependsOn": [
+                      "r1",
+                      "r2"
+                    ]
+                  },
+                  {
+                    "id": "a",
+                    "type": "account_query",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "t",
+                    "type": "schedule_create",
+                    "params": {
+                      "sourceQuery": "日常账户",
+                      "recipientQuery": "旅游基金",
+                      "firstDate": "2026-11-20",
+                      "endDate": "2027-10-20",
+                      "dayOfMonth": 20
+                    },
+                    "dependsOn": [
+                      "s",
+                      "a"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "T01_complete",
+      "batch": 1,
+      "question": "请把音乐服务和视频服务的月付银行代扣撤销，然后从日常账户把本任务核验省下的钱每月20日存进旅游基金。首次2026-11-20，最后2027-10-20，分析2026-09账单。接受只按已核验成功的项目继续；任何结果未知的项目都先查单，不要猜金额。",
+      "attempts": [
+        {
+          "sequence": 0,
+          "input": {
+            "previous_plan": {},
+            "previous_question": "",
+            "previous_workflow_id": null,
+            "question": "请把音乐服务和视频服务的月付银行代扣撤销，然后从日常账户把本任务核验省下的钱每月20日存进旅游基金。首次2026-11-20，最后2027-10-20，分析2026-09账单。接受只按已核验成功的项目继续；任何结果未知的项目都先查单，不要猜金额。",
+            "read_requirements": [],
+            "requested_analysis_month": "2026-09",
+            "safety_requirements": [],
+            "validation_error": ""
+          },
+          "state": "RECEIVED",
+          "provider": {
+            "content": {
+              "kind": "savings_task",
+              "taskPlan": {
+                "schemaVersion": 1,
+                "goal": "撤销音乐服务和视频服务的月付银行代扣，并将本任务核验省下的钱从日常账户每月存入旅游基金",
+                "savingsPolicy": "verified_success_subset",
+                "analysisMonth": "2026-09",
+                "nodes": [
+                  {
+                    "id": "m",
+                    "type": "mandate_lookup",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "a",
+                    "type": "account_query",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "r1",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "音乐服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "r2",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "视频服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "s",
+                    "type": "compute_savings",
+                    "params": {},
+                    "dependsOn": [
+                      "r1",
+                      "r2"
+                    ]
+                  },
+                  {
+                    "id": "t",
+                    "type": "schedule_create",
+                    "params": {
+                      "sourceQuery": "日常账户",
+                      "recipientQuery": "旅游基金",
+                      "firstDate": "2026-11-20",
+                      "endDate": "2027-10-20",
+                      "dayOfMonth": 20
+                    },
+                    "dependsOn": [
+                      "s",
+                      "a"
+                    ]
+                  }
+                ]
+              }
+            },
+            "id": "282b3c77-e18d-4351-a1a3-9984cb005e2c",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 2152,
+              "completion_tokens": 257,
+              "total_tokens": 2409,
+              "prompt_tokens_details": {
+                "cached_tokens": 1792
+              },
+              "prompt_cache_hit_tokens": 1792,
+              "prompt_cache_miss_tokens": 360
+            },
+            "raw_content": "{\"kind\":\"savings_task\",\"taskPlan\":{\"schemaVersion\":1,\"goal\":\"撤销音乐服务和视频服务的月付银行代扣，并将本任务核验省下的钱从日常账户每月存入旅游基金\",\"savingsPolicy\":\"verified_success_subset\",\"analysisMonth\":\"2026-09\",\"nodes\":[{\"id\":\"m\",\"type\":\"mandate_lookup\",\"params\":{},\"dependsOn\":[]},{\"id\":\"a\",\"type\":\"account_query\",\"params\":{},\"dependsOn\":[]},{\"id\":\"r1\",\"type\":\"mandate_revoke\",\"params\":{\"merchantQuery\":\"音乐服务\"},\"dependsOn\":[\"m\"]},{\"id\":\"r2\",\"type\":\"mandate_revoke\",\"params\":{\"merchantQuery\":\"视频服务\"},\"dependsOn\":[\"m\"]},{\"id\":\"s\",\"type\":\"compute_savings\",\"params\":{},\"dependsOn\":[\"r1\",\"r2\"]},{\"id\":\"t\",\"type\":\"schedule_create\",\"params\":{\"sourceQuery\":\"日常账户\",\"recipientQuery\":\"旅游基金\",\"firstDate\":\"2026-11-20\",\"endDate\":\"2027-10-20\",\"dayOfMonth\":20},\"dependsOn\":[\"s\",\"a\"]}]}}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "compiled": {
+        "kind": "analysis",
+        "tools": [
+          {
+            "tool": "savings_task_prepare",
+            "args": {
+              "taskPlan": {
+                "schemaVersion": 1,
+                "goal": "撤销音乐服务和视频服务的月付银行代扣，并将本任务核验省下的钱从日常账户每月存入旅游基金",
+                "savingsPolicy": "verified_success_subset",
+                "analysisMonth": "2026-09",
+                "nodes": [
+                  {
+                    "id": "m",
+                    "type": "mandate_lookup",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "a",
+                    "type": "account_query",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "r1",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "音乐服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "r2",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "视频服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "s",
+                    "type": "compute_savings",
+                    "params": {},
+                    "dependsOn": [
+                      "r1",
+                      "r2"
+                    ]
+                  },
+                  {
+                    "id": "t",
+                    "type": "schedule_create",
+                    "params": {
+                      "sourceQuery": "日常账户",
+                      "recipientQuery": "旅游基金",
+                      "firstDate": "2026-11-20",
+                      "endDate": "2027-10-20",
+                      "dayOfMonth": 20
+                    },
+                    "dependsOn": [
+                      "s",
+                      "a"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "colloquial_complete",
+      "batch": 2,
+      "question": "音乐服务和视频服务都别再扣了，帮我安排把真省下的钱存旅游基金，走日常账户。每月20号，2026-11-20首次，2027-10-20最后，账单就看2026-09；允许只算核验撤销成功的部分，没查清的先等。",
+      "attempts": [
+        {
+          "sequence": 0,
+          "input": {
+            "previous_plan": {},
+            "previous_question": "",
+            "previous_workflow_id": null,
+            "question": "音乐服务和视频服务都别再扣了，帮我安排把真省下的钱存旅游基金，走日常账户。每月20号，2026-11-20首次，2027-10-20最后，账单就看2026-09；允许只算核验撤销成功的部分，没查清的先等。",
+            "read_requirements": [],
+            "requested_analysis_month": "2026-09",
+            "safety_requirements": [],
+            "validation_error": ""
+          },
+          "state": "RECEIVED",
+          "provider": {
+            "content": {
+              "kind": "savings_task",
+              "taskPlan": {
+                "schemaVersion": 1,
+                "goal": "撤销音乐服务和视频服务两个代扣，把核验撤销成功后真省下的钱按每月20号从日常账户转存到旅游基金，2026-11-20首次至2027-10-20，账单分析月份2026-09",
+                "savingsPolicy": "verified_success_subset",
+                "analysisMonth": "2026-09",
+                "nodes": [
+                  {
+                    "id": "m",
+                    "type": "mandate_lookup",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "a",
+                    "type": "account_query",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "r1",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "音乐服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "r2",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "视频服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "s",
+                    "type": "compute_savings",
+                    "params": {},
+                    "dependsOn": [
+                      "r1",
+                      "r2"
+                    ]
+                  },
+                  {
+                    "id": "t",
+                    "type": "schedule_create",
+                    "params": {
+                      "sourceQuery": "日常账户",
+                      "recipientQuery": "旅游基金",
+                      "firstDate": "2026-11-20",
+                      "endDate": "2027-10-20",
+                      "dayOfMonth": 20
+                    },
+                    "dependsOn": [
+                      "s",
+                      "a"
+                    ]
+                  }
+                ]
+              }
+            },
+            "id": "e9fbfc12-52e1-4c86-b7f0-ed4508543e8e",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 2139,
+              "completion_tokens": 284,
+              "total_tokens": 2423,
+              "prompt_tokens_details": {
+                "cached_tokens": 1792
+              },
+              "prompt_cache_hit_tokens": 1792,
+              "prompt_cache_miss_tokens": 347
+            },
+            "raw_content": "{\"kind\":\"savings_task\",\"taskPlan\":{\"schemaVersion\":1,\"goal\":\"撤销音乐服务和视频服务两个代扣，把核验撤销成功后真省下的钱按每月20号从日常账户转存到旅游基金，2026-11-20首次至2027-10-20，账单分析月份2026-09\",\"savingsPolicy\":\"verified_success_subset\",\"analysisMonth\":\"2026-09\",\"nodes\":[{\"id\":\"m\",\"type\":\"mandate_lookup\",\"params\":{},\"dependsOn\":[]},{\"id\":\"a\",\"type\":\"account_query\",\"params\":{},\"dependsOn\":[]},{\"id\":\"r1\",\"type\":\"mandate_revoke\",\"params\":{\"merchantQuery\":\"音乐服务\"},\"dependsOn\":[\"m\"]},{\"id\":\"r2\",\"type\":\"mandate_revoke\",\"params\":{\"merchantQuery\":\"视频服务\"},\"dependsOn\":[\"m\"]},{\"id\":\"s\",\"type\":\"compute_savings\",\"params\":{},\"dependsOn\":[\"r1\",\"r2\"]},{\"id\":\"t\",\"type\":\"schedule_create\",\"params\":{\"sourceQuery\":\"日常账户\",\"recipientQuery\":\"旅游基金\",\"firstDate\":\"2026-11-20\",\"endDate\":\"2027-10-20\",\"dayOfMonth\":20},\"dependsOn\":[\"s\",\"a\"]}]}}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "compiled": {
+        "kind": "analysis",
+        "tools": [
+          {
+            "tool": "savings_task_prepare",
+            "args": {
+              "taskPlan": {
+                "schemaVersion": 1,
+                "goal": "撤销音乐服务和视频服务两个代扣，把核验撤销成功后真省下的钱按每月20号从日常账户转存到旅游基金，2026-11-20首次至2027-10-20，账单分析月份2026-09",
+                "savingsPolicy": "verified_success_subset",
+                "analysisMonth": "2026-09",
+                "nodes": [
+                  {
+                    "id": "m",
+                    "type": "mandate_lookup",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "a",
+                    "type": "account_query",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "r1",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "音乐服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "r2",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "视频服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "s",
+                    "type": "compute_savings",
+                    "params": {},
+                    "dependsOn": [
+                      "r1",
+                      "r2"
+                    ]
+                  },
+                  {
+                    "id": "t",
+                    "type": "schedule_create",
+                    "params": {
+                      "sourceQuery": "日常账户",
+                      "recipientQuery": "旅游基金",
+                      "firstDate": "2026-11-20",
+                      "endDate": "2027-10-20",
+                      "dayOfMonth": 20
+                    },
+                    "dependsOn": [
+                      "s",
+                      "a"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "all_success_policy",
+      "batch": 2,
+      "question": "请把音乐服务和视频服务的月付银行代扣撤销，然后从日常账户把本任务核验省下的钱每月20日存进旅游基金。首次2026-11-20，最后2027-10-20，分析2026-09账单。必须两项全成功才转存，不接受部分成功继续；任何结果未知的项目都先查单，不要猜金额。",
+      "attempts": [
+        {
+          "sequence": 0,
+          "input": {
+            "previous_plan": {},
+            "previous_question": "",
+            "previous_workflow_id": null,
+            "question": "请把音乐服务和视频服务的月付银行代扣撤销，然后从日常账户把本任务核验省下的钱每月20日存进旅游基金。首次2026-11-20，最后2027-10-20，分析2026-09账单。必须两项全成功才转存，不接受部分成功继续；任何结果未知的项目都先查单，不要猜金额。",
+            "read_requirements": [],
+            "requested_analysis_month": "2026-09",
+            "safety_requirements": [],
+            "validation_error": ""
+          },
+          "state": "RECEIVED",
+          "provider": {
+            "content": {
+              "kind": "clarification",
+              "tools": [],
+              "question": "您要求两项撤销都必须成功才转存、不接受仅按成功项继续，因此我不能创建这种定期转存任务。您可以选择：先分别核对这两项代扣的当前状态，再自行决定；或改为仅按撤销成功的项目继续转存。请问您希望怎么处理？"
+            },
+            "id": "e7c6f31a-30a5-4741-8ab8-5c9f4834714c",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 2155,
+              "completion_tokens": 74,
+              "total_tokens": 2229,
+              "prompt_tokens_details": {
+                "cached_tokens": 1920
+              },
+              "prompt_cache_hit_tokens": 1920,
+              "prompt_cache_miss_tokens": 235
+            },
+            "raw_content": "{\"kind\":\"clarification\",\"tools\":[],\"question\":\"您要求两项撤销都必须成功才转存、不接受仅按成功项继续，因此我不能创建这种定期转存任务。您可以选择：先分别核对这两项代扣的当前状态，再自行决定；或改为仅按撤销成功的项目继续转存。请问您希望怎么处理？\"}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "compiled": {
+        "kind": "clarification",
+        "tools": [],
+        "question": "您要求两项撤销都必须成功才转存、不接受仅按成功项继续，因此我不能创建这种定期转存任务。您可以选择：先分别核对这两项代扣的当前状态，再自行决定；或改为仅按撤销成功的项目继续转存。请问您希望怎么处理？"
+      },
+      "passed": true
+    },
+    {
+      "id": "consultation_only",
+      "batch": 2,
+      "question": "音乐服务和视频服务都取消银行代扣的话，是不是就能保证商户退订和退款？我先了解，别替我建任务。",
+      "attempts": [
+        {
+          "sequence": 0,
+          "input": {
+            "previous_plan": {},
+            "previous_question": "",
+            "previous_workflow_id": null,
+            "question": "音乐服务和视频服务都取消银行代扣的话，是不是就能保证商户退订和退款？我先了解，别替我建任务。",
+            "read_requirements": [],
+            "requested_analysis_month": null,
+            "safety_requirements": [],
+            "validation_error": ""
+          },
+          "state": "RECEIVED",
+          "provider": {
+            "content": {
+              "kind": "general",
+              "tools": []
+            },
+            "id": "52696528-5413-40eb-9c4c-73a771ba5861",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 2098,
+              "completion_tokens": 9,
+              "total_tokens": 2107,
+              "prompt_tokens_details": {
+                "cached_tokens": 1792
+              },
+              "prompt_cache_hit_tokens": 1792,
+              "prompt_cache_miss_tokens": 306
+            },
+            "raw_content": "{\"kind\":\"general\",\"tools\":[]}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "compiled": {
+        "kind": "general",
+        "tools": []
+      },
+      "passed": true
+    },
+    {
+      "id": "T13_status",
+      "batch": 3,
+      "question": "刚才那个储蓄任务现在到哪一步了？查原任务就行，不要重新建。",
+      "attempts": [
+        {
+          "sequence": 0,
+          "input": {
+            "previous_plan": {
+              "kind": "analysis",
+              "tools": [
+                {
+                  "args": {
+                    "taskPlan": {
+                      "analysisMonth": "2026-09",
+                      "goal": "撤销音乐服务和视频服务的月付银行代扣，并将本任务核验省下的钱从日常账户每月存入旅游基金",
+                      "nodes": [
+                        {
+                          "dependsOn": [],
+                          "id": "m",
+                          "params": {},
+                          "type": "mandate_lookup"
+                        },
+                        {
+                          "dependsOn": [],
+                          "id": "a",
+                          "params": {},
+                          "type": "account_query"
+                        },
+                        {
+                          "dependsOn": [
+                            "m"
+                          ],
+                          "id": "r1",
+                          "params": {
+                            "merchantQuery": "音乐服务"
+                          },
+                          "type": "mandate_revoke"
+                        },
+                        {
+                          "dependsOn": [
+                            "m"
+                          ],
+                          "id": "r2",
+                          "params": {
+                            "merchantQuery": "视频服务"
+                          },
+                          "type": "mandate_revoke"
+                        },
+                        {
+                          "dependsOn": [
+                            "r1",
+                            "r2"
+                          ],
+                          "id": "s",
+                          "params": {},
+                          "type": "compute_savings"
+                        },
+                        {
+                          "dependsOn": [
+                            "s",
+                            "a"
+                          ],
+                          "id": "t",
+                          "params": {
+                            "dayOfMonth": 20,
+                            "endDate": "2027-10-20",
+                            "firstDate": "2026-11-20",
+                            "recipientQuery": "旅游基金",
+                            "sourceQuery": "日常账户"
+                          },
+                          "type": "schedule_create"
+                        }
+                      ],
+                      "savingsPolicy": "verified_success_subset",
+                      "schemaVersion": 1
+                    }
+                  },
+                  "tool": "savings_task_prepare"
+                }
+              ]
+            },
+            "previous_question": "请把音乐服务和视频服务的月付银行代扣撤销，然后从日常账户把本任务核验省下的钱每月20日存进旅游基金。首次2026-11-20，最后2027-10-20，分析2026-09账单。接受只按已核验成功的项目继续；任何结果未知的项目都先查单，不要猜金额。",
+            "previous_workflow_id": "650f0866-5345-37e2-a27c-970e47c56e46",
+            "question": "刚才那个储蓄任务现在到哪一步了？查原任务就行，不要重新建。",
+            "read_requirements": [],
+            "requested_analysis_month": null,
+            "safety_requirements": [],
+            "validation_error": ""
+          },
+          "state": "RECEIVED",
+          "provider": {
+            "content": {
+              "kind": "analysis",
+              "tools": [
+                {
+                  "tool": "savings_task_status",
+                  "args": {
+                    "workflowId": "650f0866-5345-37e2-a27c-970e47c56e46"
+                  }
+                }
+              ]
+            },
+            "id": "9f05b99e-1730-4298-a91c-dc9d29c5eaa3",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 2463,
+              "completion_tokens": 47,
+              "total_tokens": 2510,
+              "prompt_tokens_details": {
+                "cached_tokens": 1792
+              },
+              "prompt_cache_hit_tokens": 1792,
+              "prompt_cache_miss_tokens": 671
+            },
+            "raw_content": "{\"kind\":\"analysis\",\"tools\":[{\"tool\":\"savings_task_status\",\"args\":{\"workflowId\":\"650f0866-5345-37e2-a27c-970e47c56e46\"}}]}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "compiled": {
+        "kind": "analysis",
+        "tools": [
+          {
+            "tool": "savings_task_status",
+            "args": {
+              "workflowId": "650f0866-5345-37e2-a27c-970e47c56e46"
+            }
+          }
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "original_revision",
+      "batch": 3,
+      "question": "刚才那个任务，后面的首次日期想改成2026-12-20，先告诉我怎么改，不要新建也不要执行。",
+      "attempts": [
+        {
+          "sequence": 0,
+          "input": {
+            "previous_plan": {
+              "kind": "analysis",
+              "tools": [
+                {
+                  "args": {
+                    "taskPlan": {
+                      "analysisMonth": "2026-09",
+                      "goal": "撤销音乐服务和视频服务的月付银行代扣，并将本任务核验省下的钱从日常账户每月存入旅游基金",
+                      "nodes": [
+                        {
+                          "dependsOn": [],
+                          "id": "m",
+                          "params": {},
+                          "type": "mandate_lookup"
+                        },
+                        {
+                          "dependsOn": [],
+                          "id": "a",
+                          "params": {},
+                          "type": "account_query"
+                        },
+                        {
+                          "dependsOn": [
+                            "m"
+                          ],
+                          "id": "r1",
+                          "params": {
+                            "merchantQuery": "音乐服务"
+                          },
+                          "type": "mandate_revoke"
+                        },
+                        {
+                          "dependsOn": [
+                            "m"
+                          ],
+                          "id": "r2",
+                          "params": {
+                            "merchantQuery": "视频服务"
+                          },
+                          "type": "mandate_revoke"
+                        },
+                        {
+                          "dependsOn": [
+                            "r1",
+                            "r2"
+                          ],
+                          "id": "s",
+                          "params": {},
+                          "type": "compute_savings"
+                        },
+                        {
+                          "dependsOn": [
+                            "s",
+                            "a"
+                          ],
+                          "id": "t",
+                          "params": {
+                            "dayOfMonth": 20,
+                            "endDate": "2027-10-20",
+                            "firstDate": "2026-11-20",
+                            "recipientQuery": "旅游基金",
+                            "sourceQuery": "日常账户"
+                          },
+                          "type": "schedule_create"
+                        }
+                      ],
+                      "savingsPolicy": "verified_success_subset",
+                      "schemaVersion": 1
+                    }
+                  },
+                  "tool": "savings_task_prepare"
+                }
+              ]
+            },
+            "previous_question": "请把音乐服务和视频服务的月付银行代扣撤销，然后从日常账户把本任务核验省下的钱每月20日存进旅游基金。首次2026-11-20，最后2027-10-20，分析2026-09账单。接受只按已核验成功的项目继续；任何结果未知的项目都先查单，不要猜金额。",
+            "previous_workflow_id": "650f0866-5345-37e2-a27c-970e47c56e46",
+            "question": "刚才那个任务，后面的首次日期想改成2026-12-20，先告诉我怎么改，不要新建也不要执行。",
+            "read_requirements": [],
+            "requested_analysis_month": null,
+            "safety_requirements": [],
+            "validation_error": ""
+          },
+          "state": "RECEIVED",
+          "provider": {
+            "content": {
+              "kind": "analysis",
+              "tools": [
+                {
+                  "tool": "savings_task_status",
+                  "args": {
+                    "workflowId": "650f0866-5345-37e2-a27c-970e47c56e46"
+                  }
+                }
+              ]
+            },
+            "id": "fa401654-77f6-493c-beb0-995fb06fc09e",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 2470,
+              "completion_tokens": 47,
+              "total_tokens": 2517,
+              "prompt_tokens_details": {
+                "cached_tokens": 2176
+              },
+              "prompt_cache_hit_tokens": 2176,
+              "prompt_cache_miss_tokens": 294
+            },
+            "raw_content": "{\"kind\":\"analysis\",\"tools\":[{\"tool\":\"savings_task_status\",\"args\":{\"workflowId\":\"650f0866-5345-37e2-a27c-970e47c56e46\"}}]}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "compiled": {
+        "kind": "analysis",
+        "tools": [
+          {
+            "tool": "savings_task_status",
+            "args": {
+              "workflowId": "650f0866-5345-37e2-a27c-970e47c56e46"
+            }
+          }
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "missing_source_only",
+      "batch": 3,
+      "question": "撤销音乐服务和视频服务，把核验节省存旅游基金，每月20日，2026-11-20首次，2027-10-20最后，分析2026-09账单；接受只按已核验成功部分继续，未知先等待查单。",
+      "attempts": [
+        {
+          "sequence": 0,
+          "input": {
+            "previous_plan": {},
+            "previous_question": "",
+            "previous_workflow_id": null,
+            "question": "撤销音乐服务和视频服务，把核验节省存旅游基金，每月20日，2026-11-20首次，2027-10-20最后，分析2026-09账单；接受只按已核验成功部分继续，未知先等待查单。",
+            "read_requirements": [],
+            "requested_analysis_month": "2026-09",
+            "safety_requirements": [],
+            "validation_error": ""
+          },
+          "state": "RECEIVED",
+          "provider": {
+            "content": {
+              "kind": "savings_task",
+              "taskPlan": {
+                "schemaVersion": 1,
+                "goal": "撤销音乐服务和视频服务，将核验节省额转存旅游基金，每月20日，2026-11-20首次，2027-10-20结束；仅按已核验成功部分继续；未知先等待查单；分析2026-09账单。",
+                "savingsPolicy": "verified_success_subset",
+                "analysisMonth": "2026-09",
+                "nodes": [
+                  {
+                    "id": "m",
+                    "type": "mandate_lookup",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "a",
+                    "type": "account_query",
+                    "params": {},
+                    "dependsOn": []
+                  },
+                  {
+                    "id": "r1",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "音乐服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "r2",
+                    "type": "mandate_revoke",
+                    "params": {
+                      "merchantQuery": "视频服务"
+                    },
+                    "dependsOn": [
+                      "m"
+                    ]
+                  },
+                  {
+                    "id": "s",
+                    "type": "compute_savings",
+                    "params": {},
+                    "dependsOn": [
+                      "r1",
+                      "r2"
+                    ]
+                  },
+                  {
+                    "id": "t",
+                    "type": "schedule_create",
+                    "params": {
+                      "sourceQuery": "",
+                      "recipientQuery": "旅游基金",
+                      "firstDate": "2026-11-20",
+                      "endDate": "2027-10-20",
+                      "dayOfMonth": 20
+                    },
+                    "dependsOn": [
+                      "s",
+                      "a"
+                    ]
+                  }
+                ]
+              }
+            },
+            "id": "ad15408b-234f-45c1-aeba-f043fc43ba9c",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 2130,
+              "completion_tokens": 287,
+              "total_tokens": 2417,
+              "prompt_tokens_details": {
+                "cached_tokens": 1792
+              },
+              "prompt_cache_hit_tokens": 1792,
+              "prompt_cache_miss_tokens": 338
+            },
+            "raw_content": "{\"kind\":\"savings_task\",\"taskPlan\":{\"schemaVersion\":1,\"goal\":\"撤销音乐服务和视频服务，将核验节省额转存旅游基金，每月20日，2026-11-20首次，2027-10-20结束；仅按已核验成功部分继续；未知先等待查单；分析2026-09账单。\",\"savingsPolicy\":\"verified_success_subset\",\"analysisMonth\":\"2026-09\",\"nodes\":[{\"id\":\"m\",\"type\":\"mandate_lookup\",\"params\":{},\"dependsOn\":[]},{\"id\":\"a\",\"type\":\"account_query\",\"params\":{},\"dependsOn\":[]},{\"id\":\"r1\",\"type\":\"mandate_revoke\",\"params\":{\"merchantQuery\":\"音乐服务\"},\"dependsOn\":[\"m\"]},{\"id\":\"r2\",\"type\":\"mandate_revoke\",\"params\":{\"merchantQuery\":\"视频服务\"},\"dependsOn\":[\"m\"]},{\"id\":\"s\",\"type\":\"compute_savings\",\"params\":{},\"dependsOn\":[\"r1\",\"r2\"]},{\"id\":\"t\",\"type\":\"schedule_create\",\"params\":{\"sourceQuery\":\"\",\"recipientQuery\":\"旅游基金\",\"firstDate\":\"2026-11-20\",\"endDate\":\"2027-10-20\",\"dayOfMonth\":20},\"dependsOn\":[\"s\",\"a\"]}]}}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "passed": false,
+      "errorType": "ProtocolError",
+      "errorCode": "INVALID_TASK_PLAN"
+    }
+  ],
+  "modelSends": 9,
+  "cumulativeUpperCny": "4.920152",
+  "batchUpperCny": "0.095488",
+  "previousLedgerUnchanged": true
+}

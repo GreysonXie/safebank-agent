@@ -1,0 +1,36 @@
+{
+  "providerSends": 0,
+  "cumulativeUpperCnyUnchanged": "6.461328",
+  "pythonCiTestsPassed": 139,
+  "mysqlGroupTests": 38,
+  "mysqlGroupPassed": 37,
+  "correctedAssertionTargetedPassed": 1,
+  "capturedRepairUsesScriptedRewrite": true,
+  "newRealModelAcceptance": false,
+  "httpEvidence": {
+    "mode": "LANGGRAPH_MOCK",
+    "providerRequests": 0,
+    "authorizationLedgerBalancesUnchanged": true,
+    "cases": [
+      {
+        "scenario": "three_fragments_then_amount_change_then_statement",
+        "turns": 6,
+        "ambiguousAmendmentClarified": true,
+        "oldPreviewCancelled": true,
+        "newAmountMinor": 60000,
+        "tools": [
+          "transfer_preview",
+          "transfer_preview",
+          "statement"
+        ]
+      },
+      {
+        "scenario": "defer_exits_clarification",
+        "turns": 2,
+        "noTools": true,
+        "noNewActions": true,
+        "contextState": "ACTIVE"
+      }
+    ]
+  }
+}

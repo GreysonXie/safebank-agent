@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.RiskUserGuardMapper">
+    <resultMap id="row" type="cn.safebank.entity.RiskUserGuardEntity">
+        <id column="user_id" property="userId"/>
+        <result column="failed_verifications" property="failedVerifications"/>
+        <result column="failure_window_started_at" property="failureWindowStartedAt"/>
+        <result column="locked_until" property="lockedUntil"/>
+        <result column="last_challenge_at" property="lastChallengeAt"/>
+        <result column="reconciliation_required" property="reconciliationRequired"/>
+        <result column="revision" property="revision"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+    <sql id="columns">user_id,failed_verifications,failure_window_started_at,locked_until,last_challenge_at,reconciliation_required,revision,updated_at</sql>
+    <select id="select" resultMap="row">SELECT <include refid="columns"/> FROM risk_user_guards WHERE user_id=#{userId}</select>
+    <select id="selectForUpdate" resultMap="row">SELECT <include refid="columns"/> FROM risk_user_guards WHERE user_id=#{userId} FOR UPDATE</select>
+    <insert id="insert">INSERT INTO risk_user_guards(user_id,failed_verifications,failure_window_started_at,locked_until,last_challenge_at,reconciliation_required,revision,updated_at) VALUES(#{userId},#{failedVerifications},#{failureWindowStartedAt},#{lockedUntil},#{lastChallengeAt},#{reconciliationRequired},#{revision},#{updatedAt})</insert>
+    <update id="update">UPDATE risk_user_guards SET failed_verifications=#{failedVerifications},failure_window_started_at=#{failureWindowStartedAt},locked_until=#{lockedUntil},last_challenge_at=#{lastChallengeAt},reconciliation_required=#{reconciliationRequired},revision=#{revision},updated_at=#{updatedAt} WHERE user_id=#{userId}</update>
+</mapper>

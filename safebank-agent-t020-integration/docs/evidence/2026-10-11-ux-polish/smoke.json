@@ -1,0 +1,12 @@
+{
+  "url": "http://127.0.0.1:8134/",
+  "title": "SafeBank · 个人银行助手",
+  "consoleLogs": [],
+  "pageErrors": [],
+  "desktopLeftNavigationCenterBusinessRightChat": true,
+  "mobileChatBelowBusiness": true,
+  "keyboardDetailsToggle": true,
+  "uiOnlyFixture": true,
+  "bankActionsExecuted": false,
+  "providerCalls": 0
+}

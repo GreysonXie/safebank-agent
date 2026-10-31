@@ -1,0 +1,38 @@
+[
+  {
+    "id": "T01_complete",
+    "question": "请把音乐服务和视频服务的月付银行代扣撤销，然后从日常账户把本任务核验省下的钱每月20日存进旅游基金。首次2026-11-20，最后2027-10-20，分析2026-09账单。接受只按已核验成功的项目继续；任何结果未知的项目都先查单，不要猜金额。",
+    "expected": "savings_task_prepare",
+    "merchantQueries": ["音乐服务", "视频服务"]
+  },
+  {
+    "id": "T02_missing",
+    "question": "我想撤销音乐服务和视频服务的银行代扣，把实际省下的钱按月存起来，帮我安排。",
+    "expected": "clarification",
+    "manualReview": "付款账户、收款目标、首次及结束日期、部分成功策略不能由模型猜测；追问聚焦缺失项。"
+  },
+  {
+    "id": "T02_followup",
+    "question": "从日常账户存到旅游基金，每月20日，2026-11-20开始，2027-10-20结束，核对2026-09账单。只按已核验成功的部分继续，未知先等待查单。",
+    "expected": "savings_task_prepare",
+    "previousCase": "T02_missing",
+    "merchantQueries": ["音乐服务", "视频服务"]
+  },
+  {
+    "id": "T13_status",
+    "question": "刚才那个储蓄任务现在到哪一步了？查原任务就行，不要重新建。",
+    "expected": "savings_task_status",
+    "useVerifiedWorkflow": true
+  },
+  {
+    "id": "T13_repeat",
+    "question": "我再问一次，原来的任务还有哪项待确认？不要撤销或重建任何东西。",
+    "expected": "savings_task_status",
+    "useVerifiedWorkflow": true
+  },
+  {
+    "id": "T14_consultation",
+    "question": "如果撤销音乐服务银行代扣，把节省存起来，会影响商户合同或保证退款吗？先解释，不要创建任务或操作卡。",
+    "expected": "no_prepare"
+  }
+]

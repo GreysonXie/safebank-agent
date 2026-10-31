@@ -1,0 +1,14 @@
+{
+  "base": "http://127.0.0.1:8110",
+  "scope": "actual packaged candidate; read-only browser",
+  "checks": [
+    "restore real saved conversation without model",
+    "left navigation switches real business views",
+    "desktop left navigation / center business / right chat",
+    "mobile business above chat; no horizontal overflow",
+    "refresh sends zero chat calls; zero page errors"
+  ],
+  "pageErrors": [],
+  "chatPosts": 0,
+  "passed": true
+}

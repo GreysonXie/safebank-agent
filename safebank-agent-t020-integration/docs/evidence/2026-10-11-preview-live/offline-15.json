@@ -1,0 +1,1 @@
+{"evidence": [{"tool": "agent_transfer_preview", "data": {"recipient_label": "张三 / 张三 TEST-3271（合成）", "amount_minor": 50000, "recipient_note": "同学"}}], "answer": {"answer": "您指的是收款人备注为“同学”的那位，转账预览已匹配到{{preview_transfer.recipient_label}}，转账金额{{preview_transfer.amount_minor}}。该操作卡目前仅待核对，尚未执行；请核对收款人与金额，确认无误后再从操作卡完成转账。", "kind": "analysis"}}

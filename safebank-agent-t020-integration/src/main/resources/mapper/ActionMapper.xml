@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.ActionMapper">
+    <resultMap id="row" type="cn.safebank.entity.ActionEntity">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="kind" property="kind"/>
+        <result column="payload" property="payload"/>
+        <result column="payload_hash" property="payloadHash"/>
+        <result column="status" property="status"/>
+        <result column="expires_at" property="expiresAt"/>
+        <result column="receipt_id" property="receiptId"/>
+        <result column="error_code" property="errorCode"/>
+    </resultMap>
+
+    <sql id="columns">id,user_id,kind,payload,payload_hash,status,expires_at,receipt_id,error_code</sql>
+    <select id="selectByUser" resultMap="row">SELECT <include refid="columns"/> FROM actions WHERE user_id=#{userId} ORDER BY id</select>
+    <update id="updateExpiry">UPDATE actions SET expires_at=#{expiresAt} WHERE user_id=#{userId} AND id=#{id} AND status IN ('AWAITING_AUTH','AUTHORIZED')</update>
+    <select id="selectOwned" resultMap="row">SELECT <include refid="columns"/> FROM actions WHERE id=#{id} AND user_id=#{userId}</select>
+    <select id="selectOwnedForUpdate" resultMap="row">SELECT <include refid="columns"/> FROM actions WHERE id=#{id} AND user_id=#{userId} FOR UPDATE</select>
+    <insert id="insert">INSERT INTO actions(id,user_id,kind,payload,payload_hash,status,expires_at,receipt_id,error_code)
+        VALUES(#{id},#{userId},#{kind},#{payload},#{payloadHash},#{status},#{expiresAt},#{receiptId},#{errorCode})</insert>
+    <update id="updateState">UPDATE actions SET status=#{status},receipt_id=#{receiptId},error_code=#{errorCode} WHERE id=#{id} AND user_id=#{userId}</update>
+</mapper>

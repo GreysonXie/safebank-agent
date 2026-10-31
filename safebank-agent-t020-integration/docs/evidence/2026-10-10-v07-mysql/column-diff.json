@@ -1,0 +1,4707 @@
+{
+  "columns": [
+    {
+      "table": "accounts",
+      "column": "id",
+      "source": {
+        "name": "id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "accounts",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "accounts",
+      "column": "label",
+      "source": {
+        "name": "label",
+        "type": "CHARACTER VARYING",
+        "size": 120,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "label",
+        "type": "VARCHAR",
+        "size": 120,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "accounts",
+      "column": "balance_minor",
+      "source": {
+        "name": "balance_minor",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "balance_minor",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "action_authorizations",
+      "column": "id",
+      "source": {
+        "name": "id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "action_authorizations",
+      "column": "action_id",
+      "source": {
+        "name": "action_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "action_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "action_authorizations",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "action_authorizations",
+      "column": "decision_id",
+      "source": {
+        "name": "decision_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "decision_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "action_authorizations",
+      "column": "challenge_id",
+      "source": {
+        "name": "challenge_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "challenge_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "action_authorizations",
+      "column": "payload_hash",
+      "source": {
+        "name": "payload_hash",
+        "type": "CHARACTER VARYING",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "payload_hash",
+        "type": "VARCHAR",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "action_authorizations",
+      "column": "policy_version",
+      "source": {
+        "name": "policy_version",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "policy_version",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "action_authorizations",
+      "column": "business_date",
+      "source": {
+        "name": "business_date",
+        "type": "DATE",
+        "size": 10,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "business_date",
+        "type": "DATE",
+        "size": 10,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "action_authorizations",
+      "column": "method",
+      "source": {
+        "name": "method",
+        "type": "CHARACTER VARYING",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "method",
+        "type": "VARCHAR",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "action_authorizations",
+      "column": "assurance",
+      "source": {
+        "name": "assurance",
+        "type": "CHARACTER VARYING",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "assurance",
+        "type": "VARCHAR",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "action_authorizations",
+      "column": "status",
+      "source": {
+        "name": "status",
+        "type": "CHARACTER VARYING",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "status",
+        "type": "VARCHAR",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "action_authorizations",
+      "column": "authorized_at",
+      "source": {
+        "name": "authorized_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "authorized_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "action_authorizations",
+      "column": "expires_at",
+      "source": {
+        "name": "expires_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "expires_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "actions",
+      "column": "id",
+      "source": {
+        "name": "id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "actions",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "actions",
+      "column": "kind",
+      "source": {
+        "name": "kind",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "kind",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "actions",
+      "column": "payload",
+      "source": {
+        "name": "payload",
+        "type": "CHARACTER VARYING",
+        "size": 8000,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "payload",
+        "type": "LONGTEXT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Raw long text preserved; avoids utf8mb4 row-size limit; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "actions",
+      "column": "payload_hash",
+      "source": {
+        "name": "payload_hash",
+        "type": "CHARACTER VARYING",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "payload_hash",
+        "type": "VARCHAR",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "actions",
+      "column": "status",
+      "source": {
+        "name": "status",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "status",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "actions",
+      "column": "expires_at",
+      "source": {
+        "name": "expires_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "expires_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "actions",
+      "column": "receipt_id",
+      "source": {
+        "name": "receipt_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "receipt_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "actions",
+      "column": "error_code",
+      "source": {
+        "name": "error_code",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "error_code",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_evidence",
+      "column": "id",
+      "source": {
+        "name": "id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_evidence",
+      "column": "conversation_id",
+      "source": {
+        "name": "conversation_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "conversation_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_evidence",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_evidence",
+      "column": "evidence_key",
+      "source": {
+        "name": "evidence_key",
+        "type": "CHARACTER VARYING",
+        "size": 120,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "evidence_key",
+        "type": "VARCHAR",
+        "size": 120,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_evidence",
+      "column": "tool_name",
+      "source": {
+        "name": "tool_name",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "tool_name",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_evidence",
+      "column": "object_id",
+      "source": {
+        "name": "object_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "object_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_evidence",
+      "column": "snapshot_json",
+      "source": {
+        "name": "snapshot_json",
+        "type": "CHARACTER LARGE OBJECT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "snapshot_json",
+        "type": "LONGTEXT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Raw long text preserved; avoids utf8mb4 row-size limit; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_evidence",
+      "column": "content_hash",
+      "source": {
+        "name": "content_hash",
+        "type": "CHARACTER VARYING",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "content_hash",
+        "type": "VARCHAR",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_evidence",
+      "column": "source_turn_id",
+      "source": {
+        "name": "source_turn_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "source_turn_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_evidence",
+      "column": "observed_at",
+      "source": {
+        "name": "observed_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 35,
+        "scale": 9,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "observed_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "agent_context_evidence",
+      "column": "valid_until",
+      "source": {
+        "name": "valid_until",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "valid_until",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "agent_context_slots",
+      "column": "conversation_id",
+      "source": {
+        "name": "conversation_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "conversation_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_slots",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_slots",
+      "column": "slot_name",
+      "source": {
+        "name": "slot_name",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "slot_name",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_slots",
+      "column": "value_json",
+      "source": {
+        "name": "value_json",
+        "type": "CHARACTER LARGE OBJECT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "value_json",
+        "type": "LONGTEXT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Raw long text preserved; avoids utf8mb4 row-size limit; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_slots",
+      "column": "provenance",
+      "source": {
+        "name": "provenance",
+        "type": "CHARACTER VARYING",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "provenance",
+        "type": "VARCHAR",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_slots",
+      "column": "context_version",
+      "source": {
+        "name": "context_version",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "context_version",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "agent_context_slots",
+      "column": "source_turn_id",
+      "source": {
+        "name": "source_turn_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "source_turn_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_slots",
+      "column": "evidence_id",
+      "source": {
+        "name": "evidence_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "evidence_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_context_slots",
+      "column": "updated_at",
+      "source": {
+        "name": "updated_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "updated_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "agent_conversations",
+      "column": "id",
+      "source": {
+        "name": "id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_conversations",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_conversations",
+      "column": "version",
+      "source": {
+        "name": "version",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": "1"
+      },
+      "target": {
+        "name": "version",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": false,
+        "default": "1"
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "agent_conversations",
+      "column": "intent",
+      "source": {
+        "name": "intent",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": "'GENERAL'"
+      },
+      "target": {
+        "name": "intent",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": "GENERAL"
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_conversations",
+      "column": "state",
+      "source": {
+        "name": "state",
+        "type": "CHARACTER VARYING",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": "'ACTIVE'"
+      },
+      "target": {
+        "name": "state",
+        "type": "VARCHAR",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": "ACTIVE"
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_conversations",
+      "column": "proposal_json",
+      "source": {
+        "name": "proposal_json",
+        "type": "CHARACTER LARGE OBJECT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "proposal_json",
+        "type": "LONGTEXT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Raw long text preserved; avoids utf8mb4 row-size limit; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_conversations",
+      "column": "display_history_json",
+      "source": {
+        "name": "display_history_json",
+        "type": "CHARACTER LARGE OBJECT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "display_history_json",
+        "type": "LONGTEXT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Raw long text preserved; avoids utf8mb4 row-size limit; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_conversations",
+      "column": "created_at",
+      "source": {
+        "name": "created_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "created_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "agent_conversations",
+      "column": "updated_at",
+      "source": {
+        "name": "updated_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "updated_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "agent_conversations",
+      "column": "expires_at",
+      "source": {
+        "name": "expires_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "expires_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "agent_turn_receipts",
+      "column": "id",
+      "source": {
+        "name": "id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_turn_receipts",
+      "column": "conversation_id",
+      "source": {
+        "name": "conversation_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "conversation_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_turn_receipts",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_turn_receipts",
+      "column": "request_id",
+      "source": {
+        "name": "request_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "request_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_turn_receipts",
+      "column": "request_hash",
+      "source": {
+        "name": "request_hash",
+        "type": "CHARACTER VARYING",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "request_hash",
+        "type": "VARCHAR",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_turn_receipts",
+      "column": "input_version",
+      "source": {
+        "name": "input_version",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "input_version",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "agent_turn_receipts",
+      "column": "output_version",
+      "source": {
+        "name": "output_version",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "output_version",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "agent_turn_receipts",
+      "column": "state",
+      "source": {
+        "name": "state",
+        "type": "CHARACTER VARYING",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "state",
+        "type": "VARCHAR",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_turn_receipts",
+      "column": "tool_intents_json",
+      "source": {
+        "name": "tool_intents_json",
+        "type": "CHARACTER LARGE OBJECT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "tool_intents_json",
+        "type": "LONGTEXT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Raw long text preserved; avoids utf8mb4 row-size limit; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_turn_receipts",
+      "column": "bank_references_json",
+      "source": {
+        "name": "bank_references_json",
+        "type": "CHARACTER LARGE OBJECT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "bank_references_json",
+        "type": "LONGTEXT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Raw long text preserved; avoids utf8mb4 row-size limit; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_turn_receipts",
+      "column": "response_json",
+      "source": {
+        "name": "response_json",
+        "type": "CHARACTER LARGE OBJECT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "response_json",
+        "type": "LONGTEXT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Raw long text preserved; avoids utf8mb4 row-size limit; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_turn_receipts",
+      "column": "error_code",
+      "source": {
+        "name": "error_code",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "error_code",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "agent_turn_receipts",
+      "column": "created_at",
+      "source": {
+        "name": "created_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "created_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "agent_turn_receipts",
+      "column": "completed_at",
+      "source": {
+        "name": "completed_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "completed_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "audit",
+      "column": "id",
+      "source": {
+        "name": "id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "audit",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "audit",
+      "column": "action_id",
+      "source": {
+        "name": "action_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "action_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "audit",
+      "column": "event",
+      "source": {
+        "name": "event",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "event",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "audit",
+      "column": "recorded_at",
+      "source": {
+        "name": "recorded_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "recorded_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "bank_faults",
+      "column": "action_id",
+      "source": {
+        "name": "action_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "action_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "bank_faults",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "bank_faults",
+      "column": "submit_mode",
+      "source": {
+        "name": "submit_mode",
+        "type": "CHARACTER VARYING",
+        "size": 60,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "submit_mode",
+        "type": "VARCHAR",
+        "size": 60,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "bank_faults",
+      "column": "lookup_mode",
+      "source": {
+        "name": "lookup_mode",
+        "type": "CHARACTER VARYING",
+        "size": 60,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "lookup_mode",
+        "type": "VARCHAR",
+        "size": 60,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "execution_observations",
+      "column": "action_id",
+      "source": {
+        "name": "action_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "action_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "execution_observations",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "execution_observations",
+      "column": "state",
+      "source": {
+        "name": "state",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "state",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "execution_observations",
+      "column": "receipt_id",
+      "source": {
+        "name": "receipt_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "receipt_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "execution_observations",
+      "column": "error_code",
+      "source": {
+        "name": "error_code",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "error_code",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "execution_observations",
+      "column": "observed_at",
+      "source": {
+        "name": "observed_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "observed_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "ledger",
+      "column": "id",
+      "source": {
+        "name": "id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "ledger",
+      "column": "action_id",
+      "source": {
+        "name": "action_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "action_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "ledger",
+      "column": "account_id",
+      "source": {
+        "name": "account_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "account_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "ledger",
+      "column": "amount_minor",
+      "source": {
+        "name": "amount_minor",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "amount_minor",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "mandates",
+      "column": "id",
+      "source": {
+        "name": "id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "mandates",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "mandates",
+      "column": "merchant",
+      "source": {
+        "name": "merchant",
+        "type": "CHARACTER VARYING",
+        "size": 120,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "merchant",
+        "type": "VARCHAR",
+        "size": 120,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "mandates",
+      "column": "amount_minor",
+      "source": {
+        "name": "amount_minor",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "amount_minor",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "mandates",
+      "column": "renewal_date",
+      "source": {
+        "name": "renewal_date",
+        "type": "DATE",
+        "size": 10,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "renewal_date",
+        "type": "DATE",
+        "size": 10,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "mandates",
+      "column": "status",
+      "source": {
+        "name": "status",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "status",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "mandates",
+      "column": "contract_status",
+      "source": {
+        "name": "contract_status",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "contract_status",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "mandates",
+      "column": "billing_interval",
+      "source": {
+        "name": "billing_interval",
+        "type": "CHARACTER VARYING",
+        "size": 20,
+        "scale": 0,
+        "nullable": true,
+        "default": "'MONTHLY'"
+      },
+      "target": {
+        "name": "billing_interval",
+        "type": "VARCHAR",
+        "size": 20,
+        "scale": 0,
+        "nullable": true,
+        "default": "MONTHLY"
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "occurrences",
+      "column": "schedule_id",
+      "source": {
+        "name": "schedule_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "schedule_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "occurrences",
+      "column": "due_date",
+      "source": {
+        "name": "due_date",
+        "type": "DATE",
+        "size": 10,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "due_date",
+        "type": "DATE",
+        "size": 10,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "occurrences",
+      "column": "action_id",
+      "source": {
+        "name": "action_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "action_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "recipients",
+      "column": "id",
+      "source": {
+        "name": "id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "recipients",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "recipients",
+      "column": "name",
+      "source": {
+        "name": "name",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "name",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "recipients",
+      "column": "phone",
+      "source": {
+        "name": "phone",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "phone",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "recipients",
+      "column": "note",
+      "source": {
+        "name": "note",
+        "type": "CHARACTER VARYING",
+        "size": 120,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "note",
+        "type": "VARCHAR",
+        "size": 120,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "recipients",
+      "column": "account_id",
+      "source": {
+        "name": "account_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "account_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_decisions",
+      "column": "id",
+      "source": {
+        "name": "id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_decisions",
+      "column": "action_id",
+      "source": {
+        "name": "action_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "action_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_decisions",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_decisions",
+      "column": "revision",
+      "source": {
+        "name": "revision",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "revision",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "risk_decisions",
+      "column": "policy_version",
+      "source": {
+        "name": "policy_version",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "policy_version",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_decisions",
+      "column": "risk_level",
+      "source": {
+        "name": "risk_level",
+        "type": "CHARACTER VARYING",
+        "size": 12,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "risk_level",
+        "type": "VARCHAR",
+        "size": 12,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_decisions",
+      "column": "required_assurance",
+      "source": {
+        "name": "required_assurance",
+        "type": "CHARACTER VARYING",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "required_assurance",
+        "type": "VARCHAR",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_decisions",
+      "column": "reason_code",
+      "source": {
+        "name": "reason_code",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "reason_code",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_decisions",
+      "column": "business_date",
+      "source": {
+        "name": "business_date",
+        "type": "DATE",
+        "size": 10,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "business_date",
+        "type": "DATE",
+        "size": 10,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "risk_decisions",
+      "column": "amount_minor",
+      "source": {
+        "name": "amount_minor",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "amount_minor",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "risk_decisions",
+      "column": "effective_minor",
+      "source": {
+        "name": "effective_minor",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "effective_minor",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "risk_decisions",
+      "column": "projected_minor",
+      "source": {
+        "name": "projected_minor",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "projected_minor",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "risk_decisions",
+      "column": "payload_hash",
+      "source": {
+        "name": "payload_hash",
+        "type": "CHARACTER VARYING",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "payload_hash",
+        "type": "VARCHAR",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_decisions",
+      "column": "created_at",
+      "source": {
+        "name": "created_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "created_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "risk_decisions",
+      "column": "valid_until",
+      "source": {
+        "name": "valid_until",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "valid_until",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "risk_events",
+      "column": "id",
+      "source": {
+        "name": "id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_events",
+      "column": "request_id",
+      "source": {
+        "name": "request_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "request_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_events",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_events",
+      "column": "action_id",
+      "source": {
+        "name": "action_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "action_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_events",
+      "column": "decision_id",
+      "source": {
+        "name": "decision_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "decision_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_events",
+      "column": "event_code",
+      "source": {
+        "name": "event_code",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "event_code",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_events",
+      "column": "reason_code",
+      "source": {
+        "name": "reason_code",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "reason_code",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_events",
+      "column": "channel",
+      "source": {
+        "name": "channel",
+        "type": "CHARACTER VARYING",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "channel",
+        "type": "VARCHAR",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_events",
+      "column": "policy_version",
+      "source": {
+        "name": "policy_version",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "policy_version",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_events",
+      "column": "recorded_at",
+      "source": {
+        "name": "recorded_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "recorded_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "risk_transfer_usage",
+      "column": "action_id",
+      "source": {
+        "name": "action_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "action_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_transfer_usage",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_transfer_usage",
+      "column": "authorization_id",
+      "source": {
+        "name": "authorization_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "authorization_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_transfer_usage",
+      "column": "provenance",
+      "source": {
+        "name": "provenance",
+        "type": "CHARACTER VARYING",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "provenance",
+        "type": "VARCHAR",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_transfer_usage",
+      "column": "business_date",
+      "source": {
+        "name": "business_date",
+        "type": "DATE",
+        "size": 10,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "business_date",
+        "type": "DATE",
+        "size": 10,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "risk_transfer_usage",
+      "column": "amount_minor",
+      "source": {
+        "name": "amount_minor",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "amount_minor",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "risk_transfer_usage",
+      "column": "state",
+      "source": {
+        "name": "state",
+        "type": "CHARACTER VARYING",
+        "size": 16,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "state",
+        "type": "VARCHAR",
+        "size": 16,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_transfer_usage",
+      "column": "reserved_until",
+      "source": {
+        "name": "reserved_until",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "reserved_until",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "risk_transfer_usage",
+      "column": "submitted_at",
+      "source": {
+        "name": "submitted_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "submitted_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "risk_transfer_usage",
+      "column": "resolved_at",
+      "source": {
+        "name": "resolved_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "resolved_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "risk_transfer_usage",
+      "column": "updated_at",
+      "source": {
+        "name": "updated_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "updated_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "risk_user_guards",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "risk_user_guards",
+      "column": "failed_verifications",
+      "source": {
+        "name": "failed_verifications",
+        "type": "INTEGER",
+        "size": 32,
+        "scale": 0,
+        "nullable": false,
+        "default": "0"
+      },
+      "target": {
+        "name": "failed_verifications",
+        "type": "INT",
+        "size": 10,
+        "scale": 0,
+        "nullable": false,
+        "default": "0"
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "risk_user_guards",
+      "column": "failure_window_started_at",
+      "source": {
+        "name": "failure_window_started_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "failure_window_started_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "risk_user_guards",
+      "column": "locked_until",
+      "source": {
+        "name": "locked_until",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "locked_until",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "risk_user_guards",
+      "column": "last_challenge_at",
+      "source": {
+        "name": "last_challenge_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "last_challenge_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "risk_user_guards",
+      "column": "reconciliation_required",
+      "source": {
+        "name": "reconciliation_required",
+        "type": "BOOLEAN",
+        "size": 1,
+        "scale": 0,
+        "nullable": false,
+        "default": "FALSE"
+      },
+      "target": {
+        "name": "reconciliation_required",
+        "type": "BIT",
+        "size": 1,
+        "scale": 0,
+        "nullable": false,
+        "default": "0"
+      },
+      "collation": null,
+      "reason": "MySQL BOOLEAN alias with explicit 0/1 domain CHECK"
+    },
+    {
+      "table": "risk_user_guards",
+      "column": "revision",
+      "source": {
+        "name": "revision",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": "0"
+      },
+      "target": {
+        "name": "revision",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": false,
+        "default": "0"
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "risk_user_guards",
+      "column": "updated_at",
+      "source": {
+        "name": "updated_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "updated_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "schedule_authorizations",
+      "column": "schedule_id",
+      "source": {
+        "name": "schedule_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "schedule_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "schedule_authorizations",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "schedule_authorizations",
+      "column": "source_authorization_id",
+      "source": {
+        "name": "source_authorization_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "source_authorization_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "schedule_authorizations",
+      "column": "scope_json",
+      "source": {
+        "name": "scope_json",
+        "type": "CHARACTER VARYING",
+        "size": 4000,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "scope_json",
+        "type": "LONGTEXT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Raw long text preserved; avoids utf8mb4 row-size limit; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "schedule_authorizations",
+      "column": "scope_hash",
+      "source": {
+        "name": "scope_hash",
+        "type": "CHARACTER VARYING",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "scope_hash",
+        "type": "VARCHAR",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "schedule_authorizations",
+      "column": "policy_version",
+      "source": {
+        "name": "policy_version",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "policy_version",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "schedule_authorizations",
+      "column": "maximum_risk_level",
+      "source": {
+        "name": "maximum_risk_level",
+        "type": "CHARACTER VARYING",
+        "size": 12,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "maximum_risk_level",
+        "type": "VARCHAR",
+        "size": 12,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "schedule_authorizations",
+      "column": "status",
+      "source": {
+        "name": "status",
+        "type": "CHARACTER VARYING",
+        "size": 16,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "status",
+        "type": "VARCHAR",
+        "size": 16,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "schedule_authorizations",
+      "column": "created_at",
+      "source": {
+        "name": "created_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "created_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "schedule_authorizations",
+      "column": "expires_at",
+      "source": {
+        "name": "expires_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "expires_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "schedules",
+      "column": "id",
+      "source": {
+        "name": "id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "schedules",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "schedules",
+      "column": "source_id",
+      "source": {
+        "name": "source_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "source_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "schedules",
+      "column": "recipient_id",
+      "source": {
+        "name": "recipient_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "recipient_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "schedules",
+      "column": "amount_minor",
+      "source": {
+        "name": "amount_minor",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "amount_minor",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "schedules",
+      "column": "day_of_month",
+      "source": {
+        "name": "day_of_month",
+        "type": "INTEGER",
+        "size": 32,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "day_of_month",
+        "type": "INT",
+        "size": 10,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "schedules",
+      "column": "first_date",
+      "source": {
+        "name": "first_date",
+        "type": "DATE",
+        "size": 10,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "first_date",
+        "type": "DATE",
+        "size": 10,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "schedules",
+      "column": "end_date",
+      "source": {
+        "name": "end_date",
+        "type": "DATE",
+        "size": 10,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "end_date",
+        "type": "DATE",
+        "size": 10,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "schedules",
+      "column": "status",
+      "source": {
+        "name": "status",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "status",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "transactions",
+      "column": "id",
+      "source": {
+        "name": "id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "transactions",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "transactions",
+      "column": "account_id",
+      "source": {
+        "name": "account_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "account_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "transactions",
+      "column": "merchant",
+      "source": {
+        "name": "merchant",
+        "type": "CHARACTER VARYING",
+        "size": 200,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "merchant",
+        "type": "VARCHAR",
+        "size": 200,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "transactions",
+      "column": "category",
+      "source": {
+        "name": "category",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "category",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "transactions",
+      "column": "amount_minor",
+      "source": {
+        "name": "amount_minor",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "amount_minor",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "transactions",
+      "column": "booked_on",
+      "source": {
+        "name": "booked_on",
+        "type": "DATE",
+        "size": 10,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "booked_on",
+        "type": "DATE",
+        "size": 10,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "verification_challenges",
+      "column": "id",
+      "source": {
+        "name": "id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "verification_challenges",
+      "column": "action_id",
+      "source": {
+        "name": "action_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "action_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "verification_challenges",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "verification_challenges",
+      "column": "decision_id",
+      "source": {
+        "name": "decision_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "decision_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "verification_challenges",
+      "column": "payload_hash",
+      "source": {
+        "name": "payload_hash",
+        "type": "CHARACTER VARYING",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "payload_hash",
+        "type": "VARCHAR",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "verification_challenges",
+      "column": "method",
+      "source": {
+        "name": "method",
+        "type": "CHARACTER VARYING",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "method",
+        "type": "VARCHAR",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "verification_challenges",
+      "column": "provider_reference",
+      "source": {
+        "name": "provider_reference",
+        "type": "CHARACTER VARYING",
+        "size": 120,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "provider_reference",
+        "type": "VARCHAR",
+        "size": 120,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "verification_challenges",
+      "column": "code_digest",
+      "source": {
+        "name": "code_digest",
+        "type": "CHARACTER VARYING",
+        "size": 128,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "code_digest",
+        "type": "VARCHAR",
+        "size": 128,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "verification_challenges",
+      "column": "status",
+      "source": {
+        "name": "status",
+        "type": "CHARACTER VARYING",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "status",
+        "type": "VARCHAR",
+        "size": 24,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "verification_challenges",
+      "column": "failed_attempts",
+      "source": {
+        "name": "failed_attempts",
+        "type": "INTEGER",
+        "size": 32,
+        "scale": 0,
+        "nullable": false,
+        "default": "0"
+      },
+      "target": {
+        "name": "failed_attempts",
+        "type": "INT",
+        "size": 10,
+        "scale": 0,
+        "nullable": false,
+        "default": "0"
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "verification_challenges",
+      "column": "created_at",
+      "source": {
+        "name": "created_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "created_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "verification_challenges",
+      "column": "expires_at",
+      "source": {
+        "name": "expires_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "expires_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "verification_challenges",
+      "column": "verified_at",
+      "source": {
+        "name": "verified_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "verified_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "workflow_steps",
+      "column": "workflow_id",
+      "source": {
+        "name": "workflow_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "workflow_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "workflow_steps",
+      "column": "step_key",
+      "source": {
+        "name": "step_key",
+        "type": "CHARACTER VARYING",
+        "size": 120,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "step_key",
+        "type": "VARCHAR",
+        "size": 120,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "workflow_steps",
+      "column": "input_version",
+      "source": {
+        "name": "input_version",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "input_version",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "workflow_steps",
+      "column": "kind",
+      "source": {
+        "name": "kind",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "kind",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "workflow_steps",
+      "column": "status",
+      "source": {
+        "name": "status",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "status",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "workflow_steps",
+      "column": "action_id",
+      "source": {
+        "name": "action_id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "action_id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "workflow_steps",
+      "column": "saving_minor",
+      "source": {
+        "name": "saving_minor",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "saving_minor",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "workflow_steps",
+      "column": "error_code",
+      "source": {
+        "name": "error_code",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "error_code",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "workflow_steps",
+      "column": "evidence_json",
+      "source": {
+        "name": "evidence_json",
+        "type": "CHARACTER VARYING",
+        "size": 16000,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "evidence_json",
+        "type": "LONGTEXT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Raw long text preserved; avoids utf8mb4 row-size limit; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "workflows",
+      "column": "id",
+      "source": {
+        "name": "id",
+        "type": "CHARACTER VARYING",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "id",
+        "type": "VARCHAR",
+        "size": 80,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "workflows",
+      "column": "user_id",
+      "source": {
+        "name": "user_id",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "user_id",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "workflows",
+      "column": "version",
+      "source": {
+        "name": "version",
+        "type": "BIGINT",
+        "size": 64,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "version",
+        "type": "BIGINT",
+        "size": 19,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "Same SQL domain"
+    },
+    {
+      "table": "workflows",
+      "column": "state",
+      "source": {
+        "name": "state",
+        "type": "CHARACTER VARYING",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "state",
+        "type": "VARCHAR",
+        "size": 40,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Same SQL domain; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "workflows",
+      "column": "request_json",
+      "source": {
+        "name": "request_json",
+        "type": "CHARACTER VARYING",
+        "size": 8000,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "request_json",
+        "type": "LONGTEXT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Raw long text preserved; avoids utf8mb4 row-size limit; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "workflows",
+      "column": "analysis_json",
+      "source": {
+        "name": "analysis_json",
+        "type": "CHARACTER VARYING",
+        "size": 16000,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "analysis_json",
+        "type": "LONGTEXT",
+        "size": 2147483647,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": "utf8mb4_0900_bin",
+      "reason": "Raw long text preserved; avoids utf8mb4 row-size limit; binary NO PAD preserves case/trailing spaces"
+    },
+    {
+      "table": "workflows",
+      "column": "created_at",
+      "source": {
+        "name": "created_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": false,
+        "default": null
+      },
+      "target": {
+        "name": "created_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": false,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    },
+    {
+      "table": "workflows",
+      "column": "updated_at",
+      "source": {
+        "name": "updated_at",
+        "type": "TIMESTAMP WITH TIME ZONE",
+        "size": 32,
+        "scale": 6,
+        "nullable": true,
+        "default": null
+      },
+      "target": {
+        "name": "updated_at",
+        "type": "DATETIME",
+        "size": 26,
+        "scale": 0,
+        "nullable": true,
+        "default": null
+      },
+      "collation": null,
+      "reason": "UTC DATETIME(6); offsets normalized, nanos truncated to micros"
+    }
+  ],
+  "checks": [
+    {
+      "table": "accounts",
+      "source": [
+        "\"BALANCE_MINOR\" >= CAST(0 AS BIGINT)"
+      ],
+      "target": [
+        "(`balance_minor` >= 0)"
+      ],
+      "reason": "Original DDL predicates moved to named table CHECK; database rendering differs. risk_user_guards adds BOOLEAN 0/1 domain. Cardinality checked; this is not a general SQL semantic equivalence proof."
+    },
+    {
+      "table": "action_authorizations",
+      "source": [
+        "\"METHOD\" IN('USER_CONFIRM', 'DEMO_OTP', 'EXTERNAL_MFA', 'SCHEDULE_DELEGATION')",
+        "\"ASSURANCE\" IN('CONFIRMED', 'DEMO_VERIFIED', 'MFA_VERIFIED')",
+        "((\"METHOD\" IN('USER_CONFIRM', 'SCHEDULE_DELEGATION'))\n    AND (\"ASSURANCE\" = 'CONFIRMED')\n    AND (\"CHALLENGE_ID\" IS NULL))\n    OR ((\"METHOD\" = 'DEMO_OTP')\n    AND (\"ASSURANCE\" = 'DEMO_VERIFIED')\n    AND (\"CHALLENGE_ID\" IS NOT NULL))\n    OR ((\"METHOD\" = 'EXTERNAL_MFA')\n    AND (\"ASSURANCE\" = 'MFA_VERIFIED')\n    AND (\"CHALLENGE_ID\" IS NOT NULL))",
+        "\"STATUS\" IN('ACTIVE', 'SUBMISSION_STARTED', 'CONSUMED', 'REVOKED', 'EXPIRED')",
+        "\"EXPIRES_AT\" > \"AUTHORIZED_AT\""
+      ],
+      "target": [
+        "(`method` in (_utf8mb4\\'USER_CONFIRM\\',_utf8mb4\\'DEMO_OTP\\',_utf8mb4\\'EXTERNAL_MFA\\',_utf8mb4\\'SCHEDULE_DELEGATION\\'))",
+        "(`assurance` in (_utf8mb4\\'CONFIRMED\\',_utf8mb4\\'DEMO_VERIFIED\\',_utf8mb4\\'MFA_VERIFIED\\'))",
+        "(`status` in (_utf8mb4\\'ACTIVE\\',_utf8mb4\\'SUBMISSION_STARTED\\',_utf8mb4\\'CONSUMED\\',_utf8mb4\\'REVOKED\\',_utf8mb4\\'EXPIRED\\'))",
+        "(`expires_at` > `authorized_at`)",
+        "(((`method` in (_utf8mb4\\'USER_CONFIRM\\',_utf8mb4\\'SCHEDULE_DELEGATION\\')) and (`assurance` = _utf8mb4\\'CONFIRMED\\') and (`challenge_id` is null)) or ((`method` = _utf8mb4\\'DEMO_OTP\\') and (`assurance` = _utf8mb4\\'DEMO_VERIFIED\\') and (`challenge_id` is not null)) or ((`method` = _utf8mb4\\'EXTERNAL_MFA\\') and (`assurance` = _utf8mb4\\'MFA_VERIFIED\\') and (`challenge_id` is not null)))"
+      ],
+      "reason": "Original DDL predicates moved to named table CHECK; database rendering differs. risk_user_guards adds BOOLEAN 0/1 domain. Cardinality checked; this is not a general SQL semantic equivalence proof."
+    },
+    {
+      "table": "agent_context_slots",
+      "source": [
+        "\"PROVENANCE\" IN('USER_EXPLICIT', 'MODEL_PROPOSED', 'BANK_CONFIRMED')",
+        "\"CONTEXT_VERSION\" >= CAST(1 AS BIGINT)"
+      ],
+      "target": [
+        "(`provenance` in (_utf8mb4\\'USER_EXPLICIT\\',_utf8mb4\\'MODEL_PROPOSED\\',_utf8mb4\\'BANK_CONFIRMED\\'))",
+        "(`context_version` >= 1)"
+      ],
+      "reason": "Original DDL predicates moved to named table CHECK; database rendering differs. risk_user_guards adds BOOLEAN 0/1 domain. Cardinality checked; this is not a general SQL semantic equivalence proof."
+    },
+    {
+      "table": "agent_conversations",
+      "source": [
+        "\"VERSION\" >= CAST(1 AS BIGINT)",
+        "\"STATE\" IN('ACTIVE', 'NEEDS_CLARIFICATION', 'AWAITING_CONFIRMATION', 'PAUSED', 'EXPIRED')"
+      ],
+      "target": [
+        "(`version` >= 1)",
+        "(`state` in (_utf8mb4\\'ACTIVE\\',_utf8mb4\\'NEEDS_CLARIFICATION\\',_utf8mb4\\'AWAITING_CONFIRMATION\\',_utf8mb4\\'PAUSED\\',_utf8mb4\\'EXPIRED\\'))"
+      ],
+      "reason": "Original DDL predicates moved to named table CHECK; database rendering differs. risk_user_guards adds BOOLEAN 0/1 domain. Cardinality checked; this is not a general SQL semantic equivalence proof."
+    },
+    {
+      "table": "agent_turn_receipts",
+      "source": [
+        "\"OUTPUT_VERSION\" >= \"INPUT_VERSION\"",
+        "\"INPUT_VERSION\" >= CAST(1 AS BIGINT)",
+        "\"STATE\" IN('PROCESSING', 'COMPLETED', 'FAILED', 'INTERRUPTED')"
+      ],
+      "target": [
+        "(`input_version` >= 1)",
+        "(`output_version` >= `input_version`)",
+        "(`state` in (_utf8mb4\\'PROCESSING\\',_utf8mb4\\'COMPLETED\\',_utf8mb4\\'FAILED\\',_utf8mb4\\'INTERRUPTED\\'))"
+      ],
+      "reason": "Original DDL predicates moved to named table CHECK; database rendering differs. risk_user_guards adds BOOLEAN 0/1 domain. Cardinality checked; this is not a general SQL semantic equivalence proof."
+    },
+    {
+      "table": "risk_decisions",
+      "source": [
+        "\"AMOUNT_MINOR\" >= CAST(0 AS BIGINT)",
+        "\"PROJECTED_MINOR\" >= CAST(0 AS BIGINT)",
+        "\"RISK_LEVEL\" IN('GREEN', 'YELLOW', 'RED')",
+        "\"REVISION\" > CAST(0 AS BIGINT)",
+        "\"REQUIRED_ASSURANCE\" IN('NONE', 'CONFIRMED', 'STEP_UP')",
+        "\"EFFECTIVE_MINOR\" >= CAST(0 AS BIGINT)",
+        "((\"RISK_LEVEL\" = 'GREEN')\n    AND (\"REQUIRED_ASSURANCE\" = 'NONE'))\n    OR ((\"RISK_LEVEL\" = 'YELLOW')\n    AND (\"REQUIRED_ASSURANCE\" = 'CONFIRMED'))\n    OR ((\"RISK_LEVEL\" = 'RED')\n    AND (\"REQUIRED_ASSURANCE\" = 'STEP_UP'))",
+        "\"VALID_UNTIL\" > \"CREATED_AT\""
+      ],
+      "target": [
+        "(`revision` > 0)",
+        "(`risk_level` in (_utf8mb4\\'GREEN\\',_utf8mb4\\'YELLOW\\',_utf8mb4\\'RED\\'))",
+        "(`required_assurance` in (_utf8mb4\\'NONE\\',_utf8mb4\\'CONFIRMED\\',_utf8mb4\\'STEP_UP\\'))",
+        "(`amount_minor` >= 0)",
+        "(`effective_minor` >= 0)",
+        "(`projected_minor` >= 0)",
+        "(`valid_until` > `created_at`)",
+        "(((`risk_level` = _utf8mb4\\'GREEN\\') and (`required_assurance` = _utf8mb4\\'NONE\\')) or ((`risk_level` = _utf8mb4\\'YELLOW\\') and (`required_assurance` = _utf8mb4\\'CONFIRMED\\')) or ((`risk_level` = _utf8mb4\\'RED\\') and (`required_assurance` = _utf8mb4\\'STEP_UP\\')))"
+      ],
+      "reason": "Original DDL predicates moved to named table CHECK; database rendering differs. risk_user_guards adds BOOLEAN 0/1 domain. Cardinality checked; this is not a general SQL semantic equivalence proof."
+    },
+    {
+      "table": "risk_events",
+      "source": [
+        "(\"DECISION_ID\" IS NULL)\n    OR (\"ACTION_ID\" IS NOT NULL)",
+        "\"CHANNEL\" IN('HTTP', 'AGENT', 'WORKFLOW', 'SCHEDULER', 'SYSTEM')"
+      ],
+      "target": [
+        "(`channel` in (_utf8mb4\\'HTTP\\',_utf8mb4\\'AGENT\\',_utf8mb4\\'WORKFLOW\\',_utf8mb4\\'SCHEDULER\\',_utf8mb4\\'SYSTEM\\'))",
+        "((`decision_id` is null) or (`action_id` is not null))"
+      ],
+      "reason": "Original DDL predicates moved to named table CHECK; database rendering differs. risk_user_guards adds BOOLEAN 0/1 domain. Cardinality checked; this is not a general SQL semantic equivalence proof."
+    },
+    {
+      "table": "risk_transfer_usage",
+      "source": [
+        "(\"BUSINESS_DATE\" IS NOT NULL)\n    OR ((\"PROVENANCE\" = 'LEGACY_OBSERVED')\n    AND (\"STATE\" = 'SUBMITTED'))",
+        "\"STATE\" IN('RESERVED', 'SUBMITTED', 'COMMITTED', 'RELEASED')",
+        "\"PROVENANCE\" IN('CURRENT_AUTHORIZATION', 'LEGACY_OBSERVED')",
+        "\"AMOUNT_MINOR\" > CAST(0 AS BIGINT)",
+        "((\"PROVENANCE\" = 'CURRENT_AUTHORIZATION')\n    AND (\"AUTHORIZATION_ID\" IS NOT NULL))\n    OR ((\"STATE\" IN('SUBMITTED', 'COMMITTED', 'RELEASED'))\n    AND (\"PROVENANCE\" = 'LEGACY_OBSERVED')\n    AND (\"AUTHORIZATION_ID\" IS NULL))"
+      ],
+      "target": [
+        "(`provenance` in (_utf8mb4\\'CURRENT_AUTHORIZATION\\',_utf8mb4\\'LEGACY_OBSERVED\\'))",
+        "(`amount_minor` > 0)",
+        "(`state` in (_utf8mb4\\'RESERVED\\',_utf8mb4\\'SUBMITTED\\',_utf8mb4\\'COMMITTED\\',_utf8mb4\\'RELEASED\\'))",
+        "(((`provenance` = _utf8mb4\\'CURRENT_AUTHORIZATION\\') and (`authorization_id` is not null)) or ((`provenance` = _utf8mb4\\'LEGACY_OBSERVED\\') and (`authorization_id` is null) and (`state` in (_utf8mb4\\'SUBMITTED\\',_utf8mb4\\'COMMITTED\\',_utf8mb4\\'RELEASED\\'))))",
+        "((`business_date` is not null) or ((`provenance` = _utf8mb4\\'LEGACY_OBSERVED\\') and (`state` = _utf8mb4\\'SUBMITTED\\')))"
+      ],
+      "reason": "Original DDL predicates moved to named table CHECK; database rendering differs. risk_user_guards adds BOOLEAN 0/1 domain. Cardinality checked; this is not a general SQL semantic equivalence proof."
+    },
+    {
+      "table": "risk_user_guards",
+      "source": [
+        "\"FAILED_VERIFICATIONS\" >= 0",
+        "\"REVISION\" >= CAST(0 AS BIGINT)"
+      ],
+      "target": [
+        "(`failed_verifications` >= 0)",
+        "(`revision` >= 0)",
+        "(`reconciliation_required` in (0,1))"
+      ],
+      "reason": "Original DDL predicates moved to named table CHECK; database rendering differs. risk_user_guards adds BOOLEAN 0/1 domain. Cardinality checked; this is not a general SQL semantic equivalence proof."
+    },
+    {
+      "table": "schedule_authorizations",
+      "source": [
+        "\"EXPIRES_AT\" > \"CREATED_AT\"",
+        "\"STATUS\" IN('ACTIVE', 'REVOKED', 'EXPIRED')",
+        "\"MAXIMUM_RISK_LEVEL\" = 'YELLOW'"
+      ],
+      "target": [
+        "(`maximum_risk_level` = _utf8mb4\\'YELLOW\\')",
+        "(`status` in (_utf8mb4\\'ACTIVE\\',_utf8mb4\\'REVOKED\\',_utf8mb4\\'EXPIRED\\'))",
+        "(`expires_at` > `created_at`)"
+      ],
+      "reason": "Original DDL predicates moved to named table CHECK; database rendering differs. risk_user_guards adds BOOLEAN 0/1 domain. Cardinality checked; this is not a general SQL semantic equivalence proof."
+    },
+    {
+      "table": "verification_challenges",
+      "source": [
+        "(\"METHOD\" <> 'DEMO_OTP')\n    OR (\"CODE_DIGEST\" IS NOT NULL)",
+        "\"FAILED_ATTEMPTS\" BETWEEN 0 AND 3",
+        "\"METHOD\" IN('DEMO_OTP', 'EXTERNAL_MFA')",
+        "\"EXPIRES_AT\" > \"CREATED_AT\"",
+        "\"STATUS\" IN('PENDING_DELIVERY', 'SENT', 'VERIFIED', 'CONSUMED', 'EXPIRED', 'LOCKED', 'INVALIDATED', 'DELIVERY_FAILED')"
+      ],
+      "target": [
+        "(`method` in (_utf8mb4\\'DEMO_OTP\\',_utf8mb4\\'EXTERNAL_MFA\\'))",
+        "(`status` in (_utf8mb4\\'PENDING_DELIVERY\\',_utf8mb4\\'SENT\\',_utf8mb4\\'VERIFIED\\',_utf8mb4\\'CONSUMED\\',_utf8mb4\\'EXPIRED\\',_utf8mb4\\'LOCKED\\',_utf8mb4\\'INVALIDATED\\',_utf8mb4\\'DELIVERY_FAILED\\'))",
+        "(`failed_attempts` between 0 and 3)",
+        "(`expires_at` > `created_at`)",
+        "((`method` <> _utf8mb4\\'DEMO_OTP\\') or (`code_digest` is not null))"
+      ],
+      "reason": "Original DDL predicates moved to named table CHECK; database rendering differs. risk_user_guards adds BOOLEAN 0/1 domain. Cardinality checked; this is not a general SQL semantic equivalence proof."
+    }
+  ],
+  "addedTables": [
+    "agent_service_grants",
+    "agent_tool_call_receipts"
+  ]
+}

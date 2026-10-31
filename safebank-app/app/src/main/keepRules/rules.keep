@@ -1,0 +1,46 @@
+# Add project specific R8 rules here.
+# AGP will combine all keep rule files in src/main/keepRules to pass to R8
+#
+# For more details, see
+#   https://d.android.com/r/tools/r8/keep-rules
+
+# If your project uses WebView with JS, uncomment the following
+# and specify the fully qualified class name to the JavaScript interface
+# class:
+#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+#   public *;
+#}
+
+# ---------------------------------------------------------------------------
+# Gson 反射序列化规则（cn.safebank.app.data.model 全部 DTO/VO 都靠字段名反射）
+# ---------------------------------------------------------------------------
+# 1) 保留泛型签名与注解（@SerializedName 运行时不可见则 snake_case 映射全丢）
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepattributes RuntimeVisibleAnnotations,RuntimeVisibleParameterAnnotations,AnnotationDefault
+-keepattributes InnerClasses,EnclosingMethod
+
+# 2) Models.kt：字段名/构造器/方法名一律不混淆、不裁剪。
+#    注意 SafeBankJson 会用 getDeclaredConstructor() 反射创建"默认实例"，
+#    从而让缺失字段保留 Kotlin 默认值（pendingAction={}、OFFLINE_DEMO chat 等都依赖它）。
+-keep class cn.safebank.app.data.model.** { *; }
+-keepclassmembers class cn.safebank.app.data.model.** {
+    <fields>;
+    <init>();
+    <init>(...);
+}
+
+# 3) Gson 自身的泛型擦除辅助类型（TypeToken 子类需要保留泛型签名）
+-keep class com.google.gson.reflect.TypeToken { *; }
+-keep class * extends com.google.gson.reflect.TypeToken { *; }
+-keepclassmembers,allowobfuscation class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
+# 4) 不因为 Gson/OkHttp 的可选依赖告警而中断 release 构建
+-dontwarn com.google.gson.**
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**

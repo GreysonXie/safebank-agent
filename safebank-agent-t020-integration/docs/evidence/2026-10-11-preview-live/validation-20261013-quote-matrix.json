@@ -1,0 +1,22 @@
+{
+  "matrixCases": 108,
+  "safeQuotedWarnings": 36,
+  "blockedCollectionCases": 72,
+  "broadRegressionTestsPassed": 55,
+  "finalTargetedTestsPassed": 9,
+  "countsOverlap": true,
+  "newProviderCalls": 0,
+  "newFeeCny": "0",
+  "cumulativeUpperCny": "3.771920",
+  "fundsUnchanged": true,
+  "authorizationUnchanged": true,
+  "oldBudgetFilesUnchanged": 40,
+  "latestPaidUsageUnchanged": true,
+  "mode": "LANGGRAPH_MOCK",
+  "sourceSha256": {
+    "agent-service/safebank_agent/safety.py": "ee39a1c9c7e2bfbb4501ec12e82dd108876c3dc4051dcdcb4257cacc74c12ca7",
+    "agent-service/tests/test_credential_output.py": "94c430e3229bc34dcceae0c2bdc3d4391140101fae03fb5d6a4473e294135a3d",
+    "agent-service/tests/test_graph_runtime.py": "46fd0ba564097bac8b88212bfc27667b800b4e1f6e416d5ebf4001b44529d6c5",
+    "agent-service/tests/fixtures/credential_quote_cases.json": "f61fe2e99dbba18813e513175d203b6aba89217ff31d40d653f7794453a61ac3"
+  }
+}

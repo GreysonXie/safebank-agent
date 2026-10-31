@@ -1,0 +1,174 @@
+[
+  {
+    "tool": "statement",
+    "receipt": {
+      "month": "2026-09",
+      "expense_minor": 536933,
+      "income_minor": 1170000,
+      "internal_transfer_minor": 100000,
+      "categories": {
+        "交通": 5483,
+        "公用事业": 8276,
+        "居住": 250000,
+        "日用品": 36350,
+        "维修": 200000,
+        "订阅": 9500,
+        "通信": 8900,
+        "餐饮": 18424
+      },
+      "transactions": [
+        {
+          "id": "syn-0082",
+          "merchant": "租金（合成）",
+          "category": "居住",
+          "amount_minor": -250000,
+          "booked_on": "2026-09-01"
+        },
+        {
+          "id": "syn-0109",
+          "merchant": "家电退款（合成）",
+          "category": "退款",
+          "amount_minor": 320000,
+          "booked_on": "2026-09-02"
+        },
+        {
+          "id": "syn-0088",
+          "merchant": "社区餐厅（合成）",
+          "category": "餐饮",
+          "amount_minor": -2800,
+          "booked_on": "2026-09-03"
+        },
+        {
+          "id": "syn-0081",
+          "merchant": "工资（合成）",
+          "category": "收入",
+          "amount_minor": 850000,
+          "booked_on": "2026-09-05"
+        },
+        {
+          "id": "syn-0095",
+          "merchant": "旅游基金转出（合成）",
+          "category": "内部转账",
+          "amount_minor": -100000,
+          "booked_on": "2026-09-06"
+        },
+        {
+          "id": "syn-0096",
+          "merchant": "日常账户转入（合成）",
+          "category": "内部转账",
+          "amount_minor": 100000,
+          "booked_on": "2026-09-06"
+        },
+        {
+          "id": "syn-0092",
+          "merchant": "社区超市（合成）",
+          "category": "日用品",
+          "amount_minor": -13878,
+          "booked_on": "2026-09-07"
+        },
+        {
+          "id": "syn-0087",
+          "merchant": "通信服务（合成）",
+          "category": "通信",
+          "amount_minor": -8900,
+          "booked_on": "2026-09-08"
+        },
+        {
+          "id": "syn-0102",
+          "merchant": "共享出行（合成）",
+          "category": "交通",
+          "amount_minor": -3300,
+          "booked_on": "2026-09-09"
+        },
+        {
+          "id": "syn-0110",
+          "merchant": "设备维修（合成）",
+          "category": "维修",
+          "amount_minor": -200000,
+          "booked_on": "2026-09-10"
+        },
+        {
+          "id": "syn-0089",
+          "merchant": "社区餐厅（合成）",
+          "category": "餐饮",
+          "amount_minor": -6686,
+          "booked_on": "2026-09-11"
+        },
+        {
+          "id": "syn-0086",
+          "merchant": "电费（合成）",
+          "category": "公用事业",
+          "amount_minor": -8276,
+          "booked_on": "2026-09-12"
+        },
+        {
+          "id": "syn-0094",
+          "merchant": "城市交通（合成）",
+          "category": "交通",
+          "amount_minor": -2183,
+          "booked_on": "2026-09-14"
+        },
+        {
+          "id": "syn-0085",
+          "merchant": "云空间（合成）",
+          "category": "订阅",
+          "amount_minor": -1200,
+          "booked_on": "2026-09-16"
+        },
+        {
+          "id": "syn-0090",
+          "merchant": "社区餐厅（合成）",
+          "category": "餐饮",
+          "amount_minor": -2715,
+          "booked_on": "2026-09-18"
+        },
+        {
+          "id": "syn-0083",
+          "merchant": "音乐服务（合成）",
+          "category": "订阅",
+          "amount_minor": -1500,
+          "booked_on": "2026-09-20"
+        },
+        {
+          "id": "syn-0084",
+          "merchant": "视频服务（合成）",
+          "category": "订阅",
+          "amount_minor": -6800,
+          "booked_on": "2026-09-20"
+        },
+        {
+          "id": "syn-0093",
+          "merchant": "社区超市（合成）",
+          "category": "日用品",
+          "amount_minor": -22472,
+          "booked_on": "2026-09-23"
+        },
+        {
+          "id": "syn-0091",
+          "merchant": "社区餐厅（合成）",
+          "category": "餐饮",
+          "amount_minor": -6223,
+          "booked_on": "2026-09-26"
+        }
+      ],
+      "anomaly_candidates": [
+        {
+          "id": "syn-0082",
+          "merchant": "租金（合成）",
+          "category": "居住",
+          "amount_minor": -250000,
+          "booked_on": "2026-09-01"
+        },
+        {
+          "id": "syn-0110",
+          "merchant": "设备维修（合成）",
+          "category": "维修",
+          "amount_minor": -200000,
+          "booked_on": "2026-09-10"
+        }
+      ],
+      "anomaly_rule": "单笔支出达到 2000 元，仅为候选，不能推断欺诈；本人账户内部转账不计收入支出",
+      "usage_data_available": false
+    }
+  }
+]

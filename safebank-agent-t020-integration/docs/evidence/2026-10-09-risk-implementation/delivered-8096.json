@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "port": 8096,
+  "pid": 24100,
+  "jarSha256": "0C70287B70B84E48BFABED78E6501E509F200CF777505508913CA2140FCFB898",
+  "mode": "MODEL_CONFIGURED",
+  "modelRequests": 0,
+  "initialCheckingBalance": 5154480,
+  "freshSyntheticDatabase": true
+}

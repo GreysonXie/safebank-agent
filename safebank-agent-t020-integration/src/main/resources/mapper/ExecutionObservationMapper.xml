@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.ExecutionObservationMapper">
+    <resultMap id="row" type="cn.safebank.entity.ExecutionObservationEntity">
+        <result column="action_id" property="actionId"/>
+        <result column="user_id" property="userId"/>
+        <result column="state" property="state"/>
+        <result column="receipt_id" property="receiptId"/>
+        <result column="error_code" property="errorCode"/>
+        <result column="observed_at" property="observedAt"/>
+    </resultMap>
+
+    <select id="selectOwned" resultMap="row">SELECT action_id,user_id,state,receipt_id,error_code,observed_at FROM execution_observations WHERE action_id=#{actionId} AND user_id=#{userId}</select>
+    <insert id="write" databaseId="h2">MERGE INTO execution_observations(action_id,user_id,state,receipt_id,error_code,observed_at) KEY(action_id) VALUES(#{actionId},#{userId},#{state},#{receiptId},#{errorCode},#{observedAt})</insert>
+    <insert id="write" databaseId="mysql">
+      INSERT INTO execution_observations(action_id,user_id,state,receipt_id,error_code,observed_at)
+      SELECT #{actionId},#{userId},#{state},#{receiptId},#{errorCode},#{observedAt}
+      FROM actions WHERE id=#{actionId} AND user_id=#{userId}
+        AND NOT EXISTS(SELECT 1 FROM execution_observations WHERE action_id=#{actionId} AND NOT(user_id &lt;=&gt; #{userId}))
+      ON DUPLICATE KEY UPDATE state=#{state},receipt_id=#{receiptId},error_code=#{errorCode},observed_at=#{observedAt}
+    </insert>
+    <delete id="deleteOwned">DELETE FROM execution_observations WHERE action_id=#{actionId} AND user_id=#{userId}</delete>
+</mapper>

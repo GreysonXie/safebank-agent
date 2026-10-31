@@ -1,0 +1,53 @@
+{
+  "scope": "Minimal provider diagnostic; no bank tools or task registration",
+  "priorLedgerSha256": "7f89da935e817b1ec24671851855227195dd561e0f62302001f54ec8234e2c69",
+  "received": true,
+  "response": {
+    "content": {
+      "ok": true
+    },
+    "id": "5eebdab0-ce85-4438-a108-83168ca1a52b",
+    "model": "deepseek-flash",
+    "usage": {
+      "prompt_tokens": 37,
+      "completion_tokens": 5,
+      "total_tokens": 42,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 37
+    },
+    "raw_content": "{\"ok\":true}",
+    "finish_reason": "stop"
+  },
+  "providerSends": 1,
+  "ledger": {
+    "capCny": "6.00",
+    "balanceBefore": "7.84",
+    "priorReservedCny": "5.557512",
+    "requests": [
+      {
+        "upperCny": "0.000208",
+        "state": "USAGE_RECORDED",
+        "inputBytes": 64,
+        "maxOutput": 32,
+        "usage": {
+          "prompt_tokens": 37,
+          "completion_tokens": 5,
+          "total_tokens": 42,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 37
+        }
+      }
+    ],
+    "batchPriorCny": "0",
+    "guardVersion": "INPUT_BYTES_USAGE_V1",
+    "guardLoaded": true,
+    "conservativeReservedCny": "5.557720",
+    "batchUpperCny": "0.000208"
+  }
+}

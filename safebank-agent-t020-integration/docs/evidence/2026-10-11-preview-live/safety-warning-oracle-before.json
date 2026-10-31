@@ -1,0 +1,21 @@
+{
+  "providerCalls": 0,
+  "results": [
+    {
+      "node": "draft",
+      "verdict": {
+        "ok": false,
+        "code": "ANSWER_NOT_GROUNDED",
+        "message": "回答中的〔已转账〕像是在宣称执行成功，不能用分析签发操作结论。解释现有授权时请调用list_mandates刷新，并引用对应state_label；未执行时请明确否定"
+      }
+    },
+    {
+      "node": "repair",
+      "verdict": {
+        "code": "ANSWER_NOT_GROUNDED",
+        "ok": false,
+        "message": "回答中的〔已发生转账〕像是在宣称执行成功，不能用分析签发操作结论。解释现有授权时请调用list_mandates刷新，并引用对应state_label；未执行时请明确否定"
+      }
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "question": "季度安全服务显示180元，这是每个月扣180元吗？请只解释这项服务的收费约定，先不办理撤销。",
+  "answer": {
+    "kind": "analysis",
+    "answer": "不是每月180元。{{mandates_latest.2.merchant}}的收费约定是{{mandate_rows[0].billingDescription}}，单期金额为{{mandates_latest.2.amount_minor}}，折算到每月约为{{mandates_latest.2.budget_monthly_equivalent_minor}}。也就是说，180元是每期（每季度）的金额，而不是每月扣收的金额。\n\n这里只说明收费周期与金额的约定，不代表已有实际扣款记录。实际交易请以对应账单核对。你已表示暂不办理撤销，本轮不涉及撤销操作。"
+  },
+  "evidence": [
+    {
+      "tool": "list_mandates",
+      "data": [
+        {
+          "id": "cloud-unknown",
+          "user_id": "u1",
+          "merchant": "云空间（合成）",
+          "amount_minor": 1200,
+          "renewal_date": "2026-10-16",
+          "status": "ACTIVE",
+          "contract_status": "UNKNOWN",
+          "billing_interval": "UNKNOWN"
+        },
+        {
+          "id": "music",
+          "user_id": "u1",
+          "merchant": "音乐服务（合成）",
+          "amount_minor": 1500,
+          "renewal_date": "2026-10-20",
+          "status": "ACTIVE",
+          "contract_status": "UNKNOWN",
+          "billing_interval": "MONTHLY"
+        },
+        {
+          "id": "quarterly",
+          "user_id": "u1",
+          "merchant": "季度安全服务（合成）",
+          "amount_minor": 18000,
+          "renewal_date": "2026-10-15",
+          "status": "ACTIVE",
+          "contract_status": "UNKNOWN",
+          "billing_interval": "QUARTERLY"
+        },
+        {
+          "id": "revoked",
+          "user_id": "u1",
+          "merchant": "已撤销服务（合成）",
+          "amount_minor": 900,
+          "renewal_date": "2026-10-22",
+          "status": "REVOKED",
+          "contract_status": "UNKNOWN",
+          "billing_interval": "MONTHLY"
+        },
+        {
+          "id": "video",
+          "user_id": "u1",
+          "merchant": "视频服务（合成）",
+          "amount_minor": 6800,
+          "renewal_date": "2026-10-20",
+          "status": "ACTIVE",
+          "contract_status": "UNKNOWN",
+          "billing_interval": "MONTHLY"
+        }
+      ]
+    }
+  ]
+}

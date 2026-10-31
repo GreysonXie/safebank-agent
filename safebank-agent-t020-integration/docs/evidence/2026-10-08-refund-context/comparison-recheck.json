@@ -1,0 +1,80 @@
+{
+  "scope": "real model multi-turn queries/advice/clarification; no authorization or financial execution",
+  "cases": 1,
+  "repeats": 1,
+  "turns": 1,
+  "model_request_budget": 3,
+  "model_requests_reserved_or_reported": 3,
+  "passed": 0,
+  "abort_reason": "Bounded evaluation stopped on failure: Not a model-grounded response: SAFE_FALLBACK",
+  "actual_token_usage": null,
+  "records": [
+    {
+      "case": "refund_order_evidence",
+      "repeat": 1,
+      "turn": 1,
+      "prompt": "比较2026-08与2026-09，家电购物支出和退款入账分别是什么情况？",
+      "reply": "本轮模型回答未通过核验，以下为工具数据说明：\n2026-08 共 18 笔交易，收入 ¥8,500.00，支出 ¥6,547.92，净收支 ¥1,952.08。\n支出最多的类别是 购物：¥3,200.00，占总支出 48.9%。\n居住：¥2,500.00。\n日用品：¥373.57。\n餐饮：¥170.97。\n订阅：¥95.00。\n本人账户内部转账 ¥1,000.00，已从上述收入与支出中排除。\n有 2 笔大额支出候选，可核对交易明细；金额达到阈值不代表欺诈。\n\n2026-09 共 19 笔交易，收入 ¥11,700.00，支出 ¥5,369.33，净收支 ¥6,330.67。\n支出最多的类别是 居住：¥2,500.00，占总支出 46.6%。\n维修：¥2,000.00。\n日用品：¥363.50。\n餐饮：¥184.24。\n订阅：¥95.00。\n本人账户内部转账 ¥1,000.00，已从上述收入与支出中排除。\n有 2 笔大额支出候选，可核对交易明细；金额达到阈值不代表欺诈。",
+      "answer_source": "SAFE_FALLBACK",
+      "trace": [
+        "get_statement",
+        "get_statement",
+        "answer_customer / ANSWER_NOT_GROUNDED / 回答中手写了数字或金额〔两块〕，请把对应数字/日期替换为{{事实ID}}；需要计算请调用calculate_business_metric",
+        "answer_customer / ANSWER_NOT_GROUNDED / 回答中手写了数字或金额〔两块〕，请把对应数字/日期替换为{{事实ID}}；需要计算请调用calculate_business_metric",
+        "MODEL_REQUEST_BUDGET_EXCEEDED / 停止模型请求"
+      ],
+      "fact_references": [],
+      "passed": false,
+      "failure": "Not a model-grounded response: SAFE_FALLBACK",
+      "preview_cleanup_ok": true,
+      "balance_unchanged": true,
+      "model_usage": {
+        "request_count": 3,
+        "request_limit": 3,
+        "generation_requests": 3,
+        "review_requests": 0,
+        "usage_reported_requests": 3,
+        "usage_complete": true,
+        "prompt_tokens": 29747,
+        "completion_tokens": 1016,
+        "total_tokens": 30763,
+        "prompt_cache_hit_tokens": 17280,
+        "prompt_cache_miss_tokens": 12467,
+        "calls": [
+          {
+            "prompt_cache_miss_tokens": 1968,
+            "prompt_cache_hit_tokens": 1408,
+            "prompt_tokens": 3376,
+            "success": true,
+            "completion_tokens": 119,
+            "total_tokens": 3495,
+            "kind": "generation"
+          },
+          {
+            "prompt_cache_miss_tokens": 10044,
+            "prompt_cache_hit_tokens": 2944,
+            "prompt_tokens": 12988,
+            "success": true,
+            "completion_tokens": 328,
+            "total_tokens": 13316,
+            "kind": "generation"
+          },
+          {
+            "prompt_cache_miss_tokens": 455,
+            "prompt_cache_hit_tokens": 12928,
+            "prompt_tokens": 13383,
+            "success": true,
+            "completion_tokens": 569,
+            "total_tokens": 13952,
+            "kind": "generation"
+          }
+        ]
+      },
+      "elapsed_ms": 5844
+    }
+  ],
+  "manual_review": {
+    "status": "not_semantically_accepted",
+    "reason": "SAFE_FALLBACK after two grounding rejections of 两块 and exhaustion of remaining 3-call budget; no semantic review completed. Original failed candidate was not retained, so its exact money/discourse context is unverified."
+  }
+}

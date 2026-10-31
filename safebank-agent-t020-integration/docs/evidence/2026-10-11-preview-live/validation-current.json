@@ -1,0 +1,132 @@
+{
+  "fundsUnchanged": true,
+  "fundsHash": "107bff1fe575d0e9d695ef3a5e1906dca78fabc68e0ea85592d0c314eace5db1",
+  "oldBudgetFilesUnchanged": 24,
+  "providerCallsWithUsage": 24,
+  "newUnfinishedLedgerReservations": 0,
+  "newUnknownReserveCny": "0.00",
+  "testFeeUpperCny": "0.190908",
+  "cumulativeUpperIncludingReservationsCny": "2.966544",
+  "historicUnknownReserved": 3,
+  "balanceBeforeCny": "6.11",
+  "balanceAfterCny": "6.08",
+  "restoredMode": "LANGGRAPH_MOCK",
+  "cards": [
+    {
+      "id": "agent-07f59a7159a025a68e54af0ddf42cce9ab7a9dea59434082",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":50000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-11880920aae31ccbece59dc7fd4e3a7c25cdc4126e91e8b1",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":60000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-e793000655c76e5235a0e3c1e1301738f6f24b743f05077f",
+      "kind": "REVOKE",
+      "status": "CANCELLED",
+      "payload": "{\"mandate_id\":\"video\",\"merchant\":\"视频服务（合成）\",\"charge_amount_minor\":6800,\"billing_interval\":\"MONTHLY\",\"estimated_monthly_saving_minor\":6800,\"contract_status\":\"UNKNOWN\",\"scope\":\"仅撤销银行侧代扣授权，商户合同状态未知\"}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-9d6bd48a2ae3db0aa50e9b47138284b5bb4ad2d8f1cb47e9",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":50000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-ff2ae7e91aa68e4f74a5158a2d5e2d94ea28e689e07f5c96",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":60000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-f754d8884dba7fd5a2346f49cef335cdb637681b4831444f",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":60000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-51abd7eb93c3b8f9164e77e0eddf5eb6441629243610cb8f",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":60000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-427aa3fb467b54a4c04fb9c3b625fe8ca265aff1e53fa58e",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":50000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    }
+  ],
+  "finalCases": [
+    {
+      "question": "从日常账户给张三转500元",
+      "httpStatus": 200,
+      "agentState": "NEEDS_CLARIFICATION",
+      "javaState": "ACKED",
+      "answer": "目前还无法唯一确定收款人，因此没有生成转账预览。\n\n部分估算未通过事实核验，已省略；以上仅保留核验通过的内容。",
+      "calls": 2
+    },
+    {
+      "question": "备注同学的那位",
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "javaState": "ACKED",
+      "answer": "已按备注“同学”匹配到收款人张三（张三 / 张三 TEST-3271（合成）），转账金额为500.00元，该操作卡待您核对，尚未执行。请确认收款人与金额无误后再提交。",
+      "calls": 2
+    },
+    {
+      "question": "改成600元",
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "javaState": "ACKED",
+      "answer": "转账预览金额已生成，为600.00元，收款人为张三，备注为同学。\n\n该操作卡仅待您核对，尚未执行，我无法直接代办划款；请确认金额与收款信息无误后再自行提交。",
+      "calls": 2
+    }
+  ],
+  "sourceSha256": {
+    "agent-service/safebank_agent/runtime.py": "5ac3c7707ce5113305af3e03645392525cffa1a08350fa9c87d708191953d0ec",
+    "agent-service/safebank_agent/prompts.py": "249ee22d1dd77a8479eeb569d48f5408cbadec11ed08bf39fda8ee3021ef5167",
+    "src/main/java/cn/safebank/GroundedAnswer.java": "911da2203c3efe6a99102b820572d8d738df9707efe8eeb8d0a151c2b6baa6e5",
+    "src/main/java/cn/safebank/service/AgentPreviewService.java": "1902cb76a104e58691ab2975945a30765ad1059692187bd7463c9bb37d973e0f"
+  },
+  "batches": [
+    {
+      "phase": 16,
+      "attemptedCases": 4,
+      "passedTargets": 4,
+      "ledgerReservations": 8
+    },
+    {
+      "phase": 17,
+      "attemptedCases": 3,
+      "passedTargets": 2,
+      "ledgerReservations": 7
+    },
+    {
+      "phase": 18,
+      "attemptedCases": 2,
+      "passedTargets": 0,
+      "ledgerReservations": 3
+    },
+    {
+      "phase": 19,
+      "attemptedCases": 3,
+      "passedTargets": 3,
+      "ledgerReservations": 6
+    }
+  ],
+  "latestTransferChainPassed": true,
+  "mandateSamplesPassed": true
+}

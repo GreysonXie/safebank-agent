@@ -1,0 +1,429 @@
+{
+  "scope": "independent synthetic candidate; no transfer/revocation submitted",
+  "cap": 20,
+  "groups": [
+    {
+      "name": "账单追问与跨月",
+      "turns": [
+        {
+          "input": "分析2026-09账单，只说最重要的支出发现。",
+          "answer": "本轮模型回答未通过核验，以下为工具数据说明：\n2026-09 共 19 笔交易，收入 ¥11,700.00，支出 ¥5,369.33，净收支 ¥6,330.67。\n支出最多的类别是 居住：¥2,500.00，占总支出 46.6%。\n维修：¥2,000.00。\n日用品：¥363.50。\n餐饮：¥184.24。\n订阅：¥95.00。\n本人账户内部转账 ¥1,000.00，已从上述收入与支出中排除。\n有 2 笔大额支出候选，可核对交易明细；金额达到阈值不代表欺诈。",
+          "answerSource": "SAFE_FALLBACK",
+          "context": {
+            "conversationId": "49b3dc7b-b854-4989-b4e0-c3e86230029a",
+            "version": 2,
+            "intent": "STATEMENT_ANALYSIS",
+            "state": "ACTIVE",
+            "slots": {
+              "primary_month": "2026-09"
+            },
+            "proposal": null,
+            "displayHistory": [
+              {
+                "user": "分析2026-09账单，只说最重要的支出发现。",
+                "assistant": "本轮模型回答未通过核验，以下为工具数据说明：\n2026-09 共 19 笔交易，收入 ¥11,700.00，支出 ¥5,369.33，净收支 ¥6,330.67。\n支出最多的类别是 居住：¥2,500.00，占总支出 46.6%。\n维修：¥2,000.00。\n日用品：¥363.50。\n餐饮：¥184.24。\n订阅：¥95.00。\n本人账户内部转账 ¥1,000.00，已从上述收入与支出中排除。\n有 2 笔大额支出候选，可核对交易明细；金额达到阈值不代表欺诈。"
+              }
+            ],
+            "bankReferences": []
+          },
+          "usage": {
+            "request_count": 4,
+            "request_limit": 5,
+            "generation_requests": 4,
+            "review_requests": 0,
+            "usage_reported_requests": 4,
+            "usage_complete": true,
+            "prompt_tokens": 20010,
+            "completion_tokens": 653,
+            "total_tokens": 20663,
+            "prompt_cache_hit_tokens": 14208,
+            "prompt_cache_miss_tokens": 5802,
+            "calls": [
+              {
+                "finish_reason": "TOOL_CALLS",
+                "total_tokens": 3221,
+                "prompt_tokens": 3170,
+                "response_complete": true,
+                "kind": "generation",
+                "prompt_cache_miss_tokens": 1634,
+                "prompt_cache_hit_tokens": 1536,
+                "completion_tokens": 51,
+                "success": true
+              },
+              {
+                "finish_reason": "TOOL_CALLS",
+                "total_tokens": 5634,
+                "prompt_tokens": 5196,
+                "response_complete": true,
+                "kind": "generation",
+                "prompt_cache_miss_tokens": 2508,
+                "prompt_cache_hit_tokens": 2688,
+                "completion_tokens": 438,
+                "success": true
+              },
+              {
+                "finish_reason": "TOOL_CALLS",
+                "total_tokens": 5788,
+                "prompt_tokens": 5703,
+                "response_complete": true,
+                "kind": "generation",
+                "prompt_cache_miss_tokens": 199,
+                "prompt_cache_hit_tokens": 5504,
+                "completion_tokens": 85,
+                "success": true
+              },
+              {
+                "finish_reason": "TOOL_CALLS",
+                "total_tokens": 6020,
+                "prompt_tokens": 5941,
+                "response_complete": true,
+                "kind": "generation",
+                "prompt_cache_miss_tokens": 1461,
+                "prompt_cache_hit_tokens": 4480,
+                "completion_tokens": 79,
+                "success": true
+              }
+            ]
+          },
+          "elapsedMs": 6521,
+          "actions": [],
+          "trace": [
+            "get_statement",
+            "answer_customer / ANSWER_NOT_GROUNDED / 回答中手写了数字或金额〔八成〕（前接：其他文本；后接：其他文本），请把对应数字/日期替换为{{事实ID}}；需要计算请调用calculate_business_metric",
+            "calculate_business_metric",
+            "calculate_business_metric",
+            "MODEL_REQUEST_BUDGET_EXCEEDED / 余量不足以生成并审核，停止模型请求"
+          ]
+        },
+        {
+          "input": "只核对最大那笔支出，列出商户、日期及我应确认的背景，不重复总览。",
+          "answer": "最大一笔支出核对如下：\n\n商户：〔租金（合成）〕\n日期：2026-09-01\n金额：-2,500.00元\n类别：居住\n\n需要你确认的背景（银行记录无法判断这些）：\n1）这笔是否为本期应付的房租，租期与约定租金是否与金额一致；\n2）收款方是否为合同约定的房东或租赁机构，有无对应合同或收据凭证；\n3）是否有押金、物业费或代收项目并入这一笔，导致金额与平时不同。\n\n说明：该笔是按金额门槛筛出的大额候选，金额达到阈值不代表异常或欺诈；银行侧也没有合同、用途或支付渠道字段，需你结合凭证核对。如果你能提供合同或收据，我可以帮你逐项比对。",
+          "answerSource": "MODEL_GROUNDED",
+          "context": {
+            "conversationId": "49b3dc7b-b854-4989-b4e0-c3e86230029a",
+            "version": 3,
+            "intent": "TRANSACTION_CHECK",
+            "state": "ACTIVE",
+            "slots": {
+              "focused_transaction_id": "syn-0082",
+              "primary_month": "2026-09"
+            },
+            "proposal": null,
+            "displayHistory": [
+              {
+                "user": "分析2026-09账单，只说最重要的支出发现。",
+                "assistant": "本轮模型回答未通过核验，以下为工具数据说明：\n2026-09 共 19 笔交易，收入 ¥11,700.00，支出 ¥5,369.33，净收支 ¥6,330.67。\n支出最多的类别是 居住：¥2,500.00，占总支出 46.6%。\n维修：¥2,000.00。\n日用品：¥363.50。\n餐饮：¥184.24。\n订阅：¥95.00。\n本人账户内部转账 ¥1,000.00，已从上述收入与支出中排除。\n有 2 笔大额支出候选，可核对交易明细；金额达到阈值不代表欺诈。"
+              },
+              {
+                "user": "只核对最大那笔支出，列出商户、日期及我应确认的背景，不重复总览。",
+                "assistant": "最大一笔支出核对如下：\n\n商户：〔租金（合成）〕\n日期：2026-09-01\n金额：-2,500.00元\n类别：居住\n\n需要你确认的背景（银行记录无法判断这些）：\n1）这笔是否为本期应付的房租，租期与约定租金是否与金额一致；\n2）收款方是否为合同约定的房东或租赁机构，有无对应合同或收据凭证；\n3）是否有押金、物业费或代收项目并入这一笔，导致金额与平时不同。\n\n说明：该笔是按金额门槛筛出的大额候选，金额达到阈值不代表异常或欺诈；银行侧也没有合同、用途或支付渠道字段，需你结合凭证核对。如果你能提供合同或收据，我可以帮你逐项比对。"
+              }
+            ],
+            "bankReferences": []
+          },
+          "usage": {
+            "request_count": 2,
+            "request_limit": 5,
+            "generation_requests": 1,
+            "review_requests": 1,
+            "usage_reported_requests": 2,
+            "usage_complete": true,
+            "prompt_tokens": 13448,
+            "completion_tokens": 346,
+            "total_tokens": 13794,
+            "prompt_cache_hit_tokens": 3840,
+            "prompt_cache_miss_tokens": 9608,
+            "calls": [
+              {
+                "finish_reason": "TOOL_CALLS",
+                "total_tokens": 6689,
+                "prompt_tokens": 6449,
+                "response_complete": true,
+                "kind": "generation",
+                "prompt_cache_miss_tokens": 3889,
+                "prompt_cache_hit_tokens": 2560,
+                "completion_tokens": 240,
+                "success": true
+              },
+              {
+                "finish_reason": "TOOL_CALLS",
+                "total_tokens": 7105,
+                "prompt_tokens": 6999,
+                "response_complete": true,
+                "kind": "review",
+                "prompt_cache_miss_tokens": 5719,
+                "prompt_cache_hit_tokens": 1280,
+                "completion_tokens": 106,
+                "success": true
+              }
+            ]
+          },
+          "elapsedMs": 2467,
+          "actions": [],
+          "trace": [
+            "business_answer_review / PASS",
+            "answer_customer"
+          ]
+        },
+        {
+          "input": "和2026-08相比，支出变化最大的类别是哪一项？说明依据。",
+          "answer": "本轮模型回答未通过核验，以下为工具数据说明：\n2026-08 共 18 笔交易，收入 ¥8,500.00，支出 ¥6,547.92，净收支 ¥1,952.08。\n支出最多的类别是 购物：¥3,200.00，占总支出 48.9%。\n居住：¥2,500.00。\n日用品：¥373.57。\n餐饮：¥170.97。\n订阅：¥95.00。\n本人账户内部转账 ¥1,000.00，已从上述收入与支出中排除。\n有 2 笔大额支出候选，可核对交易明细；金额达到阈值不代表欺诈。",
+          "answerSource": "SAFE_FALLBACK",
+          "context": {
+            "conversationId": "49b3dc7b-b854-4989-b4e0-c3e86230029a",
+            "version": 4,
+            "intent": "MONTH_COMPARISON",
+            "state": "ACTIVE",
+            "slots": {
+              "primary_month": "2026-09",
+              "comparison_month": "2026-08",
+              "focused_transaction_id": "syn-0082"
+            },
+            "proposal": null,
+            "displayHistory": [
+              {
+                "user": "分析2026-09账单，只说最重要的支出发现。",
+                "assistant": "本轮模型回答未通过核验，以下为工具数据说明：\n2026-09 共 19 笔交易，收入 ¥11,700.00，支出 ¥5,369.33，净收支 ¥6,330.67。\n支出最多的类别是 居住：¥2,500.00，占总支出 46.6%。\n维修：¥2,000.00。\n日用品：¥363.50。\n餐饮：¥184.24。\n订阅：¥95.00。\n本人账户内部转账 ¥1,000.00，已从上述收入与支出中排除。\n有 2 笔大额支出候选，可核对交易明细；金额达到阈值不代表欺诈。"
+              },
+              {
+                "user": "只核对最大那笔支出，列出商户、日期及我应确认的背景，不重复总览。",
+                "assistant": "最大一笔支出核对如下：\n\n商户：〔租金（合成）〕\n日期：2026-09-01\n金额：-2,500.00元\n类别：居住\n\n需要你确认的背景（银行记录无法判断这些）：\n1）这笔是否为本期应付的房租，租期与约定租金是否与金额一致；\n2）收款方是否为合同约定的房东或租赁机构，有无对应合同或收据凭证；\n3）是否有押金、物业费或代收项目并入这一笔，导致金额与平时不同。\n\n说明：该笔是按金额门槛筛出的大额候选，金额达到阈值不代表异常或欺诈；银行侧也没有合同、用途或支付渠道字段，需你结合凭证核对。如果你能提供合同或收据，我可以帮你逐项比对。"
+              },
+              {
+                "user": "和2026-08相比，支出变化最大的类别是哪一项？说明依据。",
+                "assistant": "本轮模型回答未通过核验，以下为工具数据说明：\n2026-08 共 18 笔交易，收入 ¥8,500.00，支出 ¥6,547.92，净收支 ¥1,952.08。\n支出最多的类别是 购物：¥3,200.00，占总支出 48.9%。\n居住：¥2,500.00。\n日用品：¥373.57。\n餐饮：¥170.97。\n订阅：¥95.00。\n本人账户内部转账 ¥1,000.00，已从上述收入与支出中排除。\n有 2 笔大额支出候选，可核对交易明细；金额达到阈值不代表欺诈。"
+              }
+            ],
+            "bankReferences": []
+          },
+          "usage": {
+            "request_count": 4,
+            "request_limit": 5,
+            "generation_requests": 4,
+            "review_requests": 0,
+            "usage_reported_requests": 4,
+            "usage_complete": true,
+            "prompt_tokens": 36404,
+            "completion_tokens": 641,
+            "total_tokens": 37045,
+            "prompt_cache_hit_tokens": 25984,
+            "prompt_cache_miss_tokens": 10420,
+            "calls": [
+              {
+                "finish_reason": "TOOL_CALLS",
+                "total_tokens": 7153,
+                "prompt_tokens": 7112,
+                "response_complete": true,
+                "kind": "generation",
+                "prompt_cache_miss_tokens": 2248,
+                "prompt_cache_hit_tokens": 4864,
+                "completion_tokens": 41,
+                "success": true
+              },
+              {
+                "finish_reason": "TOOL_CALLS",
+                "total_tokens": 9689,
+                "prompt_tokens": 9536,
+                "response_complete": true,
+                "kind": "generation",
+                "prompt_cache_miss_tokens": 4928,
+                "prompt_cache_hit_tokens": 4608,
+                "completion_tokens": 153,
+                "success": true
+              },
+              {
+                "finish_reason": "TOOL_CALLS",
+                "total_tokens": 9846,
+                "prompt_tokens": 9767,
+                "response_complete": true,
+                "kind": "generation",
+                "prompt_cache_miss_tokens": 167,
+                "prompt_cache_hit_tokens": 9600,
+                "completion_tokens": 79,
+                "success": true
+              },
+              {
+                "finish_reason": "TOOL_CALLS",
+                "total_tokens": 10357,
+                "prompt_tokens": 9989,
+                "response_complete": true,
+                "kind": "generation",
+                "prompt_cache_miss_tokens": 3077,
+                "prompt_cache_hit_tokens": 6912,
+                "completion_tokens": 368,
+                "success": true
+              }
+            ]
+          },
+          "elapsedMs": 4967,
+          "actions": [],
+          "trace": [
+            "get_statement",
+            "calculate_business_metric / ANSWER_NOT_GROUNDED",
+            "calculate_business_metric / ANSWER_NOT_GROUNDED",
+            "calculate_business_metric",
+            "answer_customer / ANSWER_NOT_GROUNDED / 回答数字〔0元〕不在已有事实或计算结果中（前接：其他文本；后接：其他文本），请查询、计算或用事实引用修正",
+            "MODEL_REQUEST_BUDGET_EXCEEDED / 余量不足以生成并审核，停止模型请求"
+          ]
+        }
+      ]
+    }
+  ],
+  "startedAt": "2026-10-10T03:53:08.001Z",
+  "initialReserved": 1,
+  "stopReason": "bounded cases finished",
+  "reserved": 11,
+  "newRequests": 10,
+  "remaining": 9,
+  "calls": [
+    {
+      "id": "1023c3e0-48e0-4bc2-b9c2-d09264f7a59c",
+      "reservedAt": "2026-10-10T03:23:27.931187700Z",
+      "success": false,
+      "finished": true,
+      "usage": null,
+      "finishedAt": "2026-10-10T03:23:28.069669700Z"
+    },
+    {
+      "id": "9534ba09-efae-4617-af68-497b8c654676",
+      "reservedAt": "2026-10-10T03:53:08.597020Z",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 3170,
+        "completion_tokens": 51,
+        "total_tokens": 3221,
+        "prompt_cache_hit_tokens": 1536,
+        "prompt_cache_miss_tokens": 1634
+      },
+      "finishedAt": "2026-10-10T03:53:09.969241600Z"
+    },
+    {
+      "id": "4c4803c7-5cc1-46d8-ba91-64a652d21f2e",
+      "reservedAt": "2026-10-10T03:53:10.144595100Z",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 5196,
+        "completion_tokens": 438,
+        "total_tokens": 5634,
+        "prompt_cache_hit_tokens": 2688,
+        "prompt_cache_miss_tokens": 2508
+      },
+      "finishedAt": "2026-10-10T03:53:12.285163600Z"
+    },
+    {
+      "id": "a485c197-f23c-4d47-84c8-07aa773ea2a8",
+      "reservedAt": "2026-10-10T03:53:12.385617Z",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 5703,
+        "completion_tokens": 85,
+        "total_tokens": 5788,
+        "prompt_cache_hit_tokens": 5504,
+        "prompt_cache_miss_tokens": 199
+      },
+      "finishedAt": "2026-10-10T03:53:13.470387900Z"
+    },
+    {
+      "id": "518256b9-c4ce-4c16-8042-7796ffcbb97e",
+      "reservedAt": "2026-10-10T03:53:13.529041600Z",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 5941,
+        "completion_tokens": 79,
+        "total_tokens": 6020,
+        "prompt_cache_hit_tokens": 4480,
+        "prompt_cache_miss_tokens": 1461
+      },
+      "finishedAt": "2026-10-10T03:53:14.490954800Z"
+    },
+    {
+      "id": "2a28668e-813c-4596-a0bc-d61e4711b65d",
+      "reservedAt": "2026-10-10T03:53:14.732720900Z",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 6449,
+        "completion_tokens": 240,
+        "total_tokens": 6689,
+        "prompt_cache_hit_tokens": 2560,
+        "prompt_cache_miss_tokens": 3889
+      },
+      "finishedAt": "2026-10-10T03:53:16.300870100Z"
+    },
+    {
+      "id": "06954589-f109-42c9-aaf3-5edadf62c388",
+      "reservedAt": "2026-10-10T03:53:16.352505500Z",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 6999,
+        "completion_tokens": 106,
+        "total_tokens": 7105,
+        "prompt_cache_hit_tokens": 1280,
+        "prompt_cache_miss_tokens": 5719
+      },
+      "finishedAt": "2026-10-10T03:53:17.080780Z"
+    },
+    {
+      "id": "0cb2e371-aee3-4768-be89-8f52a9fb9f83",
+      "reservedAt": "2026-10-10T03:53:17.175653700Z",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 7112,
+        "completion_tokens": 41,
+        "total_tokens": 7153,
+        "prompt_cache_hit_tokens": 4864,
+        "prompt_cache_miss_tokens": 2248
+      },
+      "finishedAt": "2026-10-10T03:53:18.019722300Z"
+    },
+    {
+      "id": "fddc703f-4e46-4850-90b3-5c58156ec716",
+      "reservedAt": "2026-10-10T03:53:18.090137500Z",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 9536,
+        "completion_tokens": 153,
+        "total_tokens": 9689,
+        "prompt_cache_hit_tokens": 4608,
+        "prompt_cache_miss_tokens": 4928
+      },
+      "finishedAt": "2026-10-10T03:53:19.242961600Z"
+    },
+    {
+      "id": "dcf27e79-fdaa-4bd7-b054-76d494d5b2c2",
+      "reservedAt": "2026-10-10T03:53:19.283252400Z",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 9767,
+        "completion_tokens": 79,
+        "total_tokens": 9846,
+        "prompt_cache_hit_tokens": 9600,
+        "prompt_cache_miss_tokens": 167
+      },
+      "finishedAt": "2026-10-10T03:53:20.062662700Z"
+    },
+    {
+      "id": "258b836e-6e80-4102-8eb3-6669c07ac155",
+      "reservedAt": "2026-10-10T03:53:20.099833400Z",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 9989,
+        "completion_tokens": 368,
+        "total_tokens": 10357,
+        "prompt_cache_hit_tokens": 6912,
+        "prompt_cache_miss_tokens": 3077
+      },
+      "finishedAt": "2026-10-10T03:53:22.042490100Z"
+    }
+  ],
+  "finishedAt": "2026-10-10T03:53:22.104Z"
+}

@@ -1,0 +1,102 @@
+{
+  "fundsUnchanged": true,
+  "fundsHash": "107bff1fe575d0e9d695ef3a5e1906dca78fabc68e0ea85592d0c314eace5db1",
+  "oldBudgetFilesUnchanged": 33,
+  "providerCallsWithUsage": 7,
+  "newUnfinishedLedgerReservations": 0,
+  "newUnknownReserveCny": "0.00",
+  "testFeeUpperCny": "0.065580",
+  "cumulativeUpperIncludingReservationsCny": "3.364228",
+  "historicUnknownReserved": 3,
+  "balanceBeforeCny": "5.76",
+  "balanceAfterCny": "5.76",
+  "restoredMode": "LANGGRAPH_MOCK",
+  "cards": [
+    {
+      "id": "agent-1a9d232fedc1db3377a3432d94bae573ff493425d0712560",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":50000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-a07b3649667cd5dec17b1bacabdd49552e61f2a1cf44ed3f",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":60000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-ad3f01342d7ed3fb655649e5729d978de5e76104b3d3ed6e",
+      "kind": "REVOKE",
+      "status": "CANCELLED",
+      "payload": "{\"mandate_id\":\"video\",\"merchant\":\"视频服务（合成）\",\"charge_amount_minor\":6800,\"billing_interval\":\"MONTHLY\",\"estimated_monthly_saving_minor\":6800,\"contract_status\":\"UNKNOWN\",\"scope\":\"仅撤销银行侧代扣授权，商户合同状态未知\"}",
+      "receiptId": null
+    }
+  ],
+  "finalCases": [
+    {
+      "question": "从日常账户给收款备注为同学的那位转500元，请生成预览。",
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "javaState": "ACKED",
+      "answer": "已生成转账预览：从日常账户转出500.00元，收款人为张三，收款备注为同学，当前处于待核对状态，尚未执行。\n\n请在实际操作卡上核对收款人姓名、备注和金额，并按卡片上的安全提示完成授权；本轮对话中的确认不能触发转账。",
+      "calls": 2
+    },
+    {
+      "question": "改成600元",
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "javaState": "PAUSED",
+      "answer": null,
+      "calls": 3
+    },
+    {
+      "question": "请撤销视频服务，先给我看预览，不要直接执行。",
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "javaState": "ACKED",
+      "answer": "已为你生成撤销〔视频服务（合成）〕的待核对操作卡，金额为68.00元，目前尚未执行。\n\n请你在操作卡上核对服务名称和金额，并按页面提示完成授权确认；聊天中的确认不会触发执行，银行侧撤销仅作用于银行代扣授权，不等于商户合同终止、退款或以后不会收费。",
+      "calls": 2
+    }
+  ],
+  "sourceSha256": {
+    "src/main/java/cn/safebank/GroundedAnswer.java": "725a06f750d374d8f180ea275703bb600e68f1753d88eb5ccbfd4821998cf035",
+    "src/main/java/cn/safebank/service/AgentPreviewService.java": "186f7e6b87db7fb0353bfcef5b4cabf832c041e305222a890e1d69e4af2afc5a",
+    "src/main/resources/static/app.js": "7e7cdc5ed120b6d2375fac0aab3db446343d6d5b6ad7ee26c63d65d841521ee6",
+    "src/main/resources/static/theme.css": "1f010d1aabc724b96952e2fc1edfaf53b68253761baa745f18dfbb371bb3113d",
+    "agent-service/safebank_agent/answers.py": "98a16881a737914b0d8ee60a40bf08b2e0dc410d571feaeceacb6d5044d410ae",
+    "agent-service/safebank_agent/prompts.py": "2892ed7976832aca246bd89fdb92bf3d0ac57a50e9adc4288ce44a184696c208"
+  },
+  "targetCasesPassed": 2,
+  "targetCasesAttempted": 3,
+  "allThreeRetestCasesPassed": false,
+  "displayQuality": [
+    {
+      "question": "从日常账户给收款备注为同学的那位转500元，请生成预览。",
+      "metrics": {
+        "internalRecipientIdentifierAbsent": true,
+        "objectNameNotRepeated": true,
+        "amountNotRepeated": true,
+        "numericOmissionNoticeAbsent": true,
+        "characterCount": 107
+      }
+    },
+    {
+      "question": "改成600元",
+      "metrics": null
+    },
+    {
+      "question": "请撤销视频服务，先给我看预览，不要直接执行。",
+      "metrics": {
+        "internalRecipientIdentifierAbsent": true,
+        "objectNameNotRepeated": true,
+        "amountNotRepeated": true,
+        "numericOmissionNoticeAbsent": true,
+        "characterCount": 123
+      }
+    }
+  ],
+  "sameSourceAsRetestFreeze": true,
+  "authorizedTotalCapCny": "4.50"
+}

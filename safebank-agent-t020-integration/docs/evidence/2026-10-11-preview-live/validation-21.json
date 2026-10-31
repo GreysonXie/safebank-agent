@@ -1,0 +1,65 @@
+{
+  "fundsUnchanged": true,
+  "fundsHash": "107bff1fe575d0e9d695ef3a5e1906dca78fabc68e0ea85592d0c314eace5db1",
+  "oldBudgetFilesUnchanged": 29,
+  "providerCallsWithUsage": 6,
+  "newUnfinishedLedgerReservations": 0,
+  "newUnknownReserveCny": "0.00",
+  "testFeeUpperCny": "0.046572",
+  "cumulativeUpperIncludingReservationsCny": "3.027888",
+  "historicUnknownReserved": 3,
+  "balanceBeforeCny": "6.04",
+  "balanceAfterCny": "6.03",
+  "restoredMode": "LANGGRAPH_MOCK",
+  "cards": [
+    {
+      "id": "agent-bfd0d49c381ef4d818741d0cbf6714f5b9f353092203696e",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":60000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-594319ed2fbe169485426134599682875ba77a518b655642",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":50000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    }
+  ],
+  "finalCases": [
+    {
+      "question": "从日常账户给张三转500元",
+      "httpStatus": 200,
+      "agentState": "NEEDS_CLARIFICATION",
+      "javaState": "ACKED",
+      "answer": "目前无法唯一确定收款人，尚未生成转账预览。请补充收款人的姓名或收款人备注（例如手机号后四位、与您的关系说明等），以便核对具体对象。",
+      "calls": 2
+    },
+    {
+      "question": "备注同学的那位",
+      "httpStatus": 200,
+      "agentState": "NEEDS_CLARIFICATION",
+      "javaState": "ACKED",
+      "answer": "已找到一位备注为「同学」的收款人，姓名与账户为张三 / 张三 TEST-3271（合成），拟转金额500.00元。请确认是否向该收款人转账，确认后我可生成操作卡供你核对；在操作卡确认前不会执行。",
+      "calls": 2
+    },
+    {
+      "question": "改成600元",
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "javaState": "ACKED",
+      "answer": "已生成转账预览：收款人张三（备注：同学），金额600.00元。该预览为待核对状态，尚未执行，请你在操作卡上确认收款人和金额无误后再提交。如需修改金额或收款对象，请直接告诉我。",
+      "calls": 2
+    }
+  ],
+  "sourceSha256": {
+    "agent-service/safebank_agent/graph.py": "f189f9256f30704e404f56cbcae60f1bc9733fd2b040edb9708229b4bf305578",
+    "agent-service/safebank_agent/runtime.py": "5ac3c7707ce5113305af3e03645392525cffa1a08350fa9c87d708191953d0ec",
+    "agent-service/safebank_agent/prompts.py": "bbfa42e4e81fa5cdc76800421de19921fa9d55cfec74bba6720509a0e3bdc80a",
+    "src/main/java/cn/safebank/GroundedAnswer.java": "911da2203c3efe6a99102b820572d8d738df9707efe8eeb8d0a151c2b6baa6e5",
+    "src/main/java/cn/safebank/service/AgentPreviewService.java": "1902cb76a104e58691ab2975945a30765ad1059692187bd7463c9bb37d973e0f"
+  },
+  "targetChainPassed": false,
+  "sameSourceAsPreviousValidation": true
+}

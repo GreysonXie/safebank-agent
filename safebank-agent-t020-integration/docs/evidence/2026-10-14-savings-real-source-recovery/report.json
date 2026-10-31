@@ -1,0 +1,27 @@
+{
+  "scope": "Actual production LangGraph plan node, no bank tool/draft/execution calls",
+  "maximumRequests": 4,
+  "maximumCumulativeCny": "5.50",
+  "priorUpperCny": "4.920152",
+  "cases": [
+    {
+      "id": "missing_source_only",
+      "batch": 4,
+      "question": "撤销音乐服务和视频服务，把核验节省存旅游基金，每月20日，2026-11-20首次，2027-10-20最后，分析2026-09账单；接受只按已核验成功部分继续，未知先等待查单。",
+      "attempts": [],
+      "passed": false,
+      "errorType": "ConnectTimeout",
+      "errorCode": "_ssl.c:993: The handshake operation timed out"
+    },
+    {
+      "id": "source_only_followup",
+      "batch": 4,
+      "question": "用日常账户就行，其他按刚才说的。",
+      "attempts": []
+    }
+  ],
+  "modelSends": 0,
+  "cumulativeUpperCny": "4.920152",
+  "batchUpperCny": "0",
+  "previousLedgerUnchanged": true
+}

@@ -1,0 +1,50 @@
+{
+  "effects": [
+    {
+      "node": "plan",
+      "purpose": "model",
+      "state": "SUCCEEDED",
+      "resultStored": true
+    },
+    {
+      "node": "tools",
+      "purpose": "tool",
+      "state": "SUCCEEDED",
+      "resultStored": true
+    },
+    {
+      "node": "draft",
+      "purpose": "model",
+      "state": "UNKNOWN",
+      "resultStored": false
+    }
+  ],
+  "modelUsage": [
+    {
+      "purpose": "plan",
+      "state": "SUCCEEDED",
+      "promptTokens": 636,
+      "completionTokens": 25
+    },
+    {
+      "purpose": "draft",
+      "state": "UNKNOWN",
+      "promptTokens": null,
+      "completionTokens": null
+    }
+  ],
+  "bankTools": [
+    {
+      "tool": "mandate_receipt",
+      "queryActionMatches": true,
+      "queriedAt": "2026-10-11T03:57:08.508203Z",
+      "quarterlyRows": [
+        {
+          "merchant": "季度安全服务（合成）",
+          "amountMinor": 18000,
+          "billingInterval": "QUARTERLY"
+        }
+      ]
+    }
+  ]
+}

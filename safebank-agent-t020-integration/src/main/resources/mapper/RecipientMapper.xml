@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.RecipientMapper">
+    <insert id="insert">INSERT INTO recipients(id,user_id,name,phone,note,account_id) VALUES(#{id},#{userId},#{name},#{phone},#{note},#{accountId})</insert>
+    <update id="updateDetails">UPDATE recipients SET name=#{name},phone=#{phone},note=#{note} WHERE id=#{id} AND user_id=#{userId}</update>
+    <resultMap id="row" type="cn.safebank.entity.RecipientEntity">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="name" property="name"/>
+        <result column="phone" property="phone"/>
+        <result column="note" property="note"/>
+        <result column="account_id" property="accountId"/>
+    </resultMap>
+
+    <select id="selectOwned" resultMap="row">SELECT id,user_id,name,phone,note,account_id FROM recipients WHERE id=#{id} AND user_id=#{userId}</select>
+    <select id="selectMatches" resultType="cn.safebank.dao.projection.RecipientMatchRow">
+        SELECT r.id,r.name,r.note,a.label FROM recipients r JOIN accounts a ON r.account_id=a.id
+        WHERE r.user_id=#{userId} AND (r.name=#{query} OR r.phone=#{query} OR r.note=#{query} OR r.id=#{query} OR a.label=#{query}) ORDER BY r.id
+    </select>
+</mapper>

@@ -1,0 +1,109 @@
+{
+  "syntheticOnly": true,
+  "authorizedCumulativeCny": 4,
+  "maxNewRequests": 2,
+  "baselineLedgerCalls": 9,
+  "batches": [
+    {
+      "batch": 3,
+      "question": "季度安全服务跟其余代扣相比收费周期有什么不同？目前明确月付的有效代扣每月合计多少？请不要把季度收费当成月付。",
+      "modelRequestLimit": 3,
+      "conversationId": "21a9626a-81aa-4061-8e56-a3b68b38e49f",
+      "httpStatus": 200,
+      "errorCode": null,
+      "answer": "〔季度安全服务（合成）〕是唯一按季度收费的授权，金额180.00元，其收费周期为按季度，不计入月付。其余代扣中，〔音乐服务（合成）〕和〔视频服务（合成）〕为按月收费，金额分别为15.00元和68.00元；〔云空间（合成）〕的收费周期为未知，不能视为月付；〔已撤销服务（合成）〕的银行侧授权已撤销。目前明确按月收费的有效代扣每月合计为83.00元。",
+      "elapsedSeconds": 7.7,
+      "contextVersion": 2,
+      "calls": [
+        {
+          "purpose": "plan",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 626,
+            "completion_tokens": 21,
+            "total_tokens": 647,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 242
+          }
+        },
+        {
+          "purpose": "draft",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 6062,
+            "completion_tokens": 159,
+            "total_tokens": 6221,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 5678
+          }
+        }
+      ],
+      "allUsageRecorded": true,
+      "turnId": "fd787df7-521c-4236-8482-8e1db02a8842",
+      "runState": "COMPLETED",
+      "runError": null,
+      "modelEffects": {
+        "draft": {
+          "content": {
+            "answer": "〔季度安全服务（合成）〕是唯一按季度收费的授权，金额{{mandates_latest.2.amount_minor}}，其收费周期为按季度，不计入月付。其余代扣中，〔音乐服务（合成）〕和〔视频服务（合成）〕为按月收费，金额分别为{{mandates_latest.1.amount_minor}}和{{mandates_latest.4.amount_minor}}；〔云空间（合成）〕的收费周期为未知，不能视为月付；〔已撤销服务（合成）〕的银行侧授权已撤销。目前明确按月收费的有效代扣每月合计为{{mandates_summary.known_monthly_total_minor}}。",
+            "kind": "analysis"
+          },
+          "finish_reason": "stop",
+          "id": "6582724c-c3f5-4793-a37f-56704f94f310",
+          "model": "deepseek-flash",
+          "raw_content": "{\"kind\":\"analysis\",\"answer\":\"〔季度安全服务（合成）〕是唯一按季度收费的授权，金额{{mandates_latest.2.amount_minor}}，其收费周期为按季度，不计入月付。其余代扣中，〔音乐服务（合成）〕和〔视频服务（合成）〕为按月收费，金额分别为{{mandates_latest.1.amount_minor}}和{{mandates_latest.4.amount_minor}}；〔云空间（合成）〕的收费周期为未知，不能视为月付；〔已撤销服务（合成）〕的银行侧授权已撤销。目前明确按月收费的有效代扣每月合计为{{mandates_summary.known_monthly_total_minor}}。\"}",
+          "usage": {
+            "completion_tokens": 159,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 5678,
+            "prompt_tokens": 6062,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 6221
+          }
+        },
+        "plan": {
+          "content": {
+            "kind": "analysis",
+            "tools": [
+              {
+                "args": {},
+                "tool": "mandate_receipt"
+              }
+            ]
+          },
+          "finish_reason": "stop",
+          "id": "1e871ee2-092d-4672-b101-334c4b899833",
+          "model": "deepseek-flash",
+          "raw_content": "{\"kind\":\"analysis\",\"tools\":[{\"tool\":\"mandate_receipt\",\"args\":{}}]}",
+          "usage": {
+            "completion_tokens": 21,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 242,
+            "prompt_tokens": 626,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 647
+          }
+        }
+      }
+    }
+  ],
+  "balanceBeforeCny": "7.63",
+  "priorCallsUnchanged": true,
+  "newCalls": 2,
+  "moneyGuard": {
+    "balanceBefore": "7.84",
+    "capCny": 4,
+    "priorReservedCny": "3.35",
+    "reservations": 2,
+    "conservativeReservedCny": "3.85",
+    "guardLoaded": true
+  },
+  "balanceAfterCny": "7.63",
+  "displayedBatchDeltaCny": "0.00"
+}

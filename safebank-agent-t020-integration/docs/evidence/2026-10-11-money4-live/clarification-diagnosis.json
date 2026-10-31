@@ -1,0 +1,20 @@
+{
+  "runState": "RECONCILIATION_REQUIRED",
+  "errorCode": "INVALID_ANSWER",
+  "plan": {
+    "kind": "analysis",
+    "tools": [
+      {
+        "args": {
+          "month": "2026-09"
+        },
+        "tool": "statement"
+      }
+    ]
+  },
+  "modelDraft": {
+    "answer": "2026-09最需要核对的一笔是2026-09-10的{{statement_2026_09.anomaly_candidates.1.merchant}}，支出{{statement_2026_09.anomaly_candidates.1.spending_minor}}（流水{{statement_2026_09.anomaly_candidates.1.id}}，类别为{{statement_2026_09.anomaly_candidates.1.category}}）。原因：它属于大额候选，单笔金额达到{{statement_2026_09.anomaly_rule}}所述门槛，且占当月支出比重不小（当月支出合计{{statement_2026_09.expense_minor}}），所以值得优先确认。仅凭金额无法判断是否合理或是否存在欺诈。建议核对这笔维修的具体用途、报价单和付款凭证，确认是否为本月计划内的支出。若只是本人账户内部转账，则不计入支出，但该笔在候选名单中，需以凭证为准。",
+    "kind": "analysis",
+    "type": "json_object"
+  }
+}

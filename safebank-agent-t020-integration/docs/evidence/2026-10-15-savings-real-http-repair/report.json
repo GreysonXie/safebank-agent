@@ -1,0 +1,123 @@
+{
+  "scope": "One complete synthetic savings-plan request: production Python HTTP + official LangGraph Runtime + real DeepSeek planning/draft/one rewrite + Java HTTP tools/answer validation/gateway",
+  "realRuntimeState": "RESULT_READY",
+  "realProviderSends": 3,
+  "realToolCalls": 1,
+  "realJavaValidations": 3,
+  "realRenderedAnswer": "任务已登记，银行操作仍须在任务卡逐项确认，尚未执行。当前确认项为撤销银行侧代扣——〔音乐服务（合成）〕，待逐项确认，尚未执行。定时储蓄委托已登记，每月转存日为20号，首次2026-11-20，结束2027-10-20；登记不代表未来到账。您提到核对账单，实际交易请以对应账单核对。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止、退款或以后不会收费。请到任务卡逐项核对确认。",
+  "realJUnitStatus": "FAILED: test incorrectly expected request.analysisMonth instead of request.month, after successful gateway completion and mutation assertions",
+  "correctedCapturedReplay": {
+    "junit": "PASS 1 test, zero skips",
+    "providerSends": 0,
+    "javaGatewayAccepted": true,
+    "workflowDelta": 1,
+    "authorizationDelta": 0,
+    "ledgerDelta": 0
+  },
+  "requestSnapshot": {
+    "month": "2026-09",
+    "mandateIds": [
+      "music",
+      "video"
+    ],
+    "sourceId": "checking",
+    "recipientId": "travel-recipient",
+    "firstDate": "2026-11-20",
+    "endDate": "2027-10-20",
+    "dayOfMonth": 20,
+    "onlyConfirmedSavings": true
+  },
+  "plan": {
+    "kind": "savings_task",
+    "taskPlan": {
+      "schemaVersion": 1,
+      "goal": "撤销音乐服务和视频服务的银行代扣，并将核验节省额从日常账户每月20日转存至旅游基金，首次2026-11-20，结束2027-10-20",
+      "savingsPolicy": "verified_success_subset",
+      "nodes": [
+        {
+          "id": "m",
+          "type": "mandate_lookup",
+          "params": {},
+          "dependsOn": []
+        },
+        {
+          "id": "a",
+          "type": "account_query",
+          "params": {},
+          "dependsOn": []
+        },
+        {
+          "id": "r1",
+          "type": "mandate_revoke",
+          "params": {
+            "merchantQuery": "音乐服务"
+          },
+          "dependsOn": [
+            "m"
+          ]
+        },
+        {
+          "id": "r2",
+          "type": "mandate_revoke",
+          "params": {
+            "merchantQuery": "视频服务"
+          },
+          "dependsOn": [
+            "m"
+          ]
+        },
+        {
+          "id": "s",
+          "type": "compute_savings",
+          "params": {},
+          "dependsOn": [
+            "r1",
+            "r2"
+          ]
+        },
+        {
+          "id": "t",
+          "type": "schedule_create",
+          "params": {
+            "sourceQuery": "日常账户",
+            "recipientQuery": "旅游基金",
+            "firstDate": "2026-11-20",
+            "endDate": "2027-10-20",
+            "dayOfMonth": 20
+          },
+          "dependsOn": [
+            "s",
+            "a"
+          ]
+        }
+      ],
+      "analysisMonth": "2026-09"
+    }
+  },
+  "modelAnswers": [
+    {
+      "kind": "analysis",
+      "answer": "任务已登记，但银行侧的撤销和转存操作都还只是在任务卡上待逐项确认，尚未执行，也尚未真正生成任何转账或定时委托结果。当前确认项为{{savings_task.pending.kind_label}}——{{savings_task.pending.merchant}}，{{savings_task.pending.state_label}}；该服务原约定按{{savings_task.pending.billing_interval}}收费，每期{{savings_task.pending.charge_amount_minor}}，这是服务原约定的每期扣费，未提供撤销手续费，不能据此认定撤销收费或免收费。定时储蓄委托方面，每月转存日为{{savings_task.schedule.day_of_month}}号，首次{{savings_task.schedule.first_date}}，结束{{savings_task.schedule.end_date}}。目前请求撤销2笔、已核验撤销0笔，已核验撤销对应的月度约定扣费为{{savings_task.verified_monthly_saving_minor}}；该口径仅指本任务已核验撤销的月度约定扣费，不是账户新增余额，也不保证商户未来收费或退款。请到任务卡逐项核对确认，登记不代表未来到账，银行侧撤销也不等于商户合同终止。"
+    },
+    {
+      "kind": "analysis",
+      "answer": "任务已登记，银行操作仍须在任务卡逐项确认，尚未执行。当前确认项为{{savings_task.pending.kind_label}}——{{savings_task.pending.merchant}}，{{savings_task.pending.state_label}}。定时储蓄委托已登记，每月转存日为{{savings_task.schedule.day_of_month}}号，首次{{savings_task.schedule.first_date}}，结束{{savings_task.schedule.end_date}}；登记不代表未来到账。您提到核对账单，实际交易请以对应账单核对。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止、退款或以后不会收费。请到任务卡逐项核对确认。"
+    }
+  ],
+  "validationRejections": [
+    {
+      "code": "ANSWER_NOT_GROUNDED",
+      "message": "回答中的〔已核验撤销〕像是在宣称执行成功，不能用分析签发操作结论。解释现有授权时请调用list_mandates刷新，并引用对应state_label；未执行时请明确否定"
+    }
+  ],
+  "budget": {
+    "capCny": "6.00",
+    "batchUpperCny": "0.059284",
+    "cumulativeUpperCny": "5.322184"
+  },
+  "remainingIssues": [
+    "Execution-claim detector rejected a zero completed-count description; one real rewrite recovered, detector not changed.",
+    "Final wording says savings mandate registered even though only task plan exists; clarification needed before marking conversation quality complete."
+  ],
+  "priorLedgerUnchanged": true
+}

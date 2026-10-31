@@ -1,0 +1,52 @@
+[
+  {
+    "runState": "COMPLETED",
+    "errorCode": null,
+    "plan": {
+      "kind": "analysis",
+      "tools": [
+        {
+          "args": {
+            "month": "2026-09"
+          },
+          "tool": "statement"
+        }
+      ]
+    },
+    "toolReceipts": [
+      {
+        "tool": "statement",
+        "jsonBytes": 3021
+      }
+    ]
+  },
+  {
+    "runState": "COMPLETED",
+    "errorCode": null,
+    "plan": {
+      "kind": "analysis",
+      "tools": [
+        {
+          "args": {
+            "month": "2026-09"
+          },
+          "tool": "statement"
+        },
+        {
+          "args": {},
+          "tool": "recurring_analysis"
+        }
+      ]
+    },
+    "toolReceipts": [
+      {
+        "tool": "recurring_analysis",
+        "jsonBytes": 1918
+      },
+      {
+        "tool": "statement",
+        "jsonBytes": 3021
+      }
+    ]
+  }
+]

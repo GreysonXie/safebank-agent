@@ -1,0 +1,4 @@
+# Keep UI content hashes identical in Windows and Linux checkouts.
+src/main/resources/static/**/*.css text eol=lf
+src/main/resources/static/**/*.js text eol=lf
+src/main/resources/static/**/*.html text eol=lf

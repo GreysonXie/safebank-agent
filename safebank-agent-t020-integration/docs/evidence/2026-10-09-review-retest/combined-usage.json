@@ -1,0 +1,14 @@
+{
+  "request_count": 10,
+  "generation_requests": 7,
+  "review_requests": 3,
+  "prompt_tokens": 89003,
+  "completion_tokens": 2041,
+  "total_tokens": 91044,
+  "prompt_cache_hit_tokens": 38400,
+  "prompt_cache_miss_tokens": 50603,
+  "approved_total_request_budget": 10,
+  "additional_requests": 5,
+  "usage_complete": true,
+  "currency_cost": null
+}

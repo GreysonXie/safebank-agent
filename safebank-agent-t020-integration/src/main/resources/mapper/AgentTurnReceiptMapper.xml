@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.AgentTurnReceiptMapper">
+    <resultMap id="row" type="cn.safebank.entity.AgentTurnReceiptEntity">
+        <result column="id" property="id"/>
+        <result column="conversation_id" property="conversationId"/>
+        <result column="user_id" property="userId"/>
+        <result column="request_id" property="requestId"/>
+        <result column="request_hash" property="requestHash"/>
+        <result column="input_version" property="inputVersion"/>
+        <result column="output_version" property="outputVersion"/>
+        <result column="state" property="state"/>
+        <result column="tool_intents_json" property="toolIntentsJson"/>
+        <result column="bank_references_json" property="bankReferencesJson"/>
+        <result column="response_json" property="responseJson"/>
+        <result column="error_code" property="errorCode"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="completed_at" property="completedAt"/>
+    </resultMap>
+    <sql id="columns">id,conversation_id,user_id,request_id,request_hash,input_version,output_version,state,tool_intents_json,bank_references_json,response_json,error_code,created_at,completed_at</sql>
+    <select id="selectByConversation" resultMap="row">SELECT <include refid="columns"/> FROM agent_turn_receipts WHERE user_id=#{userId} AND conversation_id=#{conversationId}</select>
+    <update id="updateOwned">UPDATE agent_turn_receipts SET request_id=#{requestId},request_hash=#{requestHash},input_version=#{inputVersion},output_version=#{outputVersion},state=#{state},tool_intents_json=#{toolIntentsJson},bank_references_json=#{bankReferencesJson},response_json=#{responseJson},error_code=#{errorCode},created_at=#{createdAt},completed_at=#{completedAt} WHERE id=#{id} AND user_id=#{userId} AND conversation_id=#{conversationId}</update>
+    <select id="selectRequest" resultMap="row">SELECT <include refid="columns"/> FROM agent_turn_receipts WHERE user_id=#{userId} AND conversation_id=#{conversationId} AND request_id=#{requestId}</select>
+    <select id="selectWithBankReferences" resultMap="row">SELECT <include refid="columns"/> FROM agent_turn_receipts WHERE user_id=#{userId} AND bank_references_json IS NOT NULL</select>
+    <update id="interruptProcessing">UPDATE agent_turn_receipts SET state='INTERRUPTED',error_code='CONTEXT_INTERRUPTED' WHERE state='PROCESSING'</update>
+    <insert id="insert">INSERT INTO agent_turn_receipts(<include refid="columns"/>) VALUES(#{id},#{conversationId},#{userId},#{requestId},#{requestHash},#{inputVersion},#{outputVersion},#{state},#{toolIntentsJson},#{bankReferencesJson},#{responseJson},#{errorCode},#{createdAt},#{completedAt})</insert>
+    <select id="selectRequestForUpdate" resultMap="row">SELECT <include refid="columns"/> FROM agent_turn_receipts WHERE user_id=#{userId} AND conversation_id=#{conversationId} AND request_id=#{requestId} FOR UPDATE</select>
+</mapper>

@@ -1,0 +1,32 @@
+{
+  "paidRealDraftCalls": 12,
+  "tokens": 48454,
+  "knownNewFeeUpperCny": "0.211616",
+  "cumulativeIncludingAllReservesCny": "4.260040",
+  "remainingCny": "0.239960",
+  "newUnknownRequests": 0,
+  "historicUnknownRequestsReserved": 3,
+  "accountDiscrepancyReserveCny": "0.041432",
+  "balanceAfterCny": "4.36",
+  "fundsUnchanged": true,
+  "authorizationsUnchanged": true,
+  "oldContextHashesChecked": 44,
+  "lastIntegratedBatchUsageUnchanged": true,
+  "wholeRelevantSuitePassed": 76,
+  "additionalBoundarySuitePassed": 12,
+  "testCountsOverlap": true,
+  "mode": "LANGGRAPH_MOCK",
+  "realScope": "Isolated drafting + actual Java grounding, synthetic receipts; no live bank tools/planning/writes. Runtime paths proven with free scripted-model/MySQL tests.",
+  "realRepairProbesAccepted": 3,
+  "realRepairProbesAttempted": 4,
+  "unresolved": [
+    "JSON_BREAK repeated original credential instruction remains blocked even after real rewrite; no successful delivery.",
+    "Nested bank-label delimiters and more semantic/obfuscated commands not exhaustively covered.",
+    "No integrated live bank-tool injection test performed."
+  ],
+  "sourceSha256": {
+    "agent-service/safebank_agent/runtime.py": "b242c437f997d417b716668ae8bf640772be728a6cebda84e7388c8dc0ad2bdd",
+    "agent-service/safebank_agent/answers.py": "a35acbf40e20da38c9d0a54c905f2f3f90979dfd93acd4bee51dd84fa50185bf",
+    "agent-service/safebank_agent/safety.py": "04d6e085149d4f60763627764f721b393953d5f0cc15b3844019f21ff7da98bf"
+  }
+}

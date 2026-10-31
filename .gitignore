@@ -1,0 +1,20 @@
+# 构建产物 / 本地环境
+safebank-app/.gradle/
+safebank-app/.kotlin/
+safebank-app/.idea/
+safebank-app/build/
+safebank-app/app/build/
+safebank-app/local.properties
+
+safebank-agent-t020-integration/target/
+safebank-agent-t020-integration/.demo/
+safebank-agent-t020-integration/data/
+safebank-agent-t020-integration/.tools/
+safebank-agent-t020-integration/.m2/
+safebank-agent-t020-integration/node_modules/
+safebank-agent-t020-integration/cp.txt
+safebank-agent-t020-integration/*.log
+
+# 系统
+.DS_Store
+Thumbs.db

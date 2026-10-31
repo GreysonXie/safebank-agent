@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.WorkflowStepMapper">
+    <resultMap id="row" type="cn.safebank.entity.WorkflowStepEntity">
+        <result column="workflow_id" property="workflowId"/>
+        <result column="step_key" property="stepKey"/>
+        <result column="input_version" property="inputVersion"/>
+        <result column="kind" property="kind"/>
+        <result column="status" property="status"/>
+        <result column="action_id" property="actionId"/>
+        <result column="saving_minor" property="savingMinor"/>
+        <result column="error_code" property="errorCode"/>
+        <result column="evidence_json" property="evidenceJson"/>
+    </resultMap>
+
+    <select id="selectByWorkflow" resultMap="row">SELECT workflow_id,step_key,input_version,kind,status,action_id,saving_minor,error_code,evidence_json FROM workflow_steps WHERE workflow_id=#{workflowId} ORDER BY input_version,step_key</select>
+    <insert id="insert">INSERT INTO workflow_steps(workflow_id,step_key,input_version,kind,status,action_id,saving_minor,error_code,evidence_json) VALUES(#{workflowId},#{stepKey},#{inputVersion},#{kind},#{status},#{actionId},#{savingMinor},#{errorCode},#{evidenceJson})</insert>
+    <update id="updateObserved">UPDATE workflow_steps SET status=#{status},error_code=#{errorCode},evidence_json=#{evidence} WHERE workflow_id=#{workflowId} AND action_id=#{actionId}</update>
+    <update id="cancel">UPDATE workflow_steps SET status='CANCELLED' WHERE workflow_id=#{workflowId} AND action_id=#{actionId}</update>
+</mapper>

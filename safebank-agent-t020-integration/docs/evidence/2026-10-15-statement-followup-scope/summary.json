@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-15",
+  "scope": "free scripted engineering evidence; not new provider generation",
+  "pythonPassed": 147,
+  "capturedScriptedTestExecutions": 16,
+  "testExecutionsIncludeInheritedDuplicates": true,
+  "http": {
+    "turns": 5,
+    "scriptedModelResponses": 10,
+    "tools": [
+      "statement",
+      "statement",
+      "statement",
+      "statement",
+      "statement"
+    ],
+    "sameConversationAndMonth": true,
+    "javaValidationAndAck": true,
+    "authorizationLedgerBalancesUnchanged": true,
+    "newActions": 0,
+    "newWorkflows": 0,
+    "summaryLines": 3
+  },
+  "candidate": {
+    "url": "http://127.0.0.1:8136/",
+    "mode": "LANGGRAPH_MOCK",
+    "statementSmokePassed": true,
+    "noNewActions": true,
+    "authorizationLedgerBalancesUnchanged": true,
+    "visualLayoutRetested": false,
+    "initialSmokeFailed": "ANSWER_REPAIR_BUDGET_EXHAUSTED",
+    "initialPausedRecordPreserved": true,
+    "mockNoticeCompatibilityFixed": true
+  },
+  "providerSends": 0,
+  "additionalUpperCny": "0",
+  "cumulativeUpperCny": "6.461328",
+  "capCny": "7.00",
+  "unknownReservationsPreserved": true,
+  "review": {
+    "critical": 0,
+    "important": 0,
+    "minor": 0,
+    "scope": "catalog changes; later mock compatibility regression fixed by failing test and candidate smoke without second review"
+  },
+  "limitations": [
+    "scripted plan/answers do not prove model intelligence",
+    "very large refund catalogs can remain incomplete",
+    "new real-model and human acceptance open",
+    "Windows teammate first Docker deployment open"
+  ]
+}

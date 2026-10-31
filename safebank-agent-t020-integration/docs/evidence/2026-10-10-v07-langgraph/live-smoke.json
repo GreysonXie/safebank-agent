@@ -1,0 +1,38 @@
+{
+  "baselineReserved": 11,
+  "reservedAfter": 13,
+  "phaseReservations": 2,
+  "phaseHTTPMaximum": 2,
+  "automaticRetries": 0,
+  "success": true,
+  "failureCode": null,
+  "calls": [
+    {
+      "purpose": "plan",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 299,
+        "completion_tokens": 36,
+        "total_tokens": 335,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 299
+      }
+    },
+    {
+      "purpose": "draft",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 5527,
+        "completion_tokens": 369,
+        "total_tokens": 5896,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 5527
+      }
+    }
+  ],
+  "answerText": "2026-09账单支出合计5,369.33元，收入合计11,700.00元，净结余6,330.67元。主要支出集中在居住和维修：居住2,500.00元（占比46.56%），维修2,000.00元（占比37.25%），两项占比远高于其他类别。大额支出合计4,500.00元，占支出83.81%，为两笔：2026-09-01〔租金（合成）〕2,500.00元；2026-09-10〔设备维修（合成）〕2,000.00元。大额仅按金额门槛筛选，不证明欺诈或合理。核对凭证建议：居住类准备租赁合同或当期账单、付款回单；维修类准备维修报价单、工单/验收单及对应发票或收据，并确认实际用途和收款方是否一致。如涉及本人内部转账（本月1,000.00元），请提供划转记录以便区分。",
+  "model": "deepseek-v4-flash",
+  "syntheticBankOnly": true
+}

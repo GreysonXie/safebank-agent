@@ -1,0 +1,382 @@
+{
+  "phase": 20,
+  "stage": {
+    "state": "LAUNCHED",
+    "cap": 3,
+    "balanceBeforeCny": "6.07",
+    "historicalUpperCny": "2.966544",
+    "unknownReserved": 3,
+    "history": [
+      {
+        "file": "20261011-money4-context.json",
+        "calls": 19,
+        "sha256": "a443ea221d4af59f3996c0f4e69964fe3e8733b7155aeee0f25e97933c627b1f"
+      },
+      {
+        "file": "20261011-mandate-followup-context.json",
+        "calls": 11,
+        "sha256": "0a8106299ca6838175064909f09e97bc8691a916ac79a3d4a30dacd4b099a847"
+      },
+      {
+        "file": "20261011-volume-01-context.json",
+        "calls": 8,
+        "sha256": "61ee6e6f1b83b0ed17133197f53cb3cc057fa3f65483723fb127d353ea221f51"
+      },
+      {
+        "file": "20261011-volume-02-context.json",
+        "calls": 8,
+        "sha256": "731472f6ea817153b67af56a7112da5c982d82cabc510000b80a91ccf170454b"
+      },
+      {
+        "file": "20261011-volume-03-context.json",
+        "calls": 11,
+        "sha256": "02ec4041da6da1152bbdb2d5a6408007029c8bad4c792af2bbb7eeaccc4d0ad3"
+      },
+      {
+        "file": "20261011-volume-04-context.json",
+        "calls": 9,
+        "sha256": "89c4c3a45825742749d7e8699e498a70d19d9e9fff4149931553eee58563677b"
+      },
+      {
+        "file": "20261011-volume-05-context.json",
+        "calls": 8,
+        "sha256": "ddc553bb6bad62c9d34c94b9dd4f23e95b7479db2dd9aed8d1a9569b4eefda9a"
+      },
+      {
+        "file": "20261011-volume-06-context.json",
+        "calls": 9,
+        "sha256": "80867db3ad616a333d65ef3459c694845141d68bc94c8c2e53bf405eeb9c1553"
+      },
+      {
+        "file": "20261011-contract-fix-01-context.json",
+        "calls": 7,
+        "sha256": "aa64d9739a7089e5d81d699df2c3c7e401fede45337ddfd7b0f1612235d85340"
+      },
+      {
+        "file": "20261011-contract-fix-02-context.json",
+        "calls": 6,
+        "sha256": "97f60aa26a3a5bbd947d4a7ea82d20de43f2d9a9e0a545a3a8306f5996d0f5ed"
+      },
+      {
+        "file": "20261011-contract-fix-03-context.json",
+        "calls": 7,
+        "sha256": "b5a502eea850188b93ae91cbd4760190d4fac20059f49c1f046fa2b0ba8527c3"
+      },
+      {
+        "file": "20261011-contract-fix-04-context.json",
+        "calls": 3,
+        "sha256": "2282802599b91d2f53f8dd178d0dd5b96f8bc3d92f1987e3c632bf7a08805c36"
+      },
+      {
+        "file": "20261011-contract-fix-05-context.json",
+        "calls": 3,
+        "sha256": "42e76462d6211eab5f38e3b3790afeb603e7bbe9be40181a4ffdb968c26c74c3"
+      },
+      {
+        "file": "20261011-contract-fix-06-context.json",
+        "calls": 3,
+        "sha256": "276a82ec4537d7ca58e76045c07bb683d9cb6a9b4f35e653f264d1ba79b45f6a"
+      },
+      {
+        "file": "20261011-contract-fix-07-context.json",
+        "calls": 7,
+        "sha256": "f325f23ac4f174742b5de9c33bbff83b8e643fbab2f7e8a3bb48404e0fe8da8d"
+      },
+      {
+        "file": "20261011-contract-fix-08-context.json",
+        "calls": 5,
+        "sha256": "20e05cb365086885f0d4bb63b418486741bde6b8df021eec2d06c80722a954e8"
+      },
+      {
+        "file": "20261011-contract-fix-09-context.json",
+        "calls": 10,
+        "sha256": "f1740c4cf96d96c798215d121b5b6ea037c3d203ce76d4f7dd7e7ee76c23422d"
+      },
+      {
+        "file": "20261011-contract-fix-10-context.json",
+        "calls": 4,
+        "sha256": "baf905b1324e9df7f46d8c67614c8fc52173166dc52ee53c2fd3324767b46e0c"
+      },
+      {
+        "file": "20261011-contract-fix-11-context.json",
+        "calls": 10,
+        "sha256": "9f0d612ac9818236a30f3dec59a59976b060ecaae7d2ff63f6c73a878579e52e"
+      },
+      {
+        "file": "20261011-contract-fix-12-context.json",
+        "calls": 4,
+        "sha256": "be9a92580d3c2bb0a6472a33121a41c2bc4adb2c7f4da0a58250f286c0ffd8c4"
+      },
+      {
+        "file": "20261011-contract-fix-13-context.json",
+        "calls": 10,
+        "sha256": "ddddd1295ce2fdd1354f6d22e867a86562063c0b4e7707f316c0ba4d0cbcb5a2"
+      },
+      {
+        "file": "20261011-contract-fix-14-context.json",
+        "calls": 11,
+        "sha256": "2416f5d912f41704c535c04f763682adad70ae02baad92f08c1414ca04ffc2e2"
+      },
+      {
+        "file": "20261011-contract-fix-15-context.json",
+        "calls": 5,
+        "sha256": "9e62e429ed935a35e6431db6950ff0d1df68c4704fdece439b67efd9b6ff350e"
+      },
+      {
+        "file": "20261011-contract-fix-16-context.json",
+        "calls": 8,
+        "sha256": "acca59799d3e1bceff5a0e0104b1533d6fb5f03b30de8ab90184e6c0cea2f78b"
+      },
+      {
+        "file": "20261011-contract-fix-17-context.json",
+        "calls": 7,
+        "sha256": "a6fd77ee42da80f0ce181c22aa10c195684cb3c0cf75d0b8757f1d0238a6248e"
+      },
+      {
+        "file": "20261011-contract-fix-18-context.json",
+        "calls": 3,
+        "sha256": "052c287cbb0c7f4c6e968d4fee4c4739acdacef820ef360d1769dfe2605d06e2"
+      },
+      {
+        "file": "20261011-contract-fix-19-context.json",
+        "calls": 6,
+        "sha256": "d7e056f8815bc4e3d84b40796a294b886b6072221a0e6c4ec5b2783b7c44b62e"
+      }
+    ],
+    "phase": "20261011-contract-fix-20",
+    "ledger": "D:\\2.临时消息文件\\研一\\深金赛\\safebank-agent\\.superpowers\\deepseek-v06-debug\\20261011-contract-fix-20-context.json",
+    "guard": "D:\\2.临时消息文件\\研一\\深金赛\\safebank-agent\\.worktrees\\v07-python-langgraph-mysql\\.superpowers\\sdd\\2026-10-10-v07-langgraph-agent-implementation\\20261011-contract-fix-20-money.json",
+    "ratesUpperPerMillionCny": {
+      "input": 4,
+      "output": 12
+    },
+    "batchCapCny": ".30",
+    "priceSource": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+    "batchPriorCny": "0.190908",
+    "purpose": "new targeted preview followup; preserves all old unknown reservations; no old turn replay",
+    "combinedBatchCapCny": ".30",
+    "baselineBudgetHashes": {
+      "20261010-v06-context.json": "ddca625d614a804243f05ff8f5b753dc38a670248e657099ab53bea9b3a2b24c",
+      "20261011-contract-fix-01-context.json": "aa64d9739a7089e5d81d699df2c3c7e401fede45337ddfd7b0f1612235d85340",
+      "20261011-contract-fix-02-context.json": "97f60aa26a3a5bbd947d4a7ea82d20de43f2d9a9e0a545a3a8306f5996d0f5ed",
+      "20261011-contract-fix-03-context.json": "b5a502eea850188b93ae91cbd4760190d4fac20059f49c1f046fa2b0ba8527c3",
+      "20261011-contract-fix-04-context.json": "2282802599b91d2f53f8dd178d0dd5b96f8bc3d92f1987e3c632bf7a08805c36",
+      "20261011-contract-fix-05-context.json": "42e76462d6211eab5f38e3b3790afeb603e7bbe9be40181a4ffdb968c26c74c3",
+      "20261011-contract-fix-06-context.json": "276a82ec4537d7ca58e76045c07bb683d9cb6a9b4f35e653f264d1ba79b45f6a",
+      "20261011-contract-fix-07-context.json": "f325f23ac4f174742b5de9c33bbff83b8e643fbab2f7e8a3bb48404e0fe8da8d",
+      "20261011-contract-fix-08-context.json": "20e05cb365086885f0d4bb63b418486741bde6b8df021eec2d06c80722a954e8",
+      "20261011-contract-fix-09-context.json": "f1740c4cf96d96c798215d121b5b6ea037c3d203ce76d4f7dd7e7ee76c23422d",
+      "20261011-contract-fix-10-context.json": "baf905b1324e9df7f46d8c67614c8fc52173166dc52ee53c2fd3324767b46e0c",
+      "20261011-contract-fix-11-context.json": "9f0d612ac9818236a30f3dec59a59976b060ecaae7d2ff63f6c73a878579e52e",
+      "20261011-contract-fix-12-context.json": "be9a92580d3c2bb0a6472a33121a41c2bc4adb2c7f4da0a58250f286c0ffd8c4",
+      "20261011-contract-fix-13-context.json": "ddddd1295ce2fdd1354f6d22e867a86562063c0b4e7707f316c0ba4d0cbcb5a2",
+      "20261011-contract-fix-14-context.json": "2416f5d912f41704c535c04f763682adad70ae02baad92f08c1414ca04ffc2e2",
+      "20261011-contract-fix-15-context.json": "9e62e429ed935a35e6431db6950ff0d1df68c4704fdece439b67efd9b6ff350e",
+      "20261011-contract-fix-16-context.json": "acca59799d3e1bceff5a0e0104b1533d6fb5f03b30de8ab90184e6c0cea2f78b",
+      "20261011-contract-fix-17-context.json": "a6fd77ee42da80f0ce181c22aa10c195684cb3c0cf75d0b8757f1d0238a6248e",
+      "20261011-contract-fix-18-context.json": "052c287cbb0c7f4c6e968d4fee4c4739acdacef820ef360d1769dfe2605d06e2",
+      "20261011-contract-fix-19-context.json": "d7e056f8815bc4e3d84b40796a294b886b6072221a0e6c4ec5b2783b7c44b62e",
+      "20261011-mandate-followup-context.json": "0a8106299ca6838175064909f09e97bc8691a916ac79a3d4a30dacd4b099a847",
+      "20261011-money4-context.json": "a443ea221d4af59f3996c0f4e69964fe3e8733b7155aeee0f25e97933c627b1f",
+      "20261011-volume-01-context.json": "61ee6e6f1b83b0ed17133197f53cb3cc057fa3f65483723fb127d353ea221f51",
+      "20261011-volume-02-context.json": "731472f6ea817153b67af56a7112da5c982d82cabc510000b80a91ccf170454b",
+      "20261011-volume-03-context.json": "02ec4041da6da1152bbdb2d5a6408007029c8bad4c792af2bbb7eeaccc4d0ad3",
+      "20261011-volume-04-context.json": "89c4c3a45825742749d7e8699e498a70d19d9e9fff4149931553eee58563677b",
+      "20261011-volume-05-context.json": "ddc553bb6bad62c9d34c94b9dd4f23e95b7479db2dd9aed8d1a9569b4eefda9a",
+      "20261011-volume-06-context.json": "80867db3ad616a333d65ef3459c694845141d68bc94c8c2e53bf405eeb9c1553"
+    }
+  },
+  "syntheticOnly": true,
+  "cases": [
+    {
+      "group": "transfer",
+      "question": "从日常账户给张三转500元",
+      "conversationId": "a9a23814-efc3-4745-81e3-a60537328830",
+      "confirmedMandateQuery": false,
+      "httpStatus": 200,
+      "response": {
+        "text": "目前无法唯一确定收款人，尚未生成转账预览。请补充收款人姓名或收款人备注，以便继续核对。",
+        "mode": "LANGGRAPH_MODEL",
+        "agentBackend": "PYTHON_LANGGRAPH",
+        "toolResults": [
+          {
+            "result": {
+              "code": "RECIPIENT_CLARIFICATION_REQUIRED"
+            },
+            "observedAt": "2026-10-11T14:54:38.154354Z",
+            "evidenceId": "be41d8b0-3d37-4da0-aac4-89539e9bc8da",
+            "tool": "transfer_preview"
+          }
+        ],
+        "results": [],
+        "data": {},
+        "actions": [],
+        "trace": [],
+        "answerSource": "PROGRAM_VERIFIED_LANGGRAPH",
+        "clarification": {
+          "required": true
+        },
+        "conversationId": "a9a23814-efc3-4745-81e3-a60537328830",
+        "contextVersion": 2,
+        "context": {
+          "conversationId": "a9a23814-efc3-4745-81e3-a60537328830",
+          "version": 2,
+          "intent": "GENERAL",
+          "state": "NEEDS_CLARIFICATION",
+          "slots": {},
+          "proposal": null,
+          "displayHistory": [
+            {
+              "assistant": "目前无法唯一确定收款人，尚未生成转账预览。请补充收款人姓名或收款人备注，以便继续核对。",
+              "user": "从日常账户给张三转500元"
+            }
+          ],
+          "bankReferences": []
+        }
+      },
+      "elapsedSeconds": 6.78,
+      "semanticPassed": true,
+      "calls": [
+        {
+          "javaTurnId": "f16cff62-8325-4aa6-84f8-752c4e0419db",
+          "purpose": "plan",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 1251,
+            "completion_tokens": 35,
+            "total_tokens": 1286,
+            "prompt_cache_hit_tokens": 1024,
+            "prompt_cache_miss_tokens": 227
+          }
+        },
+        {
+          "javaTurnId": "f16cff62-8325-4aa6-84f8-752c4e0419db",
+          "purpose": "draft",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 2232,
+            "completion_tokens": 35,
+            "total_tokens": 2267,
+            "prompt_cache_hit_tokens": 1664,
+            "prompt_cache_miss_tokens": 568
+          }
+        }
+      ],
+      "turnId": "f16cff62-8325-4aa6-84f8-752c4e0419db",
+      "agentState": "NEEDS_CLARIFICATION",
+      "agentError": null,
+      "agentHash": "74c8c88e69d98e53d781de19a8fb88446cc2823fe8c5b5ee447d6b161e845f71",
+      "agentVersion": 2,
+      "modelEffects": [
+        {
+          "node": "draft",
+          "result": {
+            "content": {
+              "answer": "目前无法唯一确定收款人，尚未生成转账预览。请补充收款人姓名或收款人备注，以便继续核对。",
+              "kind": "clarification"
+            },
+            "finish_reason": "stop",
+            "id": "a7a9652d-ffcd-4a8f-a097-6a6ced2a63c2",
+            "model": "deepseek-flash",
+            "raw_content": "{\"kind\":\"clarification\",\"answer\":\"目前无法唯一确定收款人，尚未生成转账预览。请补充收款人姓名或收款人备注，以便继续核对。\"}",
+            "usage": {
+              "completion_tokens": 35,
+              "prompt_cache_hit_tokens": 1664,
+              "prompt_cache_miss_tokens": 568,
+              "prompt_tokens": 2232,
+              "prompt_tokens_details": {
+                "cached_tokens": 1664
+              },
+              "total_tokens": 2267
+            }
+          }
+        },
+        {
+          "node": "plan",
+          "result": {
+            "content": {
+              "kind": "analysis",
+              "tools": [
+                {
+                  "args": {
+                    "amountMinor": 50000,
+                    "recipientQuery": "张三",
+                    "sourceQuery": "日常账户"
+                  },
+                  "tool": "transfer_preview"
+                }
+              ]
+            },
+            "finish_reason": "stop",
+            "id": "8e621846-118b-4665-90b4-844e8707b4de",
+            "model": "deepseek-flash",
+            "raw_content": "{\"kind\":\"analysis\",\"tools\":[{\"tool\":\"transfer_preview\",\"args\":{\"sourceQuery\":\"日常账户\",\"recipientQuery\":\"张三\",\"amountMinor\":50000}}]}",
+            "usage": {
+              "completion_tokens": 35,
+              "prompt_cache_hit_tokens": 1024,
+              "prompt_cache_miss_tokens": 227,
+              "prompt_tokens": 1251,
+              "prompt_tokens_details": {
+                "cached_tokens": 1024
+              },
+              "total_tokens": 1286
+            }
+          }
+        }
+      ],
+      "javaState": "ACKED",
+      "javaHash": "74c8c88e69d98e53d781de19a8fb88446cc2823fe8c5b5ee447d6b161e845f71",
+      "javaVersion": 2
+    }
+  ],
+  "moneyGuard": {
+    "balanceBefore": "7.84",
+    "capCny": 4,
+    "priorReservedCny": "2.966544",
+    "reservations": 0,
+    "requests": [
+      {
+        "upperCny": "0.005424",
+        "state": "USAGE_RECORDED",
+        "inputBytes": 5917,
+        "maxOutput": 450,
+        "usage": {
+          "prompt_tokens": 1251,
+          "completion_tokens": 35,
+          "total_tokens": 1286,
+          "prompt_tokens_details": {
+            "cached_tokens": 1024
+          },
+          "prompt_cache_hit_tokens": 1024,
+          "prompt_cache_miss_tokens": 227
+        }
+      },
+      {
+        "upperCny": "0.009348",
+        "state": "USAGE_RECORDED",
+        "inputBytes": 10434,
+        "maxOutput": 1100,
+        "usage": {
+          "prompt_tokens": 2232,
+          "completion_tokens": 35,
+          "total_tokens": 2267,
+          "prompt_tokens_details": {
+            "cached_tokens": 1664
+          },
+          "prompt_cache_hit_tokens": 1664,
+          "prompt_cache_miss_tokens": 568
+        }
+      }
+    ],
+    "batchCapCny": ".30",
+    "batchPriorCny": "0.190908",
+    "conservativeReservedCny": "2.981316",
+    "guardVersion": "INPUT_BYTES_USAGE_V1",
+    "guardLoaded": true,
+    "batchUpperCny": "0.205680"
+  },
+  "reservedCalls": 2,
+  "oldLedgersUnchanged": true
+}

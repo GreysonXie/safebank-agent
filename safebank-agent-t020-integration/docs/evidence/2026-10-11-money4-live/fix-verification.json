@@ -1,0 +1,10 @@
+{
+  "mode": "LANGGRAPH_MOCK",
+  "accountBalanceBefore": "7.84",
+  "providerRequestsThisFix": 5,
+  "accountBalanceAfter": "7.83",
+  "stageRequests": 15,
+  "capturedTestsInitiallyFailed": 2,
+  "oldLedgerReserved": 19,
+  "testsPassed": 27
+}

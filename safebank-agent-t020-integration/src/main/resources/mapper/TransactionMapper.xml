@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.TransactionMapper">
+    <select id="selectBookedDates" resultType="java.time.LocalDate">SELECT DISTINCT booked_on FROM transactions WHERE user_id=#{userId} AND booked_on IS NOT NULL ORDER BY booked_on DESC</select>
+    <select id="selectActionDebit" resultMap="row">SELECT id,user_id,account_id,merchant,category,amount_minor,booked_on FROM transactions WHERE user_id=#{userId} AND id=#{id}</select>
+    <resultMap id="row" type="cn.safebank.entity.TransactionEntity">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="account_id" property="accountId"/>
+        <result column="merchant" property="merchant"/>
+        <result column="category" property="category"/>
+        <result column="amount_minor" property="amountMinor"/>
+        <result column="booked_on" property="bookedOn"/>
+    </resultMap>
+
+    <select id="selectPeriod" resultMap="row">SELECT id,user_id,account_id,merchant,category,amount_minor,booked_on FROM transactions
+        WHERE user_id=#{userId} AND booked_on&gt;=#{start} AND booked_on&lt;#{end} ORDER BY booked_on,id</select>
+    <select id="selectRecurring" resultType="cn.safebank.dao.projection.RecurringPaymentRow">
+        SELECT merchant,COUNT(*) AS occurrences,MIN(booked_on) AS first_seen,MAX(booked_on) AS last_seen,
+        MIN(-amount_minor) AS min_amount_minor,MAX(-amount_minor) AS max_amount_minor
+        FROM transactions WHERE user_id=#{userId} AND amount_minor&lt;0 GROUP BY merchant HAVING COUNT(*)&gt;=2
+    </select>
+    <insert id="insert">INSERT INTO transactions(id,user_id,account_id,merchant,category,amount_minor,booked_on) VALUES(#{id},#{userId},#{accountId},#{merchant},#{category},#{amountMinor},#{bookedOn})</insert>
+</mapper>

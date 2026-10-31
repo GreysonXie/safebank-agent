@@ -1,0 +1,588 @@
+{
+  "scope": "Actual draft/validate nodes, synthetic Java facts; no live bank tools or funds writes",
+  "totalCapCny": "5",
+  "priorIncludingReservationsCny": "4.585572",
+  "cases": [
+    {
+      "id": "FEE",
+      "subBatch": 1,
+      "attempts": [
+        {
+          "node": "draft",
+          "input": {
+            "answer_contract": {
+              "additional_fields": false,
+              "allowed_kinds": [
+                "analysis",
+                "general",
+                "clarification"
+              ],
+              "prepared_preview": false,
+              "required_fields": [
+                "kind",
+                "answer"
+              ],
+              "suspected_transfer_inducement": false
+            },
+            "facts": {
+              "calendar.days_per_week": {
+                "display": "7",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.months_per_quarter": {
+                "display": "3",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.months_per_year": {
+                "display": "12",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.percent_whole": {
+                "display": "100",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.quarters_per_year": {
+                "display": "4",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "mandates_latest.2.amount_minor": {
+                "display": "180.00元",
+                "kind": "MONEY",
+                "source": "list_mandates"
+              },
+              "mandates_latest.2.budget_monthly_equivalent_minor": {
+                "display": "60.00元",
+                "kind": "MONEY",
+                "source": "list_mandates"
+              },
+              "mandates_latest.2.id": {
+                "display": "quarterly",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.2.merchant": {
+                "display": "〔季度安全服务（合成）〕",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.2.state_label": {
+                "display": "银行侧授权有效",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.2.user_id": {
+                "display": "u1",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              }
+            },
+            "mandate_rows": [
+              {
+                "billingDescription": "约定按季度收费",
+                "fields": {
+                  "amount_minor": "{{mandates_latest.2.amount_minor}}",
+                  "budget_monthly_equivalent_minor": "{{mandates_latest.2.budget_monthly_equivalent_minor}}",
+                  "id": "{{mandates_latest.2.id}}",
+                  "merchant": "{{mandates_latest.2.merchant}}",
+                  "state_label": "{{mandates_latest.2.state_label}}",
+                  "user_id": "{{mandates_latest.2.user_id}}"
+                },
+                "monthlyTotalMembership": "excluded",
+                "rowId": "mandates_latest.2"
+              }
+            ],
+            "plan_kind": "analysis",
+            "previous_answer": null,
+            "previous_question": "",
+            "question": "季度安全服务显示180元，这是每个月扣180元吗？请只解释这项服务的收费约定，先不办理撤销。",
+            "reference_hints": [],
+            "tool_notices": [],
+            "transaction_rows": [],
+            "validation_error": ""
+          },
+          "providerResult": {
+            "content": {
+              "kind": "analysis",
+              "answer": "不是每月扣180元。这项服务的约定收费周期为按季度，单期金额为{{mandates_latest.2.amount_minor}}，折合月均约{{mandates_latest.2.budget_monthly_equivalent_minor}}。银行侧当前授权状态为{{mandates_latest.2.state_label}}。\n\n收费周期与金额按授权约定确认，实际扣款请以对应账单核对。你已说明先不办理撤销，如需了解银行侧撤销与商户合同的区别，可再单独说明。"
+            },
+            "id": "b21ebc85-0425-453e-9cc4-b50b11a10009",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 3273,
+              "completion_tokens": 123,
+              "total_tokens": 3396,
+              "prompt_tokens_details": {
+                "cached_tokens": 128
+              },
+              "prompt_cache_hit_tokens": 128,
+              "prompt_cache_miss_tokens": 3145
+            },
+            "raw_content": "{\"kind\":\"analysis\",\"answer\":\"不是每月扣180元。这项服务的约定收费周期为按季度，单期金额为{{mandates_latest.2.amount_minor}}，折合月均约{{mandates_latest.2.budget_monthly_equivalent_minor}}。银行侧当前授权状态为{{mandates_latest.2.state_label}}。\\n\\n收费周期与金额按授权约定确认，实际扣款请以对应账单核对。你已说明先不办理撤销，如需了解银行侧撤销与商户合同的区别，可再单独说明。\"}",
+            "finish_reason": "stop"
+          }
+        },
+        {
+          "node": "repair",
+          "input": {
+            "answer_contract": {
+              "additional_fields": false,
+              "allowed_kinds": [
+                "analysis",
+                "general",
+                "clarification"
+              ],
+              "prepared_preview": false,
+              "required_fields": [
+                "kind",
+                "answer"
+              ],
+              "suspected_transfer_inducement": false
+            },
+            "facts": {
+              "calendar.days_per_week": {
+                "display": "7",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.months_per_quarter": {
+                "display": "3",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.months_per_year": {
+                "display": "12",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.percent_whole": {
+                "display": "100",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.quarters_per_year": {
+                "display": "4",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "mandates_latest.2.amount_minor": {
+                "display": "180.00元",
+                "kind": "MONEY",
+                "source": "list_mandates"
+              },
+              "mandates_latest.2.budget_monthly_equivalent_minor": {
+                "display": "60.00元",
+                "kind": "MONEY",
+                "source": "list_mandates"
+              },
+              "mandates_latest.2.id": {
+                "display": "quarterly",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.2.merchant": {
+                "display": "〔季度安全服务（合成）〕",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.2.state_label": {
+                "display": "银行侧授权有效",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.2.user_id": {
+                "display": "u1",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              }
+            },
+            "mandate_rows": [
+              {
+                "billingDescription": "约定按季度收费",
+                "fields": {
+                  "amount_minor": "{{mandates_latest.2.amount_minor}}",
+                  "budget_monthly_equivalent_minor": "{{mandates_latest.2.budget_monthly_equivalent_minor}}",
+                  "id": "{{mandates_latest.2.id}}",
+                  "merchant": "{{mandates_latest.2.merchant}}",
+                  "state_label": "{{mandates_latest.2.state_label}}",
+                  "user_id": "{{mandates_latest.2.user_id}}"
+                },
+                "monthlyTotalMembership": "excluded",
+                "rowId": "mandates_latest.2"
+              }
+            ],
+            "plan_kind": "analysis",
+            "previous_answer": {
+              "answer": "不是每月扣180元。这项服务的约定收费周期为按季度，单期金额为{{mandates_latest.2.amount_minor}}，折合月均约{{mandates_latest.2.budget_monthly_equivalent_minor}}。银行侧当前授权状态为{{mandates_latest.2.state_label}}。\n\n收费周期与金额按授权约定确认，实际扣款请以对应账单核对。你已说明先不办理撤销，如需了解银行侧撤销与商户合同的区别，可再单独说明。",
+              "kind": "analysis"
+            },
+            "previous_question": "",
+            "question": "季度安全服务显示180元，这是每个月扣180元吗？请只解释这项服务的收费约定，先不办理撤销。",
+            "reference_hints": [],
+            "tool_notices": [],
+            "transaction_rows": [],
+            "validation_error": "引用或业务陈述未通过银行核验。只使用本轮事实，去掉手写数字和执行结论。"
+          },
+          "providerResult": {
+            "content": {
+              "kind": "analysis",
+              "answer": "不是每月扣180元。这项服务的约定收费周期为按季度，单期金额为{{mandates_latest.2.amount_minor}}，折合月均约{{mandates_latest.2.budget_monthly_equivalent_minor}}。银行侧当前授权状态为{{mandates_latest.2.state_label}}。\n\n收费周期与金额以授权约定为准，实际扣款请以对应账单核对。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止或以后不会收费；你已说明先不办理撤销，本次只作解释。"
+            },
+            "id": "ad77fb0b-ff96-4f2d-a385-66a32a7235ea",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 3415,
+              "completion_tokens": 132,
+              "total_tokens": 3547,
+              "prompt_tokens_details": {
+                "cached_tokens": 3200
+              },
+              "prompt_cache_hit_tokens": 3200,
+              "prompt_cache_miss_tokens": 215
+            },
+            "raw_content": "{\"kind\":\"analysis\",\"answer\":\"不是每月扣180元。这项服务的约定收费周期为按季度，单期金额为{{mandates_latest.2.amount_minor}}，折合月均约{{mandates_latest.2.budget_monthly_equivalent_minor}}。银行侧当前授权状态为{{mandates_latest.2.state_label}}。\\n\\n收费周期与金额以授权约定为准，实际扣款请以对应账单核对。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止或以后不会收费；你已说明先不办理撤销，本次只作解释。\"}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "javaVerdict": {
+        "message": "回答中的〔已说明先不办理撤销〕像是在宣称执行成功，不能用分析签发操作结论。解释现有授权时请调用list_mandates刷新，并引用对应state_label；未执行时请明确否定",
+        "ok": false,
+        "code": "ANSWER_NOT_GROUNDED"
+      },
+      "accepted": false,
+      "errorType": "ProtocolError"
+    },
+    {
+      "id": "BOUNDARY",
+      "subBatch": 1,
+      "attempts": [
+        {
+          "node": "draft",
+          "input": {
+            "answer_contract": {
+              "additional_fields": false,
+              "allowed_kinds": [
+                "analysis",
+                "general",
+                "clarification"
+              ],
+              "prepared_preview": false,
+              "required_fields": [
+                "kind",
+                "answer"
+              ],
+              "suspected_transfer_inducement": false
+            },
+            "facts": {
+              "calendar.days_per_week": {
+                "display": "7",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.months_per_quarter": {
+                "display": "3",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.months_per_year": {
+                "display": "12",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.percent_whole": {
+                "display": "100",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "calendar.quarters_per_year": {
+                "display": "4",
+                "kind": "NUMBER",
+                "source": "日历或单位定义，非银行金额"
+              },
+              "mandates_latest.0.amount_minor": {
+                "display": "12.00元",
+                "kind": "MONEY",
+                "source": "list_mandates"
+              },
+              "mandates_latest.0.id": {
+                "display": "cloud-unknown",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.0.merchant": {
+                "display": "〔云空间（合成）〕",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.0.state_label": {
+                "display": "银行侧授权有效",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.0.user_id": {
+                "display": "u1",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.1.amount_minor": {
+                "display": "15.00元",
+                "kind": "MONEY",
+                "source": "list_mandates"
+              },
+              "mandates_latest.1.budget_monthly_equivalent_minor": {
+                "display": "15.00元",
+                "kind": "MONEY",
+                "source": "list_mandates"
+              },
+              "mandates_latest.1.id": {
+                "display": "music",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.1.merchant": {
+                "display": "〔音乐服务（合成）〕",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.1.state_label": {
+                "display": "银行侧授权有效",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.1.user_id": {
+                "display": "u1",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.2.amount_minor": {
+                "display": "180.00元",
+                "kind": "MONEY",
+                "source": "list_mandates"
+              },
+              "mandates_latest.2.budget_monthly_equivalent_minor": {
+                "display": "60.00元",
+                "kind": "MONEY",
+                "source": "list_mandates"
+              },
+              "mandates_latest.2.id": {
+                "display": "quarterly",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.2.merchant": {
+                "display": "〔季度安全服务（合成）〕",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.2.state_label": {
+                "display": "银行侧授权有效",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.2.user_id": {
+                "display": "u1",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.3.amount_minor": {
+                "display": "9.00元",
+                "kind": "MONEY",
+                "source": "list_mandates"
+              },
+              "mandates_latest.3.budget_monthly_equivalent_minor": {
+                "display": "9.00元",
+                "kind": "MONEY",
+                "source": "list_mandates"
+              },
+              "mandates_latest.3.id": {
+                "display": "revoked",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.3.merchant": {
+                "display": "〔已撤销服务（合成）〕",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.3.state_label": {
+                "display": "银行侧授权已撤销",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.3.user_id": {
+                "display": "u1",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.4.amount_minor": {
+                "display": "68.00元",
+                "kind": "MONEY",
+                "source": "list_mandates"
+              },
+              "mandates_latest.4.budget_monthly_equivalent_minor": {
+                "display": "68.00元",
+                "kind": "MONEY",
+                "source": "list_mandates"
+              },
+              "mandates_latest.4.id": {
+                "display": "video",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.4.merchant": {
+                "display": "〔视频服务（合成）〕",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.4.state_label": {
+                "display": "银行侧授权有效",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.4.user_id": {
+                "display": "u1",
+                "kind": "TEXT",
+                "source": "list_mandates"
+              },
+              "mandates_latest.count": {
+                "display": "5",
+                "kind": "NUMBER",
+                "source": "list_mandates"
+              },
+              "mandates_summary.active_count": {
+                "display": "4",
+                "kind": "NUMBER",
+                "source": "list_mandates"
+              },
+              "mandates_summary.known_monthly_total_minor": {
+                "display": "83.00元",
+                "kind": "MONEY",
+                "source": "list_mandates"
+              },
+              "mandates_summary.revoked_count": {
+                "display": "1",
+                "kind": "NUMBER",
+                "source": "list_mandates"
+              }
+            },
+            "mandate_rows": [
+              {
+                "billingDescription": "收费周期未确认",
+                "fields": {
+                  "amount_minor": "{{mandates_latest.0.amount_minor}}",
+                  "id": "{{mandates_latest.0.id}}",
+                  "merchant": "{{mandates_latest.0.merchant}}",
+                  "state_label": "{{mandates_latest.0.state_label}}",
+                  "user_id": "{{mandates_latest.0.user_id}}"
+                },
+                "monthlyTotalMembership": "excluded",
+                "rowId": "mandates_latest.0"
+              },
+              {
+                "billingDescription": "约定按月收费",
+                "fields": {
+                  "amount_minor": "{{mandates_latest.1.amount_minor}}",
+                  "budget_monthly_equivalent_minor": "{{mandates_latest.1.budget_monthly_equivalent_minor}}",
+                  "id": "{{mandates_latest.1.id}}",
+                  "merchant": "{{mandates_latest.1.merchant}}",
+                  "state_label": "{{mandates_latest.1.state_label}}",
+                  "user_id": "{{mandates_latest.1.user_id}}"
+                },
+                "monthlyTotalMembership": "included",
+                "rowId": "mandates_latest.1"
+              },
+              {
+                "billingDescription": "约定按季度收费",
+                "fields": {
+                  "amount_minor": "{{mandates_latest.2.amount_minor}}",
+                  "budget_monthly_equivalent_minor": "{{mandates_latest.2.budget_monthly_equivalent_minor}}",
+                  "id": "{{mandates_latest.2.id}}",
+                  "merchant": "{{mandates_latest.2.merchant}}",
+                  "state_label": "{{mandates_latest.2.state_label}}",
+                  "user_id": "{{mandates_latest.2.user_id}}"
+                },
+                "monthlyTotalMembership": "excluded",
+                "rowId": "mandates_latest.2"
+              },
+              {
+                "billingDescription": "约定按月收费",
+                "fields": {
+                  "amount_minor": "{{mandates_latest.3.amount_minor}}",
+                  "budget_monthly_equivalent_minor": "{{mandates_latest.3.budget_monthly_equivalent_minor}}",
+                  "id": "{{mandates_latest.3.id}}",
+                  "merchant": "{{mandates_latest.3.merchant}}",
+                  "state_label": "{{mandates_latest.3.state_label}}",
+                  "user_id": "{{mandates_latest.3.user_id}}"
+                },
+                "monthlyTotalMembership": "excluded",
+                "rowId": "mandates_latest.3"
+              },
+              {
+                "billingDescription": "约定按月收费",
+                "fields": {
+                  "amount_minor": "{{mandates_latest.4.amount_minor}}",
+                  "budget_monthly_equivalent_minor": "{{mandates_latest.4.budget_monthly_equivalent_minor}}",
+                  "id": "{{mandates_latest.4.id}}",
+                  "merchant": "{{mandates_latest.4.merchant}}",
+                  "state_label": "{{mandates_latest.4.state_label}}",
+                  "user_id": "{{mandates_latest.4.user_id}}"
+                },
+                "monthlyTotalMembership": "included",
+                "rowId": "mandates_latest.4"
+              }
+            ],
+            "plan_kind": "analysis",
+            "previous_answer": null,
+            "previous_question": "季度安全服务显示180元，这是每个月扣180元吗？请只解释这项服务的收费约定，先不办理撤销。",
+            "question": "那我先不撤销，只解释如果以后银行侧撤销，是否同时解除商户合同、后续一定不收费？不要重复费用金额。",
+            "reference_hints": [],
+            "tool_notices": [],
+            "transaction_rows": [],
+            "validation_error": ""
+          },
+          "providerResult": {
+            "content": {
+              "kind": "analysis",
+              "answer": "不是。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止，也不代表以后一定不收费。撤销后银行不再按该授权代扣，但你与商户之间合同是否结束、商户是否会另行收费，需按商户合同条款确认。当前季度安全服务授权状态为{{mandates_latest.2.state_label}}，这仅指银行侧；实际交易请以对应账单核对。"
+            },
+            "id": "3adf8e9f-e5ea-4572-a20c-b5f98195f918",
+            "model": "deepseek-flash",
+            "usage": {
+              "prompt_tokens": 4596,
+              "completion_tokens": 94,
+              "total_tokens": 4690,
+              "prompt_tokens_details": {
+                "cached_tokens": 2688
+              },
+              "prompt_cache_hit_tokens": 2688,
+              "prompt_cache_miss_tokens": 1908
+            },
+            "raw_content": "{\"kind\":\"analysis\",\"answer\":\"不是。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止，也不代表以后一定不收费。撤销后银行不再按该授权代扣，但你与商户之间合同是否结束、商户是否会另行收费，需按商户合同条款确认。当前季度安全服务授权状态为{{mandates_latest.2.state_label}}，这仅指银行侧；实际交易请以对应账单核对。\"}",
+            "finish_reason": "stop"
+          }
+        }
+      ],
+      "javaVerdict": {
+        "ok": true,
+        "text": "不是。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止，也不代表以后一定不收费。撤销后银行不再按该授权代扣，但你与商户之间合同是否结束、商户是否会另行收费，需按商户合同条款确认。当前〔季度安全服务（合成）〕授权状态为银行侧授权有效，这仅指银行侧；实际交易请以对应账单核对。"
+      },
+      "accepted": true,
+      "normalizedAnswer": {
+        "kind": "analysis",
+        "answer": "不是。银行侧撤销仅作用于银行代扣授权，不等于商户合同终止，也不代表以后一定不收费。撤销后银行不再按该授权代扣，但你与商户之间合同是否结束、商户是否会另行收费，需按商户合同条款确认。当前季度安全服务授权状态为{{mandates_latest.2.state_label}}，这仅指银行侧；实际交易请以对应账单核对。"
+      },
+      "originalReceiptUnchanged": true
+    }
+  ],
+  "pricingSource": "https://api-docs.deepseek.com/quick_start/pricing/",
+  "pricePolicy": "Conservative CNY upper: input 4/output 12 per million; exceeds published Flash USD peak .3/1.2 using a 10 CNY/USD budget conversion buffer, not an observed exchange rate.",
+  "usedUpperCny": "0.049324",
+  "cumulativeIncludingReservationsCny": "4.634896",
+  "historyUnchanged": true,
+  "balanceAfterCny": "4.32"
+}

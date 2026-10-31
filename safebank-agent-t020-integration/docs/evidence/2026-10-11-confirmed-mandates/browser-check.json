@@ -1,0 +1,48 @@
+{
+  "mode": "LANGGRAPH_MOCK",
+  "providerHTTPCalls": 0,
+  "routingReason": "Browser plugin not available; bundled Playwright and existing Edge",
+  "answers": {
+    "before": "尚无当前会话有效的已确认代扣查询回执，请到代扣业务页确认查询范围后再提问。",
+    "after": "依据本次确认查询的快照，〔季度安全服务（合成）〕：按季度收费，约定金额180.00元，银行侧授权有效。银行侧撤销须到业务页逐项确认；无法确认商户合同是否终止或以后是否继续收费。",
+    "monthly": "依据本次确认查询的快照，查询时有效且明确按月收费的授权合计为83.00元；收费周期未知或按季度收费的授权不计入该合计。这不代表取消后保证节省。",
+    "otherTab": "尚无当前会话有效的已确认代扣查询回执，请到代扣业务页确认查询范围后再提问。",
+    "afterReset": "尚无当前会话有效的已确认代扣查询回执，请到代扣业务页确认查询范围后再提问。"
+  },
+  "queryBoundToConversation": true,
+  "crossTabIsolation": true,
+  "resetInvalidatesReceipt": true,
+  "desktopLayout": "left navigation / middle business / right chat",
+  "mobileWidth": 390,
+  "pageErrors": [],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 409 ()",
+    "Failed to load resource: the server responded with a status of 409 ()",
+    "Failed to load resource: the server responded with a status of 409 ()",
+    "Failed to load resource: the server responded with a status of 409 ()"
+  ],
+  "expectedPollingResponses": [
+    {
+      "url": "http://127.0.0.1:8134/api/chat",
+      "status": 409,
+      "code": "CONTEXT_PROCESSING"
+    },
+    {
+      "url": "http://127.0.0.1:8134/api/chat",
+      "status": 409,
+      "code": "CONTEXT_PROCESSING"
+    },
+    {
+      "url": "http://127.0.0.1:8134/api/chat",
+      "status": 409,
+      "code": "CONTEXT_PROCESSING"
+    },
+    {
+      "url": "http://127.0.0.1:8134/api/chat",
+      "status": 409,
+      "code": "CONTEXT_PROCESSING"
+    }
+  ],
+  "unexpectedConsoleErrors": [],
+  "mobileChatBelowBusiness": true
+}

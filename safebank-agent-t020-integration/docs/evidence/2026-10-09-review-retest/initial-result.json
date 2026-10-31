@@ -1,0 +1,127 @@
+{
+  "scope": "real model multi-turn queries/advice/clarification; no authorization or financial execution",
+  "cases": 1,
+  "repeats": 1,
+  "turns": 1,
+  "model_request_budget": 6,
+  "model_requests_reserved_or_reported": 5,
+  "passed": 1,
+  "abort_reason": "Model request budget exhausted; insufficient for generation plus review; remaining conversations not attempted",
+  "actual_token_usage": null,
+  "records": [
+    {
+      "case": "concise_summary_repair_followup",
+      "repeat": 1,
+      "turn": 1,
+      "prompt": "简短分析2026-09账单，并与2026-08比较支出。",
+      "reply": "2026-09账单：支出合计5,369.33元（不含本人账户内部转账1,000.00元），入账11,700.00元，净结余6,330.67元。最大类别是居住2,500.00元，占支出46.56%；其次为维修2,000.00元（37.25%），两项合计4,500.00元，构成当月支出主体。最小类别为交通。\n\n与2026-08相比：支出由6,547.92元降至5,369.33元，减少1,178.59元，降幅18%。\n\n差异主要来自类别结构变化：8月最大类别购物3,200.00元在9月无对应记录，9月则新增维修2,000.00元；居住、订阅、通信、日用品两月基本持平。入账方面9月高于8月，净结余也从8月的1,952.08元升至6,330.67元。\n\n9月有两笔大额候选（单笔≥2000元）：2026-09-01 〔租金（合成）〕 -2,500.00元；2026-09-10 〔设备维修（合成）〕 -2,000.00元。这只是按金额筛出的候选，不能判断是否合理或异常；如需核对某笔，请提供用途或凭证背景。",
+      "answer_source": "MODEL_GROUNDED",
+      "trace": [
+        "get_statement",
+        "get_statement",
+        "answer_customer / ANSWER_NOT_GROUNDED / 回答中手写了数字或金额〔八成〕（前接：其他文本；后接：其他文本），请把对应数字/日期替换为{{事实ID}}；需要计算请调用calculate_business_metric",
+        "calculate_business_metric",
+        "calculate_business_metric",
+        "business_answer_review / PASS",
+        "answer_customer"
+      ],
+      "fact_references": [
+        "e0.transactions.0.merchant",
+        "e0.transactions.9.merchant",
+        "statement_2026_09.expense_minor",
+        "statement_2026_09.internal_transfer_minor",
+        "statement_2026_09.income_minor",
+        "statement_2026_09.analysis.net_minor",
+        "statement_2026_09.analysis.largest_categories.0",
+        "statement_2026_09.categories.居住",
+        "statement_2026_09.analysis.category_share_percent.居住",
+        "statement_2026_09.categories.维修",
+        "statement_2026_09.analysis.category_share_percent.维修",
+        "calc0",
+        "statement_2026_09.analysis.smallest_categories.0",
+        "statement_2026_08.expense_minor",
+        "comparison.statement_2026_09_vs_2026_08.expense_direction",
+        "comparison.statement_2026_09_vs_2026_08.expense_difference_magnitude_minor",
+        "comparison.statement_2026_09_vs_2026_08.expense_change_magnitude_percent",
+        "statement_2026_08.analysis.largest_categories.0",
+        "statement_2026_08.categories.购物",
+        "statement_2026_08.analysis.net_minor",
+        "statement_2026_09.anomaly_candidates.0.booked_on",
+        "statement_2026_09.anomaly_candidates.0.merchant",
+        "statement_2026_09.anomaly_candidates.0.amount_minor",
+        "statement_2026_09.anomaly_candidates.1.booked_on",
+        "statement_2026_09.anomaly_candidates.1.merchant",
+        "statement_2026_09.anomaly_candidates.1.amount_minor",
+        "e0.month",
+        "e1.month",
+        "e0.transactions.4.category",
+        "e0.categories.维修"
+      ],
+      "passed": true,
+      "failure": "",
+      "preview_cleanup_ok": true,
+      "balance_unchanged": true,
+      "model_usage": {
+        "request_count": 5,
+        "request_limit": 6,
+        "generation_requests": 4,
+        "review_requests": 1,
+        "usage_reported_requests": 5,
+        "usage_complete": true,
+        "prompt_tokens": 40951,
+        "completion_tokens": 1550,
+        "total_tokens": 42501,
+        "prompt_cache_hit_tokens": 21760,
+        "prompt_cache_miss_tokens": 19191,
+        "calls": [
+          {
+            "prompt_cache_miss_tokens": 443,
+            "kind": "generation",
+            "total_tokens": 3595,
+            "completion_tokens": 80,
+            "success": true,
+            "prompt_tokens": 3515,
+            "prompt_cache_hit_tokens": 3072
+          },
+          {
+            "prompt_cache_miss_tokens": 4820,
+            "kind": "generation",
+            "total_tokens": 8495,
+            "completion_tokens": 603,
+            "success": true,
+            "prompt_tokens": 7892,
+            "prompt_cache_hit_tokens": 3072
+          },
+          {
+            "prompt_cache_miss_tokens": 244,
+            "kind": "generation",
+            "total_tokens": 8714,
+            "completion_tokens": 150,
+            "success": true,
+            "prompt_tokens": 8564,
+            "prompt_cache_hit_tokens": 8320
+          },
+          {
+            "prompt_cache_miss_tokens": 1700,
+            "kind": "generation",
+            "total_tokens": 9629,
+            "completion_tokens": 633,
+            "success": true,
+            "prompt_tokens": 8996,
+            "prompt_cache_hit_tokens": 7296
+          },
+          {
+            "prompt_cache_miss_tokens": 11984,
+            "kind": "review",
+            "total_tokens": 12068,
+            "completion_tokens": 84,
+            "success": true,
+            "prompt_tokens": 11984,
+            "prompt_cache_hit_tokens": 0
+          }
+        ]
+      },
+      "elapsed_ms": 9750
+    }
+  ]
+}

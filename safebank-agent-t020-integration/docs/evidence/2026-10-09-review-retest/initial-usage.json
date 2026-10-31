@@ -1,0 +1,15 @@
+{
+  "request_count": 5,
+  "request_limit": 6,
+  "generation_requests": 4,
+  "review_requests": 1,
+  "usage_reported_requests": 5,
+  "usage_complete": true,
+  "prompt_tokens": 40951,
+  "completion_tokens": 1550,
+  "total_tokens": 42501,
+  "prompt_cache_hit_tokens": 21760,
+  "prompt_cache_miss_tokens": 19191,
+  "reply_characters_including_numbers_punctuation": 452,
+  "coverage": "First summary/comparison passed; follow-up not attempted in this initial six-request batch."
+}

@@ -1,0 +1,4 @@
+cn.safebank:safebank-agent:jar:0.6.0
++- com.mysql:mysql-connector-j:jar:9.4.0:runtime
++- org.flywaydb:flyway-core:jar:11.7.2:compile
+\- org.flywaydb:flyway-mysql:jar:11.7.2:compile

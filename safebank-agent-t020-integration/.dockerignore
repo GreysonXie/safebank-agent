@@ -1,0 +1,16 @@
+.git
+.superpowers
+.worktrees
+.tools
+.m2
+target
+node_modules
+data
+.env
+.env.*
+!.env.example
+**/__pycache__
+**/*.pyc
+**/*.log
+docs/evidence
+*.zip

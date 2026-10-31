@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.AuditEventMapper">
+    <resultMap id="row" type="cn.safebank.entity.AuditEventEntity">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="action_id" property="actionId"/>
+        <result column="event" property="event"/>
+        <result column="recorded_at" property="recordedAt"/>
+    </resultMap>
+
+    <insert id="insert">INSERT INTO audit(id,user_id,action_id,event,recorded_at) VALUES(#{id},#{userId},#{actionId},#{event},#{recordedAt})</insert>
+    <select id="selectByUser" resultMap="row">SELECT id,user_id,action_id,event,recorded_at FROM audit WHERE user_id=#{userId} ORDER BY recorded_at DESC LIMIT 50</select>
+</mapper>

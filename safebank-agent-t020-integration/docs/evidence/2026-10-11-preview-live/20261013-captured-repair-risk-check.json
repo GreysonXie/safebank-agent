@@ -1,0 +1,8 @@
+{
+  "batch": 31,
+  "node": "repair",
+  "actualJavaOraclePassed": true,
+  "pythonRiskCheckBefore": false,
+  "pythonRiskCheckAfter": true,
+  "providerCalls": 0
+}

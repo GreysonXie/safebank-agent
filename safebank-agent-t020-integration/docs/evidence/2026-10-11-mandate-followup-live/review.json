@@ -1,0 +1,10 @@
+{
+  "reviewer": "independent read-only subagent",
+  "critical": 0,
+  "important": 1,
+  "minor": 0,
+  "finding": "Parsed content can fail recursion / canonical encoding before receipt persistence.",
+  "resolution": "Catch ValueError/RecursionError, iterative depth bound32, canonical UTF-8 check before attaching content; raw and usage preserved.",
+  "redGreenVerified": true,
+  "realFailureCauseEstablished": false
+}

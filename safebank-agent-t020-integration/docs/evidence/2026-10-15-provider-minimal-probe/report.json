@@ -1,0 +1,25 @@
+{
+  "scope": "Minimal provider diagnostic; no bank tools or task registration",
+  "priorLedgerSha256": "5ee35fcff15f47e77dff412b74baf044d199cc6b62313a579f5d6bbee5360cff",
+  "received": false,
+  "errorCode": "MODEL_TRANSPORT_OR_FORMAT_FAILED",
+  "failureType": "ReadTimeout",
+  "providerSends": 1,
+  "ledger": {
+    "capCny": "6.00",
+    "balanceBefore": "7.84",
+    "priorReservedCny": "5.540488",
+    "requests": [
+      {
+        "upperCny": "0.017024",
+        "state": "RESERVED",
+        "inputBytes": 64,
+        "maxOutput": 32
+      }
+    ],
+    "batchPriorCny": "0",
+    "guardVersion": "INPUT_BYTES_USAGE_V1",
+    "guardLoaded": true,
+    "conservativeReservedCny": "5.557512"
+  }
+}

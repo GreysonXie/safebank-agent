@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.AgentContextEvidenceMapper">
+    <resultMap id="row" type="cn.safebank.entity.AgentContextEvidenceEntity">
+        <result column="id" property="id"/>
+        <result column="conversation_id" property="conversationId"/>
+        <result column="user_id" property="userId"/>
+        <result column="evidence_key" property="evidenceKey"/>
+        <result column="tool_name" property="toolName"/>
+        <result column="object_id" property="objectId"/>
+        <result column="snapshot_json" property="snapshotJson"/>
+        <result column="content_hash" property="contentHash"/>
+        <result column="source_turn_id" property="sourceTurnId"/>
+        <result column="observed_at" property="observedAt"/>
+        <result column="valid_until" property="validUntil"/>
+    </resultMap>
+    <sql id="columns">id,conversation_id,user_id,evidence_key,tool_name,object_id,snapshot_json,content_hash,source_turn_id,observed_at,valid_until</sql>
+    <select id="selectByConversation" resultMap="row">SELECT <include refid="columns"/> FROM agent_context_evidence WHERE user_id=#{userId} AND conversation_id=#{conversationId}</select>
+    <update id="updateOwned">UPDATE agent_context_evidence SET evidence_key=#{evidenceKey},tool_name=#{toolName},object_id=#{objectId},snapshot_json=#{snapshotJson},content_hash=#{contentHash},source_turn_id=#{sourceTurnId},observed_at=#{observedAt},valid_until=#{validUntil} WHERE id=#{id} AND user_id=#{userId} AND conversation_id=#{conversationId}</update>
+    <insert id="insert">INSERT INTO agent_context_evidence(<include refid="columns"/>) VALUES(#{id},#{conversationId},#{userId},#{evidenceKey},#{toolName},#{objectId},#{snapshotJson},#{contentHash},#{sourceTurnId},#{observedAt},#{validUntil})</insert>
+</mapper>

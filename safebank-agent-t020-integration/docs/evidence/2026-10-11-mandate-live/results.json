@@ -1,0 +1,53 @@
+{
+  "question": "季度安全服务显示180元，这是每个月扣180元吗？我不用这项服务了，银行侧撤销以后商户合同会同时结束、后续就一定不收费吗？请只围绕这项说明。",
+  "syntheticOnly": true,
+  "requestLimit": 2,
+  "baselineRequests": 18,
+  "authorizedCumulativeCny": 4,
+  "initialBalanceCny": "7.80",
+  "conversationId": "d5b06fcc-e88a-4ff1-af86-508002ec7abc",
+  "queryActionId": "42f18306-eb4a-4fd8-a895-378137fbd712",
+  "riskLevel": "YELLOW",
+  "confirmedQueryTime": "2026-10-11T03:29:49.473619Z",
+  "httpStatus": 400,
+  "errorCode": "AGENT_REVIEW_REQUIRED",
+  "answer": null,
+  "elapsedSeconds": 4.55,
+  "requests": 1,
+  "priorCallsUnchanged": true,
+  "calls": [
+    {
+      "purpose": "plan",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 516,
+        "completion_tokens": 38,
+        "total_tokens": 554,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 516
+      }
+    }
+  ],
+  "moneyGuard": {
+    "balanceBefore": "7.84",
+    "capCny": 4,
+    "priorReservedCny": "0.85",
+    "reservations": 1,
+    "conservativeReservedCny": "1.10",
+    "guardLoaded": true
+  },
+  "totalTokens": 554,
+  "turnId": "e02b37a0-7e26-4f3d-b2d0-6213fafde213",
+  "runState": "RECONCILIATION_REQUIRED",
+  "runError": "BANK_VALIDATION_REJECTED",
+  "modelEffects": {
+    "plan": {
+      "kind": "clarification",
+      "question": "请提供这笔“季度安全服务”180元对应的扣款月份，以便我查询该月账单中的这笔交易。",
+      "tools": []
+    }
+  },
+  "balanceAfterCny": "7.80",
+  "displayedBatchDeltaCny": "0.00"
+}

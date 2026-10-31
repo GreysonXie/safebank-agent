@@ -1,0 +1,109 @@
+{
+  "fundsUnchanged": true,
+  "fundsHash": "107bff1fe575d0e9d695ef3a5e1906dca78fabc68e0ea85592d0c314eace5db1",
+  "oldBudgetFilesUnchanged": 31,
+  "providerCallsWithUsage": 21,
+  "newUnfinishedLedgerReservations": 0,
+  "newUnknownReserveCny": "0.00",
+  "testFeeUpperCny": "0.200424",
+  "cumulativeUpperIncludingReservationsCny": "3.298648",
+  "historicUnknownReserved": 3,
+  "balanceBeforeCny": "5.89",
+  "balanceAfterCny": "5.84",
+  "restoredMode": "LANGGRAPH_MOCK",
+  "cards": [
+    {
+      "id": "agent-7d24779f32eb5d34b106d2c5c3bc84418f166c6d89280423",
+      "kind": "REVOKE",
+      "status": "CANCELLED",
+      "payload": "{\"mandate_id\":\"video\",\"merchant\":\"视频服务（合成）\",\"charge_amount_minor\":6800,\"billing_interval\":\"MONTHLY\",\"estimated_monthly_saving_minor\":6800,\"contract_status\":\"UNKNOWN\",\"scope\":\"仅撤销银行侧代扣授权，商户合同状态未知\"}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-363bff93cd666561ecf387cf6c4ce08585d2cb45b980508f",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":60000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-421aa02ce4c679e0472f11cfd72d89761bdd4734a6df872a",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":50000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-5a55bb7f9eb5604909e6866e6c81a11836571288613f2065",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":50000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    },
+    {
+      "id": "agent-8602c859099ba21de9bd2d9cbac14d787507306e25e29acc",
+      "kind": "TRANSFER",
+      "status": "CANCELLED",
+      "payload": "{\"source_id\":\"checking\",\"recipient_id\":\"zhang-a\",\"recipient_label\":\"张三 / 张三 TEST-3271（合成）\",\"amount_minor\":60000,\"currency\":\"CNY\",\"fee_minor\":0}",
+      "receiptId": null
+    }
+  ],
+  "finalCases": [
+    {
+      "question": "从日常账户给收款备注为同学的那位转500元，请生成预览。",
+      "httpStatus": 200,
+      "agentState": "COMPLETED",
+      "javaState": "ACKED",
+      "answer": "已生成转账预览：从日常账户向收款人张三（备注：同学）转账500.00元。\n\n该预览目前仅为待核对状态，尚未执行。请在转账操作卡上核对收款人、金额及付款账户等信息，并按卡片的安全提示完成授权。",
+      "calls": 2
+    },
+    {
+      "question": "改成600元",
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "javaState": "PAUSED",
+      "answer": null,
+      "calls": 3
+    },
+    {
+      "question": "请撤销视频服务，先给我看预览，不要直接执行。",
+      "httpStatus": 400,
+      "agentState": "RECONCILIATION_REQUIRED",
+      "javaState": "PAUSED",
+      "answer": null,
+      "calls": 3
+    }
+  ],
+  "sourceSha256": {
+    "src/main/java/cn/safebank/GroundedAnswer.java": "21d54e88d15ac9f245c05a41297762595318cdc304f35aae7b7f67b491f82db7",
+    "src/main/java/cn/safebank/service/AgentPreviewService.java": "186f7e6b87db7fb0353bfcef5b4cabf832c041e305222a890e1d69e4af2afc5a",
+    "src/main/resources/static/app.js": "7e7cdc5ed120b6d2375fac0aab3db446343d6d5b6ad7ee26c63d65d841521ee6",
+    "src/main/resources/static/theme.css": "1f010d1aabc724b96952e2fc1edfaf53b68253761baa745f18dfbb371bb3113d",
+    "agent-service/safebank_agent/answers.py": "98a16881a737914b0d8ee60a40bf08b2e0dc410d571feaeceacb6d5044d410ae",
+    "agent-service/safebank_agent/prompts.py": "cfe1cfda727a03c7b275d07b046ed3af870f80c669cde3fb9f533136638ee145"
+  },
+  "targetCasesPassed": 1,
+  "targetCasesAttempted": 3,
+  "allThreeRetestCasesPassed": false,
+  "displayQuality": [
+    {
+      "question": "从日常账户给收款备注为同学的那位转500元，请生成预览。",
+      "metrics": {
+        "internalRecipientIdentifierAbsent": true,
+        "objectNameNotRepeated": true,
+        "amountNotRepeated": true,
+        "numericOmissionNoticeAbsent": true,
+        "characterCount": 95
+      }
+    },
+    {
+      "question": "改成600元",
+      "metrics": null
+    },
+    {
+      "question": "请撤销视频服务，先给我看预览，不要直接执行。",
+      "metrics": null
+    }
+  ],
+  "sameSourceAsRetestFreeze": true
+}

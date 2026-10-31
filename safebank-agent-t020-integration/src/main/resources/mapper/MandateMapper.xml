@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.MandateMapper">
+    <resultMap id="row" type="cn.safebank.entity.MandateEntity">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="merchant" property="merchant"/>
+        <result column="amount_minor" property="amountMinor"/>
+        <result column="renewal_date" property="renewalDate"/>
+        <result column="status" property="status"/>
+        <result column="contract_status" property="contractStatus"/>
+        <result column="billing_interval" property="billingInterval"/>
+    </resultMap>
+
+    <select id="selectByUser" resultMap="row">SELECT id,user_id,merchant,amount_minor,renewal_date,status,contract_status,billing_interval FROM mandates WHERE user_id=#{userId} ORDER BY id</select>
+    <select id="selectOwned" resultMap="row">SELECT id,user_id,merchant,amount_minor,renewal_date,status,contract_status,billing_interval FROM mandates WHERE id=#{id} AND user_id=#{userId}</select>
+
+    <select id="lockOwned" resultMap="row">SELECT id,user_id,merchant,amount_minor,renewal_date,status,contract_status,billing_interval FROM mandates WHERE id=#{id} AND user_id=#{userId} FOR UPDATE</select>
+    <update id="revoke">UPDATE mandates SET status='REVOKED' WHERE id=#{id} AND user_id=#{userId} AND status='ACTIVE'</update>
+    <insert id="insert">INSERT INTO mandates(id,user_id,merchant,amount_minor,renewal_date,status,contract_status,billing_interval) VALUES(#{id},#{userId},#{merchant},#{amountMinor},#{renewalDate},#{status},#{contractStatus},#{billingInterval})</insert>
+    <update id="activate">UPDATE mandates SET status='ACTIVE',renewal_date=#{renewalDate} WHERE id=#{id} AND user_id=#{userId} AND status='REVOKED'</update>
+</mapper>

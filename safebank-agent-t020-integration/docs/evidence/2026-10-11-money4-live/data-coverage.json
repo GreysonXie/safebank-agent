@@ -1,0 +1,27 @@
+{
+  "accountCount": 5,
+  "sumBalanceMinor": 7588480,
+  "seedBalancesUnchanged": true,
+  "quarterlyMandateExists": true,
+  "quarterlyBillingInterval": "QUARTERLY",
+  "recurringReceiptCoverage": [
+    {
+      "tool": "recurring_analysis",
+      "containsQuarterlyMerchant": false,
+      "containsBillingIntervalField": false,
+      "topLevelType": "list"
+    },
+    {
+      "tool": "recurring_analysis",
+      "containsQuarterlyMerchant": false,
+      "containsBillingIntervalField": false,
+      "topLevelType": "list"
+    },
+    {
+      "tool": "recurring_analysis",
+      "containsQuarterlyMerchant": false,
+      "containsBillingIntervalField": false,
+      "topLevelType": "list"
+    }
+  ]
+}

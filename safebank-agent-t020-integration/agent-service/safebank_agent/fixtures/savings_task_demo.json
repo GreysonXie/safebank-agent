@@ -1,0 +1,17 @@
+{
+  "question": "演示储蓄任务：撤销音乐服务和视频服务，从日常账户把核验节省每月20日存入旅游基金，首次2026-11-20，结束2027-10-20，核对2026-09账单。",
+  "taskPlan": {
+    "schemaVersion": 1,
+    "goal": "撤销选定月付代扣并按核验节省额定时储蓄",
+    "savingsPolicy": "verified_success_subset",
+    "analysisMonth": "2026-09",
+    "nodes": [
+      {"id":"m","type":"mandate_lookup","params":{},"dependsOn":[]},
+      {"id":"a","type":"account_query","params":{},"dependsOn":[]},
+      {"id":"r1","type":"mandate_revoke","params":{"merchantQuery":"音乐服务"},"dependsOn":["m"]},
+      {"id":"r2","type":"mandate_revoke","params":{"merchantQuery":"视频服务"},"dependsOn":["m"]},
+      {"id":"s","type":"compute_savings","params":{},"dependsOn":["r1","r2"]},
+      {"id":"t","type":"schedule_create","params":{"sourceQuery":"日常账户","recipientQuery":"旅游基金","firstDate":"2026-11-20","endDate":"2027-10-20","dayOfMonth":20},"dependsOn":["s","a"]}
+    ]
+  }
+}

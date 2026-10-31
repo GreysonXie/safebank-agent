@@ -1,0 +1,161 @@
+{
+  "mode": "LANGGRAPH_MOCK",
+  "browserPlugin": "not available; existing Playwright/Edge used",
+  "targetFlow": "chat preview -> correct card and disabled confirmation -> revise cancels old card -> cancel -> confirmed read -> revoke preview",
+  "renderedStateFixtures": [
+    "UNKNOWN"
+  ],
+  "desktopViewport": [
+    1440,
+    900
+  ],
+  "mobileViewport": [
+    390,
+    844
+  ],
+  "checks": [
+    "semantic statuses",
+    "technical details folded and keyboard-native summary",
+    "full payee remains visible",
+    "verified account name",
+    "no internal payee identifier in chat",
+    "UNKNOWN has no confirmation",
+    "history stays collapsed",
+    "no horizontal overflow"
+  ],
+  "answers": [
+    {
+      "question": "从日常账户给张三转500元",
+      "text": "未能唯一确定收款人，请补充姓名或收款人备注；没有生成转账预览。",
+      "actions": []
+    },
+    {
+      "question": "备注同学的那位",
+      "text": "待确认收款对象张三，金额500.00元。尚未执行转账，请核对操作卡并明确确认。",
+      "actions": [
+        {
+          "id": "agent-c04e7a0b4ae669127ab0171333e1f7d158e97df355e01351",
+          "status": "AWAITING_AUTH",
+          "kind": "TRANSFER",
+          "amountMinor": 50000
+        }
+      ]
+    },
+    {
+      "question": "改成600元",
+      "text": "待确认收款对象张三，金额600.00元。尚未执行转账，请核对操作卡并明确确认。",
+      "actions": [
+        {
+          "id": "agent-0bf16abf7a7353aff449fb0f01ac63e5cdb9ef698cbf9e30",
+          "status": "AWAITING_AUTH",
+          "kind": "TRANSFER",
+          "amountMinor": 60000
+        },
+        {
+          "id": "agent-c04e7a0b4ae669127ab0171333e1f7d158e97df355e01351",
+          "status": "CANCELLED",
+          "kind": "TRANSFER",
+          "amountMinor": 50000
+        }
+      ]
+    },
+    {
+      "question": "改给张三",
+      "text": "未能唯一确定收款人，请补充姓名或收款人备注；没有生成转账预览。",
+      "actions": [
+        {
+          "id": "agent-0bf16abf7a7353aff449fb0f01ac63e5cdb9ef698cbf9e30",
+          "status": "CANCELLED",
+          "kind": "TRANSFER",
+          "amountMinor": 60000
+        },
+        {
+          "id": "agent-c04e7a0b4ae669127ab0171333e1f7d158e97df355e01351",
+          "status": "CANCELLED",
+          "kind": "TRANSFER",
+          "amountMinor": 50000
+        }
+      ]
+    },
+    {
+      "question": "同学",
+      "text": "待确认收款对象张三，金额600.00元。尚未执行转账，请核对操作卡并明确确认。",
+      "actions": [
+        {
+          "id": "agent-485f4ec9154a823d281a7725e206e75ae2c65887e63aa0a2",
+          "status": "AWAITING_AUTH",
+          "kind": "TRANSFER",
+          "amountMinor": 60000
+        },
+        {
+          "id": "agent-0bf16abf7a7353aff449fb0f01ac63e5cdb9ef698cbf9e30",
+          "status": "CANCELLED",
+          "kind": "TRANSFER",
+          "amountMinor": 60000
+        },
+        {
+          "id": "agent-c04e7a0b4ae669127ab0171333e1f7d158e97df355e01351",
+          "status": "CANCELLED",
+          "kind": "TRANSFER",
+          "amountMinor": 50000
+        }
+      ]
+    },
+    {
+      "question": "能否取消视频服务？",
+      "text": "依据本次确认查询的快照，〔视频服务（合成）〕：约定按月收费，约定金额68.00元，银行侧授权有效。银行侧撤销须到业务页逐项确认；无法确认商户合同是否终止或以后是否继续收费。",
+      "actions": [
+        {
+          "id": "agent-485f4ec9154a823d281a7725e206e75ae2c65887e63aa0a2",
+          "status": "CANCELLED",
+          "kind": "TRANSFER",
+          "amountMinor": 60000
+        },
+        {
+          "id": "agent-0bf16abf7a7353aff449fb0f01ac63e5cdb9ef698cbf9e30",
+          "status": "CANCELLED",
+          "kind": "TRANSFER",
+          "amountMinor": 60000
+        },
+        {
+          "id": "agent-c04e7a0b4ae669127ab0171333e1f7d158e97df355e01351",
+          "status": "CANCELLED",
+          "kind": "TRANSFER",
+          "amountMinor": 50000
+        }
+      ]
+    },
+    {
+      "question": "请撤销视频服务",
+      "text": "〔视频服务（合成）〕的撤销预览已生成。尚未执行撤销，请核对操作卡；银行侧撤销不证明商户合同终止或退款。",
+      "actions": [
+        {
+          "id": "agent-e853a9cef68fb9846ed468c0aea41dc9401f5cccbfb67884",
+          "status": "AWAITING_AUTH",
+          "kind": "REVOKE"
+        },
+        {
+          "id": "agent-485f4ec9154a823d281a7725e206e75ae2c65887e63aa0a2",
+          "status": "CANCELLED",
+          "kind": "TRANSFER",
+          "amountMinor": 60000
+        },
+        {
+          "id": "agent-0bf16abf7a7353aff449fb0f01ac63e5cdb9ef698cbf9e30",
+          "status": "CANCELLED",
+          "kind": "TRANSFER",
+          "amountMinor": 60000
+        },
+        {
+          "id": "agent-c04e7a0b4ae669127ab0171333e1f7d158e97df355e01351",
+          "status": "CANCELLED",
+          "kind": "TRANSFER",
+          "amountMinor": 50000
+        }
+      ]
+    }
+  ],
+  "accountsUnchanged": true,
+  "pageErrors": [],
+  "financialExecution": false
+}

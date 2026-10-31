@@ -1,0 +1,12 @@
+{
+  "src/main/java/cn/safebank/GroundedAnswer.java": "68514e99837d5fbab9533b461f27d5041a8826608a94fe50da95b30d99f45597",
+  "src/main/java/cn/safebank/service/AgentPreviewService.java": "186f7e6b87db7fb0353bfcef5b4cabf832c041e305222a890e1d69e4af2afc5a",
+  "src/main/resources/static/app.js": "7e7cdc5ed120b6d2375fac0aab3db446343d6d5b6ad7ee26c63d65d841521ee6",
+  "src/main/resources/static/theme.css": "1f010d1aabc724b96952e2fc1edfaf53b68253761baa745f18dfbb371bb3113d",
+  "agent-service/safebank_agent/answers.py": "98a16881a737914b0d8ee60a40bf08b2e0dc410d571feaeceacb6d5044d410ae",
+  "agent-service/safebank_agent/prompts.py": "cbf4634caff555435984ce37a8ff6cc8b1203671fb8bfa693da0c8b6e1344de7",
+  "agent-service/safebank_agent/graph.py": "7d8a9064003c0e67907784084b10fa4a58d701a6273650abb419d56be63d64d4",
+  "agent-service/safebank_agent/contracts.py": "8bfb5ff22d85a25c5cc74d58f758220760d403df66448207e8cf89421d01ce34",
+  "src/main/java/cn/safebank/service/AgentCapabilityService.java": "d76fc5247b421c8b0526c87ba7e1eacf73c45585af752898f58a61c974e21421",
+  "agent-service/safebank_agent/safety.py": "ee39a1c9c7e2bfbb4501ec12e82dd108876c3dc4051dcdcb4257cacc74c12ca7"
+}

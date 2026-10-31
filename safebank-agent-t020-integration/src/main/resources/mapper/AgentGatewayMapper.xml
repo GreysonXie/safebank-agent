@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.AgentGatewayMapper">
+<resultMap id="AgentGatewayTurnEntity" type="cn.safebank.entity.AgentGatewayTurnEntity">
+<result column="turn_id" property="turnId"/>
+<result column="conversation_id" property="conversationId"/>
+<result column="user_id" property="userId"/>
+<result column="request_id" property="requestId"/>
+<result column="user_text" property="userText"/>
+<result column="result_hash" property="resultHash"/>
+<result column="result_json" property="resultJson"/>
+<result column="state" property="state"/>
+<result column="input_version" property="inputVersion"/>
+<result column="output_version" property="outputVersion"/>
+<result column="reconcile_failures" property="reconcileFailures"/>
+<result column="session_expires_at" property="sessionExpiresAt"/>
+<result column="next_check_at" property="nextCheckAt"/>
+<result column="created_at" property="createdAt"/>
+</resultMap>
+<sql id="AgentGatewayTurnEntityColumns">turn_id,conversation_id,user_id,request_id,user_text,result_hash,result_json,state,input_version,output_version,reconcile_failures,session_expires_at,next_check_at,created_at</sql>
+<insert id="insertGateway">INSERT INTO agent_gateway_turns(<include refid="AgentGatewayTurnEntityColumns"/>) VALUES(#{turnId},#{conversationId},#{userId},#{requestId},#{userText},#{resultHash},#{resultJson},#{state},#{inputVersion},#{outputVersion},#{reconcileFailures},#{sessionExpiresAt},#{nextCheckAt},#{createdAt})</insert>
+<resultMap id="AgentServiceGrantEntity" type="cn.safebank.entity.AgentServiceGrantEntity">
+<result column="id" property="id"/>
+<result column="token_hash" property="tokenHash"/>
+<result column="user_id" property="userId"/>
+<result column="conversation_id" property="conversationId"/>
+<result column="turn_id" property="turnId"/>
+<result column="request_id" property="requestId"/>
+<result column="scope_json" property="scopeJson"/>
+<result column="state" property="state"/>
+<result column="call_limit" property="callLimit"/>
+<result column="calls_used" property="callsUsed"/>
+<result column="created_at" property="createdAt"/>
+<result column="expires_at" property="expiresAt"/>
+</resultMap>
+<sql id="AgentServiceGrantEntityColumns">id,token_hash,user_id,conversation_id,turn_id,request_id,scope_json,state,call_limit,calls_used,created_at,expires_at</sql>
+<insert id="insertGrant">INSERT INTO agent_service_grants(<include refid="AgentServiceGrantEntityColumns"/>) VALUES(#{id},#{tokenHash},#{userId},#{conversationId},#{turnId},#{requestId},#{scopeJson},#{state},#{callLimit},#{callsUsed},#{createdAt},#{expiresAt})</insert>
+<resultMap id="AgentToolCallReceiptEntity" type="cn.safebank.entity.AgentToolCallReceiptEntity">
+<result column="id" property="id"/>
+<result column="turn_id" property="turnId"/>
+<result column="conversation_id" property="conversationId"/>
+<result column="user_id" property="userId"/>
+<result column="operation_key" property="operationKey"/>
+<result column="input_hash" property="inputHash"/>
+<result column="tool_name" property="toolName"/>
+<result column="grant_id" property="grantId"/>
+<result column="result_json" property="resultJson"/>
+<result column="result_hash" property="resultHash"/>
+<result column="observed_at" property="observedAt"/>
+</resultMap>
+<sql id="AgentToolCallReceiptEntityColumns">id,turn_id,conversation_id,user_id,operation_key,input_hash,tool_name,grant_id,result_json,result_hash,observed_at</sql>
+<insert id="insertReceipt">INSERT INTO agent_tool_call_receipts(<include refid="AgentToolCallReceiptEntityColumns"/>) VALUES(#{id},#{turnId},#{conversationId},#{userId},#{operationKey},#{inputHash},#{toolName},#{grantId},#{resultJson},#{resultHash},#{observedAt})</insert>
+<select id="gateway" resultMap="AgentGatewayTurnEntity">SELECT <include refid="AgentGatewayTurnEntityColumns"/> FROM agent_gateway_turns WHERE turn_id=#{turnId}</select>
+<update id="updateGateway">UPDATE agent_gateway_turns SET result_hash=#{resultHash},result_json=#{resultJson},output_version=#{outputVersion},reconcile_failures=#{reconcileFailures},next_check_at=#{nextCheckAt},state=#{state} WHERE turn_id=#{turnId} AND user_id=#{userId} AND conversation_id=#{conversationId} AND input_version=#{inputVersion}</update>
+<select id="lockTurn" resultMap="cn.safebank.dao.AgentTurnReceiptMapper.row">SELECT <include refid="cn.safebank.dao.AgentTurnReceiptMapper.columns"/> FROM agent_turn_receipts WHERE id=#{turnId} AND user_id=#{userId} FOR UPDATE</select>
+<select id="grant" resultMap="AgentServiceGrantEntity">SELECT <include refid="AgentServiceGrantEntityColumns"/> FROM agent_service_grants WHERE token_hash=#{tokenHash}</select>
+<update id="revoke">UPDATE agent_service_grants SET state='REVOKED' WHERE user_id=#{userId} AND turn_id=#{turnId} AND state='ACTIVE'</update>
+<update id="useGrant">UPDATE agent_service_grants SET calls_used=calls_used+1 WHERE id=#{id} AND state='ACTIVE' AND calls_used&lt;call_limit</update>
+<select id="receipt" resultMap="AgentToolCallReceiptEntity">SELECT <include refid="AgentToolCallReceiptEntityColumns"/> FROM agent_tool_call_receipts WHERE turn_id=#{turnId} AND operation_key=#{key} FOR UPDATE</select>
+<select id="receipts" resultMap="AgentToolCallReceiptEntity">SELECT <include refid="AgentToolCallReceiptEntityColumns"/> FROM agent_tool_call_receipts WHERE turn_id=#{turnId} ORDER BY observed_at,id FOR UPDATE</select>
+<select id="latestReceiptByTool" resultMap="AgentToolCallReceiptEntity">SELECT <include refid="AgentToolCallReceiptEntityColumns"/> FROM agent_tool_call_receipts WHERE user_id=#{userId} AND conversation_id=#{conversationId} AND tool_name=#{toolName} ORDER BY observed_at DESC,id DESC LIMIT 1</select>
+<select id="due" resultMap="AgentGatewayTurnEntity">SELECT <include refid="AgentGatewayTurnEntityColumns"/> FROM agent_gateway_turns WHERE state IN ('PENDING','ACK_PENDING','PAUSED') AND next_check_at&lt;=#{now} ORDER BY next_check_at,turn_id LIMIT 100</select>
+<select id="lockGateway" resultMap="AgentGatewayTurnEntity">SELECT <include refid="AgentGatewayTurnEntityColumns"/> FROM agent_gateway_turns WHERE turn_id=#{turnId} FOR UPDATE</select>
+<select id="grantCurrent" resultMap="AgentServiceGrantEntity">SELECT <include refid="AgentServiceGrantEntityColumns"/> FROM agent_service_grants WHERE token_hash=#{tokenHash} FOR UPDATE</select>
+<select id="pendingAck" resultType="string">SELECT turn_id FROM agent_gateway_turns WHERE user_id=#{userId} AND conversation_id=#{conversationId} AND output_version IS NOT NULL AND state&lt;&gt;'ACKED' FOR UPDATE</select>
+</mapper>

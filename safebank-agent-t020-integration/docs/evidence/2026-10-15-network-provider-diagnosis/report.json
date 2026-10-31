@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-15",
+  "nonGeneratingChecks": {
+    "proxyEnvironmentPresent": false,
+    "environmentRoute": {
+      "modelsUnauthenticated": 401,
+      "balanceUnauthenticated": 401
+    },
+    "directRoute": {
+      "modelsUnauthenticated": 401,
+      "balanceUnauthenticated": 401
+    },
+    "authenticatedModelsStatus": 200,
+    "authenticatedBalanceStatus": 200,
+    "accountAvailable": true,
+    "listedModels": [
+      "deepseek-flash",
+      "deepseek-v4-pro"
+    ]
+  },
+  "officialStatusAtCheck": "Flash API / chat partially unavailable, investigating",
+  "statusSource": "https://status.deepseek.com/",
+  "compatibilitySource": "https://api-docs.deepseek.com/quick_start/pricing/",
+  "compatibility": "Legacy deepseek-v4-flash still accepted and routed to V4.1 Flash; absence from list alone does not prove invalid request model",
+  "providerGenerationSends": 0,
+  "regressions": {
+    "pythonPassed": 24
+  },
+  "budgetLedgerSha256": "7f89da935e817b1ec24671851855227195dd561e0f62302001f54ec8234e2c69",
+  "cumulativeReservedCny": "5.557512",
+  "capCny": "6.00",
+  "scopeLimitation": "Read-only endpoints reachable and official incident observed; specific old timeout cannot conclusively be attributed to incident. No post-recovery live business acceptance claimed."
+}

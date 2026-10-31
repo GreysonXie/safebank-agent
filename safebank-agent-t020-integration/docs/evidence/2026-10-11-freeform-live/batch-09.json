@@ -1,0 +1,534 @@
+{
+  "phase": 9,
+  "stage": {
+    "state": "LAUNCHED",
+    "cap": 16,
+    "balanceBeforeCny": "7.47",
+    "historicalUpperCny": "1.656296",
+    "unknownReserved": 1,
+    "history": [
+      {
+        "file": "20261011-money4-context.json",
+        "calls": 19,
+        "sha256": "a443ea221d4af59f3996c0f4e69964fe3e8733b7155aeee0f25e97933c627b1f"
+      },
+      {
+        "file": "20261011-mandate-followup-context.json",
+        "calls": 11,
+        "sha256": "0a8106299ca6838175064909f09e97bc8691a916ac79a3d4a30dacd4b099a847"
+      },
+      {
+        "file": "20261011-volume-01-context.json",
+        "calls": 8,
+        "sha256": "61ee6e6f1b83b0ed17133197f53cb3cc057fa3f65483723fb127d353ea221f51"
+      },
+      {
+        "file": "20261011-volume-02-context.json",
+        "calls": 8,
+        "sha256": "731472f6ea817153b67af56a7112da5c982d82cabc510000b80a91ccf170454b"
+      },
+      {
+        "file": "20261011-volume-03-context.json",
+        "calls": 11,
+        "sha256": "02ec4041da6da1152bbdb2d5a6408007029c8bad4c792af2bbb7eeaccc4d0ad3"
+      },
+      {
+        "file": "20261011-volume-04-context.json",
+        "calls": 9,
+        "sha256": "89c4c3a45825742749d7e8699e498a70d19d9e9fff4149931553eee58563677b"
+      },
+      {
+        "file": "20261011-volume-05-context.json",
+        "calls": 8,
+        "sha256": "ddc553bb6bad62c9d34c94b9dd4f23e95b7479db2dd9aed8d1a9569b4eefda9a"
+      },
+      {
+        "file": "20261011-volume-06-context.json",
+        "calls": 9,
+        "sha256": "80867db3ad616a333d65ef3459c694845141d68bc94c8c2e53bf405eeb9c1553"
+      },
+      {
+        "file": "20261011-contract-fix-01-context.json",
+        "calls": 7,
+        "sha256": "aa64d9739a7089e5d81d699df2c3c7e401fede45337ddfd7b0f1612235d85340"
+      },
+      {
+        "file": "20261011-contract-fix-02-context.json",
+        "calls": 6,
+        "sha256": "97f60aa26a3a5bbd947d4a7ea82d20de43f2d9a9e0a545a3a8306f5996d0f5ed"
+      },
+      {
+        "file": "20261011-contract-fix-03-context.json",
+        "calls": 7,
+        "sha256": "b5a502eea850188b93ae91cbd4760190d4fac20059f49c1f046fa2b0ba8527c3"
+      },
+      {
+        "file": "20261011-contract-fix-04-context.json",
+        "calls": 3,
+        "sha256": "2282802599b91d2f53f8dd178d0dd5b96f8bc3d92f1987e3c632bf7a08805c36"
+      },
+      {
+        "file": "20261011-contract-fix-05-context.json",
+        "calls": 3,
+        "sha256": "42e76462d6211eab5f38e3b3790afeb603e7bbe9be40181a4ffdb968c26c74c3"
+      },
+      {
+        "file": "20261011-contract-fix-06-context.json",
+        "calls": 3,
+        "sha256": "276a82ec4537d7ca58e76045c07bb683d9cb6a9b4f35e653f264d1ba79b45f6a"
+      },
+      {
+        "file": "20261011-contract-fix-07-context.json",
+        "calls": 7,
+        "sha256": "f325f23ac4f174742b5de9c33bbff83b8e643fbab2f7e8a3bb48404e0fe8da8d"
+      },
+      {
+        "file": "20261011-contract-fix-08-context.json",
+        "calls": 5,
+        "sha256": "20e05cb365086885f0d4bb63b418486741bde6b8df021eec2d06c80722a954e8"
+      }
+    ],
+    "phase": "20261011-contract-fix-09",
+    "ledger": "D:\\2.临时消息文件\\研一\\深金赛\\safebank-agent\\.superpowers\\deepseek-v06-debug\\20261011-contract-fix-09-context.json",
+    "guard": "D:\\2.临时消息文件\\研一\\深金赛\\safebank-agent\\.worktrees\\v07-python-langgraph-mysql\\.superpowers\\sdd\\2026-10-10-v07-langgraph-agent-implementation\\20261011-contract-fix-09-money.json",
+    "ratesUpperPerMillionCny": {
+      "input": 4,
+      "output": 12
+    },
+    "batchCapCny": ".30",
+    "priceSource": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/"
+  },
+  "syntheticOnly": true,
+  "cases": [
+    {
+      "case": 1,
+      "question": "分析2026-09账单，先告诉我支出和入账分别多少，退款怎么算。",
+      "confirmedMandateQuery": false,
+      "conversationId": "dc387239-1d38-4f1c-84fb-726698454a58",
+      "httpStatus": 200,
+      "errorCode": null,
+      "answer": "2026-09的支出合计为5,369.33元，入账合计为11,700.00元，当月净结余为6,330.67元。支出与入账之比约为45.89%。\n\n退款方面，入账口径包含退款等非工资入账。例如2026-09-02有一笔〔家电退款（合成）〕入账3,200.00元，已计入入账和净结余；但正向退款不抵减支出合计，所以支出合计仍按负向非内部转账统计。此外，本人账户内部转账不计入收支，如2026-09-06的〔旅游基金转出（合成）〕-1,000.00元和对应的转入，均不影响收支合计。需要逐笔核对时可继续告诉我。",
+      "elapsedSeconds": 6.33,
+      "contextVersion": 2,
+      "calls": [
+        {
+          "purpose": "plan",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 869,
+            "completion_tokens": 23,
+            "total_tokens": 892,
+            "prompt_cache_hit_tokens": 640,
+            "prompt_cache_miss_tokens": 229
+          }
+        },
+        {
+          "purpose": "draft",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 9419,
+            "completion_tokens": 261,
+            "total_tokens": 9680,
+            "prompt_cache_hit_tokens": 1536,
+            "prompt_cache_miss_tokens": 7883
+          }
+        }
+      ],
+      "turnId": "7f37851c-feda-422e-ada1-25842399b767",
+      "runState": "COMPLETED",
+      "runError": null,
+      "modelEffects": {
+        "draft": {
+          "content": {
+            "answer": "2026-09的支出合计为{{statement_2026_09.expense_minor}}，入账合计为{{statement_2026_09.income_minor}}，当月净结余为{{statement_2026_09.analysis.net_minor}}。支出与入账之比约为{{statement_2026_09.analysis.expense_income_percent}}。\n\n退款方面，入账口径包含退款等非工资入账。例如{{statement_2026_09.transactions.1.booked_on}}有一笔{{statement_2026_09.transactions.1.merchant}}入账{{statement_2026_09.transactions.1.amount_minor}}，已计入入账和净结余；但正向退款不抵减支出合计，所以支出合计仍按负向非内部转账统计。此外，本人账户内部转账不计入收支，如{{statement_2026_09.transactions.4.booked_on}}的{{statement_2026_09.transactions.4.merchant}}{{statement_2026_09.transactions.4.amount_minor}}和对应的转入，均不影响收支合计。需要逐笔核对时可继续告诉我。",
+            "kind": "analysis"
+          },
+          "finish_reason": "stop",
+          "id": "5165e164-639b-4521-8aa8-cdd1d08e458a",
+          "model": "deepseek-flash",
+          "raw_content": "{\"kind\":\"analysis\",\"answer\":\"2026-09的支出合计为{{statement_2026_09.expense_minor}}，入账合计为{{statement_2026_09.income_minor}}，当月净结余为{{statement_2026_09.analysis.net_minor}}。支出与入账之比约为{{statement_2026_09.analysis.expense_income_percent}}。\\n\\n退款方面，入账口径包含退款等非工资入账。例如{{statement_2026_09.transactions.1.booked_on}}有一笔{{statement_2026_09.transactions.1.merchant}}入账{{statement_2026_09.transactions.1.amount_minor}}，已计入入账和净结余；但正向退款不抵减支出合计，所以支出合计仍按负向非内部转账统计。此外，本人账户内部转账不计入收支，如{{statement_2026_09.transactions.4.booked_on}}的{{statement_2026_09.transactions.4.merchant}}{{statement_2026_09.transactions.4.amount_minor}}和对应的转入，均不影响收支合计。需要逐笔核对时可继续告诉我。\"}",
+          "usage": {
+            "completion_tokens": 261,
+            "prompt_cache_hit_tokens": 1536,
+            "prompt_cache_miss_tokens": 7883,
+            "prompt_tokens": 9419,
+            "prompt_tokens_details": {
+              "cached_tokens": 1536
+            },
+            "total_tokens": 9680
+          }
+        },
+        "plan": {
+          "content": {
+            "kind": "analysis",
+            "tools": [
+              {
+                "args": {
+                  "month": "2026-09"
+                },
+                "tool": "statement"
+              }
+            ]
+          },
+          "finish_reason": "stop",
+          "id": "a697d531-f8ad-474c-981e-99a2a5fd6fa7",
+          "model": "deepseek-flash",
+          "raw_content": "{\"kind\":\"analysis\",\"tools\":[{\"tool\":\"statement\",\"args\":{\"month\":\"2026-09\"}}]}",
+          "usage": {
+            "completion_tokens": 23,
+            "prompt_cache_hit_tokens": 640,
+            "prompt_cache_miss_tokens": 229,
+            "prompt_tokens": 869,
+            "prompt_tokens_details": {
+              "cached_tokens": 640
+            },
+            "total_tokens": 892
+          }
+        }
+      }
+    },
+    {
+      "case": 2,
+      "question": "刚才我关心的不是总览，只核对最大的那笔支出，哪些信息还需要我确认？",
+      "confirmedMandateQuery": false,
+      "conversationId": "dc387239-1d38-4f1c-84fb-726698454a58",
+      "httpStatus": 200,
+      "errorCode": null,
+      "answer": "您2026年9月最大的单笔支出是2026-09-01的居住类交易，商户为〔租金（合成）〕，金额-2,500.00元（支出记2,500.00元）。需要您确认：这笔款项对应的具体用途（如租期、房源或收款方）、是否有合同或收据凭证，以及金额构成是否与约定一致。该笔是按单笔支出达到2000元的门槛筛出的候选单笔支出达到 2000 元，仅为候选，不能推断欺诈；本人账户内部转账不计收入支出，并非欺诈或异常结论。实际交易请以对应账单核对。",
+      "elapsedSeconds": 5.48,
+      "contextVersion": 3,
+      "calls": [
+        {
+          "purpose": "plan",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 911,
+            "completion_tokens": 23,
+            "total_tokens": 934,
+            "prompt_cache_hit_tokens": 768,
+            "prompt_cache_miss_tokens": 143
+          }
+        },
+        {
+          "purpose": "draft",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 4124,
+            "completion_tokens": 174,
+            "total_tokens": 4298,
+            "prompt_cache_hit_tokens": 3840,
+            "prompt_cache_miss_tokens": 284
+          }
+        }
+      ],
+      "turnId": "90fcba50-f0e5-4573-bea7-c39c4afb9fa9",
+      "runState": "COMPLETED",
+      "runError": null,
+      "modelEffects": {
+        "draft": {
+          "content": {
+            "answer": "您2026年9月最大的单笔支出是2026-09-01的居住类交易，商户为{{statement_2026_09.anomaly_candidates.0.merchant}}，金额{{statement_2026_09.anomaly_candidates.0.amount_minor}}（支出记{{statement_2026_09.anomaly_candidates.0.spending_minor}}）。需要您确认：这笔款项对应的具体用途（如租期、房源或收款方）、是否有合同或收据凭证，以及金额构成是否与约定一致。该笔是按单笔支出达到2000元的门槛筛出的候选{{statement_2026_09.anomaly_rule}}，并非欺诈或异常结论。实际交易请以对应账单核对。",
+            "kind": "analysis"
+          },
+          "finish_reason": "stop",
+          "id": "607732b4-48c6-4a28-a39c-224b40269743",
+          "model": "deepseek-flash",
+          "raw_content": "{\"kind\":\"analysis\",\"answer\":\"您2026年9月最大的单笔支出是2026-09-01的居住类交易，商户为{{statement_2026_09.anomaly_candidates.0.merchant}}，金额{{statement_2026_09.anomaly_candidates.0.amount_minor}}（支出记{{statement_2026_09.anomaly_candidates.0.spending_minor}}）。需要您确认：这笔款项对应的具体用途（如租期、房源或收款方）、是否有合同或收据凭证，以及金额构成是否与约定一致。该笔是按单笔支出达到2000元的门槛筛出的候选{{statement_2026_09.anomaly_rule}}，并非欺诈或异常结论。实际交易请以对应账单核对。\"}",
+          "usage": {
+            "completion_tokens": 174,
+            "prompt_cache_hit_tokens": 3840,
+            "prompt_cache_miss_tokens": 284,
+            "prompt_tokens": 4124,
+            "prompt_tokens_details": {
+              "cached_tokens": 3840
+            },
+            "total_tokens": 4298
+          }
+        },
+        "plan": {
+          "content": {
+            "kind": "analysis",
+            "tools": [
+              {
+                "args": {
+                  "month": "2026-09"
+                },
+                "tool": "statement"
+              }
+            ]
+          },
+          "finish_reason": "stop",
+          "id": "39e197c6-afb1-43cc-82ff-ea31e0967388",
+          "model": "deepseek-flash",
+          "raw_content": "{\"kind\":\"analysis\",\"tools\":[{\"tool\":\"statement\",\"args\":{\"month\":\"2026-09\"}}]}",
+          "usage": {
+            "completion_tokens": 23,
+            "prompt_cache_hit_tokens": 768,
+            "prompt_cache_miss_tokens": 143,
+            "prompt_tokens": 911,
+            "prompt_tokens_details": {
+              "cached_tokens": 768
+            },
+            "total_tokens": 934
+          }
+        }
+      }
+    },
+    {
+      "case": 3,
+      "question": "改成比较2026-08和2026-09，退款不要直接抵减支出。",
+      "confirmedMandateQuery": false,
+      "conversationId": "dc387239-1d38-4f1c-84fb-726698454a58",
+      "httpStatus": 200,
+      "errorCode": null,
+      "answer": "2026-09支出合计5,369.33元，2026-08支出合计6,547.92元；2026-09较2026-08减少1,178.59元，变化幅度18%，方向为-18%。按你的口径，入账中的退款不抵减上述支出合计，支出仅统计负向非内部转账。\n\n分类变化较大的有：维修增加2,000.00元（2,000.00元对0.00元）；购物减少3,200.00元（0.00元对3,200.00元）；餐饮增加13.27元。居住、订阅、通信、公用事业、日用品、交通、配送变化相对较小。两个月的使用记录均显示缺少相关数据，无法据此判断消费频率或使用情况。",
+      "elapsedSeconds": 6.22,
+      "contextVersion": 4,
+      "calls": [
+        {
+          "purpose": "plan",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 910,
+            "completion_tokens": 34,
+            "total_tokens": 944,
+            "prompt_cache_hit_tokens": 768,
+            "prompt_cache_miss_tokens": 142
+          }
+        },
+        {
+          "purpose": "draft",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 8432,
+            "completion_tokens": 499,
+            "total_tokens": 8931,
+            "prompt_cache_hit_tokens": 1536,
+            "prompt_cache_miss_tokens": 6896
+          }
+        }
+      ],
+      "turnId": "c008dad4-a1bf-4ca7-81c5-2756b94bfc8d",
+      "runState": "COMPLETED",
+      "runError": null,
+      "modelEffects": {
+        "plan": {
+          "content": {
+            "kind": "analysis",
+            "tools": [
+              {
+                "args": {
+                  "comparisonMonth": "2026-08",
+                  "month": "2026-09"
+                },
+                "tool": "statement_compare"
+              }
+            ]
+          },
+          "finish_reason": "stop",
+          "id": "07edc86d-6857-43d8-aae7-5f2bf0f1c1f7",
+          "model": "deepseek-flash",
+          "raw_content": "{\"kind\":\"analysis\",\"tools\":[{\"tool\":\"statement_compare\",\"args\":{\"month\":\"2026-09\",\"comparisonMonth\":\"2026-08\"}}]}",
+          "usage": {
+            "completion_tokens": 34,
+            "prompt_cache_hit_tokens": 768,
+            "prompt_cache_miss_tokens": 142,
+            "prompt_tokens": 910,
+            "prompt_tokens_details": {
+              "cached_tokens": 768
+            },
+            "total_tokens": 944
+          }
+        },
+        "draft": {
+          "content": {
+            "answer": "2026-09支出合计{{statement_2026_09.expense_minor}}，2026-08支出合计{{statement_2026_08.expense_minor}}；2026-09较2026-08{{comparison.statement_2026_09_vs_2026_08.expense_direction}}{{comparison.statement_2026_09_vs_2026_08.expense_difference_magnitude_minor}}，变化幅度{{comparison.statement_2026_09_vs_2026_08.expense_change_magnitude_percent}}，方向为{{comparison.statement_2026_09_vs_2026_08.expense_change_percent}}。按你的口径，入账中的退款不抵减上述支出合计，支出仅统计负向非内部转账。\n\n分类变化较大的有：维修{{comparison.statement_2026_09_vs_2026_08.categories.维修.direction}}{{comparison.statement_2026_09_vs_2026_08.categories.维修.difference_magnitude_minor}}（{{comparison.statement_2026_09_vs_2026_08.categories.维修.newer_minor}}对{{comparison.statement_2026_09_vs_2026_08.categories.维修.older_minor}}）；购物{{comparison.statement_2026_09_vs_2026_08.categories.购物.direction}}{{comparison.statement_2026_09_vs_2026_08.categories.购物.difference_magnitude_minor}}（{{comparison.statement_2026_09_vs_2026_08.categories.购物.newer_minor}}对{{comparison.statement_2026_09_vs_2026_08.categories.购物.older_minor}}）；餐饮{{comparison.statement_2026_09_vs_2026_08.categories.餐饮.direction}}{{comparison.statement_2026_09_vs_2026_08.categories.餐饮.difference_magnitude_minor}}。居住、订阅、通信、公用事业、日用品、交通、配送变化相对较小。两个月的使用记录均显示缺少相关数据，无法据此判断消费频率或使用情况。",
+            "kind": "analysis"
+          },
+          "finish_reason": "stop",
+          "id": "18b48242-c050-43ea-85b7-4ec18761f60b",
+          "model": "deepseek-flash",
+          "raw_content": "{\"kind\":\"analysis\",\"answer\":\"2026-09支出合计{{statement_2026_09.expense_minor}}，2026-08支出合计{{statement_2026_08.expense_minor}}；2026-09较2026-08{{comparison.statement_2026_09_vs_2026_08.expense_direction}}{{comparison.statement_2026_09_vs_2026_08.expense_difference_magnitude_minor}}，变化幅度{{comparison.statement_2026_09_vs_2026_08.expense_change_magnitude_percent}}，方向为{{comparison.statement_2026_09_vs_2026_08.expense_change_percent}}。按你的口径，入账中的退款不抵减上述支出合计，支出仅统计负向非内部转账。\\n\\n分类变化较大的有：维修{{comparison.statement_2026_09_vs_2026_08.categories.维修.direction}}{{comparison.statement_2026_09_vs_2026_08.categories.维修.difference_magnitude_minor}}（{{comparison.statement_2026_09_vs_2026_08.categories.维修.newer_minor}}对{{comparison.statement_2026_09_vs_2026_08.categories.维修.older_minor}}）；购物{{comparison.statement_2026_09_vs_2026_08.categories.购物.direction}}{{comparison.statement_2026_09_vs_2026_08.categories.购物.difference_magnitude_minor}}（{{comparison.statement_2026_09_vs_2026_08.categories.购物.newer_minor}}对{{comparison.statement_2026_09_vs_2026_08.categories.购物.older_minor}}）；餐饮{{comparison.statement_2026_09_vs_2026_08.categories.餐饮.direction}}{{comparison.statement_2026_09_vs_2026_08.categories.餐饮.difference_magnitude_minor}}。居住、订阅、通信、公用事业、日用品、交通、配送变化相对较小。两个月的使用记录均显示缺少相关数据，无法据此判断消费频率或使用情况。\"}",
+          "usage": {
+            "completion_tokens": 499,
+            "prompt_cache_hit_tokens": 1536,
+            "prompt_cache_miss_tokens": 6896,
+            "prompt_tokens": 8432,
+            "prompt_tokens_details": {
+              "cached_tokens": 1536
+            },
+            "total_tokens": 8931
+          }
+        }
+      }
+    },
+    {
+      "case": 4,
+      "question": "季度安全服务和视频服务相比，哪个是按月收费？金额分别是多少？",
+      "confirmedMandateQuery": true,
+      "conversationId": "dc387239-1d38-4f1c-84fb-726698454a58",
+      "httpStatus": 200,
+      "errorCode": null,
+      "answer": "〔视频服务（合成）〕〔视频服务（合成）〕是按月收费，约定单期金额为68.00元；〔季度安全服务（合成）〕〔季度安全服务（合成）〕是约定按季度收费，单期金额为180.00元。\n\n两项当前均为银行侧授权有效状态。〔季度安全服务（合成）〕的费用为按季度收取，不能据此推断已发生定期扣款；实际交易请以对应账单核对。",
+      "elapsedSeconds": 4.92,
+      "contextVersion": 5,
+      "calls": [
+        {
+          "purpose": "plan",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 923,
+            "completion_tokens": 25,
+            "total_tokens": 948,
+            "prompt_cache_hit_tokens": 768,
+            "prompt_cache_miss_tokens": 155
+          }
+        },
+        {
+          "purpose": "draft",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 2407,
+            "completion_tokens": 95,
+            "total_tokens": 2502,
+            "prompt_cache_hit_tokens": 2176,
+            "prompt_cache_miss_tokens": 231
+          }
+        }
+      ],
+      "turnId": "7b79a482-363a-4cd1-a1d9-73ad7e0ce55e",
+      "runState": "COMPLETED",
+      "runError": null,
+      "modelEffects": {
+        "plan": {
+          "content": {
+            "kind": "analysis",
+            "question": "",
+            "tools": [
+              {
+                "args": {},
+                "tool": "mandate_receipt"
+              }
+            ]
+          },
+          "finish_reason": "stop",
+          "id": "a5fa7c01-2a68-496d-a880-3e2a9897b29a",
+          "model": "deepseek-flash",
+          "raw_content": "{\"kind\":\"analysis\",\"tools\":[{\"tool\":\"mandate_receipt\",\"args\":{}}],\"question\":\"\"}",
+          "usage": {
+            "completion_tokens": 25,
+            "prompt_cache_hit_tokens": 768,
+            "prompt_cache_miss_tokens": 155,
+            "prompt_tokens": 923,
+            "prompt_tokens_details": {
+              "cached_tokens": 768
+            },
+            "total_tokens": 948
+          }
+        },
+        "draft": {
+          "content": {
+            "answer": "视频服务〔视频服务（合成）〕是按月收费，约定单期金额为68.00元；季度安全服务〔季度安全服务（合成）〕是约定按季度收费，单期金额为180.00元。\n\n两项当前均为银行侧授权有效状态。季度安全服务的费用为按季度收取，不能据此推断已发生定期扣款；实际交易请以对应账单核对。",
+            "kind": "analysis"
+          },
+          "finish_reason": "stop",
+          "id": "3f1ed6e6-b116-4380-87c1-9cd07c352796",
+          "model": "deepseek-flash",
+          "raw_content": "{\"kind\":\"analysis\",\"answer\":\"视频服务〔视频服务（合成）〕是按月收费，约定单期金额为68.00元；季度安全服务〔季度安全服务（合成）〕是约定按季度收费，单期金额为180.00元。\\n\\n两项当前均为银行侧授权有效状态。季度安全服务的费用为按季度收取，不能据此推断已发生定期扣款；实际交易请以对应账单核对。\"}",
+          "usage": {
+            "completion_tokens": 95,
+            "prompt_cache_hit_tokens": 2176,
+            "prompt_cache_miss_tokens": 231,
+            "prompt_tokens": 2407,
+            "prompt_tokens_details": {
+              "cached_tokens": 2176
+            },
+            "total_tokens": 2502
+          }
+        }
+      }
+    },
+    {
+      "case": 5,
+      "question": "那季度安全服务能不能当成每月已经扣60元？请纠正这种说法。",
+      "confirmedMandateQuery": false,
+      "conversationId": "dc387239-1d38-4f1c-84fb-726698454a58",
+      "httpStatus": 400,
+      "errorCode": "AGENT_REVIEW_REQUIRED",
+      "answer": null,
+      "elapsedSeconds": 3.09,
+      "contextVersion": null,
+      "calls": [
+        {
+          "purpose": "plan",
+          "success": true,
+          "finished": true,
+          "usage": {
+            "prompt_tokens": 905,
+            "completion_tokens": 21,
+            "total_tokens": 926,
+            "prompt_cache_hit_tokens": 768,
+            "prompt_cache_miss_tokens": 137
+          }
+        },
+        {
+          "purpose": "draft",
+          "success": false,
+          "finished": false,
+          "usage": null
+        }
+      ],
+      "turnId": "4d147449-f91e-41fd-aafc-16aa0fd0c970",
+      "runState": "RECONCILIATION_REQUIRED",
+      "runError": "MODEL_EFFECT_UNKNOWN",
+      "modelEffects": {
+        "plan": {
+          "content": {
+            "kind": "analysis",
+            "tools": [
+              {
+                "args": {},
+                "tool": "mandate_receipt"
+              }
+            ]
+          },
+          "finish_reason": "stop",
+          "id": "a0fed463-3e15-41ce-a754-fe2a047276f7",
+          "model": "deepseek-flash",
+          "raw_content": "{\"kind\":\"analysis\",\"tools\":[{\"tool\":\"mandate_receipt\",\"args\":{}}]}",
+          "usage": {
+            "completion_tokens": 21,
+            "prompt_cache_hit_tokens": 768,
+            "prompt_cache_miss_tokens": 137,
+            "prompt_tokens": 905,
+            "prompt_tokens_details": {
+              "cached_tokens": 768
+            },
+            "total_tokens": 926
+          }
+        }
+      }
+    }
+  ],
+  "requests": 10,
+  "moneyGuard": {
+    "balanceBefore": "7.84",
+    "capCny": 4,
+    "priorReservedCny": "1.656296",
+    "reservations": 9,
+    "requests": [],
+    "batchCapCny": ".30",
+    "conservativeReservedCny": "3.906296",
+    "guardLoaded": true
+  },
+  "historyUnchanged": true,
+  "stoppedReason": "Uncertain call; no replay"
+}

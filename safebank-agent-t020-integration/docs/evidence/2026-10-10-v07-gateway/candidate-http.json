@@ -1,0 +1,13 @@
+{
+  "realDeepSeekCalls": 0,
+  "replayVersionPreserved": true,
+  "comparisonEvidencePanels": 2,
+  "runAckMaxBytes": 65536,
+  "seedReimported": false,
+  "mode": "FAKE_AGENT",
+  "comparisonVersion": 3,
+  "statementExpenseMinor": 536933,
+  "port": 8132,
+  "statementEvidencePanels": 1,
+  "fakeBankCallbackMaxBytes": 262144
+}

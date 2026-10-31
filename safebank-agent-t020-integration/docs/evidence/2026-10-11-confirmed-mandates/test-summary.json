@@ -1,0 +1,10 @@
+{
+  "javaMySql": {"tests":33,"failures":0,"errors":0,"skipped":0},
+  "pythonMandate": {"tests":6,"failures":0},
+  "nodeConversationBinding": {"tests":5,"failures":0},
+  "rrRegressionBeforeFix": {"tests":11,"failures":2,"errors":0},
+  "clientSuiteInitial": {"tests":48,"errors":2},
+  "clientOracleRetry": {"tests":2,"failures":0,"errors":0},
+  "providerHTTPCallsThisStage":0,
+  "notes":"Initial client-suite Java oracle returned empty stdout in two cases; bounded rerun passed, cause not established. RR regression reproduced on application-managed MySQL connection, then passed with current locking reads."
+}

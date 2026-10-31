@@ -1,0 +1,11 @@
+{
+  "name": "safebank-ui-checks",
+  "private": true,
+  "scripts": {
+    "test:ui": "node --test src/test/js/*.test.cjs",
+    "version:ui": "node scripts/version-ui.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
+}

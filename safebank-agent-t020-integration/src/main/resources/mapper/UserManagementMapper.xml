@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.UserManagementMapper">
+    <resultMap id="managedUser" type="cn.safebank.dao.projection.ManagedUserRow">
+        <constructor>
+            <idArg column="id" javaType="string"/>
+            <arg column="name" javaType="string"/>
+            <arg column="phone" javaType="string"/>
+            <arg column="gender" javaType="string"/>
+            <arg column="note" javaType="string"/>
+            <arg column="account_id" javaType="string"/>
+            <arg column="account_label" javaType="string"/>
+            <arg column="balance_minor" javaType="_long"/>
+            <arg column="account_user_id" javaType="string"/>
+            <arg column="savings_target" javaType="_boolean"/>
+        </constructor>
+    </resultMap>
+    <resultMap id="profile" type="cn.safebank.dao.projection.UserProfileRow">
+        <constructor>
+            <arg column="name" javaType="string"/>
+            <arg column="phone" javaType="string"/>
+            <arg column="gender" javaType="string"/>
+        </constructor>
+    </resultMap>
+    <select id="list" resultMap="managedUser">
+        SELECT r.id,r.name,r.phone,COALESCE(d.gender,'UNKNOWN') AS gender,r.note,r.account_id,a.label AS account_label,a.balance_minor,a.user_id AS account_user_id,
+            COALESCE(d.savings_target,CASE WHEN a.user_id=#{userId} THEN TRUE ELSE FALSE END) AS savings_target
+        FROM recipients r JOIN accounts a ON a.id=r.account_id
+        LEFT JOIN recipient_details d ON d.recipient_id=r.id AND d.user_id=r.user_id
+        WHERE r.user_id=#{userId} ORDER BY r.name,r.id
+    </select>
+    <select id="profile" resultMap="profile">SELECT name,phone,gender FROM user_profiles WHERE user_id=#{userId}</select>
+    <insert id="insertProfile">INSERT INTO user_profiles(user_id,name,phone,gender) VALUES(#{userId},#{name},#{phone},#{gender})</insert>
+    <update id="updateProfile">UPDATE user_profiles SET name=#{name},phone=#{phone},gender=#{gender} WHERE user_id=#{userId}</update>
+    <select id="detailCount" resultType="int">SELECT COUNT(*) FROM recipient_details WHERE user_id=#{userId} AND recipient_id=#{recipientId}</select>
+    <insert id="insertDetails">INSERT INTO recipient_details(recipient_id,user_id,gender,savings_target) VALUES(#{recipientId},#{userId},#{gender},#{savingsTarget})</insert>
+    <update id="updateDetails">UPDATE recipient_details SET gender=#{gender},savings_target=#{savingsTarget} WHERE recipient_id=#{recipientId} AND user_id=#{userId}</update>
+</mapper>

@@ -1,0 +1,19 @@
+{
+  "singleQuestionDelivered": true,
+  "javaAck": "ACKED",
+  "pythonState": "COMPLETED",
+  "outputVersionsMatch": 2,
+  "hashesMatch": true,
+  "providerCalls": 3,
+  "totalTokens": 11949,
+  "firstDraftRejectedForExtraBasis": true,
+  "boundedRewriteCount": 1,
+  "answerQualityRisks": [
+    "Unrelated revoked mandate mentioned",
+    "Internal QUARTERLY enum exposed",
+    "Verbose wording"
+  ],
+  "realGeneralizationProven": false,
+  "oldUnknownRequestUnchanged": true,
+  "cumulativeConservativeReservedCny": "2.35"
+}

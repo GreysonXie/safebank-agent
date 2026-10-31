@@ -1,0 +1,20 @@
+{
+  "runState": "RECONCILIATION_REQUIRED",
+  "errorCode": "INVALID_ANSWER",
+  "plan": {
+    "kind": "analysis",
+    "tools": [
+      {
+        "args": {
+          "month": "2026-09"
+        },
+        "tool": "statement"
+      }
+    ]
+  },
+  "modelDraft": {
+    "answer": "2026-09账单中最值得关注的是两笔大额支出。候选异常交易共{{statement_2026_09.anomaly_candidates.count}}笔：{{statement_2026_09.anomaly_candidates.0.booked_on}}的{{statement_2026_09.anomaly_candidates.0.merchant}}支出{{statement_2026_09.anomaly_candidates.0.spending_minor}}（居住类），以及{{statement_2026_09.anomaly_candidates.1.booked_on}}的{{statement_2026_09.anomaly_candidates.1.merchant}}支出{{statement_2026_09.anomaly_candidates.1.spending_minor}}（维修类）。两笔小额达标候选合计{{statement_2026_09.analysis.large_expense_total_minor}}，占当月支出{{statement_2026_09.analysis.large_expense_share_percent}}，集中度较高。\n\n按类别看，居住{{statement_2026_09.categories.居住}}占{{statement_2026_09.analysis.category_share_percent.居住}}、维修{{statement_2026_09.categories.维修}}占{{statement_2026_09.analysis.category_share_percent.维修}}，两项合计已近当月支出的八成以上，是月度支出的主要构成。相比之下，交通、订阅、通信等类别占比均在2%以内。\n\n建议：确认上述两笔的用途、报价与凭证（如租约、维修单据）。候选仅按单笔达到2000元筛选，不代表欺诈或风险结论。车辆维修、合同或通道等信息当前数据不足，无法推断。",
+    "clarification": "",
+    "kind": "analysis"
+  }
+}

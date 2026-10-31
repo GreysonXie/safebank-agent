@@ -1,0 +1,162 @@
+{
+  "scope": "real model multi-turn queries/advice/clarification; no authorization or financial execution",
+  "cases": 1,
+  "repeats": 1,
+  "turns": 1,
+  "model_request_budget": 6,
+  "model_requests_reserved_or_reported": 6,
+  "passed": 1,
+  "abort_reason": "Model request budget exhausted; remaining conversations not attempted",
+  "actual_token_usage": null,
+  "records": [
+    {
+      "case": "release_summary_comparison_followup",
+      "repeat": 1,
+      "turn": 1,
+      "prompt": "分析2026-09账单，并和2026-08比较支出，说明差额和降幅。",
+      "reply": "2026-09 账单概况\n\n当月支出合计 5,369.33元，入账合计 11,700.00元（该口径包含退款等非工资入账），净结余 6,330.67元，支出占入账 45.89%。另有账户内部转账 1,000.00元，不计入收入与支出。\n\n支出结构上，最大类别是居住 2,500.00元（占 46.56%），其次是维修 2,000.00元（占 37.25%），两项合计 4,500.00元，占比分别约 46.56% 和 37.25%。最小类别是交通 54.83元。订阅类支出 95.00元，占 1.77%。\n\n当月大额候选共 2 笔，合计 4,500.00元，占支出 83.81%：2026-09-01〔租金（合成）〕居住类 -2,500.00元；2026-09-10〔设备维修（合成）〕维修类 -2,000.00元。这只是按“单笔达 2000 元”门槛筛出的候选，不能据此判断是否欺诈；维修这笔的性质和凭证需要您自行核对。\n\n与 2026-08 比较\n\n2026-08 支出 6,547.92元，入账 8,500.00元，净结余 1,952.08元。当月最大类别是购物 3,200.00元，占 48.87%，主要来自 2026-08-25〔家电商店（合成）〕那笔 -3,200.00元。\n\n2026-09 相对 2026-08 支出减少，差额 1,178.59元，降幅 18%，即从 6,547.92元 降到 5,369.33元。\n\n下降主要来自大宗类别的替换：2026-08 有购物 3,200.00元，2026-09 没有这一项，但多出维修 2,000.00元；居住两个月都约 2500 元、订阅两个月都是 95 元，属于稳定项。所以这个降幅更像“大额类别不同”带来的，而不是日常小额支出普遍变省。\n\n另需留意：2026-09 入账 11,700.00元 高于 2026-08 的 8,500.00元，但入账口径含退款等非工资款项，不能直接当作工资或收入增长的证据。\n\n需要的话，我可以再列两个月的类别逐项增减，或拉出完整交易流水。",
+      "answer_source": "MODEL_GROUNDED",
+      "trace": [
+        "get_statement",
+        "get_statement",
+        "answer_customer / ANSWER_NOT_GROUNDED / 回答数字〔9〕不在已有事实或计算结果中，请查询、计算或用事实引用修正",
+        "calculate_business_metric",
+        "calculate_business_metric",
+        "calculate_business_metric",
+        "answer_customer / ANSWER_NOT_GROUNDED / 回答数字〔9〕不在已有事实或计算结果中，请查询、计算或用事实引用修正",
+        "business_answer_review / PASS",
+        "answer_customer"
+      ],
+      "fact_references": [
+        "e0.transactions.0.merchant",
+        "e0.transactions.9.merchant",
+        "e1.transactions.16.merchant",
+        "statement_2026_09.expense_minor",
+        "statement_2026_09.income_minor",
+        "statement_2026_09.analysis.net_minor",
+        "statement_2026_09.analysis.expense_income_percent",
+        "statement_2026_09.internal_transfer_minor",
+        "statement_2026_09.categories.居住",
+        "statement_2026_09.analysis.category_share_percent.居住",
+        "statement_2026_09.categories.维修",
+        "statement_2026_09.analysis.category_share_percent.维修",
+        "calc0",
+        "calc1",
+        "calc2",
+        "statement_2026_09.categories.交通",
+        "statement_2026_09.categories.订阅",
+        "statement_2026_09.analysis.category_share_percent.订阅",
+        "statement_2026_09.anomaly_candidates.count",
+        "statement_2026_09.analysis.large_expense_total_minor",
+        "statement_2026_09.analysis.large_expense_share_percent",
+        "statement_2026_09.anomaly_candidates.0.booked_on",
+        "statement_2026_09.anomaly_candidates.0.amount_minor",
+        "statement_2026_09.anomaly_candidates.1.booked_on",
+        "statement_2026_09.anomaly_candidates.1.amount_minor",
+        "statement_2026_08.expense_minor",
+        "statement_2026_08.income_minor",
+        "statement_2026_08.analysis.net_minor",
+        "statement_2026_08.categories.购物",
+        "statement_2026_08.analysis.category_share_percent.购物",
+        "statement_2026_08.anomaly_candidates.1.booked_on",
+        "statement_2026_08.anomaly_candidates.1.amount_minor",
+        "comparison.statement_2026_09_vs_2026_08.expense_difference_magnitude_minor",
+        "comparison.statement_2026_09_vs_2026_08.expense_change_magnitude_percent",
+        "e0.month",
+        "e1.month",
+        "e0.transactions.4.category",
+        "e0.categories.维修",
+        "e0.categories.居住",
+        "e0.categories.订阅"
+      ],
+      "passed": true,
+      "failure": "",
+      "preview_cleanup_ok": true,
+      "balance_unchanged": true,
+      "model_usage": {
+        "request_count": 6,
+        "request_limit": 6,
+        "generation_requests": 5,
+        "review_requests": 1,
+        "usage_reported_requests": 6,
+        "usage_complete": true,
+        "prompt_tokens": 52960,
+        "completion_tokens": 2936,
+        "total_tokens": 55896,
+        "prompt_cache_hit_tokens": 29440,
+        "prompt_cache_miss_tokens": 23520,
+        "calls": [
+          {
+            "prompt_cache_miss_tokens": 1984,
+            "kind": "generation",
+            "total_tokens": 3473,
+            "completion_tokens": 81,
+            "success": true,
+            "prompt_tokens": 3392,
+            "prompt_cache_hit_tokens": 1408
+          },
+          {
+            "prompt_cache_miss_tokens": 4826,
+            "kind": "generation",
+            "total_tokens": 8524,
+            "completion_tokens": 754,
+            "success": true,
+            "prompt_tokens": 7770,
+            "prompt_cache_hit_tokens": 2944
+          },
+          {
+            "prompt_cache_miss_tokens": 898,
+            "kind": "generation",
+            "total_tokens": 8799,
+            "completion_tokens": 221,
+            "success": true,
+            "prompt_tokens": 8578,
+            "prompt_cache_hit_tokens": 7680
+          },
+          {
+            "prompt_cache_miss_tokens": 2052,
+            "kind": "generation",
+            "total_tokens": 10057,
+            "completion_tokens": 837,
+            "success": true,
+            "prompt_tokens": 9220,
+            "prompt_cache_hit_tokens": 7168
+          },
+          {
+            "prompt_cache_miss_tokens": 895,
+            "kind": "generation",
+            "total_tokens": 11048,
+            "completion_tokens": 937,
+            "success": true,
+            "prompt_tokens": 10111,
+            "prompt_cache_hit_tokens": 9216
+          },
+          {
+            "prompt_cache_miss_tokens": 12865,
+            "kind": "review",
+            "total_tokens": 13995,
+            "completion_tokens": 106,
+            "success": true,
+            "prompt_tokens": 13889,
+            "prompt_cache_hit_tokens": 1024
+          }
+        ]
+      },
+      "elapsed_ms": 16703
+    }
+  ],
+  "manual_review": {
+    "comparison_correct": true,
+    "checked_values": {
+      "september_expense_yuan": "5369.33",
+      "august_expense_yuan": "6547.92",
+      "decrease_yuan": "1178.59",
+      "decrease_percent_rounded": "18"
+    },
+    "scope": "Only first response reviewed; focused follow-up not attempted because all six calls consumed.",
+    "limitations": [
+      "Two rejected candidates reported unsupported digit 9; original candidate not retained.",
+      "Successful response is long; does not prove concise or stable multi-turn behavior."
+    ]
+  }
+}

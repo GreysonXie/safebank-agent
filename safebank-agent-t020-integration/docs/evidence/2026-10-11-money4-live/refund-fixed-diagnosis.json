@@ -1,0 +1,20 @@
+{
+  "runState": "RECONCILIATION_REQUIRED",
+  "errorCode": "INVALID_ANSWER",
+  "plan": {
+    "kind": "analysis",
+    "tools": [
+      {
+        "args": {
+          "month": "2026-09"
+        },
+        "tool": "statement"
+      }
+    ]
+  },
+  "modelDraft": {
+    "actions": [],
+    "answer": "不能直接说明实际消费减少。您看到的入账3,200.00元（{{statement_2026_09.transactions.1.amount_minor}}，{{statement_2026_09.transactions.1.merchant}}）属于退款，按口径退款计入入账并抬高净结余，但不抵减支出合计{{statement_2026_09.expense_minor}}。也就是说，这笔退款只说明有一笔正向入账，无法据此证明某笔消费被冲回或您的实际消费下降；相同金额或商户也不能证明退款与某订单关联。\n\n账单中能看到的相关交易还有2026-09-01的租金支出（{{statement_2026_09.transactions.0.amount_minor}}）和2026-09-10的设备维修支出（{{statement_2026_09.transactions.1.amount_minor}}所在层级的另一笔），但缺少与退款的对应关系凭证。若想确认消费是否实际减少，需要核对退款对应的原始订单、金额和用途；这些信息在银行流水中无法确认。",
+    "kind": "analysis"
+  }
+}

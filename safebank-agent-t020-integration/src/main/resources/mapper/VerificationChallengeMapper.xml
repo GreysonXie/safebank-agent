@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.VerificationChallengeMapper">
+    <resultMap id="row" type="cn.safebank.entity.VerificationChallengeEntity">
+        <id column="id" property="id"/>
+        <result column="action_id" property="actionId"/>
+        <result column="user_id" property="userId"/>
+        <result column="decision_id" property="decisionId"/>
+        <result column="payload_hash" property="payloadHash"/>
+        <result column="method" property="method"/>
+        <result column="provider_reference" property="providerReference"/>
+        <result column="code_digest" property="codeDigest"/>
+        <result column="status" property="status"/>
+        <result column="failed_attempts" property="failedAttempts"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="expires_at" property="expiresAt"/>
+        <result column="verified_at" property="verifiedAt"/>
+    </resultMap>
+    <sql id="columns">id,action_id,user_id,decision_id,payload_hash,method,provider_reference,code_digest,status,failed_attempts,created_at,expires_at,verified_at</sql>
+    <select id="selectOwned" resultMap="row">SELECT <include refid="columns"/> FROM verification_challenges WHERE id=#{id} AND user_id=#{userId}</select>
+    <select id="selectOwnedForUpdate" resultMap="row">SELECT <include refid="columns"/> FROM verification_challenges WHERE id=#{id} AND user_id=#{userId} FOR UPDATE</select>
+    <select id="selectByUser" resultMap="row">SELECT <include refid="columns"/> FROM verification_challenges WHERE user_id=#{userId} ORDER BY id</select>
+    <select id="selectByAction" resultMap="row">SELECT <include refid="columns"/> FROM verification_challenges WHERE user_id=#{userId} AND action_id=#{actionId} ORDER BY created_at DESC,id</select>
+    <insert id="insert">INSERT INTO verification_challenges(id,action_id,user_id,decision_id,payload_hash,method,provider_reference,code_digest,status,failed_attempts,created_at,expires_at,verified_at) VALUES(#{id},#{actionId},#{userId},#{decisionId},#{payloadHash},#{method},#{providerReference},#{codeDigest},#{status},#{failedAttempts},#{createdAt},#{expiresAt},#{verifiedAt})</insert>
+    <update id="update">UPDATE verification_challenges SET provider_reference=#{providerReference},code_digest=#{codeDigest},status=#{status},failed_attempts=#{failedAttempts},expires_at=#{expiresAt},verified_at=#{verifiedAt} WHERE id=#{id} AND user_id=#{userId}</update>
+</mapper>

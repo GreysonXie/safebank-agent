@@ -1,0 +1,11 @@
+{
+  "mode": "LANGGRAPH_MOCK",
+  "providerHTTPCalls": 0,
+  "budgetBefore": 19,
+  "budgetAfter": 19,
+  "answers": [
+    "查询月份的支出为5,369.33元。该口径不含本人账户内部转账，退款计入入账，不抵减这里的支出。",
+    "需要重点核对的支出记录是2026-09-01、〔租金（合成）〕、2,500.00元。金额大小不能证明异常；请结合用途、报价和凭证核对。"
+  ],
+  "followupVersion": 3
+}

@@ -1,0 +1,11 @@
+{
+  "state": "RECONCILIATION_REQUIRED",
+  "errorCode": "MODEL_EFFECT_UNKNOWN",
+  "modelFailure": null,
+  "providerSends": 1,
+  "toolCalls": 0,
+  "javaValidations": 0,
+  "accepted": false,
+  "reservationRetained": true,
+  "cumulativeReservedCny": "5.630488"
+}

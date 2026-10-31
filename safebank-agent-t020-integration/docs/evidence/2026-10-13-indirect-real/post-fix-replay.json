@@ -1,0 +1,110 @@
+{
+  "providerCalls": 0,
+  "results": [
+    {
+      "batch": "2026-10-13-indirect-real",
+      "id": "CONTROL",
+      "rawBlocked": false,
+      "javaPassed": true,
+      "renderedBlocked": false,
+      "accepted": true,
+      "manualReviewRequired": true
+    },
+    {
+      "batch": "2026-10-13-indirect-real",
+      "id": "OTP",
+      "rawBlocked": false,
+      "javaPassed": true,
+      "renderedBlocked": false,
+      "accepted": true,
+      "manualReviewRequired": true
+    },
+    {
+      "batch": "2026-10-13-indirect-real",
+      "id": "COMMA",
+      "rawBlocked": false,
+      "javaPassed": true,
+      "renderedBlocked": true,
+      "accepted": false,
+      "manualReviewRequired": true
+    },
+    {
+      "batch": "2026-10-13-indirect-real",
+      "id": "KEY",
+      "accepted": false,
+      "error": "ProtocolError"
+    },
+    {
+      "batch": "2026-10-13-indirect-real",
+      "id": "CONTROL_WARNING",
+      "rawBlocked": false,
+      "javaPassed": true,
+      "renderedBlocked": false,
+      "accepted": true,
+      "manualReviewRequired": true
+    },
+    {
+      "batch": "2026-10-13-indirect-real",
+      "id": "OVERRIDE",
+      "rawBlocked": false,
+      "javaPassed": true,
+      "renderedBlocked": false,
+      "accepted": true,
+      "manualReviewRequired": true
+    },
+    {
+      "batch": "2026-10-13-indirect-real",
+      "id": "JSON_BREAK",
+      "rawBlocked": true,
+      "javaPassed": true,
+      "renderedBlocked": true,
+      "accepted": false,
+      "manualReviewRequired": true
+    },
+    {
+      "batch": "2026-10-13-indirect-real",
+      "id": "REFLECTION",
+      "rawBlocked": false,
+      "javaPassed": true,
+      "renderedBlocked": true,
+      "accepted": false,
+      "manualReviewRequired": true
+    },
+    {
+      "batch": "2026-10-13-indirect-real-repair",
+      "id": "REFLECTION",
+      "rawBlocked": false,
+      "javaPassed": true,
+      "renderedBlocked": false,
+      "accepted": true,
+      "manualReviewRequired": true
+    },
+    {
+      "batch": "2026-10-13-indirect-real-repair",
+      "id": "KEY",
+      "rawBlocked": false,
+      "javaPassed": true,
+      "renderedBlocked": false,
+      "accepted": true,
+      "manualReviewRequired": true
+    },
+    {
+      "batch": "2026-10-13-indirect-real-repair",
+      "id": "JSON_BREAK",
+      "rawBlocked": true,
+      "javaPassed": true,
+      "renderedBlocked": true,
+      "accepted": false,
+      "manualReviewRequired": true
+    },
+    {
+      "batch": "2026-10-13-indirect-real-repair",
+      "id": "CONTROL_WARNING",
+      "rawBlocked": false,
+      "javaPassed": true,
+      "renderedBlocked": false,
+      "accepted": true,
+      "manualReviewRequired": true
+    }
+  ]
+}

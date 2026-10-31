@@ -1,0 +1,2002 @@
+{
+  "accounts" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "label",
+      "type" : "VARCHAR",
+      "size" : 120,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "balance_minor",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ ],
+    "unique" : [ [ "id" ] ],
+    "checks" : [ "(`balance_minor` >= 0)" ],
+    "collations" : {
+      "id" : "utf8mb4_0900_bin",
+      "label" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "action_authorizations" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "action_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "decision_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "challenge_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "payload_hash",
+      "type" : "VARCHAR",
+      "size" : 64,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "policy_version",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "business_date",
+      "type" : "DATE",
+      "size" : 10,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "method",
+      "type" : "VARCHAR",
+      "size" : 24,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "assurance",
+      "type" : "VARCHAR",
+      "size" : 24,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "status",
+      "type" : "VARCHAR",
+      "size" : 24,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "authorized_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "expires_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ [ "decision_id->risk_decisions.id", "action_id->risk_decisions.action_id", "user_id->risk_decisions.user_id" ], [ "challenge_id->verification_challenges.id", "action_id->verification_challenges.action_id", "user_id->verification_challenges.user_id" ] ],
+    "unique" : [ [ "id" ], [ "id", "action_id", "user_id" ], [ "id", "user_id" ] ],
+    "checks" : [ "(`method` in (_utf8mb4\\'USER_CONFIRM\\',_utf8mb4\\'DEMO_OTP\\',_utf8mb4\\'EXTERNAL_MFA\\',_utf8mb4\\'SCHEDULE_DELEGATION\\'))", "(`assurance` in (_utf8mb4\\'CONFIRMED\\',_utf8mb4\\'DEMO_VERIFIED\\',_utf8mb4\\'MFA_VERIFIED\\'))", "(`status` in (_utf8mb4\\'ACTIVE\\',_utf8mb4\\'SUBMISSION_STARTED\\',_utf8mb4\\'CONSUMED\\',_utf8mb4\\'REVOKED\\',_utf8mb4\\'EXPIRED\\'))", "(`expires_at` > `authorized_at`)", "(((`method` in (_utf8mb4\\'USER_CONFIRM\\',_utf8mb4\\'SCHEDULE_DELEGATION\\')) and (`assurance` = _utf8mb4\\'CONFIRMED\\') and (`challenge_id` is null)) or ((`method` = _utf8mb4\\'DEMO_OTP\\') and (`assurance` = _utf8mb4\\'DEMO_VERIFIED\\') and (`challenge_id` is not null)) or ((`method` = _utf8mb4\\'EXTERNAL_MFA\\') and (`assurance` = _utf8mb4\\'MFA_VERIFIED\\') and (`challenge_id` is not null)))" ],
+    "collations" : {
+      "action_id" : "utf8mb4_0900_bin",
+      "assurance" : "utf8mb4_0900_bin",
+      "challenge_id" : "utf8mb4_0900_bin",
+      "decision_id" : "utf8mb4_0900_bin",
+      "id" : "utf8mb4_0900_bin",
+      "method" : "utf8mb4_0900_bin",
+      "payload_hash" : "utf8mb4_0900_bin",
+      "policy_version" : "utf8mb4_0900_bin",
+      "status" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "actions" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "kind",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "payload",
+      "type" : "LONGTEXT",
+      "size" : 2147483647,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "payload_hash",
+      "type" : "VARCHAR",
+      "size" : 64,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "status",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "expires_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "receipt_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "error_code",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ ],
+    "unique" : [ [ "id" ], [ "id", "user_id" ] ],
+    "checks" : [ ],
+    "collations" : {
+      "error_code" : "utf8mb4_0900_bin",
+      "id" : "utf8mb4_0900_bin",
+      "kind" : "utf8mb4_0900_bin",
+      "payload" : "utf8mb4_0900_bin",
+      "payload_hash" : "utf8mb4_0900_bin",
+      "receipt_id" : "utf8mb4_0900_bin",
+      "status" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "agent_context_evidence" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "conversation_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "evidence_key",
+      "type" : "VARCHAR",
+      "size" : 120,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "tool_name",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "object_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "snapshot_json",
+      "type" : "LONGTEXT",
+      "size" : 2147483647,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "content_hash",
+      "type" : "VARCHAR",
+      "size" : 64,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "source_turn_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "observed_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "valid_until",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ [ "conversation_id->agent_conversations.id", "user_id->agent_conversations.user_id" ], [ "source_turn_id->agent_turn_receipts.id", "conversation_id->agent_turn_receipts.conversation_id", "user_id->agent_turn_receipts.user_id" ] ],
+    "unique" : [ [ "id" ], [ "conversation_id", "user_id", "evidence_key" ], [ "id", "conversation_id", "user_id" ] ],
+    "checks" : [ ],
+    "collations" : {
+      "content_hash" : "utf8mb4_0900_bin",
+      "conversation_id" : "utf8mb4_0900_bin",
+      "evidence_key" : "utf8mb4_0900_bin",
+      "id" : "utf8mb4_0900_bin",
+      "object_id" : "utf8mb4_0900_bin",
+      "snapshot_json" : "utf8mb4_0900_bin",
+      "source_turn_id" : "utf8mb4_0900_bin",
+      "tool_name" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "agent_context_slots" : {
+    "columns" : [ {
+      "name" : "conversation_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "slot_name",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "value_json",
+      "type" : "LONGTEXT",
+      "size" : 2147483647,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "provenance",
+      "type" : "VARCHAR",
+      "size" : 24,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "context_version",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "source_turn_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "evidence_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "updated_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    } ],
+    "primary" : [ "conversation_id", "slot_name", "user_id" ],
+    "foreign" : [ [ "conversation_id->agent_conversations.id", "user_id->agent_conversations.user_id" ], [ "evidence_id->agent_context_evidence.id", "conversation_id->agent_context_evidence.conversation_id", "user_id->agent_context_evidence.user_id" ], [ "source_turn_id->agent_turn_receipts.id", "conversation_id->agent_turn_receipts.conversation_id", "user_id->agent_turn_receipts.user_id" ] ],
+    "unique" : [ [ "conversation_id", "user_id", "slot_name" ] ],
+    "checks" : [ "(`provenance` in (_utf8mb4\\'USER_EXPLICIT\\',_utf8mb4\\'MODEL_PROPOSED\\',_utf8mb4\\'BANK_CONFIRMED\\'))", "(`context_version` >= 1)" ],
+    "collations" : {
+      "conversation_id" : "utf8mb4_0900_bin",
+      "evidence_id" : "utf8mb4_0900_bin",
+      "provenance" : "utf8mb4_0900_bin",
+      "slot_name" : "utf8mb4_0900_bin",
+      "source_turn_id" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin",
+      "value_json" : "utf8mb4_0900_bin"
+    }
+  },
+  "agent_conversations" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "version",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : "1"
+    }, {
+      "name" : "intent",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : "GENERAL"
+    }, {
+      "name" : "state",
+      "type" : "VARCHAR",
+      "size" : 24,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : "ACTIVE"
+    }, {
+      "name" : "proposal_json",
+      "type" : "LONGTEXT",
+      "size" : 2147483647,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "display_history_json",
+      "type" : "LONGTEXT",
+      "size" : 2147483647,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "created_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "updated_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "expires_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ ],
+    "unique" : [ [ "id" ], [ "id", "user_id" ] ],
+    "checks" : [ "(`version` >= 1)", "(`state` in (_utf8mb4\\'ACTIVE\\',_utf8mb4\\'NEEDS_CLARIFICATION\\',_utf8mb4\\'AWAITING_CONFIRMATION\\',_utf8mb4\\'PAUSED\\',_utf8mb4\\'EXPIRED\\'))" ],
+    "collations" : {
+      "display_history_json" : "utf8mb4_0900_bin",
+      "id" : "utf8mb4_0900_bin",
+      "intent" : "utf8mb4_0900_bin",
+      "proposal_json" : "utf8mb4_0900_bin",
+      "state" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "agent_service_grants" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "token_hash",
+      "type" : "CHAR",
+      "size" : 64,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "conversation_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "turn_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "request_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "scope_json",
+      "type" : "LONGTEXT",
+      "size" : 2147483647,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "state",
+      "type" : "VARCHAR",
+      "size" : 16,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "call_limit",
+      "type" : "INT",
+      "size" : 10,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "calls_used",
+      "type" : "INT",
+      "size" : 10,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : "0"
+    }, {
+      "name" : "created_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "expires_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ [ "turn_id->agent_turn_receipts.id", "conversation_id->agent_turn_receipts.conversation_id", "user_id->agent_turn_receipts.user_id" ] ],
+    "unique" : [ [ "id" ], [ "token_hash" ] ],
+    "checks" : [ "(`expires_at` > `created_at`)", "((`call_limit` between 1 and 8) and (`calls_used` between 0 and `call_limit`))", "(`state` in (_utf8mb4\\'ACTIVE\\',_utf8mb4\\'REVOKED\\',_utf8mb4\\'EXPIRED\\'))" ],
+    "collations" : {
+      "conversation_id" : "utf8mb4_0900_bin",
+      "id" : "utf8mb4_0900_bin",
+      "request_id" : "utf8mb4_0900_bin",
+      "scope_json" : "utf8mb4_0900_bin",
+      "state" : "utf8mb4_0900_bin",
+      "token_hash" : "utf8mb4_0900_bin",
+      "turn_id" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "agent_tool_call_receipts" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "turn_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "conversation_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "operation_key",
+      "type" : "CHAR",
+      "size" : 64,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "input_hash",
+      "type" : "CHAR",
+      "size" : 64,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "tool_name",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "grant_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "result_json",
+      "type" : "LONGTEXT",
+      "size" : 2147483647,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "result_hash",
+      "type" : "CHAR",
+      "size" : 64,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "observed_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ [ "grant_id->agent_service_grants.id" ], [ "turn_id->agent_turn_receipts.id", "conversation_id->agent_turn_receipts.conversation_id", "user_id->agent_turn_receipts.user_id" ] ],
+    "unique" : [ [ "id" ], [ "turn_id", "operation_key" ] ],
+    "checks" : [ ],
+    "collations" : {
+      "conversation_id" : "utf8mb4_0900_bin",
+      "grant_id" : "utf8mb4_0900_bin",
+      "id" : "utf8mb4_0900_bin",
+      "input_hash" : "utf8mb4_0900_bin",
+      "operation_key" : "utf8mb4_0900_bin",
+      "result_hash" : "utf8mb4_0900_bin",
+      "result_json" : "utf8mb4_0900_bin",
+      "tool_name" : "utf8mb4_0900_bin",
+      "turn_id" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "agent_turn_receipts" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "conversation_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "request_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "request_hash",
+      "type" : "VARCHAR",
+      "size" : 64,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "input_version",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "output_version",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "state",
+      "type" : "VARCHAR",
+      "size" : 24,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "tool_intents_json",
+      "type" : "LONGTEXT",
+      "size" : 2147483647,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "bank_references_json",
+      "type" : "LONGTEXT",
+      "size" : 2147483647,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "response_json",
+      "type" : "LONGTEXT",
+      "size" : 2147483647,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "error_code",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "created_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "completed_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ [ "conversation_id->agent_conversations.id", "user_id->agent_conversations.user_id" ] ],
+    "unique" : [ [ "id" ], [ "id", "conversation_id", "user_id" ], [ "conversation_id", "user_id", "request_id" ] ],
+    "checks" : [ "(`input_version` >= 1)", "(`output_version` >= `input_version`)", "(`state` in (_utf8mb4\\'PROCESSING\\',_utf8mb4\\'COMPLETED\\',_utf8mb4\\'FAILED\\',_utf8mb4\\'INTERRUPTED\\'))" ],
+    "collations" : {
+      "bank_references_json" : "utf8mb4_0900_bin",
+      "conversation_id" : "utf8mb4_0900_bin",
+      "error_code" : "utf8mb4_0900_bin",
+      "id" : "utf8mb4_0900_bin",
+      "request_hash" : "utf8mb4_0900_bin",
+      "request_id" : "utf8mb4_0900_bin",
+      "response_json" : "utf8mb4_0900_bin",
+      "state" : "utf8mb4_0900_bin",
+      "tool_intents_json" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "audit" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "action_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "event",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "recorded_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ ],
+    "unique" : [ [ "id" ] ],
+    "checks" : [ ],
+    "collations" : {
+      "action_id" : "utf8mb4_0900_bin",
+      "event" : "utf8mb4_0900_bin",
+      "id" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "bank_faults" : {
+    "columns" : [ {
+      "name" : "action_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "submit_mode",
+      "type" : "VARCHAR",
+      "size" : 60,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "lookup_mode",
+      "type" : "VARCHAR",
+      "size" : 60,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    } ],
+    "primary" : [ "action_id" ],
+    "foreign" : [ ],
+    "unique" : [ [ "action_id" ] ],
+    "checks" : [ ],
+    "collations" : {
+      "action_id" : "utf8mb4_0900_bin",
+      "lookup_mode" : "utf8mb4_0900_bin",
+      "submit_mode" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "execution_observations" : {
+    "columns" : [ {
+      "name" : "action_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "state",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "receipt_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "error_code",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "observed_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    } ],
+    "primary" : [ "action_id" ],
+    "foreign" : [ ],
+    "unique" : [ [ "action_id" ] ],
+    "checks" : [ ],
+    "collations" : {
+      "action_id" : "utf8mb4_0900_bin",
+      "error_code" : "utf8mb4_0900_bin",
+      "receipt_id" : "utf8mb4_0900_bin",
+      "state" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "ledger" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "action_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "account_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "amount_minor",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ ],
+    "unique" : [ [ "id" ], [ "action_id", "account_id" ] ],
+    "checks" : [ ],
+    "collations" : {
+      "account_id" : "utf8mb4_0900_bin",
+      "action_id" : "utf8mb4_0900_bin",
+      "id" : "utf8mb4_0900_bin"
+    }
+  },
+  "mandates" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "merchant",
+      "type" : "VARCHAR",
+      "size" : 120,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "amount_minor",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "renewal_date",
+      "type" : "DATE",
+      "size" : 10,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "status",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "contract_status",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "billing_interval",
+      "type" : "VARCHAR",
+      "size" : 20,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : "MONTHLY"
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ ],
+    "unique" : [ [ "id" ] ],
+    "checks" : [ ],
+    "collations" : {
+      "billing_interval" : "utf8mb4_0900_bin",
+      "contract_status" : "utf8mb4_0900_bin",
+      "id" : "utf8mb4_0900_bin",
+      "merchant" : "utf8mb4_0900_bin",
+      "status" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "occurrences" : {
+    "columns" : [ {
+      "name" : "schedule_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "due_date",
+      "type" : "DATE",
+      "size" : 10,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "action_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    } ],
+    "primary" : [ "due_date", "schedule_id" ],
+    "foreign" : [ ],
+    "unique" : [ [ "schedule_id", "due_date" ] ],
+    "checks" : [ ],
+    "collations" : {
+      "action_id" : "utf8mb4_0900_bin",
+      "schedule_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "recipients" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "name",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "phone",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "note",
+      "type" : "VARCHAR",
+      "size" : 120,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "account_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ ],
+    "unique" : [ [ "id" ] ],
+    "checks" : [ ],
+    "collations" : {
+      "account_id" : "utf8mb4_0900_bin",
+      "id" : "utf8mb4_0900_bin",
+      "name" : "utf8mb4_0900_bin",
+      "note" : "utf8mb4_0900_bin",
+      "phone" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "risk_decisions" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "action_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "revision",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "policy_version",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "risk_level",
+      "type" : "VARCHAR",
+      "size" : 12,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "required_assurance",
+      "type" : "VARCHAR",
+      "size" : 24,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "reason_code",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "business_date",
+      "type" : "DATE",
+      "size" : 10,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "amount_minor",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "effective_minor",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "projected_minor",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "payload_hash",
+      "type" : "VARCHAR",
+      "size" : 64,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "created_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "valid_until",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ [ "action_id->actions.id", "user_id->actions.user_id" ], [ "user_id->risk_user_guards.user_id" ] ],
+    "unique" : [ [ "id" ], [ "action_id", "revision" ], [ "id", "action_id", "user_id" ] ],
+    "checks" : [ "(`revision` > 0)", "(`risk_level` in (_utf8mb4\\'GREEN\\',_utf8mb4\\'YELLOW\\',_utf8mb4\\'RED\\'))", "(`required_assurance` in (_utf8mb4\\'NONE\\',_utf8mb4\\'CONFIRMED\\',_utf8mb4\\'STEP_UP\\'))", "(`amount_minor` >= 0)", "(`effective_minor` >= 0)", "(`projected_minor` >= 0)", "(`valid_until` > `created_at`)", "(((`risk_level` = _utf8mb4\\'GREEN\\') and (`required_assurance` = _utf8mb4\\'NONE\\')) or ((`risk_level` = _utf8mb4\\'YELLOW\\') and (`required_assurance` = _utf8mb4\\'CONFIRMED\\')) or ((`risk_level` = _utf8mb4\\'RED\\') and (`required_assurance` = _utf8mb4\\'STEP_UP\\')))" ],
+    "collations" : {
+      "action_id" : "utf8mb4_0900_bin",
+      "id" : "utf8mb4_0900_bin",
+      "payload_hash" : "utf8mb4_0900_bin",
+      "policy_version" : "utf8mb4_0900_bin",
+      "reason_code" : "utf8mb4_0900_bin",
+      "required_assurance" : "utf8mb4_0900_bin",
+      "risk_level" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "risk_events" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "request_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "action_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "decision_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "event_code",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "reason_code",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "channel",
+      "type" : "VARCHAR",
+      "size" : 24,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "policy_version",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "recorded_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ [ "user_id->risk_user_guards.user_id" ], [ "action_id->actions.id", "user_id->actions.user_id" ], [ "decision_id->risk_decisions.id", "action_id->risk_decisions.action_id", "user_id->risk_decisions.user_id" ] ],
+    "unique" : [ [ "id" ] ],
+    "checks" : [ "(`channel` in (_utf8mb4\\'HTTP\\',_utf8mb4\\'AGENT\\',_utf8mb4\\'WORKFLOW\\',_utf8mb4\\'SCHEDULER\\',_utf8mb4\\'SYSTEM\\'))", "((`decision_id` is null) or (`action_id` is not null))" ],
+    "collations" : {
+      "action_id" : "utf8mb4_0900_bin",
+      "channel" : "utf8mb4_0900_bin",
+      "decision_id" : "utf8mb4_0900_bin",
+      "event_code" : "utf8mb4_0900_bin",
+      "id" : "utf8mb4_0900_bin",
+      "policy_version" : "utf8mb4_0900_bin",
+      "reason_code" : "utf8mb4_0900_bin",
+      "request_id" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "risk_transfer_usage" : {
+    "columns" : [ {
+      "name" : "action_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "authorization_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "provenance",
+      "type" : "VARCHAR",
+      "size" : 24,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "business_date",
+      "type" : "DATE",
+      "size" : 10,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "amount_minor",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "state",
+      "type" : "VARCHAR",
+      "size" : 16,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "reserved_until",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "submitted_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "resolved_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "updated_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    } ],
+    "primary" : [ "action_id" ],
+    "foreign" : [ [ "action_id->actions.id", "user_id->actions.user_id" ], [ "authorization_id->action_authorizations.id", "action_id->action_authorizations.action_id", "user_id->action_authorizations.user_id" ], [ "user_id->risk_user_guards.user_id" ] ],
+    "unique" : [ [ "action_id" ] ],
+    "checks" : [ "(`provenance` in (_utf8mb4\\'CURRENT_AUTHORIZATION\\',_utf8mb4\\'LEGACY_OBSERVED\\'))", "(`amount_minor` > 0)", "(`state` in (_utf8mb4\\'RESERVED\\',_utf8mb4\\'SUBMITTED\\',_utf8mb4\\'COMMITTED\\',_utf8mb4\\'RELEASED\\'))", "(((`provenance` = _utf8mb4\\'CURRENT_AUTHORIZATION\\') and (`authorization_id` is not null)) or ((`provenance` = _utf8mb4\\'LEGACY_OBSERVED\\') and (`authorization_id` is null) and (`state` in (_utf8mb4\\'SUBMITTED\\',_utf8mb4\\'COMMITTED\\',_utf8mb4\\'RELEASED\\'))))", "((`business_date` is not null) or ((`provenance` = _utf8mb4\\'LEGACY_OBSERVED\\') and (`state` = _utf8mb4\\'SUBMITTED\\')))" ],
+    "collations" : {
+      "action_id" : "utf8mb4_0900_bin",
+      "authorization_id" : "utf8mb4_0900_bin",
+      "provenance" : "utf8mb4_0900_bin",
+      "state" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "risk_user_guards" : {
+    "columns" : [ {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "failed_verifications",
+      "type" : "INT",
+      "size" : 10,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : "0"
+    }, {
+      "name" : "failure_window_started_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "locked_until",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "last_challenge_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "reconciliation_required",
+      "type" : "BIT",
+      "size" : 1,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : "0"
+    }, {
+      "name" : "revision",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : "0"
+    }, {
+      "name" : "updated_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    } ],
+    "primary" : [ "user_id" ],
+    "foreign" : [ ],
+    "unique" : [ [ "user_id" ] ],
+    "checks" : [ "(`failed_verifications` >= 0)", "(`revision` >= 0)", "(`reconciliation_required` in (0,1))" ],
+    "collations" : {
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "schedule_authorizations" : {
+    "columns" : [ {
+      "name" : "schedule_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "source_authorization_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "scope_json",
+      "type" : "LONGTEXT",
+      "size" : 2147483647,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "scope_hash",
+      "type" : "VARCHAR",
+      "size" : 64,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "policy_version",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "maximum_risk_level",
+      "type" : "VARCHAR",
+      "size" : 12,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "status",
+      "type" : "VARCHAR",
+      "size" : 16,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "created_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "expires_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    } ],
+    "primary" : [ "schedule_id" ],
+    "foreign" : [ [ "schedule_id->schedules.id", "user_id->schedules.user_id" ], [ "source_authorization_id->action_authorizations.id", "user_id->action_authorizations.user_id" ] ],
+    "unique" : [ [ "schedule_id" ] ],
+    "checks" : [ "(`maximum_risk_level` = _utf8mb4\\'YELLOW\\')", "(`status` in (_utf8mb4\\'ACTIVE\\',_utf8mb4\\'REVOKED\\',_utf8mb4\\'EXPIRED\\'))", "(`expires_at` > `created_at`)" ],
+    "collations" : {
+      "maximum_risk_level" : "utf8mb4_0900_bin",
+      "policy_version" : "utf8mb4_0900_bin",
+      "schedule_id" : "utf8mb4_0900_bin",
+      "scope_hash" : "utf8mb4_0900_bin",
+      "scope_json" : "utf8mb4_0900_bin",
+      "source_authorization_id" : "utf8mb4_0900_bin",
+      "status" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "schedules" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "source_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "recipient_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "amount_minor",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "day_of_month",
+      "type" : "INT",
+      "size" : 10,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "first_date",
+      "type" : "DATE",
+      "size" : 10,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "end_date",
+      "type" : "DATE",
+      "size" : 10,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "status",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ ],
+    "unique" : [ [ "id" ], [ "id", "user_id" ] ],
+    "checks" : [ ],
+    "collations" : {
+      "id" : "utf8mb4_0900_bin",
+      "recipient_id" : "utf8mb4_0900_bin",
+      "source_id" : "utf8mb4_0900_bin",
+      "status" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "transactions" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "account_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "merchant",
+      "type" : "VARCHAR",
+      "size" : 200,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "category",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "amount_minor",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "booked_on",
+      "type" : "DATE",
+      "size" : 10,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ ],
+    "unique" : [ [ "id" ] ],
+    "checks" : [ ],
+    "collations" : {
+      "account_id" : "utf8mb4_0900_bin",
+      "category" : "utf8mb4_0900_bin",
+      "id" : "utf8mb4_0900_bin",
+      "merchant" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "verification_challenges" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "action_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "decision_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "payload_hash",
+      "type" : "VARCHAR",
+      "size" : 64,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "method",
+      "type" : "VARCHAR",
+      "size" : 24,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "provider_reference",
+      "type" : "VARCHAR",
+      "size" : 120,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "code_digest",
+      "type" : "VARCHAR",
+      "size" : 128,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "status",
+      "type" : "VARCHAR",
+      "size" : 24,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "failed_attempts",
+      "type" : "INT",
+      "size" : 10,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : "0"
+    }, {
+      "name" : "created_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "expires_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "verified_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ [ "decision_id->risk_decisions.id", "action_id->risk_decisions.action_id", "user_id->risk_decisions.user_id" ] ],
+    "unique" : [ [ "id" ], [ "id", "action_id", "user_id" ] ],
+    "checks" : [ "(`method` in (_utf8mb4\\'DEMO_OTP\\',_utf8mb4\\'EXTERNAL_MFA\\'))", "(`status` in (_utf8mb4\\'PENDING_DELIVERY\\',_utf8mb4\\'SENT\\',_utf8mb4\\'VERIFIED\\',_utf8mb4\\'CONSUMED\\',_utf8mb4\\'EXPIRED\\',_utf8mb4\\'LOCKED\\',_utf8mb4\\'INVALIDATED\\',_utf8mb4\\'DELIVERY_FAILED\\'))", "(`failed_attempts` between 0 and 3)", "(`expires_at` > `created_at`)", "((`method` <> _utf8mb4\\'DEMO_OTP\\') or (`code_digest` is not null))" ],
+    "collations" : {
+      "action_id" : "utf8mb4_0900_bin",
+      "code_digest" : "utf8mb4_0900_bin",
+      "decision_id" : "utf8mb4_0900_bin",
+      "id" : "utf8mb4_0900_bin",
+      "method" : "utf8mb4_0900_bin",
+      "payload_hash" : "utf8mb4_0900_bin",
+      "provider_reference" : "utf8mb4_0900_bin",
+      "status" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "workflow_steps" : {
+    "columns" : [ {
+      "name" : "workflow_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "step_key",
+      "type" : "VARCHAR",
+      "size" : 120,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "input_version",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "kind",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "status",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "action_id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "saving_minor",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "error_code",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    }, {
+      "name" : "evidence_json",
+      "type" : "LONGTEXT",
+      "size" : 2147483647,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    } ],
+    "primary" : [ "input_version", "step_key", "workflow_id" ],
+    "foreign" : [ ],
+    "unique" : [ [ "workflow_id", "step_key", "input_version" ], [ "action_id" ] ],
+    "checks" : [ ],
+    "collations" : {
+      "action_id" : "utf8mb4_0900_bin",
+      "error_code" : "utf8mb4_0900_bin",
+      "evidence_json" : "utf8mb4_0900_bin",
+      "kind" : "utf8mb4_0900_bin",
+      "status" : "utf8mb4_0900_bin",
+      "step_key" : "utf8mb4_0900_bin",
+      "workflow_id" : "utf8mb4_0900_bin"
+    }
+  },
+  "workflows" : {
+    "columns" : [ {
+      "name" : "id",
+      "type" : "VARCHAR",
+      "size" : 80,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "user_id",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "version",
+      "type" : "BIGINT",
+      "size" : 19,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "state",
+      "type" : "VARCHAR",
+      "size" : 40,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "request_json",
+      "type" : "LONGTEXT",
+      "size" : 2147483647,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "analysis_json",
+      "type" : "LONGTEXT",
+      "size" : 2147483647,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "created_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : false,
+      "default" : null
+    }, {
+      "name" : "updated_at",
+      "type" : "DATETIME",
+      "size" : 26,
+      "scale" : 0,
+      "nullable" : true,
+      "default" : null
+    } ],
+    "primary" : [ "id" ],
+    "foreign" : [ ],
+    "unique" : [ [ "id" ] ],
+    "checks" : [ ],
+    "collations" : {
+      "analysis_json" : "utf8mb4_0900_bin",
+      "id" : "utf8mb4_0900_bin",
+      "request_json" : "utf8mb4_0900_bin",
+      "state" : "utf8mb4_0900_bin",
+      "user_id" : "utf8mb4_0900_bin"
+    }
+  }
+}

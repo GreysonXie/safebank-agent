@@ -1,0 +1,11 @@
+{
+  "accepted": false,
+  "scope": "Production Python HTTP + official LangGraph Runtime + real DeepSeek planning/draft + Java HTTP tool/validate callbacks",
+  "state": "RECONCILIATION_REQUIRED",
+  "errorCode": "ANSWER_REPAIR_BUDGET_EXHAUSTED",
+  "modelSends": 2,
+  "batchUpperCny": "0.035600",
+  "cumulativeUpperCny": "5.262900",
+  "rawAnswerRetained": false,
+  "limitation": "First harness did not save worker stdout before assertion failure; precise grounding rejection was not retained. No root-cause fix claimed. Follow-up harness captures provider envelopes, tool receipts and Java rejection before cleanup."
+}

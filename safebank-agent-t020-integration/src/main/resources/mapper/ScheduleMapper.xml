@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.ScheduleMapper">
+    <resultMap id="row" type="cn.safebank.entity.ScheduleEntity">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="source_id" property="sourceId"/>
+        <result column="recipient_id" property="recipientId"/>
+        <result column="amount_minor" property="amountMinor"/>
+        <result column="day_of_month" property="dayOfMonth"/>
+        <result column="first_date" property="firstDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <sql id="columns">id,user_id,source_id,recipient_id,amount_minor,day_of_month,first_date,end_date,status</sql>
+    <insert id="insert">INSERT INTO schedules(<include refid="columns"/>) VALUES(#{id},#{userId},#{sourceId},#{recipientId},#{amountMinor},#{dayOfMonth},#{firstDate},#{endDate},#{status})</insert>
+    <update id="update">UPDATE schedules SET source_id=#{sourceId},recipient_id=#{recipientId},amount_minor=#{amountMinor},day_of_month=#{dayOfMonth},first_date=#{firstDate},end_date=#{endDate},status=#{status} WHERE id=#{id} AND user_id=#{userId}</update>
+    <select id="selectByUser" resultMap="row">SELECT <include refid="columns"/> FROM schedules WHERE user_id=#{userId} ORDER BY first_date</select>
+    <select id="selectOwnedForUpdate" resultMap="row">SELECT <include refid="columns"/> FROM schedules WHERE id=#{id} AND user_id=#{userId} FOR UPDATE</select>
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.safebank.dao.ScheduleAuthorizationMapper">
+    <resultMap id="row" type="cn.safebank.entity.ScheduleAuthorizationEntity">
+        <id column="schedule_id" property="scheduleId"/>
+        <result column="user_id" property="userId"/>
+        <result column="source_authorization_id" property="sourceAuthorizationId"/>
+        <result column="scope_json" property="scopeJson"/>
+        <result column="scope_hash" property="scopeHash"/>
+        <result column="policy_version" property="policyVersion"/>
+        <result column="maximum_risk_level" property="maximumRiskLevel"/>
+        <result column="status" property="status"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="expires_at" property="expiresAt"/>
+    </resultMap>
+    <sql id="columns">schedule_id,user_id,source_authorization_id,scope_json,scope_hash,policy_version,maximum_risk_level,status,created_at,expires_at</sql>
+    <select id="selectOwned" resultMap="row">SELECT <include refid="columns"/> FROM schedule_authorizations WHERE schedule_id=#{id} AND user_id=#{userId}</select>
+    <select id="selectOwnedForUpdate" resultMap="row">SELECT <include refid="columns"/> FROM schedule_authorizations WHERE schedule_id=#{id} AND user_id=#{userId} FOR UPDATE</select>
+    <select id="selectByUser" resultMap="row">SELECT <include refid="columns"/> FROM schedule_authorizations WHERE user_id=#{userId} ORDER BY schedule_id</select>
+    <insert id="insert">INSERT INTO schedule_authorizations(schedule_id,user_id,source_authorization_id,scope_json,scope_hash,policy_version,maximum_risk_level,status,created_at,expires_at) VALUES(#{scheduleId},#{userId},#{sourceAuthorizationId},#{scopeJson},#{scopeHash},#{policyVersion},#{maximumRiskLevel},#{status},#{createdAt},#{expiresAt})</insert>
+    <update id="update">UPDATE schedule_authorizations SET maximum_risk_level=#{maximumRiskLevel},status=#{status},expires_at=#{expiresAt} WHERE schedule_id=#{scheduleId} AND user_id=#{userId}</update>
+    <update id="replace">UPDATE schedule_authorizations SET source_authorization_id=#{sourceAuthorizationId},scope_json=#{scopeJson},scope_hash=#{scopeHash},policy_version=#{policyVersion},maximum_risk_level=#{maximumRiskLevel},status=#{status},created_at=#{createdAt},expires_at=#{expiresAt} WHERE schedule_id=#{scheduleId} AND user_id=#{userId}</update>
+</mapper>

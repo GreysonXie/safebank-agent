@@ -1,0 +1,1 @@
+{"capCny": "6.00", "balanceBefore": "7.84", "priorReservedCny": "5.630488", "requests": [{"upperCny": "0.072768", "state": "RESERVED", "inputBytes": 10496, "maxOutput": 1200}], "batchPriorCny": "0", "guardVersion": "INPUT_BYTES_USAGE_V1", "guardLoaded": true, "conservativeReservedCny": "5.703256"}

@@ -1,0 +1,184 @@
+{
+  "date": "2026-10-10",
+  "runtimeRoot": "D:/SafeBankRuntime/mysql",
+  "datadir": "D:/SafeBankRuntime/mysql/safebank-v07-mysql-foundation/data",
+  "backupRoot": "D:\\SafeBankRuntime\\backups\\2026-10-10-mysql-relocation",
+  "mysqlVersion": "8.4.11",
+  "copiedFiles": [
+    {
+      "name": "safebank-v07-mysql-probe",
+      "files": 476,
+      "bytes": 1459010880
+    },
+    {
+      "name": "safebank-v07-mysql-foundation",
+      "files": 202,
+      "bytes": 248848408
+    }
+  ],
+  "allCopiedFileHashesMatched": true,
+  "coldBackupFileHashesMatched": true,
+  "bankTableCount": 27,
+  "allBankTableSchemasAndRowsMatched": true,
+  "databaseListAndUserDigestsMatched": true,
+  "bankTableDigests": {
+    "accounts": {
+      "rows": 5,
+      "sha256": "d185d3748c647edd8185daadbb2504db5b05f3a8b27e82a4067b2727b969be47",
+      "ddlSha256": "cf262b52c5fd4390bc00b424c93090c3855ad54524503bb57d7195cd77a4e560"
+    },
+    "action_authorizations": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "a94b27ea805075bfd5356094766b7bda739e7d05d10bb785b38914cfdc448ae1"
+    },
+    "actions": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "4675ef54a03af3ce809fc7f88b00142754b6c2b9dfb5ad6a121822f7c8b00cd0"
+    },
+    "agent_context_evidence": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "f1734f7a608f616ed3af2862333b692d25511a151aecbed4190a6b222e9c8b8f"
+    },
+    "agent_context_slots": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "f5ee906c3ab126043e9e4458ee84dfa6dbfdc51eed9b8406829634e25e7d8c9c"
+    },
+    "agent_conversations": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "e2e8bb9a76d7ff310700a4c9bdb0020cf4f4f611e119c58e6ba50d4ac64d074b"
+    },
+    "agent_service_grants": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "0bda35b2669fbf60ce644917de29a6a4affa395eeb40ce4e367b2f2cbbdcedfb"
+    },
+    "agent_tool_call_receipts": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "2010b82bbe07b4132b35a13dca03f8f4f00b8dd42e2de1e151ccc4275ba318f9"
+    },
+    "agent_turn_receipts": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "46f4da8bb78dfeab2b057ee0db14054db1949072ff40bc48d3345ddd2abcbae7"
+    },
+    "audit": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "b06e417d100437dba858044716a7d0ee7c9b2c561e2e5a057442c00ae599f953"
+    },
+    "bank_faults": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "3dec2623eb40351cbb3836b37ab26744840d1a22aa42c65e3046cc571534cc24"
+    },
+    "execution_observations": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "57478bc390a4c9ba38bf88ba4220ad36e2646243363a6b5e9fb0dc19af0a4158"
+    },
+    "flyway_schema_history": {
+      "rows": 2,
+      "sha256": "ec6c0fec77b75b87c8252e3cce1076ced954308ae99599b42ad79061c9d2806a",
+      "ddlSha256": "4a6e25f46c5ff39d8c51d39a17f83f4f80c5554da28a78518af74da5ec68a7cb"
+    },
+    "ledger": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "e228265b1a72fa7fddefad61332b42e7faddb423dd13063866df123d83ab8912"
+    },
+    "mandates": {
+      "rows": 5,
+      "sha256": "53b87a0cb349bb52d2a8dcf56806d3a2e0d6d4a57d6e2e2110d057843fff6fd4",
+      "ddlSha256": "292720094a7ff5f096c2f3d4d48c9b9a0bb6754ab8341409bc247d97717fac7e"
+    },
+    "occurrences": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "f4291251f709376d4d4b4dd764d7442fde6386149068dd62f075d7844115a322"
+    },
+    "recipients": {
+      "rows": 3,
+      "sha256": "45e48cac7811debd974dcffcfff1a4e0442a42b325ed6f9e16ee57ec92117028",
+      "ddlSha256": "7640946694c55678236bc322a5f54b625e9ab9f60df92a641681cbb400e678be"
+    },
+    "risk_decisions": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "7d0c259a259bb0597196ee41d09a2876c3c55edbebd5673bae95a3ecc9006295"
+    },
+    "risk_events": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "71a7c38e6a9aa33153ed4761a7e774885855727d84e6e2f968201cc06bbbe516"
+    },
+    "risk_transfer_usage": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "7a15e5a444783950380ad7334aa40d348f26b607456358060392e473b9546e14"
+    },
+    "risk_user_guards": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "88edfb931f059fb40a22cde625540c94c5b8775eb72044de1757ccada3e6b85f"
+    },
+    "schedule_authorizations": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "0b04a023be036a72a0fd70dfb6cff32761e892ad4bd124596ddc76ec0e96015b"
+    },
+    "schedules": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "d406b1eca41455f55b49ea47ea37eada3dae9fdd691f625e461275fb7951658f"
+    },
+    "transactions": {
+      "rows": 114,
+      "sha256": "5611650d1b5a9aa5da62591025499222debb51ea21f3afe9dd76d2d0526fecc1",
+      "ddlSha256": "9644b4d60c0638897eb79db0ec78e469c0f2c7daf1d51ab4de33dc65636bd3ce"
+    },
+    "verification_challenges": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "18dfc015e63fd3f21bddf08a09b71d370e14863b5e83428a6fec9c995d794582"
+    },
+    "workflow_steps": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "585bc12808a99b613d53c7ceeb05af64ea6a029ef787cd396bf75f1c5d9540c2"
+    },
+    "workflows": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ddlSha256": "3c8ef66c2adba1c968a80e068fa14e57fd87b8e05c701499c430754c51f30a7b"
+    }
+  },
+  "http": {
+    "ownedAccounts": 2,
+    "realDeepSeekCalls": 0,
+    "pageStatus": 200,
+    "expenseMinor": 536933,
+    "oldPortsStopped": [
+      8096,
+      8110,
+      8111
+    ],
+    "candidatePort": 8130,
+    "mysqlPort": 3307,
+    "mode": "OFFLINE_DEMO"
+  },
+  "cleanup": {
+    "DBackupPreserved": true,
+    "freedBytes": 1709662208,
+    "CFreeBytes": 2007183360,
+    "removedOnly": [
+      "safebank-v07-mysql-probe",
+      "safebank-v07-mysql-foundation"
+    ]
+  }
+}

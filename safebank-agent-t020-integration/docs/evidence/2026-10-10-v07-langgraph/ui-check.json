@@ -1,0 +1,17 @@
+{
+  "url": "http://127.0.0.1:8134/",
+  "title": "SafeBank · 个人银行助手",
+  "browser": "existing Edge via bundled Playwright",
+  "routingReason": "Browser plugin not available",
+  "mode": "LANGGRAPH_MOCK",
+  "desktopLayout": "left navigation / middle business / right chat",
+  "chatAndStatementEvidence": true,
+  "navigationInteraction": true,
+  "mobileViewport": [
+    390,
+    844
+  ],
+  "consoleErrors": [],
+  "expectedPendingResponses": [],
+  "unhandledErrors": []
+}

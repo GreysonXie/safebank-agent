@@ -1,0 +1,6 @@
+{
+  "authorization": "User explicitly added at most 0.50 CNY on 2026-10-15; cumulative cap 6.00, max sends 3",
+  "scope": "One real planning and real answering run via production Python HTTP/runtime and Java bank callbacks; synthetic DB; no authorization or execution",
+  "maxProviderSends": 3,
+  "priorLedgerSha256": "5898ae281efcd3ca11f8254e3a3696a63776abfe4853b8ce770357fd1d7bca43"
+}

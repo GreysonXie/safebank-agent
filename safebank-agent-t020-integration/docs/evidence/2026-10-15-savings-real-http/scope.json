@@ -1,0 +1,5 @@
+{
+  "scope": "One real planning and real answering run via production Python HTTP/runtime and Java bank callbacks; synthetic DB; no authorization or execution",
+  "maxProviderSends": 2,
+  "priorLedgerSha256": "e7b6490a17eaa31be6a15a8a4f5fce196539e744b738f588298d18605980c452"
+}

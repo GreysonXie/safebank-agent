@@ -1,0 +1,80 @@
+{
+  "date": "2026-10-11",
+  "syntheticBankOnly": true,
+  "maximumProviderSends": 4,
+  "turnLimit": 2,
+  "questions": [
+    {
+      "question": "分析2026-09账单，哪些支出最值得关注？",
+      "receivedAnswer": true,
+      "errorCode": null,
+      "answer": "2026-09账单支出合计5,369.33元，入账合计11,700.00元（含退款等非工资入账），净结余6,330.67元。最值得关注的是两笔大额候选：居住类租金2,500.00元，记账日2026-09-01；维修类〔设备维修（合成）〕2,000.00元，记账日2026-09-10。两笔合计占支出比例较高，大额支出占比为83.81%。分类占比中，居住为46.56%，维修为37.25%，是月度主要去向。核对重点应确认这两笔的用途、报价或凭证，尤其维修是否必要及是否一次性；居住若为房租需确认周期。大额候选仅按金额筛选，不代表欺诈或异常，是否合理需结合您的实际安排判断。其余分类金额较小，如订阅95.00元、通信89.00元、餐饮184.24元，可常规关注。",
+      "contextVersion": 2,
+      "elapsedSeconds": 7.09
+    },
+    {
+      "question": "维修这笔贵不贵，我应该核对什么？",
+      "receivedAnswer": true,
+      "errorCode": null,
+      "answer": "仅凭账单无法判断维修这笔贵不贵：2026-09 的维修支出为2,000.00元，对应 1 笔交易〔设备维修（合成）〕2,000.00元，发生在2026-09-10（syn-0110）。这笔已达到大额候选门槛单笔支出达到 2000 元，仅为候选，不能推断欺诈；本人账户内部转账不计收入支出，但候选只说明金额较大，不代表收费异常或不合理。\n\n建议核对：维修的具体项目或设备、是否事先有书面报价或工单、服务方名称、有无发票或收据、是否含更换配件及其保修期。这些信息账单里没有，也没有同类维修的历史价格可比较。若你能提供报价单和维修内容，我可以帮你把金额与账上记录逐笔对齐。\n\n另提一句，本月维修占支出比例较高（37.25%），是一次性支出还是周期性发生，也值得向服务方确认。",
+      "contextVersion": 3,
+      "elapsedSeconds": 8.95
+    }
+  ],
+  "baselineReserved": 15,
+  "reservedAfter": 19,
+  "phaseReservations": 4,
+  "remaining": 1,
+  "calls": [
+    {
+      "purpose": "plan",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 289,
+        "completion_tokens": 23,
+        "total_tokens": 312,
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 161
+      }
+    },
+    {
+      "purpose": "draft",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 3113,
+        "completion_tokens": 356,
+        "total_tokens": 3469,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 3113
+      }
+    },
+    {
+      "purpose": "plan",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 321,
+        "completion_tokens": 36,
+        "total_tokens": 357,
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 193
+      }
+    },
+    {
+      "purpose": "draft",
+      "success": true,
+      "finished": true,
+      "usage": {
+        "prompt_tokens": 6542,
+        "completion_tokens": 279,
+        "total_tokens": 6821,
+        "prompt_cache_hit_tokens": 512,
+        "prompt_cache_miss_tokens": 6030
+      }
+    }
+  ],
+  "usageComplete": true,
+  "totalTokens": 10959
+}
