@@ -21,6 +21,9 @@ public class AgentService {
     private final ModelUsageMeter modelClient;
     private final BusinessAnswerReview businessReview;
     private final BankReplyComposer replies;
+    @Autowired private java.time.Clock bankClock;
+    /** 离线演示与提示语共用同一真实业务日期口径（Asia/Shanghai），不写死月份。 */
+    private String businessMonth(){var clock=bankClock;var date=clock==null?java.time.LocalDate.now(java.time.ZoneId.of("Asia/Shanghai")):cn.safebank.common.SimulationClock.businessDate(clock);return java.time.YearMonth.from(date).toString();}
     private static final String SYSTEM_PROMPT="""
         你是个人银行业务助手。围绕客户这一轮的具体问题灵活回答，结合完整上下文承接指代和追问。
         查询数据后可直接用正常文字回答，也可通过answer_customer输出。程序会核对回答中的具体数字和日期。
@@ -91,11 +94,13 @@ public class AgentService {
         }finally{modelClient.clear();}}
     }
     private Map<String,Object> reply(String text,Object data,List<?> actions,List<?> trace){return Map.of("mode",mode(),"text",text,"data",data,"actions",actions,"trace",trace);}
+    /** 系统提示补一行当前真实业务日期与月份：客户说“本月/上个月”时按此口径换算，不猜历史月份。 */
+    private String systemPrompt(){var clock=bankClock;var date=clock==null?java.time.LocalDate.now(java.time.ZoneId.of("Asia/Shanghai")):cn.safebank.common.SimulationClock.businessDate(clock);return SYSTEM_PROMPT+"\n当前业务日期是 "+date+"（Asia/Shanghai），当前月份是 "+java.time.YearMonth.from(date)+"。客户说“本月”“这个月”“上个月”时按这个日期换算；账单工具只接受明确的四位年份-两位月份，没有对应月份数据就如实说明没有记录，不要推测其他月份。";}
     private Map<String,Object> previewReply(Map<String,Object> action,List<?> trace){return reply(replies.compose(List.of(new BankReplyComposer.Evidence("get_action_status",action))),Map.of(),List.of(action),trace);}
     private Map<String,Object> offline(String user,String text){
         var context=activeContext.get();
         if(context!=null&&context.snapshot().state()==cn.safebank.common.ContextTypes.ConversationState.PAUSED)return reply("已暂停本次办理。未提交资金操作；已有动作请按原编号核对。",Map.of(),List.of(),List.of("客户明确暂停"));
-        var month=Pattern.compile("20\\d{2}-(0[1-9]|1[0-2])").matcher(text);String period=month.find()?month.group():"2026-09";
+        var month=Pattern.compile("20\\d{2}-(0[1-9]|1[0-2])").matcher(text);String period=month.find()?month.group():businessMonth();
         if(text.contains("账单")||text.contains("花费")||text.contains("支出")){var statement=tool(user,"get_statement",json.valueToTree(Map.of("month",period)));return reply("离线工具演示（未调用模型）：\n"+replies.compose(List.of(new BankReplyComposer.Evidence("get_statement",statement))),statement,List.of(),List.of("查询交易","程序汇总"));}
         if(text.contains("订阅")||text.contains("代扣")){var result=json.valueToTree(tool(user,"list_mandates",json.createObjectNode()));return previewReply(actionObject(json.convertValue(result.path("pendingAction"),Object.class)),List.of("明确查询范围","等待客户确认查询"));}
         if(text.contains("余额")||text.contains("账户")){var accounts=tool(user,"get_accounts",json.createObjectNode());return reply("离线工具演示（未调用模型）：\n"+replies.compose(List.of(new BankReplyComposer.Evidence("get_accounts",accounts))),accounts,List.of(),List.of("查询账户"));}
@@ -106,7 +111,7 @@ public class AgentService {
             long amount=new BigDecimal(transfer.group(2)).movePointRight(2).longValueExact();
             return previewReply(actionObject(tool(user,"preview_transfer",json.valueToTree(Map.of("source_id","checking","recipient_id",candidates.getFirst().get("id").toString(),"amount_minor",amount)))),List.of("收款人解析","余额/限额检查","等待用户授权"));
         }
-        return reply("当前未配置模型密钥，处于离线工具演示。可输入：分析2026-09账单、查余额、查订阅，或给张三转500元。其他业务请使用页面表单。",Map.of(),List.of(),List.of());
+        return reply("当前未配置模型密钥，处于离线工具演示。可输入：分析"+businessMonth()+"账单、查余额、查订阅，或给张三转500元。其他业务请使用页面表单。",Map.of(),List.of(),List.of());
     }
     private Map<String,Object> online(String user,String text,HttpSession session){
         if(!Objects.equals(user,session.getAttribute("conversationUser"))){
@@ -123,8 +128,8 @@ public class AgentService {
         
         var messages=new ArrayList<Map<String,Object>>();
         if(saved!=null)messages.addAll(saved);
-        if(messages.isEmpty())messages.add(Map.of("role","system","content",SYSTEM_PROMPT));
-        else messages.set(0,Map.of("role","system","content",SYSTEM_PROMPT));
+        if(messages.isEmpty())messages.add(Map.of("role","system","content",systemPrompt()));
+        else messages.set(0,Map.of("role","system","content",systemPrompt()));
         messages.add(Map.of("role","user","content",text));
         trimConversation(messages);
         var trace=new ArrayList<String>();var evidence=new ArrayList<BankReplyComposer.Evidence>();Object latest=Map.of();int calls=0;long started=System.nanoTime();

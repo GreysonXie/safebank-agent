@@ -42,7 +42,7 @@ public final class BankReplyComposer {
         if(request.matches("(?i)\\s*(你好|您好|hello|hi|早上好|晚上好)[！!。，,.?？\\s]*"))return "你好！我可以帮你查询账单、余额和代扣，也可以准备转账或联合储蓄任务。你想先办理哪一项？";
         if(request.contains("转账")||request.contains("转钱")||request.contains("转入"))return "准备转账还需要明确收款人、来源账户和金额；定时计划还需要首次日期、结束日期及每月执行日。本轮没有可用的银行工具证据，不能报告操作成功。";
         if(request.contains("订阅")||request.contains("代扣"))return "请明确要查询或撤销哪一项代扣。银行扣费记录不能说明使用频率，撤销也不等于商户退订或退款。本轮未执行写操作，不能报告操作成功。";
-        if(request.contains("账单")||request.contains("支出"))return "请提供要查询的月份，例如2026-09；需要比较时请指定两个月份。本轮尚未取得账单数据，不能报告操作成功。";
+        if(request.contains("账单")||request.contains("支出"))return "请提供要查询的月份（格式为四位年份-两位月份，例如本月可写当前月份）；需要比较时请指定两个月份。本轮尚未取得账单数据，不能报告操作成功。";
         return "本轮没有可用的银行查询证据，也没有执行写操作，不能报告操作成功。请补充查询月份或具体操作参数。";
     }
     public String compose(List<Evidence> evidence) {

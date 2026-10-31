@@ -1,0 +1,8 @@
+FROM maven:3.9.9-eclipse-temurin-21 AS tests
+WORKDIR /build
+COPY pom.xml .
+RUN mkdir -p /root/.m2 && printf '%s\n' '<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"><mirrors><mirror><id>aliyun</id><name>aliyun</name><url>https://maven.aliyun.com/repository/public</url><mirrorOf>central</mirrorOf></mirror></mirrors></settings>' > /root/.m2/settings.xml
+COPY src ./src
+COPY agent-service ./agent-service
+RUN --mount=type=cache,target=/root/.m2 mvn -B test -Dspring.profiles.active=test -DBANK_MODEL_API_KEY= -Dmaven.test.failure.ignore=true
+RUN sh -c 'grep -h "^Tests run:" target/surefire-reports/*.txt | sed -n "s/^Tests run: \([0-9]*\), Failures: \([0-9]*\), Errors: \([0-9]*\), Skipped: \([0-9]*\).*/\1 \2 \3 \4/p" | awk "{t+=\$1;f+=\$2;e+=\$3;s+=\$4} END {printf \"TOTAL=%d FAILURES=%d ERRORS=%d SKIPPED=%d\n\", t,f,e,s}"; echo "--- failing ---"; grep -l "FAILURE" target/surefire-reports/*.txt 2>/dev/null || echo none'

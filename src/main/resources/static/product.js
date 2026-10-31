@@ -2,7 +2,7 @@
 (() => {
  let schedules=[],transfers=[],editing=null,reactivating=null,page=1,actionTab='pending';
  const planStates={ACTIVE:'进行中',PAUSED:'已暂停',CANCELLED:'已终止',EXPIRED:'已到期'};
- const today=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Shanghai'}).format(new Date());
+ const today=()=>window.bankBusinessDate||new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Shanghai'}).format(new Date());
  const iso=d=>[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
  function due(year,month,day){return new Date(year,month,Math.min(day,new Date(year,month+1,0).getDate()),12);}
  function nextDue(day,from=today()){const [y,m,d]=from.split('-').map(Number);let date=due(y,m-1,day);if(date.getDate()<d)date=due(y,m,day);return iso(date);}

@@ -21,6 +21,7 @@ class LayeredApiContractTest extends BankTestFixture {
     @Autowired BankToolGateway tools;
     @Autowired MockMvc mvc;
     @Autowired ObjectMapper json;
+    @Autowired java.time.Clock clock;
     @Test void gatewayHasReadAndPreviewToolsButNoAuthorizationOrSubmission() {
         var statement=json.valueToTree(tools.execute("u1","get_statement",json.valueToTree(Map.of("month","2026-09"))));
         assertEquals(340300,statement.path("expense_minor").asLong());assertEquals("2026-09-01",statement.path("transactions").get(0).path("booked_on").asText());
@@ -43,7 +44,7 @@ class LayeredApiContractTest extends BankTestFixture {
         var initial=mvc.perform(get("/api/session")).andReturn();
         var session=(MockHttpSession)initial.getRequest().getSession();
         String csrf=json.readTree(initial.getResponse().getContentAsString()).path("csrf").asText();
-        var statement=json.readTree(mvc.perform(get("/api/statement").session(session)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        var statement=json.readTree(mvc.perform(get("/api/statement").param("month","2026-09").session(session)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
         assertEquals(Set.of("month","expense_minor","income_minor","internal_transfer_minor","categories","transactions","anomaly_candidates","anomaly_rule","usage_data_available"),fields(statement));
         assertEquals(Set.of("id","merchant","category","amount_minor","booked_on"),fields(statement.path("transactions").get(0)));
         var preview=json.readTree(mvc.perform(post("/api/transfers/preview").session(session).header("X-CSRF-Token",csrf).contentType("application/json").content("{\"sourceId\":\"checking\",\"recipientId\":\"zhang-a\",\"amountMinor\":50000}")).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
@@ -56,6 +57,19 @@ class LayeredApiContractTest extends BankTestFixture {
         assertFalse(workflow.path("pendingAction").has("parameters"));
     }
 
+    @Test void sessionAndStatementFollowTheRealBusinessDate() throws Exception {
+        var initial=mvc.perform(get("/api/session")).andExpect(status().isOk()).andReturn();
+        var session=(MockHttpSession)initial.getRequest().getSession();
+        var sessionView=json.readTree(initial.getResponse().getContentAsString());
+        String businessDate=cn.safebank.common.SimulationClock.businessDate(clock).toString();
+        String businessMonth=java.time.YearMonth.from(java.time.LocalDate.parse(businessDate)).toString();
+        assertEquals(businessDate,sessionView.path("businessDate").asText());
+        var current=json.readTree(mvc.perform(get("/api/statement").session(session)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        assertEquals(businessMonth,current.path("month").asText());
+        var explicit=json.readTree(mvc.perform(get("/api/statement").param("month","2026-09").session(session)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        assertEquals("2026-09",explicit.path("month").asText());
+        assertTrue(explicit.path("transactions").size()>0);
+    }
     @Test void scheduleTransferHistoryKeepsScheduleAndActionFieldsFlat() throws Exception {
         var action=new ActionVO("action-1","u1",ActionKind.TRANSFER,"hash",ActionStatus.VERIFIED_SUCCESS,
             OffsetDateTime.parse("2026-10-20T00:00:00Z"),"receipt-1",null,

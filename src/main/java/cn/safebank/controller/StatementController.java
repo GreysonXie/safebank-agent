@@ -9,14 +9,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 @RestController @RequestMapping("/api") public class StatementController {
     private final StatementService statements;
-    public StatementController(StatementService statements) {
+    private final java.time.Clock clock;
+    public StatementController(StatementService statements,java.time.Clock clock) {
         this.statements=statements;
+        this.clock=clock;
     }
     private String user(HttpSession s) {
         return (String)s.getAttribute("user");
     }
-    @GetMapping("/statement") public StatementVO statement(HttpSession s,@RequestParam(defaultValue="2026-09") String month) {
-        return statements.statement(user(s),month);
+    /** 不指定月份时看当前业务月份（真实日期，Asia/Shanghai），不再固定某个历史月份。 */
+    @GetMapping("/statement") public StatementVO statement(HttpSession s,@RequestParam(required=false) String month) {
+        String selected=(month==null||month.isBlank())?java.time.YearMonth.from(cn.safebank.common.SimulationClock.businessDate(clock)).toString():month;
+        return statements.statement(user(s),selected);
     }
     @GetMapping("/recurring") public List<RecurringPaymentVO> recurring(HttpSession s) {
         return statements.recurring(user(s));

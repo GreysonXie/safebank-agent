@@ -4,6 +4,7 @@
  let accounts=[],people=[],cards=[],operations=[],months=[],statement=null,editingUser=null;
  let statementRequest=0,page=1,loaded=false,profileLoaded=false;
  const pageSize=8;
+ const businessMonth=()=>(window.bankBusinessDate||'').slice(0,7);
  const genderLabel={UNKNOWN:'未填写',MALE:'男',FEMALE:'女',UNDISCLOSED:'不愿透露'};
  const cardState={ACTIVE:'使用中',LOCKED:'已临时锁定',LOST:'已挂失'};
  const cardKind={APPLY:'申请卡片',UPDATE_LIMITS:'调整交易限额',UPDATE_CONTROLS:'设置交易开关',LOCK:'临时锁卡',UNLOCK:'解除临时锁定',REPORT_LOST:'挂失卡片'};
@@ -26,6 +27,12 @@
   if(!t.merchant?.startsWith('转账 / '))return t.merchant;
   const id=t.merchant.slice('转账 / '.length),label=window.workspaceRecipientLabel(id);
   return '转账 / '+(label!==id?label:accounts.find(a=>a.id===id)?.label||id);
+ }
+ /** 当前业务月份没有交易记录时如实说明，避免把历史月份当成“本月”。 */
+ function statementPeriodNote(selected){
+  const current=businessMonth();
+  if(!current||current===selected||months.includes(current))return '';
+  return ' · 当前月份 '+current+' 暂无交易记录，已显示最近有记录的账单';
  }
  function metric(label,value,cls=''){
   const box=node('div',undefined,'metric '+cls);box.append(node('span',label),node('strong',value));return box;
@@ -59,6 +66,10 @@
   options($('statement-month'),months.map(m=>[m,m.replace('-',' 年 ')+' 月']),'暂无历史账单');
   if(preferred&&!months.includes(preferred)){months.unshift(preferred);options($('statement-month'),months.map(m=>[m,m]));}
   if(preferred)$('statement-month').value=preferred;
+  else{const current=businessMonth();if(current&&months.includes(current))$('statement-month').value=current;}
+  const month=$('statement-month').value;
+  if(month&&$('workflow-month'))$('workflow-month').value=month;
+  window.syncStatementPrompt?.(months);
   if(months.length)await loadStatement();else{$('statement-status').textContent='暂无账单记录。';renderTransactions([]);}
  }
  async function loadStatement(){
@@ -73,7 +84,7 @@
    options($('tx-category'),[['','全部类别'],...categories.map(c=>[c,c])]);$('tx-category').value='';
    const end=new Date(Number(selected.slice(0,4)),Number(selected.slice(5)),0).getDate();
    for(const id of ['tx-from','tx-to']){$(id).min=selected+'-01';$(id).max=selected+'-'+end;}
-   $('statement-status').textContent=selected+' · '+data.transactions.length+' 笔交易 · 账户内部转账已单独识别';
+   $('statement-status').textContent=selected+' · '+data.transactions.length+' 笔交易 · 账户内部转账已单独识别'+statementPeriodNote(selected);
    $('statement-metrics').replaceChildren(metric('本月支出',money(data.expense_minor),'expense'),metric('本月收入',money(data.income_minor),'income'),metric('净收支',money(data.income_minor-data.expense_minor)),metric('交易笔数',String(data.transactions.length)+' 笔'));
    renderCategories(data);filterTransactions();
    $('month-prev').disabled=months.indexOf(selected)>=months.length-1;

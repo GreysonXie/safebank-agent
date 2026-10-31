@@ -126,3 +126,25 @@ ANSWER += '\nanswer_contract.transfer_clarification表示本轮Java尚未唯一�
 ANSWER += '\n同名候选应优先使用candidate_distinction_refs中可区分的引用；相同备注或未提供备注不能充当区别。没有可区分字段时说明现有信息无法区分，请客户在收款人管理中核对或完善备注，不自动选人。客户明确选择备注后，下一轮规划保留此前已给付款账户和金额，recipientQuery使用客户选择的准确备注，不把姓名与备注拼接为新的检索词。'
 
 ANSWER += '\nhas_indistinguishable_candidates=true表示还有候选缺少可区分信息，即使部分候选有唯一备注也必须说明其他候选目前无法区分，不能省略后只暗示一个选项。先核对并补充可区分备注。标签选择只供当前用户收款人检索，不是授权。'
+
+
+def business_day_clause(today=None):
+    """真实日期口径。
+
+    模型只有知道“今天”才能把“本月/上个月/最近三个月”换算成账单工具要求的明确月份，
+    否则会退回到写死的历史月份或直接补问。这里只用真实时钟，不保存任何日期常量。
+    """
+    from datetime import date, datetime
+    from zoneinfo import ZoneInfo
+    day = today if isinstance(today, date) else datetime.now(ZoneInfo('Asia/Shanghai')).date()
+    first = day.replace(day=1)
+    prior = first.replace(year=first.year - 1, month=12) if first.month == 1 else first.replace(month=first.month - 1)
+    month = f'{day.year:04d}-{day.month:02d}'
+    previous = f'{prior.year:04d}-{prior.month:02d}'
+    return (
+        f'\n当前业务日期是 {day.isoformat()}（Asia/Shanghai），当前月份是 {month}，上个月是 {previous}。'
+        '客户说“本月/这个月/当前月份”按当前月份换算，“上个月/上月”按上个月换算，“最近三个月”按含当前月的连续三个月换算；'
+        '账单工具只接受明确的四位年份-两位月份。换算出的月份如果查不到记录，就如实说明该月没有记录，'
+        '不能改用其他月份代替，也不能编造不存在的月份。这个日期只用于时间换算，不要写进回答正文。'
+    )
+

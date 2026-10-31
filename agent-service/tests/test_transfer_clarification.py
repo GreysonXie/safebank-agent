@@ -34,11 +34,15 @@ class TransferClarificationTest(unittest.TestCase):
   self.assertEqual(result['kind'],'clarification');self.assertIn('{{recipients_latest.0.note}}',result['answer']);self.assertIn('{{recipients_latest.1.note}}',result['answer'])
 
  def test_repair_does_not_bypass_per_turn_budget_or_repeat_rewrite(self):
-  from safebank_agent.contracts import ProtocolError
+  # T020.2-R1：预算不足与重写用尽都走同一个安全出口；不追加模型请求，也不声称任何执行结论。
   state=copy.deepcopy(self.state);state['request']['modelRequestLimit']=2
-  with self.assertRaisesRegex(ProtocolError,'ANSWER_REPAIR_BUDGET_EXHAUSTED'):self.validate(state)
+  tight=self.validate(state)
+  self.assertTrue(tight['validated']);self.assertEqual(tight['safe_exit_reason'],'ANSWER_REPAIR_BUDGET_EXHAUSTED')
   state=copy.deepcopy(self.state);state['repair']=1
-  with self.assertRaisesRegex(ProtocolError,'ANSWER_REPAIR_EXHAUSTED'):self.validate(state)
+  used=self.validate(state)
+  self.assertTrue(used['validated']);self.assertEqual(used['safe_exit_reason'],'ANSWER_REPAIR_EXHAUSTED')
+  self.assertEqual(used['answer']['kind'],'clarification')
+  self.assertNotIn('未执行',used['answer']['answer'])
  def test_same_notes_require_distinct_bank_labels(self):
   from safebank_agent.graph import transfer_clarification
   facts={'recipients_latest.0.note':{'display':'〔未提供备注〕','kind':'TEXT'},'recipients_latest.1.note':{'display':'〔未提供备注〕','kind':'TEXT'},'recipients_latest.0.label':{'display':'张三 TEST-3271','kind':'TEXT'},'recipients_latest.1.label':{'display':'张三 TEST-8862','kind':'TEXT'}}

@@ -13,7 +13,7 @@ function node(tag,text,cls){const n=document.createElement(tag);if(text!==undefi
 function notify(message){$('notification').textContent=message;$('notification').style.display='block';clearTimeout(notify.timer);notify.timer=setTimeout(()=>$('notification').style.display='none',6500);}
 async function api(path,body){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),110000);try{const response=await fetch('/api'+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf},body:body===undefined?undefined:JSON.stringify(body),signal:controller.signal});const data=await response.json();if(!response.ok){const error=Error(data.message||data.code||'请求未完成');Object.assign(error,data);throw error;}return data;}finally{clearTimeout(timer);}}
 async function ensureSession(){
- if(!sessionRequest)sessionRequest=api('/session').then(session=>{csrf=session.csrf;faultsEnabled=session.faultsEnabled;currentAgentMode=session.mode;return session;}).finally(()=>{sessionRequest=null;});
+ if(!sessionRequest)sessionRequest=api('/session').then(session=>{csrf=session.csrf;faultsEnabled=session.faultsEnabled;currentAgentMode=session.mode;if(session.businessDate)window.bankBusinessDate=session.businessDate;return session;}).finally(()=>{sessionRequest=null;});
  return sessionRequest;
 }
 function amount(value){if(!/^\d+(\.\d{1,2})?$/.test(value.trim()))throw Error('金额最多两位小数，且必须为正数');const [whole,fraction='']=value.trim().split('.');const minor=Number(whole)*100+Number(fraction.padEnd(2,'0'));if(!Number.isSafeInteger(minor)||minor<=0)throw Error('金额无效');return minor;}
@@ -195,6 +195,12 @@ $('accounts-toggle').onclick=()=>{const panel=$('accounts-panel');panel.hidden=!
 $('focus-chat').onclick=()=>{$('prompt').scrollIntoView({block:'center'});$('prompt').focus();};
 $('open-mandates').onclick=()=>{selectView('mandates');$('mandates').scrollIntoView({block:'center'});$('mandates').querySelector('button')?.focus();};
 document.querySelectorAll('[data-prompt]').forEach(b=>b.onclick=()=>{$('prompt').value=b.dataset.prompt;$('chat-form').requestSubmit($('chat-form').querySelector('button[type=submit]'));});
+/** 快捷提问按服务端业务日期与真实有记录的月份生成，不在页面写死历史月份。 */
+window.syncStatementPrompt=months=>{
+ const current=(window.bankBusinessDate||'').slice(0,7),month=current&&months.includes(current)?current:months[0]||current;
+ const button=$('prompt-statement');if(!button||!month)return;
+ button.dataset.prompt='分析'+month+'账单';button.title='按当前可用账单月份 '+month+' 提问';
+};
 $('transfer-form').onsubmit=e=>{e.preventDefault();perform(e.submitter,async()=>{const a=await api('/transfers/preview',{sourceId:$('source').value,recipientId:$('recipient').value,amountMinor:amount($('amount').value)});showAction(a);window.bankUI?.revealAction(a.id);});};
 $('simulate-form').onsubmit=e=>{e.preventDefault();perform(e.submitter,async()=>{const results=await api('/simulation/run-due',{date:$('simulation-date').value});results.forEach(showAction);notify(results.length?'已核对 '+results.length+' 个到期操作；请查看回执。':'该日期没有到期任务。');await refresh();});};
 const startupControls=[...document.querySelectorAll('[data-prompt]'),$('open-mandates'),$('chat-form').querySelector('button[type="submit"]')];startupControls.forEach(button=>button.disabled=true);

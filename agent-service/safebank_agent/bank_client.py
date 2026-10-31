@@ -5,6 +5,10 @@ from .contracts import ProtocolError
 from .answers import GroundingRejection
 import re
 
+# T020.2-R2：业务性拒绝（参数不可用、样本不足、对象不存在、余额/限额不足）不是效果失败，
+# 把服务端结果原样交给回答阶段澄清，而不是折叠成断链。模型/预算类错误仍按错误处理。
+BUSINESS_REJECTIONS={'VALIDATION_ERROR','SAMPLE_INSUFFICIENT','NOT_FOUND','HISTORY_UNAVAILABLE','INSUFFICIENT_FUNDS','LIMIT_EXCEEDED'}
+
 class BankClient:
     def __init__(self,url,key):
         self.url=url;self.key=key
@@ -38,6 +42,8 @@ class BankClient:
                             elif re.match(r'^回答中的〔[^〔〕\n]{1,80}〕像是在宣称执行成功',message):reason='EXECUTION_CLAIM'
                             elif match:reason='NUMERIC_LITERAL'
                         raise GroundingRejection(match.group(1) if match else None,reason)
+                    code=data.get('code') if isinstance(data,dict) else None
+                    if code in BUSINESS_REJECTIONS:return data
                     raise ProtocolError('BANK_CALLBACK_REJECTED')
                 return data
         except ProtocolError:raise

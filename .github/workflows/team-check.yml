@@ -27,7 +27,7 @@ jobs:
           SPRING_PROFILES_ACTIVE: test
           BANK_MODEL_API_KEY: ""
       - run: pip install -r agent-service/requirements.lock.txt
-      - run: python -m unittest tests.test_captured_protocol tests.test_live_contract_recovery tests.test_answer_contract tests.test_preview_planning tests.test_credential_output tests.test_transfer_safety tests.test_candidate_config tests.test_model_http tests.test_task_plan tests.test_savings_task_planning tests.test_savings_plan_repair tests.test_savings_month_grounding tests.test_savings_task_mock tests.test_savings_real_case_contract tests.test_statement_followup_catalog tests.test_clarification_context tests.test_reference_feedback tests.test_transfer_clarification -v
+      - run: python -m unittest tests.test_captured_protocol tests.test_live_contract_recovery tests.test_answer_contract tests.test_preview_planning tests.test_credential_output tests.test_safe_exit tests.test_bank_rejection tests.test_transfer_safety tests.test_candidate_config tests.test_model_http tests.test_task_plan tests.test_savings_task_planning tests.test_savings_plan_repair tests.test_savings_month_grounding tests.test_savings_task_mock tests.test_savings_real_case_contract tests.test_statement_followup_catalog tests.test_clarification_context tests.test_reference_feedback tests.test_transfer_clarification tests.test_business_day -v
         working-directory: agent-service
   docker-demo:
     runs-on: ubuntu-latest

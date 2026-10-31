@@ -85,7 +85,11 @@ class GraphRuntimeTest(RuntimeSchemaTest):
   unsafe={'kind':'analysis','answer':'商户为{{statement_2026_09.transactions.0.merchant}}。'}
   self.model.responses=[{'kind':'analysis','tools':[{'tool':'statement','args':{'month':'2026-09'}}]},unsafe,unsafe]
   run=self.runtime.accept(self.request);self.runtime.execute(run['id']);saved=self.store.get(run['id'])
-  self.assertNotEqual(saved['state'],'RESULT_READY');self.assertEqual(saved['error_code'],'ANSWER_REPAIR_EXHAUSTED')
+  # T020.2-R1：重写用尽不再整轮失败，而是同一轮内的安全澄清出口；不追加任何模型请求。
+  self.assertEqual(saved['state'],'RESULT_READY',saved.get('error_code'))
+  self.assertEqual(saved['result_kind'],'clarification');self.assertTrue(saved['interrupt_id'])
+  answer=json.loads(saved['result_json'])['answer']
+  self.assertEqual(answer['kind'],'clarification');self.assertNotIn('未执行',answer['answer'])
   self.assertEqual(self.model.calls,3);self.assertEqual(self.bank.calls,1)
  def test_planning_clarification_cannot_collect_chat_credentials(self):
   self.request.update(modelRequestLimit=3)

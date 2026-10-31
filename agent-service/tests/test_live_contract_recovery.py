@@ -39,9 +39,11 @@ class LiveContractRecoveryTest(unittest.TestCase):
   self.assertEqual(context.calls[0][2]['previous_answer'],state['answer'])
   self.assertEqual(context.calls[0][2]['answer_contract']['required_fields'],['kind','answer'])
  def test_plan_rewrite_uses_turn_capacity_and_cannot_add_fourth_model_call(self):
+  # T020.2-R1：第四次要不起时不再追加调用，也不再抛错，而是同一个安全澄清出口。
   context=Context();state={'request':{'modelRequestLimit':3},'plan_repair':1,'draft_error':'INVALID_ANSWER'}
-  with self.assertRaisesRegex(ProtocolError,'ANSWER_REPAIR_BUDGET_EXHAUSTED'):
-   build(None,context).nodes['validate'].invoke(state)
+  update=build(None,context).nodes['validate'].invoke(state)
+  self.assertTrue(update['validated']);self.assertEqual(update['safe_exit_reason'],'ANSWER_REPAIR_BUDGET_EXHAUSTED')
+  self.assertEqual(update['answer']['kind'],'clarification');self.assertFalse(getattr(context,'calls',[]))
  def test_missing_kind_remains_invalid_and_is_not_inferred(self):
   with self.assertRaisesRegex(ProtocolError,'INVALID_ANSWER'):normalize({'answer':'候选回答','type':'json_object'})
  def test_exact_schema_echo_and_empty_basis_preserve_answer_and_raw_object(self):

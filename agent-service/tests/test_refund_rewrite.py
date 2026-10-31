@@ -27,6 +27,13 @@ class RefundRewriteTest(CapturedAnswerTest):
   self.assertIn('3,200.00',text);self.assertIn('5,369.33',text);self.assertNotIn('设备维修',text)
   context=json.loads(payloads[-1]['messages'][-1]['content']);self.assertTrue(context['validation_error']);self.assertIn('transaction_rows',context)
  def test_per_turn_two_request_limit_blocks_rewrite_before_call(self):
-  saved,calls,text,_=self.run_refund(2);self.assertEqual(calls,2);self.assertEqual(saved['error_code'],'ANSWER_REPAIR_BUDGET_EXHAUSTED');self.assertEqual(text,'')
+  # T020.2-R1：预算不足不再报错，也不再追加模型请求；改为安全澄清出口。
+  saved,calls,text,_=self.run_refund(2)
+  self.assertEqual(calls,2);self.assertEqual(saved['state'],'RESULT_READY',saved.get('error_code'))
+  self.assertEqual(saved['result_kind'],'clarification');self.assertTrue(saved['interrupt_id'])
+  self.assertNotIn('未执行',json.loads(saved['result_json'])['answer']['answer']);self.assertEqual(text,'')
  def test_second_invalid_draft_does_not_start_another_rewrite(self):
-  saved,calls,text,_=self.run_refund(3,True);self.assertEqual(calls,3);self.assertEqual(saved['error_code'],'ANSWER_REPAIR_EXHAUSTED');self.assertEqual(text,'')
+  saved,calls,text,_=self.run_refund(3,True)
+  self.assertEqual(calls,3);self.assertEqual(saved['state'],'RESULT_READY',saved.get('error_code'))
+  self.assertEqual(saved['result_kind'],'clarification');self.assertTrue(saved['interrupt_id'])
+  self.assertNotIn('未执行',json.loads(saved['result_json'])['answer']['answer']);self.assertEqual(text,'')
