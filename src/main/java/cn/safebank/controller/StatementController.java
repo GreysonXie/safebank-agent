@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 @RestController @RequestMapping("/api") public class StatementController {
     private final StatementService statements;
+    private final StatementQueryService queries;
     private final java.time.Clock clock;
-    public StatementController(StatementService statements,java.time.Clock clock) {
+    public StatementController(StatementService statements,StatementQueryService queries,java.time.Clock clock) {
         this.statements=statements;
+        this.queries=queries;
         this.clock=clock;
     }
     private String user(HttpSession s) {
@@ -32,6 +34,14 @@ import java.util.*;
         @RequestParam String month,@RequestParam(defaultValue="全部") String category,
         @RequestParam(defaultValue="支出") String direction,@RequestParam(defaultValue="0") long minAmountMinor) {
         return statements.filter(user(s),month,category,direction,minAmountMinor);
+    }
+    /**
+     * 通用账单查询：任意区间 × 粒度（日/周/月/季/年/整段）× 拆分维度（分类/商户/账户）×
+     * 环比同比 × 明细分页；参数是闭集，服务端重算口径，月报与年报是它的两个预设。
+     */
+    @PostMapping("/statement/query") public StatementQueryVO query(HttpSession s,
+        @RequestBody com.fasterxml.jackson.databind.JsonNode body) {
+        return queries.query(user(s),body);
     }
     @GetMapping("/recurring") public List<RecurringPaymentVO> recurring(HttpSession s) {
         return statements.recurring(user(s));

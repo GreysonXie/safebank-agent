@@ -11,10 +11,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 @Service public class StatementService {
     /** 单笔支出达到 2000 元仅作候选，不是风险评估结论；月报与年报共用这一口径。 */
-    static final String ANOMALY_RULE="单笔支出达到 2000 元，仅为候选，不能推断欺诈；本人账户内部转账不计收入支出";
+    static final String ANOMALY_RULE=StatementRules.ANOMALY_RULE;
     /** 明细可见范围说明：目录可能因容量或隔离省略行，省略不代表没有记录。 */
-    static final String FILTER_SCOPE_NOTE="合计按全部匹配记录计算；明细可能因容量或隔离被省略，省略不代表没有记录";
-    private static final long ANOMALY_THRESHOLD_MINOR=200000;
+    static final String FILTER_SCOPE_NOTE=StatementRules.SCOPE_NOTE;
+    private static final long ANOMALY_THRESHOLD_MINOR=StatementRules.ANOMALY_THRESHOLD_MINOR;
     private final TransactionMapper transactions;
     private final Clock clock;
     public StatementService(TransactionMapper transactions,Clock clock){
@@ -122,16 +122,14 @@ import java.util.*;
         var anomalies=new ArrayList<TransactionVO>();
         for(var entry:entries){
             long amount=entry.amountMinor();
-            if("内部转账".equals(entry.category())){
-                if(amount<0)internal-=amount;
-                continue;
-            }
-            if(amount<0){
-                expense-=amount;
-                categories.merge(Objects.toString(entry.category(),""),-amount,Long::sum);
-                if(-amount>=ANOMALY_THRESHOLD_MINOR)anomalies.add(entry);
-            }
-            else income+=amount;
+            var flow=StatementRules.flow(entry.category(),amount);
+            if(flow==StatementRules.Flow.INTERNAL){internal+=StatementRules.amountOf(flow,amount);continue;}
+            if(flow==StatementRules.Flow.INCOME){income+=amount;continue;}
+            if(flow!=StatementRules.Flow.EXPENSE)continue;
+            long magnitude=StatementRules.amountOf(flow,amount);
+            expense+=magnitude;
+            categories.merge(Objects.toString(entry.category(),""),magnitude,Long::sum);
+            if(StatementRules.anomalyCandidate(entry.category(),amount))anomalies.add(entry);
         }
         return new Aggregate(expense,income,internal,categories,anomalies);
     }
